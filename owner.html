@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>لوحة صاحب التطبيق — EMD Business</title>
+<style>
+:root{color-scheme:light;--bg:#f5f6f4;--surface:#fcfcfb;--card:#ffffff;--line:#e6e6e2;--grid:#ecebe7;--text:#0b0b0b;--text2:#52514e;--muted:#8a8984;--series:#2a78d6;--series-soft:rgba(42,120,214,.14);--good:#0f8a4b;--warn:#b07400;--bad:#c23b3b;--chip:#f1f1ee;--accent:#18202a}
+@media (prefers-color-scheme:dark){:root:where(:not([data-theme="light"])){color-scheme:dark;--bg:#121211;--surface:#1a1a19;--card:#1f1f1e;--line:#2e2e2c;--grid:#2a2a28;--text:#f0efec;--text2:#c3c2b7;--muted:#8f8e88;--series:#3987e5;--series-soft:rgba(57,135,229,.2);--good:#3fbf7f;--warn:#e0a531;--bad:#e66767;--chip:#2a2a28;--accent:#f0efec}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#121211;--surface:#1a1a19;--card:#1f1f1e;--line:#2e2e2c;--grid:#2a2a28;--text:#f0efec;--text2:#c3c2b7;--muted:#8f8e88;--series:#3987e5;--series-soft:rgba(57,135,229,.2);--good:#3fbf7f;--warn:#e0a531;--bad:#e66767;--chip:#2a2a28;--accent:#f0efec}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;font-size:15px;line-height:1.6}
+.wrap{max-width:1040px;margin:0 auto;padding:16px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:4px 0 16px}
+h1{font-size:20px;margin:0}
+h1 small{display:block;font-size:12.5px;color:var(--text2);font-weight:500}
+.btns{display:flex;gap:8px}
+button{font:inherit;cursor:pointer}
+.b{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:10px;padding:8px 12px;font-weight:700;font-size:13.5px}
+.b.primary{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+@media(max-width:720px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
+.kpi .l{font-size:12.5px;color:var(--text2);font-weight:600}
+.kpi .v{font-size:28px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.2;margin-top:4px}
+.kpi .s{font-size:12px;color:var(--muted);margin-top:2px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:12px}
+.panel h2{font-size:15px;margin:0 0 2px}
+.panel .sub{font-size:12.5px;color:var(--text2);margin:0 0 10px}
+.chart{position:relative}
+.chart svg{display:block;width:100%;height:auto}
+.tip{position:absolute;pointer-events:none;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:7px 10px;font-size:12.5px;box-shadow:0 6px 18px rgba(0,0,0,.12);white-space:nowrap;display:none;z-index:2}
+.tip b{font-variant-numeric:tabular-nums}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.tools input,.tools select{font:inherit;border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:10px;padding:8px 10px;min-width:0}
+.tools input{flex:1 1 180px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{font-size:12px;color:var(--text2);font-weight:700;text-align:right;padding:8px 6px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:9px 6px;border-bottom:1px solid var(--grid);vertical-align:middle}
+td.n{font-variant-numeric:tabular-nums;text-align:center}
+th.n{text-align:center}
+.store{font-weight:700}
+.mail{font-size:12px;color:var(--text2);direction:ltr;text-align:right;display:block;overflow:hidden;text-overflow:ellipsis;max-width:220px}
+.st{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;border-radius:999px;padding:3px 9px;background:var(--chip);white-space:nowrap}
+.st.good{color:var(--good)}.st.warn{color:var(--warn)}.st.bad{color:var(--bad)}.st.none{color:var(--muted)}
+.empty{color:var(--muted);text-align:center;padding:20px}
+@media(max-width:720px){
+  table,thead,tbody,tr,td{display:block}thead{display:none}
+  tr{border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:8px;background:var(--surface)}
+  td{border:0;padding:3px 0;display:flex;justify-content:space-between;gap:10px;text-align:left}
+  td::before{content:attr(data-l);color:var(--text2);font-size:12px;font-weight:600;text-align:right}
+  td.n{text-align:left}
+  tr{display:grid;grid-template-columns:1fr 1fr;column-gap:14px}
+  td.head{display:block;grid-column:1/-1;margin-bottom:4px}td.head::before{display:none}
+  .mail{max-width:none}
+}
+.note{font-size:12px;color:var(--muted);margin-top:12px;line-height:1.7}
+.login{max-width:380px;margin:40px auto;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px}
+.login h2{margin:0 0 4px;font-size:19px}
+.login p{margin:0 0 12px;color:var(--text2);font-size:13px}
+.login label{display:block;font-size:12.5px;font-weight:700;color:var(--text2);margin:10px 0 4px}
+.login input{width:100%;font:inherit;font-size:16px;border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:12px;padding:12px;direction:ltr;text-align:right}
+.pw{position:relative}.pw input{padding-left:46px}.eye{position:absolute;left:6px;top:50%;transform:translateY(-50%);border:0;background:transparent;font-size:19px;padding:6px}
+.login .go{width:100%;margin-top:14px;padding:13px;font-size:15px}
+.msg{margin-top:10px;font-size:13px;border-radius:10px;padding:9px 11px;display:none}
+.msg.show{display:block}.msg.err{background:rgba(194,59,59,.1);color:var(--bad)}
+.hide{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="loginBox" class="login hide">
+    <h2>🔒 لوحة صاحب التطبيق</h2>
+    <p>سجّل دخول بحساب المسؤول.</p>
+    <form id="lf" novalidate>
+      <label for="em">الإيميل</label><input id="em" type="email" autocomplete="email">
+      <label for="pw">كلمة السر</label><div class="pw"><input id="pw" type="password" autocomplete="current-password"><button type="button" class="eye" id="eye" aria-label="إظهار كلمة السر">👁️</button></div>
+      <button type="submit" class="b primary go" id="go">دخول</button>
+    </form>
+    <div class="msg" id="lmsg"></div>
+  </div>
+
+  <div id="dash" class="hide">
+    <header>
+      <h1>لوحة صاحب التطبيق<small id="asof">EMD Business</small></h1>
+      <div class="btns"><button class="b" id="refresh" type="button">↻ تحديث</button><button class="b" id="out" type="button">خروج</button></div>
+    </header>
+    <section class="kpis" aria-label="الأرقام الرئيسية">
+      <div class="kpi"><div class="l">المتاجر المسجّلة</div><div class="v" id="k1">—</div><div class="s" id="k1s"></div></div>
+      <div class="kpi"><div class="l">نشطين آخر 7 أيام</div><div class="v" id="k2">—</div><div class="s" id="k2s"></div></div>
+      <div class="kpi"><div class="l">إجمالي الطلبات</div><div class="v" id="k3">—</div><div class="s" id="k3s"></div></div>
+      <div class="kpi"><div class="l">متوقفين أكثر من 14 يوم</div><div class="v" id="k4">—</div><div class="s" id="k4s"></div></div>
+    </section>
+    <section class="panel">
+      <h2>المتاجر النشطة كل يوم</h2>
+      <p class="sub">عدد المتاجر اللي استخدمت التطبيق وانحفظت بياناتها في اليوم، آخر 30 يوم.</p>
+      <div class="chart" id="chart"></div>
+    </section>
+    <section class="panel">
+      <h2>المتاجر</h2>
+      <p class="sub">مرتبة من الأحدث نشاطًا. اضغط على عنوان العمود لتغيير الترتيب.</p>
+      <div class="tools"><input id="q" type="search" placeholder="ابحث باسم المتجر أو الإيميل"><select id="f" aria-label="الحالة"><option value="">كل الحالات</option><option value="good">نشط</option><option value="warn">خامل</option><option value="bad">متوقف</option><option value="none">بدون بيانات</option></select></div>
+      <table><thead><tr><th data-s="store">المتجر</th><th class="n" data-s="orders">الطلبات</th><th class="n" data-s="products">المنتجات</th><th class="n" data-s="customers">العملاء</th><th data-s="last">آخر نشاط</th><th data-s="state">الحالة</th><th data-s="device">الجهاز</th><th data-s="ver">النسخة</th></tr></thead><tbody id="rows"></tbody></table>
+    </section>
+    <p class="note">🔒 هذي الصفحة تعرض أرقام بس. ما تعرض طلبات التجار ولا بيانات عملائهم، وما تفتح إلا لحساب المسؤول.</p>
+  </div>
+</div>
+<script>
+(function(){
+'use strict';
+var URL_='https://pfkstppvnebagbdckgbu.supabase.co',KEY='sb_publishable__tfVZiyph-xyB87GzmHrkQ_9DVpPHJ0',SKEY='emd_v93_session';
+function $(i){return document.getElementById(i)}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function J(k){try{return JSON.parse(localStorage.getItem(k)||'null')}catch(e){return null}}
+function setS(s){try{if(s)localStorage.setItem(SKEY,JSON.stringify(s));else localStorage.removeItem(SKEY)}catch(e){}}
+function call(path,o){o=o||{};var h={'apikey':KEY,'Content-Type':'application/json'};if(o.token)h.Authorization='Bearer '+o.token;
+  return fetch(URL_+path,{method:o.method||'GET',headers:h,body:o.body!=null?JSON.stringify(o.body):undefined}).then(function(r){return r.text().then(function(t){var j=null;try{j=t?JSON.parse(t):null}catch(e){}
+    if(!r.ok){var m=(j&&(j.msg||j.message||j.error_description))||('خطأ '+r.status);var e=new Error(m);e.status=r.status;e.body=j;throw e}return j})},function(){throw new Error('ما فيه اتصال بالإنترنت.')})}
+function save(j){var s={access_token:j.access_token,refresh_token:j.refresh_token,expires_at:Date.now()+((+j.expires_in||3600)*1000),user:j.user?{id:j.user.id,email:j.user.email}:null};setS(s);return s}
+function token(){var s=J(SKEY);if(!s)return Promise.reject(Object.assign(new Error('سجّل دخول'),{auth:true}));if(s.expires_at-Date.now()>90000)return Promise.resolve(s.access_token);
+  return call('/auth/v1/token?grant_type=refresh_token',{method:'POST',body:{refresh_token:s.refresh_token}}).then(function(j){return save(j).access_token},function(e){setS(null);e.auth=true;throw e})}
+function rpc(name){return token().then(function(t){return call('/rest/v1/rpc/'+name,{method:'POST',token:t,body:{}})})}
+
+/* ---------- تنسيق ---------- */
+var NF=new Intl.NumberFormat('en-US');
+function n(v){return NF.format(+v||0)}
+function days(ts){if(!ts)return Infinity;return (Date.now()-new Date(ts).getTime())/864e5}
+function ago(ts){if(!ts)return '—';var m=Math.round((Date.now()-new Date(ts).getTime())/60000);if(m<1)return 'الآن';if(m<60)return 'قبل '+m+' د';var h=Math.round(m/60);if(h<24)return 'قبل '+h+' س';var d=Math.round(h/24);return d===1?'أمس':'قبل '+d+' يوم'}
+function dateAr(d){return new Date(d+'T00:00:00').toLocaleDateString('ar-OM-u-nu-latn',{day:'numeric',month:'short'})}
+function state(r){if(!r.confirmed)return {k:'none',t:'✉️ ما أكّد الإيميل'};if(!r.last_sync)return {k:'none',t:'○ بدون بيانات'};var d=days(r.last_sync);if(d<=7)return {k:'good',t:'● نشط'};if(d<=14)return {k:'warn',t:'◆ خامل'};return {k:'bad',t:'■ متوقف'}}
+
+/* ---------- الرسم: أعمدة يومية بلون واحد ---------- */
+function drawChart(rows){
+  var box=$('chart');var map={};(rows||[]).forEach(function(r){map[String(r.day).slice(0,10)]=r});
+  var list=[];for(var i=29;i>=0;i--){var d=new Date(Date.now()-i*864e5);var k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');var r=map[k]||{};list.push({day:k,v:+r.active_stores||0,o:+r.total_orders||0})}
+  var max=Math.max(1,Math.max.apply(null,list.map(function(x){return x.v})));var step=max<=5?1:max<=10?2:max<=25?5:Math.ceil(max/5/5)*5;var top=Math.ceil(max/step)*step;
+  var W=Math.max(300,Math.round(box.clientWidth||720)),H=W<500?190:220,pl=26,pr=4,pt=12,pb=26,cw=(W-pl-pr)/list.length,bw=Math.max(3,cw-(W<500?3:6)),every=W<500?10:7;
+  var y=function(v){return pt+(H-pt-pb)*(1-v/top)};
+  var g='';for(var t=0;t<=top;t+=step){g+='<line x1="'+pl+'" x2="'+(W-pr)+'" y1="'+y(t)+'" y2="'+y(t)+'" stroke="var(--grid)" stroke-width="1"/><text x="'+(pl-6)+'" y="'+(y(t)+4)+'" text-anchor="end" font-size="11" fill="var(--muted)">'+t+'</text>'}
+  var bars='',hits='';list.forEach(function(x,i){
+    /* الزمن يمشي من اليمين لليسار */
+    var xi=W-pr-(i+1)*cw+(cw-bw)/2;var h=Math.max(0,y(0)-y(x.v));
+    if(x.v>0)bars+='<path d="M'+xi+' '+y(0)+'V'+(y(x.v)+Math.min(4,h))+'q0 -4 4 -4h'+(bw-8)+'q4 0 4 4V'+y(0)+'z" fill="var(--series)"/>';
+    hits+='<rect x="'+(W-pr-(i+1)*cw)+'" y="'+pt+'" width="'+cw+'" height="'+(H-pt-pb)+'" fill="transparent" data-i="'+i+'"/>';
+    if((list.length-1-i)%every===0)bars+='<text x="'+(xi+bw/2)+'" y="'+(H-8)+'" text-anchor="middle" font-size="11" fill="var(--muted)">'+dateAr(x.day)+'</text>';
+  });
+  box.innerHTML='<svg width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="المتاجر النشطة كل يوم، آخر 30 يوم">'+g+'<line x1="'+pl+'" x2="'+(W-pr)+'" y1="'+y(0)+'" y2="'+y(0)+'" stroke="var(--line)"/>'+bars+'<g id="hits">'+hits+'</g></svg><div class="tip" id="tip"></div>';
+  var tip=$('tip');
+  box.querySelector('#hits').addEventListener('pointermove',function(e){var r=e.target.closest('[data-i]');if(!r){tip.style.display='none';return}var x=list[+r.getAttribute('data-i')];
+    tip.innerHTML=esc(dateAr(x.day))+'<br>متاجر نشطة: <b>'+x.v+'</b><br>طلباتهم: <b>'+n(x.o)+'</b>';tip.style.display='block';
+    var bb=box.getBoundingClientRect();var lx=e.clientX-bb.left;tip.style.left=Math.min(bb.width-tip.offsetWidth,Math.max(0,lx-tip.offsetWidth/2))+'px';tip.style.top='0px'});
+  box.querySelector('#hits').addEventListener('pointerleave',function(){tip.style.display='none'});
+}
+
+/* ---------- الجدول ---------- */
+var DATA=[],DAILY=[],sortKey='last',sortDir=-1,rz=null;
+window.addEventListener('resize',function(){clearTimeout(rz);rz=setTimeout(function(){if(!$('dash').classList.contains('hide'))drawChart(DAILY)},200)});
+function val(r,k){if(k==='store')return (r.store_name||'').toLowerCase();if(k==='last')return r.last_sync?new Date(r.last_sync).getTime():0;if(k==='state')return {good:0,warn:1,bad:2,none:3}[state(r).k];if(k==='device')return r.device||'';if(k==='ver')return r.app_version||'';return +r[k]||0}
+function drawTable(){
+  var q=($('q').value||'').trim().toLowerCase(),f=$('f').value;
+  var list=DATA.filter(function(r){var s=state(r).k;if(f&&s!==f)return false;if(!q)return true;return (String(r.store_name||'')+' '+String(r.email||'')).toLowerCase().indexOf(q)>=0});
+  list.sort(function(a,b){var x=val(a,sortKey),y=val(b,sortKey);return (x>y?1:x<y?-1:0)*sortDir});
+  $('rows').innerHTML=list.length?list.map(function(r){var s=state(r);return '<tr>'+
+    '<td class="head" data-l="المتجر"><span class="store">'+esc(r.store_name||'بدون اسم')+'</span><span class="mail">'+esc(r.email)+'</span></td>'+
+    '<td class="n" data-l="الطلبات">'+n(r.orders)+'</td><td class="n" data-l="المنتجات">'+n(r.products)+'</td><td class="n" data-l="العملاء">'+n(r.customers)+'</td>'+
+    '<td data-l="آخر نشاط">'+esc(ago(r.last_sync||r.last_sign_in))+'</td><td data-l="الحالة"><span class="st '+s.k+'">'+esc(s.t)+'</span></td>'+
+    '<td data-l="الجهاز">'+esc(r.device||'—')+'</td><td data-l="النسخة">'+esc(r.app_version||'—')+'</td></tr>'}).join(''):'<tr><td class="empty" colspan="8">ما فيه متاجر تطابق البحث.</td></tr>';
+}
+document.querySelector('thead').addEventListener('click',function(e){var th=e.target.closest('[data-s]');if(!th)return;var k=th.getAttribute('data-s');if(k===sortKey)sortDir*=-1;else{sortKey=k;sortDir=(k==='store'||k==='device'||k==='ver'||k==='state')?1:-1}drawTable()});
+$('q').addEventListener('input',drawTable);$('f').addEventListener('change',drawTable);
+
+function kpis(){
+  var total=DATA.length,conf=DATA.filter(function(r){return r.confirmed}).length,withData=DATA.filter(function(r){return r.last_sync});
+  var act=withData.filter(function(r){return days(r.last_sync)<=7}).length,stop=withData.filter(function(r){return days(r.last_sync)>14}).length;
+  var orders=DATA.reduce(function(a,r){return a+(+r.orders||0)},0);var newW=DATA.filter(function(r){return days(r.signed_up)<=7}).length;
+  $('k1').textContent=n(total);$('k1s').textContent=conf+' أكّدوا الإيميل · '+newW+' جديد هالأسبوع';
+  $('k2').textContent=n(act);$('k2s').textContent=withData.length?Math.round(act/withData.length*100)+'% من اللي عندهم بيانات':'';
+  $('k3').textContent=n(orders);$('k3s').textContent=withData.length?'متوسط '+n(Math.round(orders/withData.length))+' لكل متجر':'';
+  $('k4').textContent=n(stop);$('k4s').textContent=stop?'تواصل معهم واسألهم ليش':'ممتاز، ما فيه أحد';
+}
+function load(){
+  $('asof').textContent='جارٍ التحميل…';
+  return Promise.all([rpc('emd_owner_stats'),rpc('emd_owner_daily').catch(function(){return []})]).then(function(r){
+    DATA=r[0]||[];DAILY=r[1];kpis();$('loginBox').classList.add('hide');$('dash').classList.remove('hide');drawChart(DAILY);drawTable();
+    $('asof').textContent='آخر تحديث '+new Date().toLocaleTimeString('ar-OM-u-nu-latn',{hour:'numeric',minute:'2-digit'});
+    $('loginBox').classList.add('hide');$('dash').classList.remove('hide');
+  }).catch(function(e){
+    if(e.auth||e.status===401){showLogin('');return}
+    if(/not allowed/i.test(e.message)){showLogin('هذي الصفحة لصاحب التطبيق فقط. الحساب الحالي ما عنده صلاحية.');return}
+    if(e.status===404||/function|schema cache/i.test(e.message)){showLogin('إحصائيات السيرفر لسا ما انجهزت. نفّذ رسالة Lovable الخاصة بلوحة صاحب التطبيق أول.');return}
+    showLogin(e.message)});
+}
+function showLogin(m){$('dash').classList.add('hide');$('loginBox').classList.remove('hide');var s=J(SKEY);if(s&&s.user)$('em').value=s.user.email||'';var x=$('lmsg');x.className='msg'+(m?' show err':'');x.textContent=m||''}
+$('lf').addEventListener('submit',function(e){e.preventDefault();var em=$('em').value.trim().toLowerCase(),pw=$('pw').value;if(!em||!pw)return;var g=$('go');g.disabled=true;g.textContent='⏳ لحظة…';
+  call('/auth/v1/token?grant_type=password',{method:'POST',body:{email:em,password:pw}}).then(function(j){save(j);g.disabled=false;g.textContent='دخول';return load()}).catch(function(err){g.disabled=false;g.textContent='دخول';var x=$('lmsg');x.className='msg show err';x.textContent=/Invalid login/i.test(err.message)?'الإيميل أو كلمة السر غلط.':/not confirmed/i.test(err.message)?'أكّد إيميلك أول.':err.message})});
+$('eye').addEventListener('click',function(){var i=$('pw'),sh=i.type==='password';i.type=sh?'text':'password';this.textContent=sh?'🙈':'👁️'});
+$('refresh').addEventListener('click',load);
+$('out').addEventListener('click',function(){setS(null);showLogin('')});
+if(J(SKEY))load();else showLogin('');
+})();
+</script>
+</body>
+</html>
