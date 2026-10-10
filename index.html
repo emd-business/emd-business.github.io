@@ -5,7 +5,7 @@
 <!-- EMD BUILD V408: WhatsApp direct tracking + public star rating redesign -->
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
-<title>EMD Business — Standalone V94</title>
+<title>EMD Business — Standalone V95</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--text:#18202a;--muted:#687384;--line:#e4e8ef;--accent:#18202a;--soft:#eef2f7;--ok:#16794c;--warn:#a56a00;--danger:#b23b3b}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial;background:var(--bg);color:var(--text)}
@@ -19194,7 +19194,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V94</div>
+<div id="emdStandaloneV2Badge">EMD Business • V95</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -22854,9 +22854,9 @@ var PRODUCTWORD={};
 var FILL=/^(?:اريد|اريده|ابغى|ابغي|ابي|ابا|بغيت|ودي|محتاج|محتاجه|محتاجة|ممكن|لو|سمحت|سمحتي|من|فضلك|بس|فقط|يعطيك|العافيه|العافية|الله|حبيت|اطلب|طلب|نبي|نبغى|عندكم|متوفر|ياليت|لي|لنا|عشان|حق|تكفى|اذا|ممكنه)$/;
 var STOP=/^(?:بسعر|سعر|السعر|ريال|ر\.ع|رع|بيسه|بيسة|الف|مبلغ)$/;
 /* يقسم سطر فيه منتجات مسجلة إلى منتجات مع كمياتها */
-function splitLine(line,names){
+function splitLine(line,keys){
   var ln=N(line).replace(/[؟?!؛;…]+/g,' ').replace(/\s+/g,' ').trim(),hits=[];
-  names.forEach(function(n){var k=N(n);if(!k)return;var from=0,ix;while((ix=ln.indexOf(k,from))>=0){var end=ix+k.length;var before=ix===0||/[\s\(\[\-–—:،,+0-9]/.test(ln[ix-1])||ln[ix-1]==='و';var after=end>=ln.length||/[\s\)\]\-–—:،,+0-9x×\*]/.test(ln[end]);if(before&&after&&!hits.some(function(h){return ix<h.e&&end>h.s}))hits.push({s:ix,e:end,name:n});from=end}});
+  keys.forEach(function(o){var k=o.k,n=o.name;if(!k)return;var from=0,ix;while((ix=ln.indexOf(k,from))>=0){var end=ix+k.length;var before=ix===0||/[\s\(\[\-–—:،,+\/0-9]/.test(ln[ix-1])||ln[ix-1]==='و'&&(ix===1||/[\s\/،,+]/.test(ln[ix-2]));var after=end>=ln.length||/[\s\)\]\-–—:،,+\/0-9x×\*]/.test(ln[end]);if(before&&after&&!hits.some(function(h){return ix<h.e&&end>h.s}))hits.push({s:ix,e:end,name:n});from=end}});
   if(!hits.length)return null;
   hits.sort(function(a,b){return a.s-b.s});
   var items=[],used=[];
@@ -22864,14 +22864,14 @@ function splitLine(line,names){
   if(hits.length>1){
     var cuts=[0],okSeg=true;
     for(var g=0;g<hits.length-1;g++){
-      var gs=hits[g].e,ge=hits[g+1].s,gap=ln.slice(gs,ge),m=gap.match(/\s*[،,+]\s*|(?:^|\s+)و(?:\s+|(?=\S)|$)/);
+      var gs=hits[g].e,ge=hits[g+1].s,gap=ln.slice(gs,ge),m=gap.match(/\s*[،,+\/]\s*|(?:^|\s+)و(?:\s+|(?=\S)|$)/);
       if(!m){okSeg=false;break}
       cuts.push(gs+m.index+m[0].length);
     }
     cuts.push(ln.length);
     if(okSeg){
       var segItems=hits.map(function(h,i){
-        var a=cuts[i],b=cuts[i+1],rt=ln.slice(h.e,b).split(/[\s،,+]+/).filter(Boolean),lt=ln.slice(a,h.s).split(/[\s،,+]+/).filter(Boolean),q=0,j;
+        var a=cuts[i],b=cuts[i+1],rt=ln.slice(h.e,b).split(/[\s،,+\/]+/).filter(Boolean),lt=ln.slice(a,h.s).split(/[\s،,+\/]+/).filter(Boolean),q=0,j;
         for(j=0;j<rt.length&&j<5;j++){var t=rt[j];if(STOP.test(N(t)))break;var v=qtyTok(t);if(v){q=v;break}if(!UNIT.test(N(t))&&!FILL.test(N(t))&&t!=='و'&&!/^[\-–—:：×x\*\(\)]+$/.test(t))break}
         if(!q)for(j=lt.length-1;j>=0&&j>=lt.length-4;j--){var t2=lt[j];var v2=qtyTok(t2);if(v2){q=v2;break}if(!UNIT.test(N(t2))&&!FILL.test(N(t2))&&t2!=='و')break}
         return {name:h.name,qty:q}});
@@ -22881,10 +22881,10 @@ function splitLine(line,names){
     }
   }
   /* نمط «2 جزء عم، 1 جزء تبارك»: الرقم قبل المنتج */
-  var leftMode=false;(function(){var l0=ln.slice(0,hits[0].s).split(/[\s،,+]+/).filter(Boolean);for(var j=l0.length-1;j>=0&&j>=l0.length-4;j--){if(qtyTok(l0[j])){leftMode=true;return}if(!UNIT.test(N(l0[j]))&&!FILL.test(N(l0[j])))return}})();
+  var leftMode=false;(function(){var l0=ln.slice(0,hits[0].s).split(/[\s،,+\/]+/).filter(Boolean);for(var j=l0.length-1;j>=0&&j>=l0.length-4;j--){if(qtyTok(l0[j])){leftMode=true;return}if(!UNIT.test(N(l0[j]))&&!FILL.test(N(l0[j])))return}})();
   hits.forEach(function(h,i){
     var nextS=i+1<hits.length?hits[i+1].s:ln.length,prevE=i>0?hits[i-1].e:0;
-    var right=ln.slice(h.e,nextS).split(/[\s،,+]+/).filter(Boolean),left=ln.slice(prevE,h.s).split(/[\s،,+]+/).filter(Boolean);
+    var right=ln.slice(h.e,nextS).split(/[\s،,+\/]+/).filter(Boolean),left=ln.slice(prevE,h.s).split(/[\s،,+\/]+/).filter(Boolean);
     var q=0,j;
     for(j=0;!leftMode&&j<right.length&&j<5;j++){var t=right[j];if(t==='و'&&j>0)break;if(STOP.test(N(t)))break;var v=qtyTok(t);if(v){q=v;used.push('r'+i+'_'+j);break}if(!UNIT.test(N(t))&&!FILL.test(N(t))&&!/^[\-–—:：×x\*\(\)]+$/.test(t))break}
     if(!q){for(j=left.length-1;j>=0&&j>=left.length-4;j--){var t2=left[j];var v2=qtyTok(t2);if(v2){q=v2;break}if(!UNIT.test(N(t2))&&!FILL.test(N(t2))&&t2!=='و')break}}
@@ -22913,33 +22913,87 @@ function cleanLine(l){
     .replace(/^(?:رقم التواصل|رقم التلفون|رقم الواتساب|رقم الواتس|رقم الموبايل|رقم المستلم|رقم الزبون|رقم العميل|التلفون|تلفون|الواتس|الموبايل|موبايل|جوال)(?=\s*[:：\/\-=]|\s|$)/,'الرقم')
     .replace(/^(?:الولاية|الولايه|المنطقة|المنطقه|المدينة|المدينه|الحي|المحافظة|المحافظه|العنوان بالتفصيل)(?=\s*[:：\/\-=])/,'المكان');
 }
+/* V95: أسماء مختصرة للمنتجات — «جزء عم» تكفي لـ«رحلتي مع الفاتحة و جزء عم» إذا كانت لا تطابق إلا منتجًا واحدًا */
+var ASTOP=/^(?:و|مع|من|في|على|عن|الى|ل|ب|ال|او|ذو|ذات|حجم|لون|نوع)$/;
+function buildKeys(names){
+  var keys=[],full=names.map(function(n){return {name:n,k:N(n)}}).filter(function(o){return o.k});
+  full.forEach(function(o){keys.push(o)});
+  var cnt={},owner={};
+  full.forEach(function(o,pi){var w=o.k.split(' '),seen={};
+    for(var a=0;a<w.length;a++)for(var b=a+2;b<=w.length;b++){
+      var g=w.slice(a,b).join(' ');if(b-a===w.length||seen[g])continue;seen[g]=1;
+      if(ASTOP.test(w[a])||ASTOP.test(w[b-1]))continue;
+      if(g.replace(/\s/g,'').length<4)continue;
+      cnt[g]=(cnt[g]||0)+1;owner[g]=o.name}});
+  Object.keys(cnt).forEach(function(g){if(cnt[g]!==1)return;
+    /* لا نجعل الاختصار مطابقًا لاسم منتج آخر أو جزء من اسم آخر */
+    if(full.some(function(o){return o.name!==owner[g]&&(' '+o.k+' ').indexOf(' '+g+' ')>=0}))return;
+    keys.push({name:owner[g],k:g,alias:1})});
+  return keys.sort(function(a,b){return b.k.length-a.k.length});
+}
+/* V95: رسائل القوالب — نحذف سطر الشرح «لتسهيل… عبي هذي الرساله»، ونقرأ «التحويل على / بإسم» كبيانات تحويل وليس اسم العميل */
+function isHeader(l){var n=N(l);return /^(?:لتسهيل|لتسريع|لسرعه)\s/.test(n)||/(?:عب[يئ]|عبو|املا|املي|املئ|تعبئه|تعبيه|تعبئة)\s*(?:هذي|هذه|هاذي|هذا|هاي)?\s*(?:الرساله|النموذج|الاستماره|البيانات|الفورم|الخانات)/.test(n)}
+function payBlock(lines){
+  var out=[],mode=0,want='';
+  for(var i=0;i<lines.length;i++){
+    var l=lines[i],n=N(l),m;
+    m=n.match(/^(?:لتثبيت|لتاكيد|لاعتماد|لحجز)\s*(?:الطلب|طلبك|الحجز|حجزك)\s*[:：،,\-]?\s*(.*)$/);
+    if(m){mode=1;want='';if(!m[1])continue;l=l.slice(l.length-m[1].length);n=m[1]}
+    m=n.match(/^(?:التحويل|للتحويل|يرجى التحويل|الرجاء التحويل|حول|حولي|حولو|تحويل المبلغ|يتم التحويل)\s*(?:على|علي|الى|لرقم|على رقم|علي رقم|الى رقم)\s*(?:الرقم|رقم)?\s*[:：]?\s*(.*)$/);
+    if(m){mode=1;var rest=m[1],d=rest.match(/^(\d[\d ]{3,})(?:\s+(.*))?$/);
+      if(d){out.push('رقم التحويل: '+d[1].replace(/\s/g,''));want='';rest=d[2]||''}else want='num';
+      var b=rest.match(/^(?:باسم|بسم|اسم المستفيد|المستفيد)\s*[:：]?\s*(.*)$/);if(b){if(b[1])out.push('اسم المستفيد: '+l.slice(l.length-b[1].length));else want='ben'}
+      continue}
+    if(mode){
+      if(want==='num'&&/^\d[\d ]{3,}$/.test(n)){out.push('رقم التحويل: '+n.replace(/\s/g,''));want='';continue}
+      m=n.match(/^(?:باسم|بسم|اسم المستفيد|المستفيد|اسم الحساب)\s*[:：]?\s*(.*)$/);
+      if(m){if(m[1])out.push('اسم المستفيد: '+l.slice(l.length-m[1].length));else want='ben';continue}
+      if(want==='ben'&&n.split(' ').length<=4&&!/\d{4,}/.test(n)){out.push('اسم المستفيد: '+l);want='';continue}
+      if(/^(?:بنك|البنك|حساب|رقم الحساب|ايبان|iban)(?:\s|$|[:：])/i.test(n))continue
+      mode=0;want='';
+    }
+    out.push(l);
+  }
+  return out;
+}
 function prepare(raw){
   var t=dig(String(raw||'')).replace(/\r/g,'').replace(/(\d)\uFE0F?\u20E3/g,'$1').replace(/[\u064B-\u065F\u0670\u0640]/g,'');
   /* «… الاسم خالد» في نص السطر → سطر لوحده */
   t=t.replace(/[ \t]+(?:(?:انا|أنا)[ \t]+)?(الاسم|اسمي|العنوان|المكان|الموقع)(?=[ \t]*[:：]?[ \t]+\S)/g,'\n$1').replace(/[ \t]+(الرقم|رقمي|رقم الهاتف|الهاتف|الجوال|جوالي)(?=[ \t]*[:：]?[ \t]*[+\d])/g,'\n$1');
-  t=t.split('\n').map(cleanLine).join('\n');
+  t=t.split('\n').map(cleanLine).filter(function(l){return !isHeader(l)}).join('\n');
   t=phoneFix(t).split('\n').filter(function(l){return !/^\s*(?:رقمي|رقم|الرقم|رقم الهاتف|رقم الجوال|جوالي|الجوال|الهاتف|هاتفي|واتساب|واتسابي|تواصل|للتواصل|رقمي هو|الرقم هو)\s*[:：]?\s*$/.test(dig(l))}).join('\n');
-  var names=products().sort(function(a,b){return N(b).length-N(a).length});
+  var names=products().sort(function(a,b){return N(b).length-N(a).length}),keys=buildKeys(names),emitted={};
   names.forEach(function(n){N(n).split(' ').forEach(function(w){PRODUCTWORD[w]=1})});
   var lines=t.split('\n').map(function(x){return x.trim().replace(/^((?:ال)?(?:اسم|الاسم|اسم العميل|رقم|الرقم|رقم الهاتف|رقم الجوال|الجوال|الهاتف|المكان|الموقع|العنوان|مكان التوصيل|المنتج|الصنف|العدد|الكمية|الكميه))\s*[\/\\\-–=]\s*/,'$1: ')}).filter(Boolean),out=[],lastProd=[];
+  lines=payBlock(lines);
   for(var i=0;i<lines.length;i++){
     var line=lines[i],nl=N(line);
     /* «الاسم سالم» بدون نقطتين */
     var lab=line.match(/^(الاسم|اسمي|اسم العميل|اسم الزبون|المكان|الموقع|مكان التوصيل|الرقم|رقم الهاتف|الهاتف|الجوال)\s*[:：]?\s+(.+)$/);
     if(lab){out.push((lab[1]==='اسمي'?'الاسم':lab[1])+': '+lab[2].replace(/^[:：]\s*/,''));lastProd=[];continue}
     var lab2=line.match(/^(?:التوصيل|توصيل|العنوان|عنوان)\s*[:：]\s*(.+)$/);if(lab2){line=lab2[1];nl=N(line)}
-    var dl=deliveryLine(line,names);if(dl){dl.forEach(function(x){out.push(x)});lastProd=[];continue}
+    /* «مكتب او مندوب / مندوب» → طريقة التوصيل */
+    var mm=nl.match(/^(?:طريقه التوصيل\s*[:：]?\s*)?[\(\[]?\s*(?:مكتب|مندوب|توصيل|استلام)\s*(?:او|ولا|\/)\s*(?:مكتب|مندوب|توصيل|استلام|منزل|المنزل|البيت)\s*[\)\]]?\s*[:：\/\-؟?=]*\s*(.*)$/);
+    if(mm){var mv=mm[1].trim();if(mv){var md=deliveryLine(mv,keys)||[];var meth=/(?:^|\s)مكتب/.test(mv)?'مكتب':/مندوب/.test(mv)?'مندوب':/(?:منزل|البيت)/.test(mv)?'الى المنزل':/استلام/.test(mv)?'استلام من الفرع':'';
+      md=md.filter(function(x){return !/^طريقة التوصيل/.test(x)});md.forEach(function(x){out.push(x)});if(meth)out.push('طريقة التوصيل: '+meth);else if(!md.length)out.push('طريقة التوصيل: '+line.slice(line.length-mv.length))}
+      lastProd=[];continue}
+    var dl=deliveryLine(line,keys);if(dl){dl.forEach(function(x){out.push(x)});lastProd=[];continue}
     /* سطر رقم فقط بعد منتج = العدد */
     if(/^\d{1,3}$/.test(nl)&&lastProd.length){var lp=lastProd[lastProd.length-1];if(!lp.qty){out[out.length-1]=lp.name+' × '+nl}else out.push('العدد: '+nl);lastProd=[];continue}
     var wq=qtyTok(nl);if(wq&&lastProd.length&&nl.split(' ').length<=2&&!/^\d{4,}$/.test(nl)){out.push('العدد: '+wq);lastProd=[];continue}
+    /* «العدد جزء عم 1 وجزء تبارك 1» → نوزّع الكمية على المنتجات المذكورة قبل */
+    var qrest=line.replace(/^\s*(?:العدد|الكميه|الكمية|الكميات|عدد)\s*[:：]?\s*/,'');
+    if(qrest!==line&&qrest&&keys.length){var r2=splitLine(qrest,keys);if(r2&&r2.items.some(function(it){return it.qty})){
+      r2.items.forEach(function(it){var ix=emitted[it.name];if(ix!=null){if(it.qty)out[ix]=it.name+' × '+it.qty}else{out.push(it.qty?it.name+' × '+it.qty:it.name);emitted[it.name]=out.length-1}});
+      lastProd=[];continue}}
     if(/^(?:العدد|الكميه|الكمية)\s*[:：]?\s*\S+/.test(nl)){var qv=0;nl.replace(/^(?:العدد|الكميه|الكمية)\s*[:：]?\s*/,'').split(/\s+/).some(function(tk){qv=qtyTok(tk);return qv||!FILL.test(tk)});out.push(qv?'العدد: '+qv:line);lastProd=[];continue}
     if(/^(?:الاسم|اسم|الرقم|رقم|الهاتف|المكان|الموقع|مكان|شركة|طريقة|التحويل|المستفيد|اسم المستفيد|ملاحظ)/.test(nl)&&!/^(?:المنتج|الصنف|اسم المنتج|اسم الكتاب|اسم الصنف)/.test(nl)){out.push(line);lastProd=[];continue}
     var lineForProd=line.replace(/^(?:اسم\s*(?:الكتاب|المنتج|الصنف)|المنتج|الصنف)\s*[:：]?\s*/,'');
-    var r=names.length?splitLine(lineForProd,names):null;
+    var r=keys.length?splitLine(lineForProd,keys):null;
     if(r){
       if(r.place)out.push(r.place);
       lastProd=[];
-      r.items.forEach(function(it){out.push(it.qty?it.name+' × '+it.qty:it.name);lastProd.push(it)});
+      r.items.forEach(function(it){out.push(it.qty?it.name+' × '+it.qty:it.name);emitted[it.name]=out.length-1;lastProd.push(it)});
       continue;
     }
     out.push(line);lastProd=[];
@@ -22967,7 +23021,7 @@ var PLORIG={};PLACES.forEach(function(p){PLORIG[N(p)]=p});
 /* سطر توصيل: «توصيل عبري»، «ولاية عبري»، «جيناكم عبري»، «عبري مكتب جيناكم» → مكان + شركة + طريقة */
 function deliveryLine(line,names){
   var n=N(line);if(!n||/\d{4,}/.test(n))return null;
-  if(names.some(function(p){var k=N(p);return k&&n.indexOf(k)>=0}))return null;
+  if(names.some(function(p){var k=p&&p.k!=null?p.k:N(p);return k&&n.indexOf(k)>=0}))return null;
   var toks=n.split(/[\s،,\-–—]+/).filter(Boolean),comp='',meth='',place='',extra=false;
   companies().forEach(function(c){var k=N(c);if(!comp&&(' '+n+' ').indexOf(' '+k+' ')>=0)comp=c});
   if(/(?:^|\s)مكتب(?:\s|$)/.test(n))meth='مكتب';else if(/(?:^|\s)مندوب(?:\s|$)/.test(n))meth='مندوب';else if(/(?:الى|للمنزل|البيت|المنزل)/.test(n)&&/توصيل/.test(n))meth='الى المنزل';
@@ -23782,6 +23836,66 @@ function init(){
   window.addEventListener('hashchange',function(){if(/access_token=|error_description=/.test(location.hash))location.reload()});
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
+<style id="EMD-V95-addprod-css">
+#parsed .emd95-add{display:block;margin:10px 0 0;width:100%;min-height:46px;border:1.5px dashed #94a3b8;background:transparent;color:inherit;border-radius:12px;font-weight:800;font-size:15px;cursor:pointer}
+#parsed .emd95-add:active{transform:scale(.99)}
+#parsed .emd95-new{animation:emd95in .35s ease}
+@keyframes emd95in{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+</style>
+<script id="EMD-V95-add-product">
+(function(){
+'use strict';
+if(window.__EMD_V95__)return;window.__EMD_V95__=true;
+/* V95: زر «➕ إضافة منتج آخر» في مراجعة الطلب — لما التحليل يفوّت منتج أو العميل يبغى صنف زيادة */
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function choices(){
+  try{if(typeof window.productChoicesV24==='function')return window.productChoicesV24('')}catch(e){}
+  var list=[];try{list=(window.db&&window.db.products)||[]}catch(e){}
+  return '<option value="">— اختر الصنف —</option>'+list.map(function(x){return '<option value="'+esc(x.name)+'">'+esc(x.name)+'</option>'}).join('');
+}
+function maxIx(host){var m=-1;host.querySelectorAll('.emd-parsed-product').forEach(function(r){var v=parseInt(r.getAttribute('data-product-index'),10);if(v>m)m=v});var d=parseInt(host.dataset.emd95max,10);if(!isNaN(d)&&d>m)m=d;return m}
+function add(){
+  wrap();
+  var host=document.getElementById('emdParsedProducts');if(!host)return;
+  var i=maxIx(host)+1;host.dataset.emd95max=i;
+  var row=document.createElement('div');row.className='product emd-parsed-product emd95-new';row.setAttribute('data-product-index',i);row.style.cssText='gap:10px;align-items:center';
+  row.innerHTML='<div style="flex:1"><div class="muted" style="font-size:12px;margin-bottom:5px">➕ منتج مضاف</div><select id="prod'+i+'" style="width:100%;min-height:44px">'+choices()+'</select></div><input style="max-width:110px" id="q'+i+'" type="number" min="1" value="1" inputmode="numeric"><button type="button" class="secondary" title="حذف هذا الصنف من الطلب" onclick="removeParsedProductV45('+i+')">🗑️ حذف</button>';
+  var rs=host.querySelectorAll('.emd-parsed-product'),last=rs.length?rs[rs.length-1]:null;
+  if(last&&last.parentNode)last.parentNode.insertBefore(row,last.nextSibling);else host.appendChild(row);
+  var sel=row.querySelector('select');try{sel.focus({preventScroll:true});row.scrollIntoView({block:'center',behavior:'smooth'})}catch(e){}
+}
+function ensure(){
+  var host=document.getElementById('emdParsedProducts');if(!host||!host.parentNode)return;
+  if(host.parentNode.querySelector('.emd95-add'))return;
+  var b=document.createElement('button');b.type='button';b.className='emd95-add';b.textContent='➕ إضافة منتج آخر';b.addEventListener('click',add);
+  host.insertAdjacentElement('afterend',b);
+}
+/* عند الحفظ: نضيف خانات للمنتجات المضافة حتى يقرأها الحفظ الأصلي من الصفوف */
+function pad(obj){
+  try{
+    if(!obj||typeof obj!=='object'||window.__emdManualSave68)return;
+    var host=document.getElementById('emdParsedProducts');if(!host)return;
+    var m=-1;host.querySelectorAll('.emd-parsed-product').forEach(function(r){var v=parseInt(r.getAttribute('data-product-index'),10);if(v>m)m=v});
+    if(!Array.isArray(obj.products))obj.products=[];
+    while(obj.products.length<=m)obj.products.push({name:'',qty:1,sourceName:'',productName:'',added:true});
+  }catch(e){}
+}
+function wrap(){
+  var f=window.confirmSave;if(typeof f!=='function'||f.__emd95)return;
+  var g=function(obj){pad(obj);return f.apply(this,arguments)};
+  g.__emd95=true;window.confirmSave=g;
+}
+function start(){
+  var p=document.getElementById('parsed');
+  if(p&&window.MutationObserver)new MutationObserver(ensure).observe(p,{childList:true,subtree:true});
+  ensure();
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+wrap();[1500,4000,6500,10000].forEach(function(t){setTimeout(wrap,t)});
+setInterval(ensure,1500);
+window.EMDAddProdV95={add:add,ensure:ensure};
 })();
 </script>
 </body>
