@@ -5,7 +5,7 @@
 <!-- EMD BUILD V408: WhatsApp direct tracking + public star rating redesign -->
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
-<title>EMD Business — Standalone V95</title>
+<title>EMD Business — Standalone V96</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--text:#18202a;--muted:#687384;--line:#e4e8ef;--accent:#18202a;--soft:#eef2f7;--ok:#16794c;--warn:#a56a00;--danger:#b23b3b}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial;background:var(--bg);color:var(--text)}
@@ -19194,7 +19194,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V95</div>
+<div id="emdStandaloneV2Badge">EMD Business • V96</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -22962,7 +22962,7 @@ function prepare(raw){
   t=t.replace(/[ \t]+(?:(?:انا|أنا)[ \t]+)?(الاسم|اسمي|العنوان|المكان|الموقع)(?=[ \t]*[:：]?[ \t]+\S)/g,'\n$1').replace(/[ \t]+(الرقم|رقمي|رقم الهاتف|الهاتف|الجوال|جوالي)(?=[ \t]*[:：]?[ \t]*[+\d])/g,'\n$1');
   t=t.split('\n').map(cleanLine).filter(function(l){return !isHeader(l)}).join('\n');
   t=phoneFix(t).split('\n').filter(function(l){return !/^\s*(?:رقمي|رقم|الرقم|رقم الهاتف|رقم الجوال|جوالي|الجوال|الهاتف|هاتفي|واتساب|واتسابي|تواصل|للتواصل|رقمي هو|الرقم هو)\s*[:：]?\s*$/.test(dig(l))}).join('\n');
-  var names=products().sort(function(a,b){return N(b).length-N(a).length}),keys=buildKeys(names),emitted={};
+  var names=products().sort(function(a,b){return N(b).length-N(a).length}),keys=buildKeys(names),emitted={},unreg=[],lastUnreg=[];
   names.forEach(function(n){N(n).split(' ').forEach(function(w){PRODUCTWORD[w]=1})});
   var lines=t.split('\n').map(function(x){return x.trim().replace(/^((?:ال)?(?:اسم|الاسم|اسم العميل|رقم|الرقم|رقم الهاتف|رقم الجوال|الجوال|الهاتف|المكان|الموقع|العنوان|مكان التوصيل|المنتج|الصنف|العدد|الكمية|الكميه))\s*[\/\\\-–=]\s*/,'$1: ')}).filter(Boolean),out=[],lastProd=[];
   lines=payBlock(lines);
@@ -22986,9 +22986,15 @@ function prepare(raw){
     if(qrest!==line&&qrest&&keys.length){var r2=splitLine(qrest,keys);if(r2&&r2.items.some(function(it){return it.qty})){
       r2.items.forEach(function(it){var ix=emitted[it.name];if(ix!=null){if(it.qty)out[ix]=it.name+' × '+it.qty}else{out.push(it.qty?it.name+' × '+it.qty:it.name);emitted[it.name]=out.length-1}});
       lastProd=[];continue}}
+    /* منتجات غير مسجلة من سطر «اسم الكتاب …»: «العدد جزء عم 2 …» أو «العدد 3» */
+    if(qrest!==line&&qrest&&unreg.length){var nq=N(qrest),hitU=false;
+      unreg.forEach(function(u){var k=N(u.name),ix=nq.indexOf(k);if(ix<0)return;var tk=nq.slice(ix+k.length).split(/[\s،,+\/]+/).filter(Boolean),q=0;for(var j=0;j<tk.length&&j<3;j++){q=qtyTok(tk[j]);if(q||!UNIT.test(tk[j]))break}if(q){u.qty=q;hitU=true}});
+      if(hitU){lastProd=[];continue}
+      var q1=0;nq.split(/\s+/).some(function(tk){q1=qtyTok(tk);return q1||!FILL.test(tk)});
+      if(q1&&lastUnreg.length===1&&!lastUnreg[0].qty&&nq.split(' ').length<=3){lastUnreg[0].qty=q1;lastUnreg=[];lastProd=[];continue}}
     if(/^(?:العدد|الكميه|الكمية)\s*[:：]?\s*\S+/.test(nl)){var qv=0;nl.replace(/^(?:العدد|الكميه|الكمية)\s*[:：]?\s*/,'').split(/\s+/).some(function(tk){qv=qtyTok(tk);return qv||!FILL.test(tk)});out.push(qv?'العدد: '+qv:line);lastProd=[];continue}
     if(/^(?:الاسم|اسم|الرقم|رقم|الهاتف|المكان|الموقع|مكان|شركة|طريقة|التحويل|المستفيد|اسم المستفيد|ملاحظ)/.test(nl)&&!/^(?:المنتج|الصنف|اسم المنتج|اسم الكتاب|اسم الصنف)/.test(nl)){out.push(line);lastProd=[];continue}
-    var lineForProd=line.replace(/^(?:اسم\s*(?:الكتاب|المنتج|الصنف)|المنتج|الصنف)\s*[:：]?\s*/,'');
+    var lineForProd=line.replace(/^(?:اسم\s*(?:الكتاب|المنتج|الصنف)|المنتج(?!ات)|الصنف)\s*[:：]?\s*/,'');
     var r=keys.length?splitLine(lineForProd,keys):null;
     if(r){
       if(r.place)out.push(r.place);
@@ -22996,9 +23002,22 @@ function prepare(raw){
       r.items.forEach(function(it){out.push(it.qty?it.name+' × '+it.qty:it.name);emitted[it.name]=out.length-1;lastProd.push(it)});
       continue;
     }
+    /* سطر «اسم الكتاب …» بمنتج غير مسجل: نخليه منتج (⚠️ غير مسجل) وليس اسم العميل */
+    if(lineForProd!==line&&lineForProd.trim()){
+      lastUnreg=[];
+      lineForProd.split(/\s*[\/،,+]\s*|\s+و(?=\S)/).forEach(function(part){
+        var tk=part.trim().split(/\s+/).filter(Boolean),q=0;
+        while(tk.length>1){var v=qtyTok(tk[tk.length-1]);if(v){q=q||v;tk.pop()}else if(UNIT.test(N(tk[tk.length-1])))tk.pop();else break}
+        while(tk.length>1){var v2=qtyTok(tk[0]);if(v2){q=q||v2;tk.shift()}else break}
+        var nm=tk.join(' ').trim();if(!nm||!/[\u0600-\u06FFA-Za-z]{2}/.test(nm))return;
+        var u={name:nm,qty:q};unreg.push(u);lastUnreg.push(u)});
+      lastProd=[];continue;
+    }
     out.push(line);lastProd=[];
   }
-  return labelResidual(out,names).join('\n');
+  out=labelResidual(out,names);
+  if(unreg.length){if(!out.some(function(l){return /^المنتجات\s*[:：]?$/.test(l.trim())}))out.push('المنتجات:');unreg.forEach(function(u){out.push(u.name+' × '+(u.qty||1))})}
+  return out.join('\n');
 }
 var NOISE=/^(?:salam|slam|salaam|hi|hello|hey|السلام|السلام عليكم|سلام عليكم|وعليكم السلام|مرحبا|هلا|اهلا|صباح الخير|مساء الخير|طلب جديد|طلبيه|طلبية|الطلب|ممكن|لو سمحت|شكرا|ابغى|ابغي|ابي|اريد|اطلب|مكتب|مندوب|توصيل|الى المنزل|استلام)(?:\s|$|[،,.!؟?🌷🙏])/;
 function isPlace(l){var x=N(l);return PL.some(function(p){return x===p||x.indexOf(p+' ')===0||x.indexOf(' '+p)>=0||x.indexOf(p+' -')===0||x.indexOf(p+'-')===0})}
@@ -23042,7 +23061,7 @@ function wrap(){
     if(ta&&prepped&&prepped!==orig)ta.value=prepped;
     var r;try{r=f.apply(this,arguments)}finally{if(ta)ta.value=orig}
     /* بعد التحليل: لا تترك كلمة «الاسم» داخل خانة الاسم */
-    setTimeout(function(){try{var n=document.getElementById('pname');if(n){var v=n.value.replace(/^(?:الاسم|اسم العميل|اسم الزبون)\s*[:：]?\s*/,'');if(v!==n.value){n.value=v;n.dispatchEvent(new Event('input',{bubbles:true}))}}}catch(e){}},30);
+    setTimeout(function(){try{var n=document.getElementById('pname');if(n){var v=n.value.replace(/^(?:الاسم|اسم العميل|اسم الزبون)\s*[:：]?\s*/,'');if(prepped&&!/^(?:الاسم|اسم العميل|اسم الزبون)\s*[:：]/m.test(prepped)&&/^(?:اسم\s*(?:الكتاب|المنتج|الصنف)|المنتجات|لتسهيل|لتثبيت|التحويل|بإسم|باسم)/.test(v))v='';if(v!==n.value){n.value=v;n.dispatchEvent(new Event('input',{bubbles:true}))}}}catch(e){}},30);
     return r};
   g.__emd85=true;window.parse=g;
 }
