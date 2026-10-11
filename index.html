@@ -24050,7 +24050,7 @@ Object.defineProperty(HTMLElement.prototype,'innerText',{configurable:true,enume
   set:function(v){nIT.set.call(this,v)}});
 /* text-align في قواعد CSS: نعكس اليمين واليسار */
 function flipCSS(){
-  for(var i=0;i<document.styleSheets.length;i++){var sh=document.styleSheets[i],rs;try{rs=sh.cssRules}catch(e){continue}if(!rs||sh.__emd98)continue;sh.__emd98=1;try{flipRules(rs)}catch(e){}}
+  for(var i=0;i<document.styleSheets.length;i++){var sh=document.styleSheets[i],rs;try{rs=sh.cssRules}catch(e){continue}if(!rs||sh.__emd98)continue;if(sh.ownerNode&&/^EMD-V98/.test(sh.ownerNode.id||'')){sh.__emd98=1;continue}sh.__emd98=1;try{flipRules(rs)}catch(e){}}
 }
 function flipRules(rs){for(var j=0;j<rs.length;j++){var r=rs[j];try{if(r.cssRules&&!r.style){flipRules(r.cssRules);continue}if(!r.style)continue;var ta=r.style.getPropertyValue('text-align'),pr=r.style.getPropertyPriority('text-align');if(ta==='right')r.style.setProperty('text-align','left',pr);else if(ta==='left')r.style.setProperty('text-align','right',pr)}catch(e){}}}
 /* التنبيهات */
