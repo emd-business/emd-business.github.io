@@ -5,7 +5,7 @@
 <!-- EMD BUILD V408: WhatsApp direct tracking + public star rating redesign -->
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
-<title>EMD Business — Standalone V105</title>
+<title>EMD Business — Standalone V106</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--text:#18202a;--muted:#687384;--line:#e4e8ef;--accent:#18202a;--soft:#eef2f7;--ok:#16794c;--warn:#a56a00;--danger:#b23b3b}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial;background:var(--bg);color:var(--text)}
@@ -19194,7 +19194,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V105</div>
+<div id="emdStandaloneV2Badge">EMD Business • V106</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -24718,5 +24718,13 @@ window.EMDPayNewV105={tick:tick};
 wrapSave();setTimeout(wrapSave,1800);setTimeout(wrapSave,4500);
 })();
 </script>
+<style id="EMD-V106-header-fix">
+/* V106: شعار المتجر واسمه يرجعون لمكانهم (سطر لحالهم)، وأزرار الحساب/اللغة/المساعدة في سطر تحتهم */
+.emd89-store{flex-wrap:wrap;row-gap:8px}
+.emd89-store>*{order:2}
+.emd89-store>img,.emd89-store>i,.emd89-store>span{order:0}
+.emd89-store>span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:calc(100% - 50px)}
+.emd89-store:has(>span)::after{content:'';order:1;flex-basis:100%;height:0;margin:-4px 0}
+</style>
 </body>
 </html>
