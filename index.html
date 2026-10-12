@@ -5,7 +5,7 @@
 <!-- EMD BUILD V408: WhatsApp direct tracking + public star rating redesign -->
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
-<title>EMD Business — Standalone V108</title>
+<title>EMD Business — Standalone V109</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--text:#18202a;--muted:#687384;--line:#e4e8ef;--accent:#18202a;--soft:#eef2f7;--ok:#16794c;--warn:#a56a00;--danger:#b23b3b}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial;background:var(--bg);color:var(--text)}
@@ -19162,7 +19162,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V108</div>
+<div id="emdStandaloneV2Badge">EMD Business • V109</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -24933,7 +24933,7 @@ function closingHtml(){var C=ccfg(),w=who(),today=dkey(new Date()),r=report(toda
   if(own)h+='<div class="emd108-sec">⚙️ إعدادات التقفيلة</div>'+
     '<label class="emd108-sw"><span>🔔 تذكير التقفيلة كل يوم</span><input type="checkbox" data-c="enabled"'+(C.enabled?' checked':'')+'></label>'+
     (C.enabled?'<div class="emd93-f"><label>وقت التقفيلة</label><input type="time" data-c="time" value="'+esc(C.time)+'"><label>واتساب المدير</label><input data-c="wa" inputmode="tel" placeholder="مثال: 99999999" value="'+esc(C.wa)+'"><label>إيميل المدير</label><input data-c="email" type="email" placeholder="name@example.com" value="'+esc(C.email)+'"></div>'+
-      '<label class="emd108-sw"><span>✉️ إرسال الإيميل تلقائيًا حتى لو التطبيق مسكّر<br><small style="color:#64748b">يحتاج تفعيل الخدمة على السيرفر.</small></span><input type="checkbox" data-c="autoEmail"'+(C.autoEmail?' checked':'')+'></label>':'<div class="emd93-note">التقفيلة متوقفة. تقدر تفتحها يدويًا من هنا أي وقت.</div>');
+      '<div class="emd93-note">✉️ زر «أرسل إيميل» يفتح الإيميل جاهز بالملخص. الإرسال التلقائي بدون فتح التطبيق بيجي لاحقًا.</div>':'<div class="emd93-note">التقفيلة متوقفة. تقدر تفتحها يدويًا من هنا أي وقت.</div>');
   return h}
 function closingAction(k){var C=ccfg(),r=report(dkey(new Date())),t=closingText(r);
   if(k==='cwa'){var p=String(C.wa||'').replace(/[٠-٩]/g,function(d){return '٠١٢٣٤٥٦٧٨٩'.indexOf(d)}).replace(/\D/g,'');if(p.length===8)p='968'+p;window.open('https://wa.me/'+p+'?text='+encodeURIComponent(t),'_blank');return}
