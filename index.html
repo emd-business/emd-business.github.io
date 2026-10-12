@@ -5,7 +5,7 @@
 <!-- EMD BUILD V408: WhatsApp direct tracking + public star rating redesign -->
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
-<title>EMD Business — Standalone V106</title>
+<title>EMD Business — Standalone V107</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--text:#18202a;--muted:#687384;--line:#e4e8ef;--accent:#18202a;--soft:#eef2f7;--ok:#16794c;--warn:#a56a00;--danger:#b23b3b}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial;background:var(--bg);color:var(--text)}
@@ -978,7 +978,7 @@ function showCustomerHistory(phone){
 }
 function renderProducts(){document.getElementById('productsList').innerHTML=db.products.map((p,i)=>`<div class="product"><span>📦 <b>${esc(p.name)}</b><br><span class="muted">المخزون: ${p.stock}</span></span><button class="secondary" onclick="addStock(${i})">➕ مخزون</button></div>`).join('')}
 function renderStock(){
- document.getElementById('stockList').innerHTML=db.products.map(p=>{let reserved=db.orders.reduce((a,o)=>a+(o.products||[]).filter(x=>x.name===p.name&&['new','waiting','ready','packing'].includes(String(o.status||'new'))&&o.stockDeducted!==true).reduce((s,x)=>s+x.qty,0),0);let avail=Math.max(0,p.stock-reserved);return `<div class="product"><span>📦 <b>${esc(p.name)}</b><br><span class="muted">فعلي: ${p.stock} · 🔒 محجوز: ${reserved} · 🟢 متاح: ${avail}</span></span></div>`}).join('')
+ document.getElementById('stockList').innerHTML=db.products.map(p=>{let reserved=db.orders.reduce((a,o)=>a+(o.products||[]).filter(x=>x.name===p.name&&['new','ready','packing'].includes(String(o.status||'new'))&&o.stockDeducted!==true).reduce((s,x)=>s+x.qty,0),0);let avail=Math.max(0,p.stock-reserved);return `<div class="product"><span>📦 <b>${esc(p.name)}</b><br><span class="muted">فعلي: ${p.stock} · 🔒 محجوز: ${reserved} · 🟢 متاح: ${avail}</span></span></div>`}).join('')
 }
 function addProduct(){let n=prompt('اسم المنتج');if(!n)return;let s=Math.max(0,+prompt('الكمية الحالية')||0);db.products.push({name:n.trim(),stock:s});save()}
 function addStock(i){let n=Math.max(0,+prompt('كمية الإضافة')||0);db.products[i].stock+=n;save()}
@@ -6353,7 +6353,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 (function(){
   function productStats(name){
     let total=0, active=0, waiting=0;
-    (db.orders||[]).forEach(o=>(o.products||[]).forEach(x=>{if((x.name||'')===name){total+=Number(x.qty)||0;if(o.status!=='received')active+=Number(x.qty)||0;if(o.status==='waiting')waiting+=Number(x.qty)||0;}}));
+    (db.orders||[]).forEach(o=>(o.products||[]).forEach(x=>{if((x.name||'')===name){total+=Number(x.qty)||0;if(['new','ready','packing'].includes(String(o.status||'new'))&&o.stockDeducted!==true)active+=Number(x.qty)||0;if(o.status==='waiting')waiting+=Number(x.qty)||0;}}));
     let p=(db.products||[]).find(x=>x.name===name)||{stock:0};
     let reserved=Math.max(0,active), available=Math.max(0,(Number(p.stock)||0)-reserved);
     return {total,active,waiting,reserved,available,stock:Number(p.stock)||0};
@@ -7443,6 +7443,7 @@ else {wrapAddInventory();setTimeout(renderArrival,300)}
  // Rebuild reservations from active orders. This prevents the reserved number
  // from drifting when an order changes status or quantity.
  function recalc(){
+  if(typeof window.emdV198Reconcile==='function'){const d0=window.emdV198Reconcile();return {db:d0,products:arr(d0.products)}}
   const d=getDB(), ps=arr(d.products), os=arr(d.orders);
   ps.forEach(p=>{
    p.reserved=0;
@@ -7516,113 +7517,80 @@ else {wrapAddInventory();setTimeout(renderArrival,300)}
 
 <script id="emd-v198-js">
 (function(){
- const KEY='emd_business_v1', guarded={value:false};
+ /* V107: حماية المخزون — نسخة مصححة.
+    - الحجز = الطلبات الجديدة/الجاهزة/قيد التجهيز اللي ما انخصم مخزونها (المشحون انخصم عند الشحن فما يُحجز مرة ثانية).
+    - كل طلب يُحسب مرة وحدة فقط (كان يُحسب مرتين).
+    - الطلبات المشحونة ما تتغير حالتها أبدًا.
+    - مطابقة اسم المنتج بالضبط (مو «جزء عم» داخل «رحلتي مع الفاتحة وجزء عم»). */
+ const KEY='emd_business_v1';let busy=false;
  function getDB(){try{if(window.db)return window.db;return JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){return {}}}
  function putDB(d){window.db=d;try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}}
  const arr=x=>Array.isArray(x)?x:[];
- const norm=x=>String(x||'').trim().toLowerCase().replace(/\s+/g,' ');
+ const N=x=>String(x||'').replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/[ـً-ٰٟ]/g,'').trim().toLowerCase().replace(/\s+/g,' ');
  const name=i=>i.name||i.product||i.productName||'';
- const qty=i=>Number(i.qty||i.quantity||1);
- function product(name0,ps){
-   const n=norm(name0);
-   return ps.find(p=>{const pn=norm(p.name||p.productName||p.title);return pn===n||(pn&&(pn.includes(n)||n.includes(pn)))});
- }
- function state(o){return String(o.status||o.preparationStatus||'new').toLowerCase()}
- function active(o){return !['received','completed','cancelled','canceled'].includes(state(o))}
- function stock(p){return Number(p.stock??p.quantity??p.qty??0)}
- function items(o){return arr(o.products||o.items)}
+ const qty=i=>{const n=Number(i.qty!=null?i.qty:(i.quantity!=null?i.quantity:1));return Number.isFinite(n)&&n>0?n:0};
+ function product(n0,ps){const n=N(n0);if(!n)return null;return ps.find(p=>N(p.name||p.productName||p.title)===n)||null}
+ function state(o){return String(o.status||'new').toLowerCase()}
+ function stock(p){return Math.max(0,Number(p.stock??p.quantity??p.qty??0)||0)}
+ function items(o){return arr(o.products||o.items).filter(i=>name(i)&&qty(i)>0)}
+ function key(p){return String(p.id||p.code||N(p.name||p.productName))}
+ function oid(o){return o.id||o.orderNumber||'طلب'}
  function show(id,msg){
    let e=document.getElementById(id);
-   if(!e){
-     e=document.createElement('div');
-     e.id=id;
-     e.className='emd198-alert emd246-stock-alert';
-     document.body.appendChild(e);
-   }
-   // لا تعاود النافذة الظهور فورًا بعد أن يغلقها المستخدم.
-   // تظهر مجددًا فقط إذا تغيّر نص التنبيه نفسه.
-   const key=String(msg||'');
-   if(e.dataset.emdDismissedMsg===key){
-     e.classList.remove('show');
-     e.style.setProperty('display','none','important');
-     return;
-   }
-   e.dataset.emdAlertMsg=key;
+   if(!e){e=document.createElement('div');e.id=id;e.className='emd198-alert emd246-stock-alert';document.body.appendChild(e)}
+   const k=String(msg||'');
+   if(e.dataset.emdDismissedMsg===k){e.classList.remove('show');e.style.setProperty('display','none','important');return}
+   e.dataset.emdAlertMsg=k;
    e.innerHTML='<button type="button" class="emd246-alert-close" aria-label="إغلاق" title="إغلاق">×</button><div class="emd246-alert-content"><b>🔒 حماية المخزون</b><small>'+msg+'</small></div>';
-   e.style.removeProperty('display'); e.classList.add('show');
+   e.style.removeProperty('display');e.classList.add('show');
    const x=e.querySelector('.emd246-alert-close');
-   if(x){
-     x.onclick=function(ev){
-       if(ev){ev.preventDefault();ev.stopPropagation();}
-       e.dataset.emdDismissedMsg=key;
-       e.classList.remove('show');
-       e.style.display='none';
-     };
-   }
+   if(x)x.onclick=function(ev){if(ev){ev.preventDefault();ev.stopPropagation()}e.dataset.emdDismissedMsg=k;e.classList.remove('show');e.style.display='none'};
  }
-
- // Core allocation:
- // - ready/packing/shipped orders reserve their full quantity.
- // - waiting/new orders reserve nothing until they can be fully fulfilled.
- // - orders are considered oldest-first so a newer order cannot consume stock
- //   already committed to an older active order.
+ function list(a){return a.slice(0,5).join('، ')+(a.length>5?' و'+(a.length-5)+' غيرها':'')}
  function reconcile(){
-   const d=getDB(),ps=arr(d.products),os=arr(d.orders);
-   ps.forEach(p=>{p.reserved=0;p.available=Math.max(0,stock(p))});
-   const candidates=os.filter(active).slice().sort((a,b)=>String(a.createdAt||a.date||'').localeCompare(String(b.createdAt||b.date||'')));
-   const used={}; const changed=[]; const blocked=[];
-   for(const o of candidates){
-     let can=true, needs=[];
-     for(const i of items(o)){
-       const p=product(name(i),ps), n=qty(i);
-       if(!p){can=false;needs.push(name(i)+' (غير موجود بالمخزون)');continue}
-       const key=String(p.id||p.code||p.name||p.productName), free=stock(p)-(used[key]||0);
-       if(free<n){can=false;needs.push(name(i)+' — مطلوب '+n+'، المتاح '+Math.max(0,free))}
-     }
-     const s=state(o);
-     if(['ready','packing','shipped'].includes(s) && !can){
-       // Keep the order safe: it cannot claim unavailable stock.
-       o.status='waiting';o.preparationStatus='waiting';o.stockShortage=needs;
-       changed.push(o.id||o.orderNumber||'طلب');blocked.push(o);
-     }else if(['new','waiting'].includes(s)){
-       if(can){
-         o.status='ready';o.preparationStatus='ready';o.stockShortage=[];
-         changed.push(o.id||o.orderNumber||'طلب');
-         for(const i of items(o)){const p=product(name(i),ps);if(p){const key=String(p.id||p.code||p.name||p.productName);used[key]=(used[key]||0)+qty(i);p.reserved=(p.reserved||0)+qty(i)}}
-       }else{
-         o.status='waiting';o.preparationStatus='waiting';o.stockShortage=needs;
-       }
-     }else{
-       for(const i of items(o)){const p=product(name(i),ps);if(p){const key=String(p.id||p.code||p.name||p.productName);used[key]=(used[key]||0)+qty(i);p.reserved=(p.reserved||0)+qty(i)}}
-     }
-     // For orders already ready/packing/shipped that can be fulfilled, reserve them.
-     if(['ready','packing','shipped'].includes(state(o))){
-       for(const i of items(o)){const p=product(name(i),ps);if(p){const key=String(p.id||p.code||p.name||p.productName);used[key]=(used[key]||0)+qty(i);p.reserved=(p.reserved||0)+qty(i)}}
-     }
-   }
+   const d=getDB(),ps=arr(d.products),os=arr(d.orders),now=new Date().toISOString();
+   /* إصلاح: طلبات انشحنت (انخصم مخزونها) والنسخة القديمة رجّعتها «بانتظار المنتج» بالغلط */
+   const fixed=[];
+   os.forEach(o=>{if(o.stockDeducted===true&&['new','waiting','ready'].includes(state(o))&&arr(o.stockShortage).length){
+     o.status='shipped';o.preparationStatus='shipped';o.stockShortage=[];
+     if(!Array.isArray(o.history))o.history=[];o.history.push({type:'status',detail:'🔧 رجع «تم الشحن» (تصحيح حماية المخزون)',at:now});fixed.push(oid(o))}});
+   ps.forEach(p=>{p.reserved=0});
+   const used={};
+   const fits=o=>{let ok=true;const needs=[];for(const i of items(o)){const p=product(name(i),ps),n=qty(i);
+       if(!p){ok=false;needs.push(name(i)+' (غير موجود بالمخزون)');continue}
+       const free=stock(p)-(used[key(p)]||0);if(free<n){ok=false;needs.push(name(i)+' — مطلوب '+n+'، المتاح '+Math.max(0,free))}}
+     return {ok,needs}};
+   const take=o=>{for(const i of items(o)){const p=product(name(i),ps);if(p){const k=key(p);used[k]=(used[k]||0)+qty(i);p.reserved=(p.reserved||0)+qty(i)}}};
+   const byDate=(a,b)=>String(a.createdAt||a.orderDate||a.date||'').localeCompare(String(b.createdAt||b.orderDate||b.date||''));
+   const open=o=>o.stockDeducted!==true;
+   /* ١) الطلبات الملتزم فيها (جاهز / قيد التجهيز) أول، من الأقدم */
+   const blocked=[];
+   os.filter(o=>open(o)&&['ready','packing'].includes(state(o))).sort(byDate).forEach(o=>{
+     const f=fits(o);
+     if(state(o)==='ready'&&!f.ok){o.status='waiting';o.preparationStatus='waiting';o.stockShortage=f.needs;blocked.push(oid(o))}
+     else{take(o);o.stockShortage=[]}});
+   /* ٢) الطلبات الجديدة والمنتظرة: تصير جاهزة إذا الكمية كاملة متوفرة */
+   const promoted=[];
+   os.filter(o=>open(o)&&['new','waiting'].includes(state(o))).sort(byDate).forEach(o=>{
+     const f=fits(o);
+     if(f.ok&&items(o).length){if(state(o)!=='ready')promoted.push(oid(o));o.status='ready';o.preparationStatus='ready';o.stockShortage=[];take(o)}
+     else{o.status='waiting';o.preparationStatus='waiting';o.stockShortage=f.needs}});
    ps.forEach(p=>p.available=Math.max(0,stock(p)-Number(p.reserved||0)));
    putDB(d);
-   if(blocked.length) show('emdV198Alert',(blocked.length>1?'تم إيقاف حجز '+blocked.length+' طلبات: ':'تم إيقاف حجز الطلب ')+(function(a){return a.slice(0,5).join('، ')+(a.length>5?' و'+(a.length-5)+' غيرها':'')})(blocked.map(o=>o.id||o.orderNumber))+' لأن الكمية غير متوفرة.');
-   else if(changed.length && candidates.some(o=>changed.includes(o.id||o.orderNumber||'طلب'))) show('emdV198Alert','تم تحديث حالة الطلبات حسب المخزون المتوفر.');
+   if(blocked.length||fixed.length||promoted.length)setTimeout(()=>{['renderProducts','render','renderHome'].forEach(f=>{try{if(typeof window[f]==='function')window[f]()}catch(e){}})},0);
+   if(blocked.length)show('emdV198Alert',(blocked.length>1?'تم إيقاف حجز '+blocked.length+' طلبات: ':'تم إيقاف حجز الطلب ')+list(blocked)+' لأن الكمية غير متوفرة.');
+   else if(fixed.length)show('emdV198Alert','رجّعنا '+fixed.length+' طلب مشحون لحالته الصحيحة: '+list(fixed));
+   else if(promoted.length)show('emdV198Alert','تم تحديث حالة الطلبات حسب المخزون المتوفر.');
    return d;
  }
-
- // Guard the application's central save() so a newly created order cannot
- // leave the inventory in an overbooked state.
  const originalSave=window.save;
- if(typeof originalSave==='function' && !originalSave.__emdV198){
+ if(typeof originalSave==='function'&&!originalSave.__emdV198){
    const wrapped=function(){
-     if(!guarded.value){
-       guarded.value=true;
-       try{reconcile()}catch(e){}
-       guarded.value=false;
-     }
-     const result=originalSave.apply(this,arguments);
-     try{reconcile()}catch(e){}
-     return result;
-   };
-   wrapped.__emdV198=true;
-   window.save=wrapped;
+     if(!busy){busy=true;try{reconcile()}catch(e){}busy=false}
+     const r=originalSave.apply(this,arguments);
+     if(!busy){busy=true;try{reconcile()}catch(e){}busy=false}
+     return r};
+   wrapped.__emdV198=true;window.save=wrapped;
  }
  window.emdV198Reconcile=reconcile;
  setTimeout(reconcile,900);
@@ -18781,7 +18749,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   function norm(x){return String(x||'').replace(/[ـ]/g,'').trim().toLowerCase().replace(/\s+/g,' ')}
   function oid(o){return String(o&&((o.id!=null?o.id:(o.orderNumber!=null?o.orderNumber:o.number)))||'')}
   function items(o){var a=Array.isArray(o&&o.products)?o.products:(Array.isArray(o&&o.items)?o.items:[]);return a.map(function(x){return {name:String(x&&((x.name||x.product||x.productName)||'')).trim(),qty:Number(x&&((x.qty!=null?x.qty:(x.quantity!=null?x.quantity:x.count)))||0)}}).filter(function(x){return x.name&&Number.isFinite(x.qty)&&x.qty>0})}
-  function activeForReserve(o){var st=String(o&&o.status||'new');return ['new','waiting','ready','packing'].indexOf(st)>=0&&o.stockDeducted!==true}
+  function activeForReserve(o){var st=String(o&&o.status||'new');return ['new','ready','packing'].indexOf(st)>=0&&o.stockDeducted!==true}
   function productByName(name){var k=norm(name);return products().find(function(p){return norm(p&&p.name)===k})}
   function reservedOther(name,excludeId){var total=0,k=norm(name);orders().forEach(function(o){if(!activeForReserve(o)||oid(o)===String(excludeId))return;items(o).forEach(function(i){if(norm(i.name)===k)total+=i.qty})});return total}
   function checkAvailability(o){
@@ -19194,7 +19162,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V106</div>
+<div id="emdStandaloneV2Badge">EMD Business • V107</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
