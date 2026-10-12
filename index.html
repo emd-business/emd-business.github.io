@@ -5,7 +5,7 @@
 <!-- EMD BUILD V408: WhatsApp direct tracking + public star rating redesign -->
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
-<title>EMD Business — Standalone V110</title>
+<title>EMD Business — Standalone V111</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--text:#18202a;--muted:#687384;--line:#e4e8ef;--accent:#18202a;--soft:#eef2f7;--ok:#16794c;--warn:#a56a00;--danger:#b23b3b}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial;background:var(--bg);color:var(--text)}
@@ -109,6 +109,17 @@ input,textarea,select{border-color:#dfe5ec;box-shadow:inset 0 1px 2px rgba(20,32
 #ordersList > .order,#ordersList > [data-order-id]{content-visibility:auto;contain-intrinsic-size:auto 320px}
 #customersList > .product,#customersList > *{content-visibility:auto;contain-intrinsic-size:auto 72px}
 #customersModal .product,#productsList > .product,#stockList > .product{content-visibility:auto;contain-intrinsic-size:auto 72px}
+</style>
+<style id="EMD-V110-logo-css">
+/* V110: اعتماد شعار EMD Business الجديد (حرف E داخل فقاعة محادثة) */
+header .brand:before{content:''!important;background:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiPjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzFlM2E4YSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzBmMTcyYSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPgo8cmVjdCB3aWR0aD0iMTAyNCIgaGVpZ2h0PSIxMDI0IiByeD0iMjMwIiBmaWxsPSJ1cmwoI2cpIi8+CjxnIGZpbGw9IiNmZmYiPjxyZWN0IHg9IjE5MCIgeT0iMjEyIiB3aWR0aD0iNjQ0IiBoZWlnaHQ9IjUyMCIgcng9IjE1MCIvPjxwYXRoIGQ9Ik0yOTAgNzAwIEwyNTAgODQ2IFEyNDYgODYyIDI2MiA4NTYgTDQzOCA3NDAgWiIvPjwvZz4KPGcgZmlsbD0iIzFlM2E4YSI+PHJlY3QgeD0iMzY2IiB5PSIzMjYiIHdpZHRoPSI3NiIgaGVpZ2h0PSIzMTYiIHJ4PSIzOCIvPjxyZWN0IHg9IjM2NiIgeT0iMzI2IiB3aWR0aD0iMjkyIiBoZWlnaHQ9Ijc2IiByeD0iMzgiLz48cmVjdCB4PSIzNjYiIHk9IjU2NiIgd2lkdGg9IjI5MiIgaGVpZ2h0PSI3NiIgcng9IjM4Ii8+PC9nPgo8cmVjdCB4PSIzNjYiIHk9IjQ0NiIgd2lkdGg9IjIxNCIgaGVpZ2h0PSI3NiIgcng9IjM4IiBmaWxsPSIjZjU5ZTBiIi8+CjxjaXJjbGUgY3g9Ijc5NiIgY3k9IjIzNiIgcj0iNjIiIGZpbGw9IiNmNTllMGIiIHN0cm9rZT0iIzBmMTcyYSIgc3Ryb2tlLXdpZHRoPSIyNiIvPjwvc3ZnPg==") center/cover no-repeat!important;width:42px!important;height:42px!important;border-radius:12px!important;box-shadow:0 6px 16px rgba(15,23,42,.28)!important;font-size:0!important}
+.emd408-brand-icon{font-size:0!important;background:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiPjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzFlM2E4YSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzBmMTcyYSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPgo8cmVjdCB3aWR0aD0iMTAyNCIgaGVpZ2h0PSIxMDI0IiByeD0iMjMwIiBmaWxsPSJ1cmwoI2cpIi8+CjxnIGZpbGw9IiNmZmYiPjxyZWN0IHg9IjE5MCIgeT0iMjEyIiB3aWR0aD0iNjQ0IiBoZWlnaHQ9IjUyMCIgcng9IjE1MCIvPjxwYXRoIGQ9Ik0yOTAgNzAwIEwyNTAgODQ2IFEyNDYgODYyIDI2MiA4NTYgTDQzOCA3NDAgWiIvPjwvZz4KPGcgZmlsbD0iIzFlM2E4YSI+PHJlY3QgeD0iMzY2IiB5PSIzMjYiIHdpZHRoPSI3NiIgaGVpZ2h0PSIzMTYiIHJ4PSIzOCIvPjxyZWN0IHg9IjM2NiIgeT0iMzI2IiB3aWR0aD0iMjkyIiBoZWlnaHQ9Ijc2IiByeD0iMzgiLz48cmVjdCB4PSIzNjYiIHk9IjU2NiIgd2lkdGg9IjI5MiIgaGVpZ2h0PSI3NiIgcng9IjM4Ii8+PC9nPgo8cmVjdCB4PSIzNjYiIHk9IjQ0NiIgd2lkdGg9IjIxNCIgaGVpZ2h0PSI3NiIgcng9IjM4IiBmaWxsPSIjZjU5ZTBiIi8+CjxjaXJjbGUgY3g9Ijc5NiIgY3k9IjIzNiIgcj0iNjIiIGZpbGw9IiNmNTllMGIiIHN0cm9rZT0iIzBmMTcyYSIgc3Ryb2tlLXdpZHRoPSIyNiIvPjwvc3ZnPg==") center/cover no-repeat!important;color:transparent!important}
+.emd110-mark{display:block;width:78px;height:78px;margin:0 auto 10px;border-radius:20px;box-shadow:0 8px 22px rgba(15,23,42,.25)}
+</style>
+<style id="EMD-V111-head">
+header .brand{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;direction:ltr;row-gap:4px}
+header .brand:before{margin-left:0;margin-right:8px}
+header .brand small{flex-basis:100%;direction:rtl;text-align:right}
 </style>
 </head>
 <body>
@@ -19162,7 +19173,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V110</div>
+<div id="emdStandaloneV2Badge">EMD Business • V111</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -24955,12 +24966,6 @@ boot();setTimeout(boot,1200);setTimeout(boot,3500);setInterval(function(){tag();
 window.addEventListener('storage',function(e){if(e.key===SK)apply()});
 })();
 </script>
-<style id="EMD-V110-logo-css">
-/* V110: اعتماد شعار EMD Business الجديد (حرف E داخل فقاعة محادثة) */
-header .brand:before{content:''!important;background:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiPjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzFlM2E4YSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzBmMTcyYSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPgo8cmVjdCB3aWR0aD0iMTAyNCIgaGVpZ2h0PSIxMDI0IiByeD0iMjMwIiBmaWxsPSJ1cmwoI2cpIi8+CjxnIGZpbGw9IiNmZmYiPjxyZWN0IHg9IjE5MCIgeT0iMjEyIiB3aWR0aD0iNjQ0IiBoZWlnaHQ9IjUyMCIgcng9IjE1MCIvPjxwYXRoIGQ9Ik0yOTAgNzAwIEwyNTAgODQ2IFEyNDYgODYyIDI2MiA4NTYgTDQzOCA3NDAgWiIvPjwvZz4KPGcgZmlsbD0iIzFlM2E4YSI+PHJlY3QgeD0iMzY2IiB5PSIzMjYiIHdpZHRoPSI3NiIgaGVpZ2h0PSIzMTYiIHJ4PSIzOCIvPjxyZWN0IHg9IjM2NiIgeT0iMzI2IiB3aWR0aD0iMjkyIiBoZWlnaHQ9Ijc2IiByeD0iMzgiLz48cmVjdCB4PSIzNjYiIHk9IjU2NiIgd2lkdGg9IjI5MiIgaGVpZ2h0PSI3NiIgcng9IjM4Ii8+PC9nPgo8cmVjdCB4PSIzNjYiIHk9IjQ0NiIgd2lkdGg9IjIxNCIgaGVpZ2h0PSI3NiIgcng9IjM4IiBmaWxsPSIjZjU5ZTBiIi8+CjxjaXJjbGUgY3g9Ijc5NiIgY3k9IjIzNiIgcj0iNjIiIGZpbGw9IiNmNTllMGIiIHN0cm9rZT0iIzBmMTcyYSIgc3Ryb2tlLXdpZHRoPSIyNiIvPjwvc3ZnPg==") center/cover no-repeat!important;width:42px!important;height:42px!important;border-radius:12px!important;box-shadow:0 6px 16px rgba(15,23,42,.28)!important;font-size:0!important}
-.emd408-brand-icon{font-size:0!important;background:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiPjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzFlM2E4YSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzBmMTcyYSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPgo8cmVjdCB3aWR0aD0iMTAyNCIgaGVpZ2h0PSIxMDI0IiByeD0iMjMwIiBmaWxsPSJ1cmwoI2cpIi8+CjxnIGZpbGw9IiNmZmYiPjxyZWN0IHg9IjE5MCIgeT0iMjEyIiB3aWR0aD0iNjQ0IiBoZWlnaHQ9IjUyMCIgcng9IjE1MCIvPjxwYXRoIGQ9Ik0yOTAgNzAwIEwyNTAgODQ2IFEyNDYgODYyIDI2MiA4NTYgTDQzOCA3NDAgWiIvPjwvZz4KPGcgZmlsbD0iIzFlM2E4YSI+PHJlY3QgeD0iMzY2IiB5PSIzMjYiIHdpZHRoPSI3NiIgaGVpZ2h0PSIzMTYiIHJ4PSIzOCIvPjxyZWN0IHg9IjM2NiIgeT0iMzI2IiB3aWR0aD0iMjkyIiBoZWlnaHQ9Ijc2IiByeD0iMzgiLz48cmVjdCB4PSIzNjYiIHk9IjU2NiIgd2lkdGg9IjI5MiIgaGVpZ2h0PSI3NiIgcng9IjM4Ii8+PC9nPgo8cmVjdCB4PSIzNjYiIHk9IjQ0NiIgd2lkdGg9IjIxNCIgaGVpZ2h0PSI3NiIgcng9IjM4IiBmaWxsPSIjZjU5ZTBiIi8+CjxjaXJjbGUgY3g9Ijc5NiIgY3k9IjIzNiIgcj0iNjIiIGZpbGw9IiNmNTllMGIiIHN0cm9rZT0iIzBmMTcyYSIgc3Ryb2tlLXdpZHRoPSIyNiIvPjwvc3ZnPg==") center/cover no-repeat!important;color:transparent!important}
-.emd110-mark{display:block;width:78px;height:78px;margin:0 auto 10px;border-radius:20px;box-shadow:0 8px 22px rgba(15,23,42,.25)}
-</style>
 <script id="EMD-V110-logo">
 (function(){'use strict';
 if(window.__EMD_V110__)return;window.__EMD_V110__=true;
@@ -24970,8 +24975,50 @@ link('icon',SVG,'image/svg+xml');
 link('apple-touch-icon',APPLE,null,'180x180');
 try{var m=document.querySelector('meta[name="theme-color"]');if(!m){m=document.createElement('meta');m.name='theme-color';document.head.appendChild(m)}m.content='#0f172a'}catch(e){}
 function fixBrand(){try{var b=document.querySelector('header .brand');if(!b)return;var n=b.firstChild;if(n&&n.nodeType===3&&n.nodeValue!=='EMD Business')n.nodeValue='EMD Business'}catch(e){}}
-fixBrand();setInterval(fixBrand,500);
+
 window.EMDLogoV110={svg:SVG,apple:APPLE};
+})();
+</script>
+<style id="EMD-V111-css">
+body.emd111-nostaff:not(.emd111-staffon) #emd108Chip{display:none!important}
+#emd111Modal{position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:18px;direction:rtl}
+#emd111Modal .box{background:#fff;border-radius:22px;padding:20px;width:min(440px,100%);box-shadow:0 24px 60px rgba(0,0,0,.35);font-family:inherit}
+#emd111Modal h3{margin:0 0 6px;font-size:19px}
+#emd111Modal p{margin:6px 0 14px;color:#475569;font-size:14px;line-height:1.7}
+#emd111Modal button{display:block;width:100%;border:0;border-radius:14px;padding:14px;font:inherit;font-size:15px;font-weight:900;cursor:pointer;margin-top:10px}
+#emd111Modal .b1{background:#0f766e;color:#fff}#emd111Modal .b2{background:#eef2ff;color:#3730a3}#emd111Modal .b3{background:#f1f5f9;color:#334155}
+#emd111Modal .st{display:inline-block;border-radius:999px;padding:3px 12px;font-size:13px;font-weight:900}
+.st.on{background:#dcfce7;color:#166534}.st.off{background:#f1f5f9;color:#334155}
+</style>
+<script id="EMD-V111-staffhide">
+(function(){'use strict';
+if(window.__EMD_V111__)return;window.__EMD_V111__=true;
+var K='emd_v111_hidestaff';
+function rd(k){try{return JSON.parse(localStorage.getItem(k)||'null')}catch(e){return null}}
+function hidden(){try{return localStorage.getItem(K)==='1'}catch(e){return false}}
+function staffOn(){var c=rd('emd_v108_staff');return !!(c&&c.enabled)}
+function apply(){document.body.classList.toggle('emd111-nostaff',hidden());document.body.classList.toggle('emd111-staffon',staffOn())}
+function setHidden(v){try{localStorage.setItem(K,v?'1':'0')}catch(e){}apply();paintItem()}
+function close(){var m=document.getElementById('emd111Modal');if(m)m.remove()}
+function open(){close();var m=document.createElement('div');m.id='emd111Modal';var h=hidden(),on=staffOn();
+ m.innerHTML='<div class="box"><h3>👥 زر الموظفين</h3><p>الحالة: <span class="st '+(h?'off':'on')+'">'+(h?'مخفي من الشاشة الرئيسية':'ظاهر في الشاشة الرئيسية')+'</span></p>'+
+ (on?'<p>⚠️ نظام الموظفين مفعّل الآن، فيبقى الزر ظاهرًا ليدخل الموظفون ويبدّلوا الحساب. الإخفاء يسري فقط عند عدم استخدام الموظفين.</p>':'<p>إذا كنت تعمل لوحدك وما تحتاج الموظفين، أخفِ الزر لتصير الشاشة أنظف. تقدر ترجع تفتح إدارة الموظفين من هنا في أي وقت.</p>')+
+ '<button class="b1" id="emd111Tg">'+(h?'👁️ إظهار الزر':'🙈 إخفاء الزر')+'</button><button class="b2" id="emd111Op">⚙️ فتح إدارة الموظفين والصلاحيات</button><button class="b3" id="emd111Cl">إغلاق</button></div>';
+ document.body.appendChild(m);
+ m.addEventListener('click',function(e){if(e.target===m)close()});
+ document.getElementById('emd111Tg').onclick=function(){setHidden(!hidden());open()};
+ document.getElementById('emd111Op').onclick=function(){close();try{window.EMDStaffV108&&window.EMDStaffV108.open()}catch(e){}};
+ document.getElementById('emd111Cl').onclick=close}
+function paintItem(){var it=document.getElementById('emd111Item');if(it){var s=it.querySelector('span');if(s)s.textContent=hidden()?'الزر مخفي حاليًا — اضغط لإظهاره أو لفتح الإدارة.':'إظهار أو إخفاء الزر وفتح إدارة الموظفين والصلاحيات.'}}
+function inject(){var g=document.getElementById('emd327SystemGrid');if(!g||document.getElementById('emd111Item'))return;
+ var b=document.createElement('button');b.type='button';b.className='emd327-item';b.id='emd111Item';b.setAttribute('data-emd108-skip','1');
+ b.innerHTML='<b>👥 الموظفون وزر الموظفين</b><span></span>';b.addEventListener('click',open);g.insertBefore(b,g.firstChild);paintItem()}
+apply();inject();setInterval(function(){apply();inject()},1500);
+/* تثبيت اسم التطبيق في الهيدر بدون وميض: نعيد النص فورًا قبل أن يُرسم */
+(function(){var b=document.querySelector('header .brand');if(!b)return;
+ function fix(){var n=b.firstChild;if(n&&n.nodeType===3&&n.nodeValue!=='EMD Business')n.nodeValue='EMD Business'}
+ new MutationObserver(fix).observe(b,{childList:true,characterData:true,subtree:true});fix()})();
+window.EMDStaffHideV111={hidden:hidden,set:setHidden,open:open};
 })();
 </script>
 </body>
