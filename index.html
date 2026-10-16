@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V122</title>
+<title>EMD Business — Standalone V123</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--text:#18202a;--muted:#687384;--line:#e4e8ef;--accent:#18202a;--soft:#eef2f7;--ok:#16794c;--warn:#a56a00;--danger:#b23b3b}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial;background:var(--bg);color:var(--text)}
@@ -19180,7 +19180,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V122</div>
+<div id="emdStandaloneV2Badge">EMD Business • V123</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -26275,6 +26275,36 @@ function install(){
 function inject(){var g=document.getElementById('emd327SystemGrid');if(g&&!document.getElementById('emd122Inst2')){var b=document.createElement('button');b.type='button';b.className='emd327-item';b.id='emd122Inst2';b.setAttribute('data-emd108-skip','1');b.innerHTML='<b>📲 تثبيت التطبيق على الجوال</b><span>أيقونة على الشاشة الرئيسية وفتح أسرع وبدون إنترنت.</span>';b.addEventListener('click',install);g.appendChild(b)}}
 setInterval(inject,1500);inject();
 window.EMDInstallV122={install:install,isStandalone:std,canPrompt:function(){return !!ev}};
+})();
+</script>
+<style id="EMD-V123-css">#emd122Inst2,#emd122Inst{display:none!important}</style>
+<script id="EMD-V123-android">
+(function(){'use strict';
+if(!window.EMDAndroid||window.__EMD_APK__)return;window.__EMD_APK__=true;
+/* V123: داخل تطبيق الأندرويد (WebView) لا توجد تنزيلات تلقائية. نلتقط ملفات الحفظ (نسخة احتياطية، CSV، صور) ونحفظها في التنزيلات › EMD Business عبر جسر التطبيق */
+function toast(t){try{if(typeof window.toast==='function')window.toast(t);else alert(t)}catch(e){}}
+function save(a){
+  var n=String(a.getAttribute('download')||'file').replace(/[\\\/:*?"<>|]+/g,'_');
+  fetch(a.href).then(function(r){return r.blob()}).then(function(b){
+    var f=new FileReader();
+    f.onloadend=function(){
+      try{
+        var s=String(f.result),i=s.indexOf(','),m=String(b.type||'application/octet-stream').split(';')[0];
+        var r=window.EMDAndroid.save(n,m,s.substring(i+1));
+        if(r==='ok'){
+          toast('📥 تم حفظ الملف في «التنزيلات › EMD Business»: '+n);
+          try{if(/Backup_/i.test(n)&&window.EMDBackupReminderV122)window.EMDBackupReminderV122.markBackup()}catch(e){}
+        }else toast('⚠️ تعذّر حفظ الملف')
+      }catch(e){toast('⚠️ تعذّر حفظ الملف')}
+    };
+    f.readAsDataURL(b)
+  }).catch(function(){toast('⚠️ تعذّر حفظ الملف')});
+}
+function isFile(a){try{return a&&a.hasAttribute&&a.hasAttribute('download')&&/^(blob:|data:)/.test(a.href)}catch(e){return false}}
+var oc=HTMLAnchorElement.prototype.click;
+HTMLAnchorElement.prototype.click=function(){if(isFile(this)){save(this);return}return oc.apply(this,arguments)};
+document.addEventListener('click',function(e){var a=e.target&&e.target.closest?e.target.closest('a[download]'):null;if(isFile(a)){e.preventDefault();e.stopPropagation();save(a)}},true);
+window.EMDAndroidV123={save:save};
 })();
 </script>
 </body>
