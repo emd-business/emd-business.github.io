@@ -5,7 +5,7 @@
 <!-- EMD BUILD V408: WhatsApp direct tracking + public star rating redesign -->
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
-<title>EMD Business — Standalone V111</title>
+<title>EMD Business — Standalone V112</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--text:#18202a;--muted:#687384;--line:#e4e8ef;--accent:#18202a;--soft:#eef2f7;--ok:#16794c;--warn:#a56a00;--danger:#b23b3b}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial;background:var(--bg);color:var(--text)}
@@ -8831,7 +8831,7 @@ else {wrapAddInventory();setTimeout(renderArrival,300)}
   const d=db(), ex=arr(d.expenses), total=ex.reduce((s,x)=>s+num(x.amount),0);
   document.getElementById('emdV214Overlay').innerHTML='<div class="emd214-box"><div class="emd214-head"><div><h2 style="margin:0">💸 المصروفات</h2><small>أدخل المصروفات التي تريد احتسابها لاحقًا في صافي الربح.</small></div><button class="emd214-close" onclick="emdV214Close()">×</button></div>'+
    '<input id="emd214ExpName" class="emd214-input" placeholder="وصف المصروف — مثال: تغليف، إعلان، توصيل">'+
-   '<select id="emd214ExpCat" class="emd214-select"><option>تغليف</option><option>توصيل</option><option>إعلانات</option><option>تشغيل</option><option>رواتب</option><option>أخرى</option></select>'+
+   '<select id="emd214ExpCat" class="emd214-select">'+(window.EMDExpCatsV112?window.EMDExpCatsV112.options('',true):'<option>تغليف</option><option>توصيل</option><option>إعلانات</option><option>رواتب</option><option>أخرى</option>')+'</select>'+
    '<input id="emd214ExpAmount" class="emd214-input" inputmode="decimal" placeholder="المبلغ ر.ع">'+
    '<button class="emd214-btn" onclick="emdV214AddExpense()">➕ حفظ المصروف</button>'+
    '<div class="emd214-total">إجمالي المصروفات: '+total.toFixed(3)+' ر.ع</div>'+
@@ -19173,7 +19173,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V111</div>
+<div id="emdStandaloneV2Badge">EMD Business • V112</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -22101,13 +22101,13 @@ var rT=null;function scheduleRender(){clearTimeout(rT);rT=setTimeout(function(){
 
 function tabsHtml(){
   var dn=dues().length,cn=courierOrders().filter(function(o){return /shipped|out_for_delivery/.test(o.status)}).length;
-  var T=[['sum','📊 الملخص',0],['due','💵 التحصيل',dn],['cour','🚚 المندوب',cn],['exp','💸 المصروفات',0],['price','🏷️ الأسعار',0]];
+  var T=[['sum','📊 الملخص',0],['led','🧾 الفواتير',0],['due','💵 التحصيل',dn],['cour','🚚 المندوب',cn],['exp','💸 المصروفات',0],['price','🏷️ الأسعار',0]];
   return T.map(function(t){return '<button class="emd75-tab'+(cur.tab===t[0]?' on':'')+'" data-a="tab" data-v="'+t[0]+'">'+t[1]+(t[2]?'<span class="c">'+t[2]+'</span>':'')+'</button>'}).join('');
 }
 function render(){
   pm();$('emd75Tabs').innerHTML=tabsHtml();
   var b=$('emd75Body'),h='';
-  if(cur.tab==='sum')h=sumHtml();else if(cur.tab==='due')h=dueHtml();else if(cur.tab==='cour')h=courHtml();else if(cur.tab==='exp')h=expHtml();else h=priceHtml();
+  if(cur.tab==='sum')h=sumHtml();else if(cur.tab==='due')h=dueHtml();else if(cur.tab==='cour')h=courHtml();else if(cur.tab==='exp')h=expHtml();else if(cur.tab==='led')h=ledHtml();else h=priceHtml();
   var st=b.scrollTop;b.innerHTML=h;b.scrollTop=st;
 }
 
@@ -22169,17 +22169,100 @@ function courText(){
   lines.push('━━━━━━━━━━');lines.push('عدد الطلبات: '+list.length);lines.push('💵 إجمالي التحصيل: '+fmt(tot)+' '+CUR);
   return {text:lines.join('\n'),count:list.length};
 }
+/* ===== V112: تصنيفات المصروفات المخصصة + تعديل المصروف + كشف الفواتير ===== */
+var DEFCATS=['تغليف','توصيل','إعلانات','إيجار','رواتب','أخرى'];
+function cats(){var d=D();var c=d&&Array.isArray(d.expenseCats)?d.expenseCats.map(function(x){return String(x||'').trim()}).filter(Boolean):[];return c.length?c:DEFCATS.slice()}
+function saveCats(c){var d=D();d.expenseCats=c;persist()}
+function catOptions(sel,plain){var c=cats();if(sel&&c.indexOf(sel)<0)c=c.concat([sel]);return c.map(function(x){return '<option'+(x===sel?' selected':'')+'>'+esc(x)+'</option>'}).join('')+(plain?'':'<option value="__new__">➕ تصنيف جديد…</option>')}
+window.EMDExpCatsV112={list:cats,options:function(sel,plain){return catOptions(sel,plain)}};
 function expHtml(){
   var r=range(cur.period),h=periodChips();
   var xs=arr(D().expenses).filter(function(x){var q=String(x.date||'').slice(0,10);return q>=r.sk&&q<=r.ek}).sort(function(a,b){return String(b.date).localeCompare(String(a.date))});
   var tot=xs.reduce(function(a,x){return a+num(x.amount)},0);
-  h+='<div class="emd75-form"><input id="emd75ExName" placeholder="وش المصروف؟ مثل: تغليف"><input id="emd75ExAmt" inputmode="decimal" placeholder="المبلغ '+CUR+'">'+
-    '<select id="emd75ExCat"><option>تغليف</option><option>توصيل</option><option>إعلانات</option><option>إيجار</option><option>رواتب</option><option>أخرى</option></select><input id="emd75ExDate" type="date" value="'+dkey(new Date())+'">'+
-    '<button class="emd75-btn full" data-a="addExp">➕ إضافة مصروف</button></div>';
+  var ed=cur.editExp?arr(D().expenses).find(function(x){return String(x.id||'')===String(cur.editExp)}):null;if(cur.editExp&&!ed)cur.editExp=null;
+  if(ed)h+='<div class="emd112-edit">✏️ تعدّل مصروف: «'+esc(ed.name||'')+'» — غيّر ما تريد ثم اضغط حفظ التعديل.</div>';
+  h+='<div class="emd75-form"><input id="emd75ExName" placeholder="وش المصروف؟ مثل: تغليف" value="'+esc(ed?ed.name||'':'')+'"><input id="emd75ExAmt" inputmode="decimal" placeholder="المبلغ '+CUR+'" value="'+esc(ed?String(ed.amount):'')+'">'+
+    '<select id="emd75ExCat">'+catOptions(ed?ed.category:'')+'</select><input id="emd75ExDate" type="date" value="'+esc(ed?String(ed.date||'').slice(0,10):dkey(new Date()))+'">'+
+    '<button class="emd75-btn full" data-a="addExp">'+(ed?'💾 حفظ التعديل':'➕ إضافة مصروف')+'</button>'+(ed?'<button class="emd75-btn ghost full" data-a="cancelEdit">إلغاء التعديل</button>':'')+
+    '<button class="emd75-btn ghost full" data-a="catMgr">⚙️ '+(cur.catMgr?'إغلاق إدارة التصنيفات':'إدارة تصنيفات المصروفات')+'</button></div>';
+  if(cur.catMgr){var c=cats();
+    h+='<div class="emd112-cats"><div style="font-weight:900;margin-bottom:4px">⚙️ تصنيفاتك (غيّر الاسم مباشرة)</div>'+c.map(function(x,i){return '<div class="emd112-cat"><input data-ci="'+i+'" value="'+esc(x)+'"><button class="emd75-btn ghost sm" data-a="catDel" data-v="'+i+'" aria-label="حذف">🗑️</button></div>'}).join('')+
+      '<div class="emd112-cat"><input id="emd112NewCat" placeholder="تصنيف جديد، مثل: صيانة، مواصلات…"><button class="emd75-btn sm" data-a="catAdd">➕ إضافة</button></div>'+
+      '<button class="emd75-btn ghost sm" data-a="catReset" style="margin-top:6px">↩︎ استرجاع التصنيفات الافتراضية</button><div class="m" style="font-size:12px;color:#64748b;margin-top:6px">تغيير الاسم يحدّث المصروفات القديمة. وحذف تصنيف لا يحذف مصروفاتك.</div></div>'}
+  var by={};xs.forEach(function(x){var k=x.category||'بدون تصنيف';by[k]=(by[k]||0)+num(x.amount)});
+  var bk=Object.keys(by).sort(function(a,b){return by[b]-by[a]});
+  if(bk.length>1)h+='<div class="emd112-by">'+bk.map(function(k){return '<div class="r"><span>'+esc(k)+'</span><span>'+fmt(by[k])+' '+CUR+'</span></div>'}).join('')+'</div>';
   h+='<div class="emd75-sec">المصروفات · '+fmt(tot)+' '+CUR+'</div>';
-  h+=xs.length?'<div class="emd75-list">'+xs.map(function(x){return '<div class="emd75-row"><div class="t"><div><b>'+esc(x.name||'مصروف')+'</b><div class="m">'+esc(x.category||'')+' · '+esc(String(x.date||'').slice(0,10))+'</div></div><div style="display:flex;gap:8px;align-items:center"><span class="amt">'+fmt(num(x.amount))+'</span><button class="emd75-btn ghost sm" data-a="delExp" data-v="'+esc(x.id||'')+'" aria-label="حذف">🗑️</button></div></div></div>'}).join('')+'</div>':'<div class="emd75-empty">ما فيه مصروفات في هذي الفترة.</div>';
+  h+=xs.length?'<div class="emd75-list">'+xs.map(function(x){return '<div class="emd75-row"><div class="t"><div><b>'+esc(x.name||'مصروف')+'</b><div class="m">'+esc(x.category||'')+' · '+esc(String(x.date||'').slice(0,10))+'</div></div><div style="display:flex;gap:8px;align-items:center"><span class="amt">'+fmt(num(x.amount))+'</span><button class="emd75-btn ghost sm" data-a="editExp" data-v="'+esc(x.id||'')+'" aria-label="تعديل">✏️</button><button class="emd75-btn ghost sm" data-a="delExp" data-v="'+esc(x.id||'')+'" aria-label="حذف">🗑️</button></div></div></div>'}).join('')+'</div>':'<div class="emd75-empty">ما فيه مصروفات في هذي الفترة.</div>';
   return h;
 }
+/* ---------- كشف الفواتير ---------- */
+var PL={today:'اليوم',week:'آخر 7 أيام',month:'هذا الشهر',lastmonth:'الشهر الماضي'};
+var MLBL={cash:'💵 نقدًا',transfer:'🏦 تحويل بنكي',cod:'📦 عند الاستلام','':'❔ غير محدد'};
+function ftime(t){var h=t.getHours(),m=t.getMinutes();return (h%12||12)+':'+pad(m)+' '+(h>=12?'م':'ص')}
+function fdt(t){return dkey(t)+' · '+ftime(t)}
+function ledRows(){
+  var r=range(cur.period),f=cur.ledM||'all',out=[];
+  arr(D().orders).forEach(function(o){
+    if(cancelled(o))return;var t=odate(o);if(!t||t<r.s||t>=r.e)return;
+    var m=method(o);if(f!=='all'&&m!==(f==='none'?'':f))return;
+    var tt=total(o);if(!(tt>0))return;
+    var pt=null;if(o.paidAt){var q=new Date(o.paidAt);if(!isNaN(q))pt=q}
+    out.push({o:o,id:oid(o),t:t,pt:pt,total:tt,paid:paid(o),rem:remaining(o),st:payState(o),m:m});
+  });
+  out.sort(function(a,b){return b.t-a.t});return out;
+}
+function ledHtml(){
+  var rows=ledRows(),f=cur.ledM||'all';
+  var sum=rows.reduce(function(a,x){a.t+=x.total;a.p+=x.paid;a.r+=x.rem;return a},{t:0,p:0,r:0});
+  var bm={};rows.forEach(function(x){var k=x.m||'';var e=bm[k]||(bm[k]={n:0,v:0});e.n++;e.v+=x.paid});
+  var h=periodChips();
+  h+='<div class="emd75-chips">'+[['all','الكل'],['cash','💵 نقدًا'],['transfer','🏦 تحويل'],['cod','📦 عند الاستلام'],['none','❔ غير محدد']].map(function(p){return '<button class="emd75-chip'+(f===p[0]?' on':'')+'" data-a="ledM" data-v="'+p[0]+'">'+p[1]+'</button>'}).join('')+'</div>';
+  h+='<div class="emd112-bar"><div class="emd112-card"><span>عدد الفواتير</span><b>'+rows.length+'</b></div><div class="emd112-card"><span>إجمالي الفواتير</span><b>'+fmt(sum.t)+' '+CUR+'</b></div><div class="emd112-card"><span>المحصّل</span><b style="color:#15803d">'+fmt(sum.p)+' '+CUR+'</b></div><div class="emd112-card"><span>المتبقي</span><b style="color:#b45309">'+fmt(sum.r)+' '+CUR+'</b></div></div>';
+  var ks=Object.keys(bm);
+  if(ks.length)h+='<div class="emd112-m">'+ks.map(function(k){return '<span class="p">'+(MLBL[k]||k)+': '+fmt(bm[k].v)+' '+CUR+' ('+bm[k].n+')</span>'}).join('')+'</div>';
+  h+='<div class="emd75-sticky" style="position:static;display:flex;gap:8px;margin:6px 0"><button class="emd75-btn wa" data-a="sendLed">📤 إرسال الكشف واتساب</button><button class="emd75-btn ghost" data-a="copyLed">📋 نسخ</button></div>';
+  if(!rows.length)return h+'<div class="emd75-empty">ما فيه فواتير في هذي الفترة.</div>';
+  h+='<div class="emd75-list">'+rows.slice(0,200).map(function(x){
+    var stl=x.st==='paid'?'<span style="color:#15803d">✅ مدفوع</span>':x.st==='partial'?'<span style="color:#b45309">🌓 جزئي · دفع '+fmt(x.paid)+'</span>':'<span style="color:#64748b">⏳ غير مدفوع</span>';
+    return '<div class="emd75-row" data-a="openOrder" data-v="'+esc(x.id)+'" style="cursor:pointer"><div class="t"><div><b>🧾 فاتورة '+esc(x.id)+' · '+esc(x.o.name||'بدون اسم')+'</b><div class="m">🗓️ '+esc(fdt(x.t))+'</div><div class="m">'+(MLBL[x.m]||x.m)+(x.pt&&x.st!=='unpaid'?' · دُفعت '+esc(fdt(x.pt)):'')+'</div></div><div style="text-align:left"><span class="amt">'+fmt(x.total)+' '+CUR+'</span><div class="m">'+stl+'</div></div></div></div>'}).join('')+'</div>'+(rows.length>200?'<div class="emd75-empty">يعرض أحدث 200 فاتورة. استخدم الفلاتر لتضييق الفترة.</div>':'');
+  return h;
+}
+function ledText(){
+  var rows=ledRows(),sum=rows.reduce(function(a,x){a.t+=x.total;a.p+=x.paid;a.r+=x.rem;return a},{t:0,p:0,r:0});
+  var L=['🧾 كشف الفواتير — '+storeName(),'الفترة: '+(PL[cur.period]||cur.period),''];
+  rows.forEach(function(x){L.push(x.id+' | '+fmt(x.total)+' '+CUR+' | '+String(MLBL[x.m]||'').replace(/^\S+\s/,'')+' | '+fdt(x.t)+' | '+(x.st==='paid'?'مدفوع':x.st==='partial'?'جزئي ('+fmt(x.paid)+')':'غير مدفوع'))});
+  L.push('','عدد الفواتير: '+rows.length,'الإجمالي: '+fmt(sum.t)+' '+CUR,'المحصّل: '+fmt(sum.p)+' '+CUR,'المتبقي: '+fmt(sum.r)+' '+CUR);
+  return L.join('\n');
+}
+/* ---------- إجراءات V112 ---------- */
+function renameCat(i,nv){var c=cats();var old=c[i];nv=String(nv||'').trim();
+  if(!nv){toast('الاسم فاضي');return false}
+  if(c.some(function(x,k){return k!==i&&x===nv})){toast('هذا التصنيف موجود');return false}
+  c[i]=nv;saveCats(c);arr(D().expenses).forEach(function(x){if(x.category===old)x.category=nv});persist();toast('💾 تم تغيير الاسم');return true}
+function onAction112(a,v,b){
+  if(a==='catMgr'){cur.catMgr=!cur.catMgr;render();return true}
+  if(a==='catAdd'){var inp=$('emd112NewCat'),nv=String(inp&&inp.value||'').trim();if(!nv){toast('اكتب اسم التصنيف');return true}
+    var c=cats();if(c.indexOf(nv)>=0){toast('هذا التصنيف موجود');return true}c.push(nv);saveCats(c);toast('➕ أضفت «'+nv+'»');render();return true}
+  if(a==='catDel'){var c2=cats(),i=+v;if(c2.length<=1){toast('لازم يبقى تصنيف واحد على الأقل');return true}
+    if(!confirm('حذف تصنيف «'+c2[i]+'»؟ مصروفاتك القديمة ما تنحذف.'))return true;c2.splice(i,1);saveCats(c2);render();return true}
+  if(a==='catReset'){if(!confirm('استرجاع التصنيفات الافتراضية؟'))return true;saveCats(DEFCATS.slice());render();return true}
+  if(a==='editExp'){cur.editExp=v;render();var bd=$('emd75Body');if(bd)bd.scrollTop=0;return true}
+  if(a==='cancelEdit'){cur.editExp=null;render();return true}
+  if(a==='addExp'&&cur.editExp){var ex=arr(D().expenses).find(function(x){return String(x.id||'')===String(cur.editExp)});
+    var am=num($('emd75ExAmt').value);if(!(am>0)){toast('اكتب مبلغ المصروف');return true}
+    if(ex){var cv=$('emd75ExCat').value;ex.name=($('emd75ExName').value||'').trim()||cv;ex.category=cv==='__new__'?ex.category:cv;ex.amount=am;ex.date=$('emd75ExDate').value||ex.date}
+    cur.editExp=null;persist();toast('💾 تم حفظ التعديل');render();return true}
+  if(a==='ledM'){cur.ledM=v;render();return true}
+  if(a==='sendLed'){var tx=ledText();openWa('',tx);return true}
+  if(a==='copyLed'){copy(ledText());return true}
+  return false}
+function onChange112(t){
+  if(t.id==='emd75ExCat'&&t.value==='__new__'){var nv=String(prompt('اسم التصنيف الجديد:')||'').trim();
+    if(nv){var c=cats();if(c.indexOf(nv)<0){c.push(nv);saveCats(c)}t.innerHTML=catOptions(nv)}else{t.innerHTML=catOptions(cats()[0])}return true}
+  if(t.matches&&t.matches('input[data-ci]')){var i=+t.getAttribute('data-ci');if(!renameCat(i,t.value)){render()}else{render()}return true}
+  return false}
+
 function priceHtml(){
   var ps=arr(D().products);
   if(!ps.length)return '<div class="emd75-empty">ما فيه منتجات محفوظة بعد.</div>';
@@ -22210,6 +22293,7 @@ function onAction(e){
   if(a==='markPaid'){var o=find(v);if(!o)return;markPaid(o);persist();toast('✅ تم تسجيل الدفع '+v);render();return}
   if(a==='remind'){var o2=find(v);if(o2)openWa(o2.phone,remindText(o2));return}
   if(a==='openOrder'){close();if(typeof window.openOrderV26==='function')window.openOrderV26(v);return}
+  if(onAction112(a,v,b))return;
   if(a==='addExp'){var nm=($('emd75ExName').value||'').trim(),am=num($('emd75ExAmt').value);if(!(am>0)){toast('اكتب مبلغ المصروف');$('emd75ExAmt').focus();return}
     var d=D();if(!Array.isArray(d.expenses))d.expenses=[];d.expenses.push({id:'E'+Date.now(),name:nm||$('emd75ExCat').value,category:$('emd75ExCat').value,amount:am,date:$('emd75ExDate').value||dkey(new Date())});persist();toast('➕ تمت إضافة المصروف');render();return}
   if(a==='delExp'){if(!confirm('حذف هذا المصروف؟'))return;var d2=D();d2.expenses=arr(d2.expenses).filter(function(x){return String(x.id||'')!==v});persist();render();return}
@@ -22222,6 +22306,7 @@ function onAction(e){
 }
 function onChange(e){
   var t=e.target;
+  if(onChange112(t))return;
   if(t.matches('input[data-a="pick"]')){var s=cur.sel[cur.comp]=cur.sel[cur.comp]||{};var id=t.getAttribute('data-v');if(t.checked)s[id]=1;else delete s[id];render();return}
   if(t.id==='emd75CourPhone'){var cs=couriers();cs[cur.comp]=t.value.trim();try{localStorage.setItem(COUR_KEY,JSON.stringify(cs))}catch(x){}toast('💾 تم حفظ رقم المندوب');return}
   if(t.id==='emd75Since'&&t.value){try{localStorage.setItem(SINCE_KEY,t.value)}catch(x){}render();scheduleStrip();return}
@@ -25021,5 +25106,18 @@ apply();inject();setInterval(function(){apply();inject()},1500);
 window.EMDStaffHideV111={hidden:hidden,set:setHidden,open:open};
 })();
 </script>
+<style id="EMD-V112-css">
+.emd112-bar{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.emd112-card{flex:1 1 140px;background:#fff;border:1px solid #e8eaee;border-radius:14px;padding:10px 12px}
+.emd112-card b{display:block;font-size:19px}.emd112-card span{font-size:12.5px;color:#64748b;font-weight:700}
+.emd112-m{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 10px}
+.emd112-m .p{background:#f1f5f9;border-radius:999px;padding:6px 12px;font-size:13px;font-weight:800;color:#334155}
+.emd112-cats{background:#fff;border:1px solid #e8eaee;border-radius:14px;padding:10px;margin:8px 0}
+.emd112-cat{display:flex;gap:6px;align-items:center;margin:6px 0}
+.emd112-cat input{flex:1;min-width:0;border:1px solid #dfe3e8;border-radius:10px;padding:9px;font-size:15px}
+.emd112-by{display:grid;gap:6px;margin:8px 0}
+.emd112-by .r{display:flex;justify-content:space-between;background:#f8fafc;border-radius:10px;padding:8px 12px;font-weight:800;font-size:14px}
+.emd112-edit{background:#fffbeb;border:1.5px solid #f59e0b;border-radius:12px;padding:8px 12px;margin:6px 0;font-weight:800;font-size:13.5px;color:#92400e}
+</style>
 </body>
 </html>
