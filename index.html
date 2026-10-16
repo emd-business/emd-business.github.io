@@ -5,7 +5,7 @@
 <!-- EMD BUILD V408: WhatsApp direct tracking + public star rating redesign -->
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
-<title>EMD Business — Standalone V116</title>
+<title>EMD Business — Standalone V117</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--text:#18202a;--muted:#687384;--line:#e4e8ef;--accent:#18202a;--soft:#eef2f7;--ok:#16794c;--warn:#a56a00;--danger:#b23b3b}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial;background:var(--bg);color:var(--text)}
@@ -19173,7 +19173,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V116</div>
+<div id="emdStandaloneV2Badge">EMD Business • V117</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -22141,7 +22141,7 @@ function dueHtml(){
   else h+='<div class="emd75-list">'+list.slice(0,300).map(function(x){var o=x.o,id=oid(o),m=method(o),st=String(o.status||'');
     return '<div class="emd75-row"><div class="t"><div><b>'+esc(o.name||'بدون اسم')+'</b>'+(x.days>=3?'<span class="emd75-tag late">'+x.days+' يوم</span>':'')+(m==='cod'&&/shipped|out_for_delivery|received/.test(st)?'<span class="emd75-tag cour">مع المندوب</span>':'')+
       '<div class="m">'+esc(id)+' · '+esc(STLBL[st]||st||'')+(m?' · '+esc(METHOD[m]||m):'')+(payState(o)==='partial'?' · دفع '+fmt(paid(o)):'')+'</div></div><div class="amt">'+fmt(x.rem)+'</div></div>'+
-      '<div class="a"><button class="emd75-btn ok sm" data-a="markPaid" data-v="'+esc(id)+'">✅ استلمت المبلغ</button><button class="emd75-btn wa sm" data-a="remind" data-v="'+esc(id)+'">💬 تذكير</button><button class="emd75-btn ghost sm" data-a="openOrder" data-v="'+esc(id)+'">التفاصيل</button></div></div>'}).join('')+'</div>';
+      '<div class="a"><button class="emd75-btn ok sm" data-a="markPaid" data-v="'+esc(id)+'">✅ استلمت المبلغ</button><button class="emd75-btn wa sm" data-a="remind" data-v="'+esc(id)+'">💬 تذكير</button><button class="emd75-btn ghost sm" data-a="invoice" data-v="'+esc(id)+'">🧾 فاتورة</button><button class="emd75-btn ghost sm" data-a="openOrder" data-v="'+esc(id)+'">التفاصيل</button></div></div>'}).join('')+'</div>';
   h+='<div class="emd75-note" style="margin-top:12px;background:#f1f5f9;color:#475569">نتابع التحصيل للطلبات من '+esc(since())+'. الطلبات الأقدم تُعتبر محصّلة إلا إذا سجّلت لها دفع. <label style="display:inline-flex;gap:6px;align-items:center">تغيير: <input type="date" id="emd75Since" value="'+esc(since())+'" style="border:1px solid #dfe3e8;border-radius:8px;padding:4px"></label></div>';
   return h;
 }
@@ -22240,7 +22240,7 @@ function ledHtml(){
   if(!rows.length)return h+'<div class="emd75-empty">ما فيه فواتير في هذي الفترة.</div>';
   h+='<div class="emd75-list">'+rows.slice(0,200).map(function(x){
     var stl=x.st==='paid'?'<span style="color:#15803d">✅ مدفوع</span>':x.st==='partial'?'<span style="color:#b45309">🌓 جزئي · دفع '+fmt(x.paid)+'</span>':'<span style="color:#64748b">⏳ غير مدفوع</span>';
-    return '<div class="emd75-row" data-a="'+(x.ds?'openDs':'openOrder')+'" data-v="'+esc(x.id)+'" style="cursor:pointer"><div class="t"><div><b>'+(x.ds?'🛒 بيع مباشر '+esc(x.id):'🧾 فاتورة '+esc(x.id))+' · '+esc(x.o.name||'بدون اسم')+'</b><div class="m">🗓️ '+esc(fdt(x.t))+'</div><div class="m">'+(MLBL[x.m]||x.m)+(x.pt&&x.st!=='unpaid'?' · دُفعت '+esc(fdt(x.pt)):'')+'</div></div><div style="text-align:left"><span class="amt">'+fmt(x.total)+' '+CUR+'</span><div class="m">'+stl+'</div></div></div></div>'}).join('')+'</div>'+(rows.length>200?'<div class="emd75-empty">يعرض أحدث 200 فاتورة. استخدم الفلاتر لتضييق الفترة.</div>':'');
+    return '<div class="emd75-row" data-a="'+(x.ds?'openDs':'openOrder')+'" data-v="'+esc(x.id)+'" style="cursor:pointer"><div class="t"><div><b>'+(x.ds?'🛒 بيع مباشر '+esc(x.id):'🧾 فاتورة '+esc(x.id))+' · '+esc(x.o.name||'بدون اسم')+'</b><div class="m">🗓️ '+esc(fdt(x.t))+'</div><div class="m">'+(MLBL[x.m]||x.m)+(x.pt&&x.st!=='unpaid'?' · دُفعت '+esc(fdt(x.pt)):'')+'</div></div><div style="text-align:left"><span class="amt">'+fmt(x.total)+' '+CUR+'</span><div class="m">'+stl+'</div><div class="m"><button class="emd75-btn wa sm" data-a="'+(x.ds?'dsInvoice':'invoice')+'" data-v="'+esc(x.id)+'">🧾 إرسال الفاتورة</button></div></div></div></div>'}).join('')+'</div>'+(rows.length>200?'<div class="emd75-empty">يعرض أحدث 200 فاتورة. استخدم الفلاتر لتضييق الفترة.</div>':'');
   return h;
 }
 function ledText(){
@@ -22308,6 +22308,8 @@ function onAction(e){
   if(a==='dueF'){cur.dueF=v;render();return}
   if(a==='comp'){cur.comp=v;render();return}
   if(a==='markPaid'){var o=find(v);if(!o)return;markPaid(o);persist();toast('✅ تم تسجيل الدفع '+v);render();return}
+  if(a==='invoice'){var oi=find(v);if(oi)invoice(oi);return}
+  if(a==='dsInvoice'){try{window.EMDDirectV113.invoiceImage(v)}catch(e){}return}
   if(a==='remind'){var o2=find(v);if(o2)openWa(o2.phone,remindText(o2));return}
   if(a==='openOrder'){close();if(typeof window.openOrderV26==='function')window.openOrderV26(v);return}
   if(a==='openDirect'){try{window.EMDDirectV113.open('list')}catch(e){}return}
@@ -25559,6 +25561,7 @@ function onClick(e){
   if(a==='method'){S.method=v;return recalc()}
   if(a==='go')return finish();
   if(a==='new'){resetSale();S.tab='new';return render()}
+  if(a==='img'){return invoiceImage(v)}
   if(a==='print'){var s=saleById(v);if(s)printSale(s);return}
   if(a==='wa'){var s2=saleById(v);if(s2)shareWa(s2);return}
   if(a==='open'){S.detail=v;return render()}
@@ -25605,7 +25608,7 @@ function renderDone(){
   var s=saleById(S.done);if(!s){S.done=null;return render()}
   $('emd113Ft').style.display='none';
   $('emd113Body').innerHTML='<div class="emd113-box emd113-ok"><div class="tick">✅</div><h2 style="margin:6px 0">تم البيع بنجاح</h2><dl class="emd113-dl" style="max-width:340px;margin:10px auto;text-align:right"><dt>رقم الفاتورة</dt><dd dir="ltr" style="text-align:right">'+esc(s.id)+'</dd><dt>الإجمالي</dt><dd>'+fmt(netTotal(s))+' '+CUR+'</dd><dt>المبلغ المستلم</dt><dd>'+fmt(paidOf(s))+' '+CUR+'</dd><dt>المتبقي</dt><dd style="color:'+(remainingOf(s)>0.0005?'#b45309':'#166534')+'">'+fmt(remainingOf(s))+' '+CUR+'</dd></dl>'
-   +'<div class="emd113-chips" style="justify-content:center"><button class="emd113-btn" data-a="print" data-v="'+esc(s.id)+'">🖨️ طباعة / حفظ PDF</button>'+(s.customer&&s.customer.phone?'<button class="emd113-btn w" data-a="wa" data-v="'+esc(s.id)+'">💬 واتساب</button>':'')+'<button class="emd113-btn g" data-a="new">➕ بيع جديد</button></div></div>';
+   +'<div class="emd113-chips" style="justify-content:center"><button class="emd113-btn w" data-a="img" data-v="'+esc(s.id)+'">🧾 إرسال الفاتورة (صورة)</button><button class="emd113-btn" data-a="print" data-v="'+esc(s.id)+'">🖨️ طباعة / PDF</button>'+(s.customer&&s.customer.phone?'<button class="emd113-btn l" data-a="wa" data-v="'+esc(s.id)+'">💬 رسالة نصية</button>':'')+'<button class="emd113-btn g" data-a="new">➕ بيع جديد</button></div></div>';
 }
 
 /* ---------- قسم المبيعات المباشرة ---------- */
@@ -25651,7 +25654,7 @@ function renderDetail(){
    +(num(s.discount)>0?'<div class="emd113-it"><span>الخصم</span><span>−'+fmt(s.discount)+'</span></div>':'')
    +'<div class="emd113-it"><b>الإجمالي</b><b>'+fmt(s.total)+' '+CUR+'</b></div>'+ops+'<div class="emd113-it"><b>الإجمالي بعد المرتجع</b><b>'+fmt(netTotal(s))+' '+CUR+'</b></div><div class="emd113-it"><span>المدفوع</span><b style="color:#15803d">'+fmt(paidOf(s))+' '+CUR+'</b></div><div class="emd113-it"><span>المتبقي</span><b style="color:#b45309">'+fmt(rem)+' '+CUR+'</b></div></div>'
    +'<div class="emd113-box"><h3>💵 الدفعات</h3>'+pays+'</div>'
-   +'<div class="emd113-chips"><button class="emd113-btn" data-a="print" data-v="'+esc(s.id)+'">🖨️ طباعة / PDF</button>'+(s.customer&&s.customer.phone?'<button class="emd113-btn w" data-a="wa" data-v="'+esc(s.id)+'">💬 واتساب</button>':'')+'</div>';
+   +'<div class="emd113-chips"><button class="emd113-btn w" data-a="img" data-v="'+esc(s.id)+'">🧾 إرسال الفاتورة (صورة)</button><button class="emd113-btn" data-a="print" data-v="'+esc(s.id)+'">🖨️ طباعة / PDF</button>'+(s.customer&&s.customer.phone?'<button class="emd113-btn l" data-a="wa" data-v="'+esc(s.id)+'">💬 رسالة نصية</button>':'')+'</div>';
   if(st!=='void'&&rem>0.0005&&canPay)h+='<div class="emd113-box"><h3>✅ تسجيل تحصيل مبلغ متبقٍ</h3><div class="emd113-g2"><input class="emd113-in" id="emd113CA" inputmode="decimal" placeholder="المبلغ (حتى '+fmt(rem)+')" value="'+fmt(rem)+'"><select class="emd113-in" id="emd113CM">'+Object.keys(METHODS).map(function(k){return '<option value="'+k+'">'+METHODS[k]+'</option>'}).join('')+'</select></div><button class="emd113-btn g" style="margin-top:8px;width:100%" data-a="collect" data-v="'+esc(s.id)+'">تسجيل التحصيل</button><div id="emd113CErr"></div></div>';
   if(st!=='void'&&canRet){
     h+='<div class="emd113-box"><h3>↩️ إرجاع / إلغاء</h3><button class="emd113-btn l" data-a="retopen">'+(S.more?'إخفاء':'إرجاع أصناف')+'</button> <button class="emd113-btn r" data-a="voidgo" data-v="'+esc(s.id)+'">🚫 إلغاء الفاتورة كاملة</button>';
@@ -25676,6 +25679,65 @@ function doReturn(id,isVoid){
   S.more=false;toast(r.op.refund>0?'تم. المبلغ المردود: '+fmt(r.op.refund)+' '+CUR:'تم تسجيل العملية');renderDetail();
 }
 
+
+/* ---------- فاتورة كصورة (شكل فاتورة حقيقية) للمشاركة عبر واتساب ---------- */
+function storeProfile(){try{return (window.EMDBusinessProfileV333&&window.EMDBusinessProfileV333.get())||{}}catch(e){return {}}}
+function invoiceCanvas(s){
+  var prof=storeProfile(),W=1080,its=s.items,rowH=70,pays=arr(s.payments),ops=arr(s.ops);
+  var H=1000+its.length*rowH+pays.length*54+ops.length*54;
+  var cv=document.createElement('canvas');cv.width=W;cv.height=H;var c=cv.getContext('2d');
+  var F='Tahoma, "Segoe UI", Arial, sans-serif',R=W-70,Lx=70;
+  function txt(t,x,y,size,weight,color,align){c.font=(weight||'normal')+' '+size+'px '+F;c.fillStyle=color||'#111827';c.textAlign=align||'right';c.direction='rtl';c.fillText(String(t==null?'':t),x,y)}
+  c.fillStyle='#ffffff';c.fillRect(0,0,W,H);
+  var LK=window.EMDLookV89,acc='#111827',lim=null;try{if(LK){acc=LK.accentHex()||acc;lim=LK.logoImg()}}catch(e){}
+  c.fillStyle=acc;c.fillRect(0,0,W,190);
+  var nx=R;if(lim){try{var ls=130,lx=R-ls,ly=30;c.save();c.beginPath();if(c.roundRect)c.roundRect(lx,ly,ls,ls,24);else c.rect(lx,ly,ls,ls);c.fillStyle='#ffffff';c.fill();c.clip();var sc=Math.max(ls/lim.width,ls/lim.height),iw=lim.width*sc,ih=lim.height*sc;c.drawImage(lim,lx+(ls-iw)/2,ly+(ls-ih)/2,iw,ih);c.restore();nx=R-ls-28}catch(e){}}
+  txt(storeName(),nx,92,52,'bold','#ffffff');
+  var contact=[prof.whatsapp||prof.phone,prof.location].filter(Boolean).join('  ·  ');if(contact)txt(contact,nx,146,28,'normal','rgba(255,255,255,.75)');
+  txt('فاتورة بيع',Lx,92,46,'bold','#ffffff','left');txt(s.id,Lx,146,30,'normal','#cbd5e1','left');
+  var y=260,dt=new Date(s.at);
+  txt('العميل',R,y,26,'normal','#64748b');txt('التاريخ والوقت',Lx+300,y,26,'normal','#64748b','left');
+  y+=46;txt((s.customer&&s.customer.name)||'عميل نقدي',R,y,34,'bold');txt(dt.toLocaleDateString('ar-OM',{year:'numeric',month:'long',day:'numeric'}),Lx+300,y,30,'normal','#111827','left');
+  y+=42;txt((s.customer&&s.customer.phone)||'',R,y,28,'normal','#475569');txt(ftime(dt),Lx+300,y,28,'normal','#475569','left');
+  y+=60;c.fillStyle='#f1f5f9';c.fillRect(50,y-44,W-100,64);
+  txt('المنتج',R,y,26,'bold','#334155');txt('الكمية',560,y,26,'bold','#334155','center');txt('السعر',390,y,26,'bold','#334155','center');txt('المجموع',Lx+10,y,26,'bold','#334155','left');
+  y+=30;
+  its.forEach(function(x){y+=rowH;var nm=String(x.name);if(nm.length>26)nm=nm.slice(0,25)+'…';
+    txt(nm,R,y-22,30,'normal');txt(x.qty,560,y-22,30,'normal','#111827','center');txt(fmt(x.price),390,y-22,30,'normal','#111827','center');txt(fmt(x.net),Lx+10,y-22,30,'bold','#111827','left');
+    c.fillStyle='#e2e8f0';c.fillRect(50,y,W-100,2)});
+  if(num(s.discount)>0){y+=60;txt('المجموع قبل الخصم',R,y,28,'normal','#475569');txt(fmt(s.subtotal)+' '+CUR,Lx+10,y,30,'normal','#111827','left');y+=50;txt('الخصم',R,y,28,'normal','#475569');txt('− '+fmt(s.discount)+' '+CUR,Lx+10,y,30,'normal','#b91c1c','left')}
+  y+=70;txt('الإجمالي',R,y,32,'bold');txt(fmt(s.total)+' '+CUR,Lx+10,y,36,'bold','#111827','left');
+  ops.forEach(function(o){y+=54;txt((o.type==='void'?'إلغاء الفاتورة':'مرتجع')+' · '+fdt(o.at),R,y,26,'normal','#b91c1c');txt('− '+fmt(o.value)+' '+CUR,Lx+10,y,28,'normal','#b91c1c','left')});
+  pays.forEach(function(p){y+=54;txt(String(METHODS[p.method]||p.method).replace(/^\S+\s/,'')+(p.type==='collect'?' (تحصيل)':'')+' · '+fdt(p.at),R,y,26,'normal','#475569');txt(fmt(p.amount)+' '+CUR,Lx+10,y,28,'normal','#15803d','left')});
+  var pd=paidOf(s),rm=remainingOf(s);
+  y+=60;txt('إجمالي المدفوع',R,y,28,'normal','#475569');txt(fmt(pd)+' '+CUR,Lx+10,y,30,'bold','#15803d','left');
+  y+=60;c.fillStyle=rm>0.0005?'#fef3c7':'#dcfce7';c.fillRect(50,y-44,W-100,68);
+  txt(rm>0.0005?'المتبقي':'تم الدفع بالكامل',R,y,30,'bold',rm>0.0005?'#92400e':'#166534');if(rm>0.0005)txt(fmt(rm)+' '+CUR,Lx+10,y,34,'bold','#92400e','left');
+  if(statusOf(s)==='void'){c.save();c.translate(W/2,H/2);c.rotate(-0.4);c.globalAlpha=.18;txt('ملغاة',0,0,220,'bold','#b91c1c','center');c.restore()}
+  if(s.note)txt('ملاحظة: '+s.note,R,H-130,24,'normal','#64748b');
+  txt('شكرًا لتسوّقكم معنا 🌷',W/2,H-60,30,'bold','#111827','center');
+  return cv;
+}
+function invoiceImage(id){
+  var s=saleById(id);if(!s)return;var cv=invoiceCanvas(s);
+  cv.toBlob(function(blob){if(!blob){toast('تعذّر إنشاء الفاتورة');return}showImg(s,blob)},'image/png');
+}
+function showImg(s,blob){
+  var ov=$('emd113Inv');
+  if(!ov){ov=document.createElement('div');ov.id='emd113Inv';ov.style.cssText='position:fixed;inset:0;z-index:2147483000;background:rgba(15,23,42,.7);display:none;align-items:center;justify-content:center;padding:12px;direction:rtl';
+    ov.innerHTML='<div style="background:#fff;border-radius:20px;width:min(520px,100%);max-height:94vh;display:flex;flex-direction:column;overflow:hidden"><div style="overflow:auto;padding:10px;background:#f1f5f9"><img id="emd113InvImg" alt="الفاتورة" style="width:100%;display:block;border-radius:10px"></div><div style="display:flex;gap:8px;padding:10px;flex-wrap:wrap"><button class="emd113-btn w" id="emd113InvShare" style="flex:1 1 100%">📤 مشاركة الفاتورة</button><button class="emd113-btn l" id="emd113InvSave" style="flex:1">⬇️ حفظ الصورة</button><button class="emd113-btn l" id="emd113InvClose" style="flex:1">إغلاق</button></div></div>';
+    document.body.appendChild(ov);ov.addEventListener('click',function(e){if(e.target===ov)hide()});$('emd113InvClose').onclick=hide}
+  function hide(){ov.style.display='none';try{URL.revokeObjectURL($('emd113InvImg').src)}catch(e){}}
+  var name='فاتورة-'+s.id+'.png',url=URL.createObjectURL(blob),file=null;
+  try{file=new File([blob],name,{type:'image/png'})}catch(e){}
+  $('emd113InvImg').src=url;
+  var can=!!(file&&navigator.canShare&&navigator.canShare({files:[file]})),sh=$('emd113InvShare'),msg='فاتورتك رقم '+s.id+' من '+storeName()+' 🧾';
+  sh.textContent=can?'📤 مشاركة الفاتورة (واتساب)':'💬 فتح محادثة العميل'+(s.customer&&s.customer.phone?'':' (اختر الشخص)');
+  sh.onclick=function(){if(can){navigator.share({files:[file],title:'فاتورة '+s.id,text:msg}).catch(function(){})}else{dl();window.open('https://wa.me/'+waPhone(s.customer&&s.customer.phone)+'?text='+encodeURIComponent(msg+'\n(أرفقت لك صورة الفاتورة)'),'_blank')}};
+  function dl(){var a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();toast('⬇️ تم حفظ الفاتورة')}
+  $('emd113InvSave').onclick=dl;ov.style.display='flex';
+}
+
 /* ---------- زر في شريط التنقل ---------- */
 function navBtn(){
   var nav=document.querySelector('nav.nav');if(!nav||$('emd113Nav'))return;
@@ -25686,9 +25748,10 @@ function navBtn(){
 setInterval(navBtn,1500);setTimeout(navBtn,300);
 document.addEventListener('keydown',function(e){if(e.key==='Escape'&&S.open&&!S.done)close()});
 
-window.EMDDirectV113={list:function(){return arr(D()&&D().directSales)},open:open,close:close,commit:commit,collect:collect,returnItems:returnItems,summary:summary,cashIn:cashIn,available:available,calc:calc,state:function(){return S},invoiceHtml:invoiceHtml,netTotal:netTotal,paidOf:paidOf,remainingOf:remainingOf,statusOf:statusOf,newKey:newKey};
+window.EMDDirectV113={invoiceImage:invoiceImage,list:function(){return arr(D()&&D().directSales)},open:open,close:close,commit:commit,collect:collect,returnItems:returnItems,summary:summary,cashIn:cashIn,available:available,calc:calc,state:function(){return S},invoiceHtml:invoiceHtml,netTotal:netTotal,paidOf:paidOf,remainingOf:remainingOf,statusOf:statusOf,newKey:newKey};
 })();
 </script>
+
 
 
 <style id="EMD-V114-css">
@@ -25767,5 +25830,49 @@ window.EMDLayoutV114={order:order,sort:sortItems,open:open,set:setOrder,applyAll
 })();
 </script>
 
+<style id="EMD-V117-css">
+#emd117Card{position:fixed;left:12px;right:12px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:2147482000;background:#111827;color:#fff;border-radius:18px;padding:12px 14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;box-shadow:0 12px 36px rgba(0,0,0,.4);direction:rtl;max-width:560px;margin:auto;font-family:inherit}
+#emd117Card b{flex:1 1 100%;font-size:15px}
+#emd117Card button{flex:1;border:0;border-radius:12px;padding:11px;font:inherit;font-size:15px;font-weight:900;cursor:pointer;min-height:46px}
+#emd117Card .y{background:#25d366;color:#fff}#emd117Card .n{background:#334155;color:#fff}
+</style>
+<script id="EMD-V117-invprompt">
+(function(){'use strict';
+if(window.__EMD_V117__)return;window.__EMD_V117__=true;
+/* V117: بعد استلام الطلب نقترح إرسال الفاتورة كصورة بدل الرسالة النصية */
+var K='emd_v117_invprompt',snap=null,t0=Date.now();
+function on(){try{return localStorage.getItem(K)!=='0'}catch(e){return true}}
+function setOn(v){try{localStorage.setItem(K,v?'1':'0')}catch(e){}paint()}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function oid(o){return String(o.id!=null?o.id:(o.orderNumber!=null?o.orderNumber:(o.number||'')))}
+function take(){var m={};try{(window.db.orders||[]).forEach(function(o){m[oid(o)]=String(o.status||'')})}catch(e){}return m}
+function card(o){
+  var old=document.getElementById('emd117Card');if(old)old.remove();
+  var c=document.createElement('div');c.id='emd117Card';
+  c.innerHTML='<b>✅ تم استلام الطلب '+esc(oid(o))+(o.name?' — '+esc(o.name):'')+'. تبي ترسل الفاتورة للعميل؟</b><button class="y">🧾 إرسال الفاتورة</button><button class="n">لاحقًا</button>';
+  document.body.appendChild(c);
+  var t=setTimeout(function(){c.remove()},15000);
+  c.querySelector('.n').onclick=function(){clearTimeout(t);c.remove()};
+  c.querySelector('.y').onclick=function(){clearTimeout(t);c.remove();try{window.EMDMoneyV75.invoice(oid(o))}catch(e){}};
+}
+function check(){
+  var now=take();
+  if(!snap){snap=now;return}
+  var hits=[];Object.keys(now).forEach(function(k){if(snap[k]!==undefined&&snap[k]!==now[k]&&now[k]==='received')hits.push(k)});
+  snap=now;
+  if(!on()||Date.now()-t0<4000||hits.length!==1)return;
+  var o=(window.db.orders||[]).find(function(x){return oid(x)===hits[0]});
+  if(o)card(o);
+}
+function wrap(){var f=window.save;if(typeof f!=='function'||f.__emd117)return;var g=function(){var r=f.apply(this,arguments);try{check()}catch(e){}return r};g.__emd117=true;window.save=g}
+setTimeout(function(){snap=take();wrap()},1500);setInterval(wrap,2000);
+function paint(){var it=document.getElementById('emd117Item');if(it){var s=it.querySelector('span');if(s)s.textContent=on()?'مفعّل: يظهر اقتراح إرسال الفاتورة بعد استلام الطلب. اضغط للإيقاف.':'متوقف. اضغط لتفعيل اقتراح إرسال الفاتورة بعد استلام الطلب.'}}
+function inject(){var g=document.getElementById('emd327SystemGrid');if(!g||document.getElementById('emd117Item'))return;
+ var b=document.createElement('button');b.type='button';b.className='emd327-item';b.id='emd117Item';b.setAttribute('data-emd108-skip','1');
+ b.innerHTML='<b>🧾 اقتراح إرسال الفاتورة</b><span></span>';b.addEventListener('click',function(){setOn(!on())});g.appendChild(b);paint()}
+setInterval(inject,1500);inject();
+window.EMDInvPromptV117={on:on,set:setOn,check:check};
+})();
+</script>
 </body>
 </html>
