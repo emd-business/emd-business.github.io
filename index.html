@@ -5,7 +5,14 @@
 <!-- EMD BUILD V408: WhatsApp direct tracking + public star rating redesign -->
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
-<title>EMD Business — Standalone V121</title>
+<link rel="manifest" href="/manifest.webmanifest"/>
+<meta name="theme-color" content="#0f172a"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="EMD Business"/>
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<title>EMD Business — Standalone V122</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--text:#18202a;--muted:#687384;--line:#e4e8ef;--accent:#18202a;--soft:#eef2f7;--ok:#16794c;--warn:#a56a00;--danger:#b23b3b}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial;background:var(--bg);color:var(--text)}
@@ -6049,7 +6056,7 @@ function openWhatsApp(order){
     const waiting=os.filter(o=>o.status==='waiting').length;
     return {today:todayOrders.length,received,shipped,ready,packing,waiting};
   }
-  function text(){const s=summary();return `📊 ملخص EMD Business اليوم\n\n📦 طلبات اليوم: ${s.today}\n✅ تم الاستلام: ${s.received}\n🚚 تم الشحن: ${s.shipped}\n🟢 جاهز للتجهيز: ${s.ready}\n🛠️ قيد التجهيز: ${s.packing}\n⏳ بانتظار المنتجات: ${s.waiting}`}
+  function text(){const s=summary();return `📊 ملخص EMD Business اليوم\n\n📦 طلبات اليوم: ${s.today}\n✅ تم الاستلام: ${s.received}\n🚚 تم الشحن: ${s.shipped}\n🟢 جاهز للتجهيز: ${s.ready}\n🛠️ قيد التجهيز: ${s.packing}\n⏳ بانتظار المنتجات: ${s.waiting}`+(function(){try{const DV=window.EMDDirectV113;if(!DV)return '';const a=new Date();a.setHours(0,0,0,0);const b=new Date(a.getTime()+864e5),m=DV.summary(a,b);return m.count?`\n\n🛍️ البيع المباشر اليوم: ${m.count} فاتورة — ${m.sales.toFixed(3)} ر.ع`:''}catch(e){return ''}})()}
   function notify(force){
     const c=cfg(), msg=text();
     if(!('Notification' in window)){alert(msg);return}
@@ -19173,7 +19180,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V121</div>
+<div id="emdStandaloneV2Badge">EMD Business • V122</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -25028,11 +25035,12 @@ function report(dk){var D=window.db||{},os=Array.isArray(D.orders)?D.orders:[],M
   r.due=0;try{r.due=M?M.dues().reduce(function(a,x){return a+x.rem},0):0}catch(e){}
   r.ready=os.filter(function(o){return o.status==='ready'}).length;r.packing=os.filter(function(o){return o.status==='packing'}).length;r.waiting=os.filter(function(o){return o.status==='waiting'}).length;
   r.low=((D.products)||[]).filter(function(p){var a=num(p.available!=null?p.available:p.stock);return a<=3}).map(function(p){return (p.name||'')+' ('+num(p.available!=null?p.available:p.stock)+')'});
+  r.ds={n:0,sales:0,cash:0,due:0};try{var DV=window.EMDDirectV113;if(DV){var s0=new Date(dk+'T00:00:00'),e0=new Date(s0.getTime()+864e5),sm=DV.summary(s0,e0);r.ds.n=sm.count;r.ds.sales=sm.sales;r.ds.cash=DV.cashIn(s0,e0);r.ds.due=DV.list().reduce(function(a,x){return a+(DV.statusOf(x)==='void'?0:DV.remainingOf(x))},0)}}catch(e){}
   return r}
 function closingText(r){var C='ر.ع',top=Object.keys(r.prods).sort(function(a,b){return r.prods[b]-r.prods[a]}).slice(0,5),users=Object.keys(r.byUser);
   var d=new Date(r.dk+'T12:00:00');var dl=d.toLocaleDateString('ar-OM',{weekday:'long',day:'numeric',month:'long'});
   var t='📊 تقفيلة '+(storeName()||'المتجر')+' — '+dl+'\n\n'+
-    '📦 طلبات اليوم: '+r.newO+'\n💰 مبيعات اليوم: '+f3(r.sales)+' '+C+'\n✅ المحصّل اليوم: '+f3(r.paidToday)+' '+C+'\n⏳ إجمالي غير المحصّل: '+f3(r.due)+' '+C+'\n\n'+
+    '📦 طلبات اليوم: '+r.newO+'\n💰 مبيعات اليوم: '+f3(r.sales)+' '+C+'\n✅ المحصّل اليوم: '+f3(r.paidToday)+' '+C+'\n⏳ إجمالي غير المحصّل: '+f3(r.due)+' '+C+(r.ds&&(r.ds.n||r.ds.cash)?'\n\n🛍️ البيع المباشر اليوم: '+r.ds.n+' فاتورة — '+f3(r.ds.sales)+' '+C+'\n💵 المحصّل من البيع المباشر: '+f3(r.ds.cash)+' '+C+(r.ds.due>0?'\n⏳ غير محصّل (بيع مباشر): '+f3(r.ds.due)+' '+C:'')+'\n\n💼 إجمالي اليوم (طلبات + بيع مباشر): '+f3(r.sales+r.ds.sales)+' '+C+'\n💰 إجمالي المحصّل: '+f3(r.paidToday+r.ds.cash)+' '+C:'')+'\n\n'+
     '🚚 انشحن اليوم: '+r.shipped+'\n📬 استلمها العملاء: '+r.received+(r.cancelled?'\n❌ ملغي: '+r.cancelled:'')+'\n\n'+
     '🟢 جاهز للتجهيز: '+r.ready+'\n🛠️ قيد التجهيز: '+r.packing+'\n⏳ بانتظار المنتجات: '+r.waiting;
   if(top.length)t+='\n\n🏆 الأكثر طلبًا اليوم:\n'+top.map(function(n){return '• '+n+' × '+r.prods[n]}).join('\n');
@@ -25043,7 +25051,7 @@ function closings(){return rd(HK,[])}
 function closingHtml(){var C=ccfg(),w=who(),today=dkey(new Date()),r=report(today),done=closings().find(function(x){return x.dk===today}),own=!cfg().enabled||(w&&w.owner);
   var h=head('📊 تقفيلة اليوم','ملخص يومك، وترسله للمدير بضغطة.')+
     '<div class="emd108-kpi"><div><b>'+r.newO+'</b>طلبات اليوم</div><div class="g"><b>'+f3(r.sales)+'</b>مبيعات اليوم</div><div class="g"><b>'+f3(r.paidToday)+'</b>المحصّل اليوم</div><div class="w"><b>'+f3(r.due)+'</b>غير محصّل</div></div>'+
-    '<div class="emd108-pre" id="emd108Txt">'+esc(closingText(r))+'</div>'+
+    (r.ds&&(r.ds.n||r.ds.cash)?'<div class="emd108-kpi" style="margin-top:6px"><div><b>'+r.ds.n+'</b>فواتير بيع مباشر</div><div class="g"><b>'+f3(r.ds.sales)+'</b>مبيعات مباشرة</div><div class="g"><b>'+f3(r.sales+r.ds.sales)+'</b>إجمالي اليوم</div><div class="w"><b>'+f3(r.ds.due)+'</b>غير محصّل (مباشر)</div></div>':'')+'<div class="emd108-pre" id="emd108Txt">'+esc(closingText(r))+'</div>'+
     (done?'<div class="emd108-done">✅ تم تقفيل اليوم'+(done.by?' بواسطة '+esc(done.by):'')+' — '+new Date(done.at).toLocaleTimeString('ar-OM',{hour:'2-digit',minute:'2-digit'})+'</div>':'')+
     '<div class="emd108-row2"><button type="button" class="emd93-go emd108-wa" data-k="cwa">💬 أرسل واتساب</button><button type="button" class="emd93-gh" data-k="cmail">✉️ أرسل إيميل</button></div>'+
     '<div class="emd108-row2"><button type="button" class="emd93-gh" data-k="ccopy">📋 نسخ</button>'+(done?'':'<button type="button" class="emd93-go" data-k="cdone">🔒 تقفيل اليوم</button>')+'</div>';
@@ -25056,7 +25064,7 @@ function closingAction(k){var C=ccfg(),r=report(dkey(new Date())),t=closingText(
   if(k==='cwa'){var p=String(C.wa||'').replace(/[٠-٩]/g,function(d){return '٠١٢٣٤٥٦٧٨٩'.indexOf(d)}).replace(/\D/g,'');if(p.length===8)p='968'+p;window.open('https://wa.me/'+p+'?text='+encodeURIComponent(t),'_blank');return}
   if(k==='cmail'){window.location.href='mailto:'+encodeURIComponent(C.email||'')+'?subject='+encodeURIComponent('📊 تقفيلة '+(storeName()||'المتجر')+' '+r.dk)+'&body='+encodeURIComponent(t);return}
   if(k==='ccopy'){try{navigator.clipboard.writeText(t).then(function(){toast('📋 انسخ')})}catch(e){toast('ما قدرنا ننسخ')}return}
-  if(k==='cdone'){var w=who(),a=closings().filter(function(x){return x.dk!==r.dk});a.push({dk:r.dk,at:new Date().toISOString(),by:w?w.name:'',r:{newO:r.newO,sales:r.sales,paidToday:r.paidToday,due:r.due,shipped:r.shipped}});wr(HK,a.slice(-120));audit('تقفيل اليوم',r.dk);hideBanner();render();toast('🔒 تم تقفيل اليوم');return}}
+  if(k==='cdone'){var w=who(),a=closings().filter(function(x){return x.dk!==r.dk});a.push({dk:r.dk,at:new Date().toISOString(),by:w?w.name:'',r:{newO:r.newO,sales:r.sales,paidToday:r.paidToday,due:r.due,shipped:r.shipped,ds:r.ds}});wr(HK,a.slice(-120));audit('تقفيل اليوم',r.dk);hideBanner();render();toast('🔒 تم تقفيل اليوم');return}}
 /* تذكير وقت التقفيلة */
 var banner=null;
 function hideBanner(){if(banner){banner.remove();banner=null}}
@@ -26140,6 +26148,133 @@ function addEntry(){var ta=document.getElementById('raw');if(!ta||document.getEl
 function inject(){var g=document.getElementById('emd327SystemGrid');if(g&&!document.getElementById('emd121Item')){var b=document.createElement('button');b.type='button';b.className='emd327-item';b.id='emd121Item';b.setAttribute('data-emd108-skip','1');b.innerHTML='<b>📝 رسائل طلب جاهزة للعملاء</b><span>قوالب بأشكال مختلفة ترسلها لعملائك ليسجلوا بياناتهم.</span>';b.addEventListener('click',open);g.appendChild(b)}addEntry()}
 setInterval(inject,1500);inject();
 window.EMDOrderTemplatesV121={gen:gen,cfg:cfg,open:open,styles:STYLES};
+})();
+</script>
+<style id="EMD-V122-css">
+#emd122Ban{position:relative;z-index:5;margin:8px 8px 4px;background:#fff7ed;border:2px solid #f59e0b;border-radius:16px;padding:11px 12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;box-shadow:0 4px 14px rgba(0,0,0,.12);direction:rtl;font-family:inherit}
+#emd122Ban.red{background:#fef2f2;border-color:#dc2626}
+#emd122Ban .t{flex:1 1 210px;font-size:14px;line-height:1.7;color:#431407;font-weight:700}
+#emd122Ban button{border:0;border-radius:12px;padding:10px 14px;font:inherit;font-size:14px;font-weight:900;cursor:pointer;min-height:44px}
+#emd122Ban .go{background:#16a34a;color:#fff}#emd122Ban .no{background:#f1f5f9;color:#334155}
+#emd122Modal{position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:12px;direction:rtl}
+#emd122Modal .box{background:#fff;border-radius:22px;padding:16px;width:min(520px,100%);max-height:94vh;overflow:auto;font-family:inherit}
+#emd122Modal h3{margin:0 0 6px;font-size:19px}#emd122Modal p{margin:4px 0 10px;color:#475569;font-size:13.5px;line-height:1.8}
+#emd122Modal .row{display:flex;justify-content:space-between;gap:8px;padding:9px 0;border-bottom:1px solid #eef0f3;font-size:14.5px}
+#emd122Modal .bar{height:12px;background:#e5e7eb;border-radius:8px;overflow:hidden;margin:6px 0}#emd122Modal .bar i{display:block;height:100%;background:#16a34a}
+#emd122Modal select{width:100%;box-sizing:border-box;border:1px solid #dfe3e8;border-radius:12px;padding:11px;font:inherit;font-size:15px;margin:6px 0}
+#emd122Modal .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+#emd122Modal .acts button{flex:1 1 140px;border:0;border-radius:14px;padding:13px;font:inherit;font-size:15px;font-weight:900;cursor:pointer;min-height:48px}
+#emd122Modal .g{background:#16a34a;color:#fff}#emd122Modal .l{background:#f1f5f9;color:#334155}
+#emd122Modal .tip{background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:10px;margin:10px 0;font-size:13.5px;line-height:1.8;color:#1e3a8a}
+</style>
+<script id="EMD-V122-backup">
+(function(){'use strict';
+if(window.__EMD_V122__)return;window.__EMD_V122__=true;
+/* V122: تذكير النسخ الاحتياطي + مراقبة امتلاء التخزين + طلب تخزين دائم */
+var LK='emd_v122_lastbk',CK='emd_v122_cfg',LIMIT=5000000;
+function rd(k,d){try{var v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}}
+function wr(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}
+function cfg(){var c=rd(CK,{});if(c.hours==null)c.hours=24;if(c.on==null)c.on=true;return c}
+function lastBk(){var v=rd(LK,null);var t=v?new Date(v).getTime():0;return isFinite(t)&&t>0?t:0}
+function markBackup(){wr(LK,new Date().toISOString());var c=cfg();c.snooze=0;wr(CK,c);hide()}
+/* أي تصدير نسخة (من أي مكان بالتطبيق) يُسجَّل تلقائيًا */
+try{var oc=HTMLAnchorElement.prototype.click;HTMLAnchorElement.prototype.click=function(){try{if(/Backup_/i.test(String(this.download||'')))setTimeout(markBackup,50)}catch(e){}return oc.apply(this,arguments)}}catch(e){}
+function usage(){var t=0;try{for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);t+=k.length+String(localStorage.getItem(k)||'').length}}catch(e){}return t}
+function pct(){return Math.min(100,Math.round(usage()*100/LIMIT))}
+function orders(){var d=window.db;return d&&Array.isArray(d.orders)?d.orders.length:0}
+function can(){try{var S=window.EMDStaffV108;return !S||!S.can||S.can('settings')}catch(e){return true}}
+function ago(ms){var h=Math.floor(ms/36e5);if(h<1)return 'أقل من ساعة';if(h<48)return h+' ساعة';return Math.floor(h/24)+' يوم'}
+var ban=null;
+function hide(){if(ban){ban.remove();ban=null}}
+function doBackup(){
+  try{var B=window.EMDBackupV313;if(B&&B.exportBackup){B.exportBackup();return}}catch(e){}
+  try{if(typeof window.exportBackupV39==='function'){window.exportBackupV39();return}}catch(e){}
+  try{if(typeof window.emdV287Export==='function')window.emdV287Export()}catch(e){}
+}
+function show(html,red,key){
+  if(ban)return;
+  ban=document.createElement('div');ban.id='emd122Ban';ban.className=red?'red':'';ban.setAttribute('data-emd108-skip','1');
+  ban.innerHTML='<span style="font-size:22px">'+(red?'🚨':'💾')+'</span><div class="t">'+html+'</div><button type="button" class="go">💾 نسخة الآن</button><button type="button" class="no">لاحقًا</button>';
+  ban.querySelector('.go').onclick=function(){doBackup()};
+  ban.querySelector('.no').onclick=function(){var c=cfg();c.snooze=Date.now()+3*36e5;if(key==='st')c.stSnooze=Date.now()+24*36e5;wr(CK,c);hide()};
+  var host=document.querySelector('.app')||document.body;host.insertBefore(ban,host.firstChild);
+}
+function check(){
+  try{
+    if(ban||document.getElementById('emd122Modal')||document.getElementById('emd108Lock'))return;
+    if(/[?&](track|t|id)=/.test(location.search)&&!document.getElementById('home'))return;
+    if(!can()||orders()<1)return;
+    var c=cfg(),now=Date.now();
+    var p=pct();
+    if(p>=70&&!(c.stSnooze>now)){show('التخزين المحلي ممتلئ بنسبة <b>'+p+'%</b>. خذ نسخة احتياطية الآن حتى لا تضيع بياناتك إذا امتلأ.',p>=90,'st');return}
+    if(!c.on||c.snooze>now)return;
+    var lb=lastBk(),limit=(c.hours||24)*36e5;
+    if(!lb)show('ما أخذت <b>أي نسخة احتياطية</b> بعد. بياناتك مخزنة على هذا الجهاز فقط وقد تضيع إذا مُسح المتصفح أو تغيّر الجوال.',true);
+    else if(now-lb>limit)show('مرّ <b>'+ago(now-lb)+'</b> على آخر نسخة احتياطية. خذ نسخة جديدة وخزّنها خارج الجهاز.',now-lb>limit*3);
+  }catch(e){}
+}
+/* طلب تخزين دائم: يمنع المتصفح من حذف البيانات عند ضغط الذاكرة */
+var persisted=null;
+function askPersist(){try{if(navigator.storage&&navigator.storage.persist){navigator.storage.persisted().then(function(v){if(v){persisted=true;return}return navigator.storage.persist().then(function(r){persisted=!!r})}).catch(function(){})}}catch(e){}}
+var HOURS=[[12,'كل 12 ساعة'],[24,'كل يوم (موصى به)'],[72,'كل 3 أيام'],[168,'كل أسبوع']];
+function isiOS(){return /iphone|ipad|ipod/i.test(navigator.userAgent)}
+function standalone(){try{return window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true}catch(e){return false}}
+function open(){
+  close();var c=cfg(),lb=lastBk(),p=pct(),m=document.createElement('div');m.id='emd122Modal';m.setAttribute('data-emd108-skip','1');
+  m.innerHTML='<div class="box"><h3>💾 النسخ الاحتياطي والتخزين</h3><p>بياناتك محفوظة على هذا الجهاز. النسخة الاحتياطية هي ضمانك الوحيد إذا ضاع الجهاز أو مُسح المتصفح.</p>'+
+   '<div class="row"><span>آخر نسخة احتياطية</span><b>'+(lb?new Date(lb).toLocaleString('ar-OM',{dateStyle:'medium',timeStyle:'short'})+' ('+ago(Date.now()-lb)+')':'لا توجد')+'</b></div>'+
+   '<div class="row"><span>التخزين المستخدم</span><b>'+p+'%</b></div><div class="bar"><i style="width:'+p+'%;background:'+(p>=90?'#dc2626':p>=70?'#f59e0b':'#16a34a')+'"></i></div>'+
+   '<div class="row"><span>تخزين دائم (محمي من الحذف التلقائي)</span><b>'+(persisted===true?'✅ مفعّل':persisted===false?'⚠️ غير مفعّل':'—')+'</b></div>'+
+   '<label style="font-size:14px;font-weight:800;display:block;margin-top:10px">التذكير بالنسخة الاحتياطية</label><select id="emd122Sel"><option value="0">متوقف</option>'+HOURS.map(function(h){return '<option value="'+h[0]+'"'+(c.on&&c.hours===h[0]?' selected':'')+'>'+h[1]+'</option>'}).join('')+'</select>'+
+   (isiOS()&&!standalone()?'<div class="tip">📱 على آيفون: يحذف Safari بيانات المواقع غير المثبّتة إذا لم تُفتح نحو أسبوع. ثبّت التطبيق: زر المشاركة ← «إضافة إلى الشاشة الرئيسية».</div>':'')+
+   '<div class="tip">💡 بعد التنزيل أرسل ملف النسخة لنفسك على واتساب أو احفظه في Google Drive، ولا تتركه على الجهاز نفسه فقط.</div>'+
+   '<div class="acts"><button type="button" class="g" id="emd122Now">💾 نسخة احتياطية الآن</button><button type="button" class="l" id="emd122X">إغلاق</button></div></div>';
+  m.addEventListener('click',function(e){if(e.target===m)close()});document.body.appendChild(m);
+  document.getElementById('emd122X').onclick=close;
+  document.getElementById('emd122Now').onclick=function(){doBackup();setTimeout(open,700)};
+  document.getElementById('emd122Sel').onchange=function(){var v=parseInt(this.value,10),k=cfg();if(!v)k.on=false;else{k.on=true;k.hours=v}k.snooze=0;wr(CK,k)};
+}
+function close(){var m=document.getElementById('emd122Modal');if(m)m.remove()}
+function inject(){var g=document.getElementById('emd327SystemGrid');if(g&&!document.getElementById('emd122Item')){var b=document.createElement('button');b.type='button';b.className='emd327-item';b.id='emd122Item';b.setAttribute('data-emd108-skip','1');b.innerHTML='<b>💾 النسخ الاحتياطي والتخزين</b><span>آخر نسخة، نسبة التخزين، وتذكير تلقائي.</span>';b.addEventListener('click',open);g.appendChild(b)}}
+setInterval(inject,1500);inject();askPersist();
+setTimeout(check,4000);setInterval(check,60000);
+window.EMDBackupReminderV122={open:open,check:check,markBackup:markBackup,usagePct:pct,lastBackup:lastBk,persisted:function(){return persisted}};
+})();
+</script>
+<style id="EMD-V122-pwa-css">
+#emd122Inst{position:relative;z-index:5;margin:8px 8px 4px;background:#0f172a;color:#fff;border-radius:16px;padding:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;box-shadow:0 4px 14px rgba(0,0,0,.2);direction:rtl;font-family:inherit}
+#emd122Inst .t{flex:1 1 200px;font-size:14px;line-height:1.7;font-weight:700}
+#emd122Inst button{border:0;border-radius:12px;padding:10px 14px;font:inherit;font-size:14px;font-weight:900;cursor:pointer;min-height:44px}
+#emd122Inst .go{background:#f59e0b;color:#111}#emd122Inst .no{background:#1e293b;color:#cbd5e1}
+</style>
+<script id="EMD-V122-pwa">
+(function(){'use strict';
+if(window.__EMD_V122_PWA__)return;window.__EMD_V122_PWA__=true;
+/* V122: تثبيت كتطبيق (PWA) — يعمل على الأندرويد والآيفون والكمبيوتر، وهو أساس نسخة جوجل بلاي */
+var web=/^https?:$/.test(location.protocol),DK='emd_v122_instdismiss',ev=null;
+function std(){try{return window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||/android-app:/.test(document.referrer)}catch(e){return false}}
+function ios(){return /iphone|ipad|ipod/i.test(navigator.userAgent)}
+function dismissed(){try{return !!localStorage.getItem(DK)}catch(e){return false}}
+if(web&&'serviceWorker' in navigator){window.addEventListener('load',function(){try{navigator.serviceWorker.register('/sw.js',{scope:'/'}).catch(function(){})}catch(e){}})}
+window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();ev=e;setTimeout(soft,15000)});
+window.addEventListener('appinstalled',function(){ev=null;hideB();try{localStorage.setItem(DK,'1')}catch(e){}});
+var box=null;function hideB(){if(box){box.remove();box=null}}
+function soft(){if(!ev||std()||dismissed()||box||document.getElementById('emd108Lock')||document.getElementById('emd122Ban')||document.querySelector('.emd108-banner'))return;
+  box=document.createElement('div');box.id='emd122Inst';box.setAttribute('data-emd108-skip','1');
+  box.innerHTML='<span style="font-size:22px">📲</span><div class="t">ثبّت EMD Business كتطبيق على جوالك: أسرع في الفتح، ويعمل بدون إنترنت.</div><button type="button" class="go">تثبيت</button><button type="button" class="no">لا شكرًا</button>';
+  box.querySelector('.go').onclick=function(){install()};
+  box.querySelector('.no').onclick=function(){try{localStorage.setItem(DK,'1')}catch(e){}hideB()};
+  var host=document.querySelector('.app')||document.body;host.insertBefore(box,host.firstChild)}
+function note(t){try{if(typeof window.toast==='function')window.toast(t);else alert(t)}catch(e){}}
+function install(){
+  if(std()){note('✅ التطبيق مثبّت ويعمل الآن كتطبيق.');return}
+  if(ev){var e=ev;ev=null;hideB();try{e.prompt();e.userChoice&&e.userChoice.then(function(c){if(c&&c.outcome==='accepted')try{localStorage.setItem(DK,'1')}catch(x){}})}catch(x){}return}
+  if(ios()){note('📱 على آيفون: اضغط زر المشاركة في Safari ثم «إضافة إلى الشاشة الرئيسية».');return}
+  if(!web){note('افتح التطبيق من الرابط https://emd-business.github.io ثم اختر «تثبيت التطبيق» من قائمة المتصفح.');return}
+  note('من قائمة المتصفح (⋮) اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية».')}
+function inject(){var g=document.getElementById('emd327SystemGrid');if(g&&!document.getElementById('emd122Inst2')){var b=document.createElement('button');b.type='button';b.className='emd327-item';b.id='emd122Inst2';b.setAttribute('data-emd108-skip','1');b.innerHTML='<b>📲 تثبيت التطبيق على الجوال</b><span>أيقونة على الشاشة الرئيسية وفتح أسرع وبدون إنترنت.</span>';b.addEventListener('click',install);g.appendChild(b)}}
+setInterval(inject,1500);inject();
+window.EMDInstallV122={install:install,isStandalone:std,canPrompt:function(){return !!ev}};
 })();
 </script>
 </body>
