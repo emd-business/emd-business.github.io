@@ -5,7 +5,7 @@
 <!-- EMD BUILD V408: WhatsApp direct tracking + public star rating redesign -->
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
-<title>EMD Business — Standalone V117</title>
+<title>EMD Business — Standalone V118</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--text:#18202a;--muted:#687384;--line:#e4e8ef;--accent:#18202a;--soft:#eef2f7;--ok:#16794c;--warn:#a56a00;--danger:#b23b3b}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial;background:var(--bg);color:var(--text)}
@@ -19173,7 +19173,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V117</div>
+<div id="emdStandaloneV2Badge">EMD Business • V118</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -25489,7 +25489,7 @@ function renderNew(){
   var b=$('emd113Body');
   var canD=perm(P_DISC);
   var sec={
-   cust:'<div class="emd113-box"><h3>👤 بيانات العميل <small style="color:#64748b;font-weight:400">(اختياري)</small></h3><div class="emd113-g2"><input class="emd113-in" id="emd113CN" placeholder="اسم العميل" value="'+esc(S.custName)+'"><input class="emd113-in" id="emd113CP" inputmode="tel" placeholder="رقم الهاتف" value="'+esc(S.custPhone)+'"></div><div id="emd113Cust"></div></div>',
+   cust:'<div class="emd113-box"><h3>👤 بيانات العميل <small style="color:#64748b;font-weight:400">(اختياري)</small></h3><div class="emd113-g2"><input class="emd113-in" id="emd113CN" placeholder="اسم العميل" value="'+esc(S.custName)+'"><input class="emd113-in" id="emd113CP" inputmode="tel" placeholder="رقم الهاتف" value="'+esc(S.custPhone)+'"></div><div id="emd113Sug"></div><div id="emd113Cust"></div></div>',
    prod:'<div class="emd113-box"><h3>🔎 المنتجات</h3><input class="emd113-in" id="emd113Q" placeholder="ابحث بالاسم أو جزء منه…" value="'+esc(S.q)+'" autocomplete="off"><div class="emd113-pl" id="emd113Pl"></div></div>',
    note:'<div class="emd113-box"><h3>📝 ملاحظات <small style="color:#64748b;font-weight:400">(اختياري)</small></h3><input class="emd113-in" id="emd113Note" placeholder="ملاحظات على الفاتورة" value="'+esc(S.note)+'"></div>',
    cart:'<div class="emd113-box"><h3>🧺 الفاتورة</h3><div id="emd113No" style="color:#64748b;font-size:12.5px;margin:-4px 0 8px"></div><div id="emd113Cart"></div>'
@@ -25543,6 +25543,26 @@ function recalc(){
   saveDraft();
 }
 function setH(el,h){if(!el)return;if(el.__h===h)return;el.__h=h;el.innerHTML=h}
+/* اقتراح العملاء أثناء كتابة جزء من الاسم أو الرقم (من العملاء والطلبات والبيع المباشر) */
+function allCustomers(){
+  var m={},out=[],d=D();
+  function add(n,p){var k=phoneKey(p);if(!k&&!String(n||'').trim())return;var key=k?k.slice(-8):'n:'+norm(n);if(m[key]){if(!m[key].name&&n)m[key].name=String(n).trim();return}var c={name:String(n||'').trim(),phone:k};m[key]=c;out.push(c)}
+  arr(d.customers).forEach(function(c){add(c.name,c.phone)});
+  arr(d.orders).forEach(function(o){add(o.name,o.phone)});
+  arr(d.directSales).forEach(function(s){if(s.customer)add(s.customer.name,s.customer.phone)});
+  return out;
+}
+function suggest(q,mode){
+  var el=$('emd113Sug');if(!el)return;q=String(q||'').trim();
+  if(!q){setH(el,'');return}
+  var qd=phoneKey(q),qn=norm(q),list;
+  if(mode==='p'){if(qd.length<2){setH(el,'');return}list=allCustomers().filter(function(c){return c.phone&&c.phone.indexOf(qd)>=0})}
+  else{list=allCustomers().filter(function(c){return norm(c.name).indexOf(qn)>=0||(qd.length>=3&&c.phone.indexOf(qd)>=0)})}
+  list=list.slice(0,6);
+  if(!list.length){setH(el,'');return}
+  setH(el,'<div style="margin-top:6px;border:1px solid #dbeafe;background:#f0f7ff;border-radius:12px;overflow:hidden"><div style="font-size:12px;color:#1e40af;padding:6px 10px">عملاء مطابقون — اضغط للاختيار</div>'+list.map(function(c,i){return '<button type="button" data-a="pickCust" data-v="'+i+'" style="display:flex;justify-content:space-between;gap:8px;width:100%;border:0;border-top:1px solid #dbeafe;background:#fff;padding:12px;font:inherit;font-size:15px;cursor:pointer;min-height:46px;text-align:right"><b>'+esc(c.name||'بدون اسم')+'</b><span dir="ltr">'+esc(c.phone)+'</span></button>'}).join('')+'</div>');
+  el.__list=list;
+}
 function addToCart(name){
   var p=findP(name);if(!p)return;var av=available(name),inCart=0,ex=null;
   S.cart.forEach(function(c){if(norm(c.name)===norm(name)){inCart+=num(c.qty);ex=c}});
@@ -25559,6 +25579,7 @@ function onClick(e){
   if(a==='inc'||a==='dec'){var l=S.cart[+v];if(!l)return;var nq=num(l.qty)+(a==='inc'?1:-1);if(nq<1)return;var av=available(l.name);if(nq>av){toast('المتوفر من «'+l.name+'» '+av+' فقط');return}l.qty=nq;S.err='';renderProducts();return rerenderCart()}
   if(a==='mode'){S.mode=v;S.err='';return recalc()}
   if(a==='method'){S.method=v;return recalc()}
+  if(a==='pickCust'){var el=$('emd113Sug'),c=el&&el.__list&&el.__list[+v];if(!c)return;S.custName=c.name||S.custName;S.custPhone=c.phone||S.custPhone;var n1=$('emd113CN'),p1=$('emd113CP');if(n1)n1.value=S.custName;if(p1)p1.value=S.custPhone;setH(el,'');el.__list=null;return recalc()}
   if(a==='go')return finish();
   if(a==='new'){resetSale();S.tab='new';return render()}
   if(a==='img'){return invoiceImage(v)}
@@ -25577,8 +25598,8 @@ function rerenderCart(){var cart=$('emd113Cart');if(cart)cart.blur;var c=calc(dr
 function onInput(e){
   var t=e.target;if(!S.open)return;
   if(t.id==='emd113Q'){S.q=t.value;return renderProducts()}
-  if(t.id==='emd113CN'){S.custName=t.value;return recalc()}
-  if(t.id==='emd113CP'){S.custPhone=t.value;return recalc()}
+  if(t.id==='emd113CN'){S.custName=t.value;if(e.type==='input')suggest(t.value,'n');return recalc()}
+  if(t.id==='emd113CP'){S.custPhone=t.value;if(e.type==='input')suggest(t.value,'p');return recalc()}
   if(t.id==='emd113Note'){S.note=t.value;return saveDraft()}
   if(t.id==='emd113Disc'){S.discount=t.value;return recalc()}
   if(t.id==='emd113DM'){S.discMode=t.value;return recalc()}
@@ -25751,6 +25772,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'&&S.open&&!S.
 window.EMDDirectV113={invoiceImage:invoiceImage,list:function(){return arr(D()&&D().directSales)},open:open,close:close,commit:commit,collect:collect,returnItems:returnItems,summary:summary,cashIn:cashIn,available:available,calc:calc,state:function(){return S},invoiceHtml:invoiceHtml,netTotal:netTotal,paidOf:paidOf,remainingOf:remainingOf,statusOf:statusOf,newKey:newKey};
 })();
 </script>
+
 
 
 
