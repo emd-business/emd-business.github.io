@@ -5,7 +5,7 @@
 <!-- EMD BUILD V408: WhatsApp direct tracking + public star rating redesign -->
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
-<title>EMD Business — Standalone V113</title>
+<title>EMD Business — Standalone V114</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--text:#18202a;--muted:#687384;--line:#e4e8ef;--accent:#18202a;--soft:#eef2f7;--ok:#16794c;--warn:#a56a00;--danger:#b23b3b}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial;background:var(--bg);color:var(--text)}
@@ -19173,7 +19173,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V113</div>
+<div id="emdStandaloneV2Badge">EMD Business • V114</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -22104,6 +22104,7 @@ var rT=null;function scheduleRender(){clearTimeout(rT);rT=setTimeout(function(){
 function tabsHtml(){
   var dn=dues().length,cn=courierOrders().filter(function(o){return /shipped|out_for_delivery/.test(o.status)}).length;
   var T=[['sum','📊 الملخص',0],['led','🧾 الفواتير',0],['due','💵 التحصيل',dn],['cour','🚚 المندوب',cn],['exp','💸 المصروفات',0],['price','🏷️ الأسعار',0]];
+  try{if(window.EMDLayoutV114)T=window.EMDLayoutV114.sort('fin',T,function(t){return t[0]})}catch(e){}
   return T.map(function(t){return '<button class="emd75-tab'+(cur.tab===t[0]?' on':'')+'" data-a="tab" data-v="'+t[0]+'">'+t[1]+(t[2]?'<span class="c">'+t[2]+'</span>':'')+'</button>'}).join('');
 }
 function render(){
@@ -25136,8 +25137,8 @@ window.EMDStaffHideV111={hidden:hidden,set:setHidden,open:open};
 .emd113-tab{flex:1;border:1px solid #e3e6ea;background:#fff;border-radius:12px;padding:10px 8px;font-size:14px;font-weight:800;cursor:pointer;color:#334155;min-height:44px}
 .emd113-tab.on{background:#111827;color:#fff;border-color:#111827}
 .emd113-body{flex:1;overflow:auto;padding:12px 12px 16px}
-.emd113-cols{display:grid;grid-template-columns:1fr;gap:12px}
-@media(min-width:860px){.emd113-cols{grid-template-columns:1fr 1fr;align-items:start}}
+.emd113-cols{display:grid;grid-template-columns:1fr;gap:0}
+@media(min-width:860px){.emd113-cols{grid-template-columns:1fr 1fr;column-gap:12px;align-items:start}}
 .emd113-box{background:#fff;border:1px solid #e8eaee;border-radius:16px;padding:12px;margin-bottom:12px}
 .emd113-box h3{margin:0 0 8px;font-size:15px}
 .emd113-in{width:100%;box-sizing:border-box;border:1px solid #dfe3e8;border-radius:12px;padding:11px 12px;font-size:16px;background:#fff;min-height:46px;font-family:inherit}
@@ -25466,19 +25467,20 @@ function render(){
   if(S.tab==='list')return S.detail?renderDetail():renderList();
   renderNew();
 }
+var SALE_DEF=['cust','prod','note','cart','pay'];
+function saleOrder(){try{return window.EMDLayoutV114?window.EMDLayoutV114.order('sale',SALE_DEF):SALE_DEF}catch(e){return SALE_DEF}}
 function renderNew(){
   var b=$('emd113Body');
   var canD=perm(P_DISC);
-  b.innerHTML='<div class="emd113-cols"><div>'
-   +'<div class="emd113-box"><h3>🔎 المنتجات</h3><input class="emd113-in" id="emd113Q" placeholder="ابحث بالاسم أو جزء منه…" value="'+esc(S.q)+'" autocomplete="off"><div class="emd113-pl" id="emd113Pl"></div></div>'
-   +'<div class="emd113-box"><h3>👤 العميل والملاحظات <small style="color:#64748b;font-weight:400">(اختياري)</small></h3><div class="emd113-g2"><input class="emd113-in" id="emd113CN" placeholder="اسم العميل" value="'+esc(S.custName)+'"><input class="emd113-in" id="emd113CP" inputmode="tel" placeholder="رقم الهاتف" value="'+esc(S.custPhone)+'"></div><div id="emd113Cust"></div><input class="emd113-in" id="emd113Note" style="margin-top:8px" placeholder="ملاحظات" value="'+esc(S.note)+'"></div>'
-   +'</div><div>'
-   +'<div class="emd113-box"><h3>🧺 الفاتورة</h3><div id="emd113No" style="color:#64748b;font-size:12.5px;margin:-4px 0 8px"></div><div id="emd113Cart"></div>'
-   +(canD?'<div class="emd113-g2" style="margin-top:6px"><input class="emd113-in" id="emd113Disc" inputmode="decimal" placeholder="خصم على الفاتورة" value="'+esc(S.discount)+'"><select class="emd113-in" id="emd113DM"><option value="amt"'+(S.discMode==='amt'?' selected':'')+'>'+CUR+'</option><option value="pct"'+(S.discMode==='pct'?' selected':'')+'>٪ نسبة</option></select></div>':'')
-   +'</div>'
-   +'<div class="emd113-box"><h3>💳 استلام المبلغ</h3><div class="emd113-chips" id="emd113Mode"></div><div class="emd113-chips" id="emd113Meth"></div><div id="emd113AmtBox"></div><div class="emd113-sum" id="emd113Sum"></div><div id="emd113Err"></div></div>'
-   +'</div></div>';
-  $('emd113Q').focus&&0;
+  var sec={
+   cust:'<div class="emd113-box"><h3>👤 بيانات العميل <small style="color:#64748b;font-weight:400">(اختياري)</small></h3><div class="emd113-g2"><input class="emd113-in" id="emd113CN" placeholder="اسم العميل" value="'+esc(S.custName)+'"><input class="emd113-in" id="emd113CP" inputmode="tel" placeholder="رقم الهاتف" value="'+esc(S.custPhone)+'"></div><div id="emd113Cust"></div></div>',
+   prod:'<div class="emd113-box"><h3>🔎 المنتجات</h3><input class="emd113-in" id="emd113Q" placeholder="ابحث بالاسم أو جزء منه…" value="'+esc(S.q)+'" autocomplete="off"><div class="emd113-pl" id="emd113Pl"></div></div>',
+   note:'<div class="emd113-box"><h3>📝 ملاحظات <small style="color:#64748b;font-weight:400">(اختياري)</small></h3><input class="emd113-in" id="emd113Note" placeholder="ملاحظات على الفاتورة" value="'+esc(S.note)+'"></div>',
+   cart:'<div class="emd113-box"><h3>🧺 الفاتورة</h3><div id="emd113No" style="color:#64748b;font-size:12.5px;margin:-4px 0 8px"></div><div id="emd113Cart"></div>'
+    +(canD?'<div class="emd113-g2" style="margin-top:6px"><input class="emd113-in" id="emd113Disc" inputmode="decimal" placeholder="خصم على الفاتورة" value="'+esc(S.discount)+'"><select class="emd113-in" id="emd113DM"><option value="amt"'+(S.discMode==='amt'?' selected':'')+'>'+CUR+'</option><option value="pct"'+(S.discMode==='pct'?' selected':'')+'>٪ نسبة</option></select></div>':'')+'</div>',
+   pay:'<div class="emd113-box"><h3>💳 استلام المبلغ</h3><div class="emd113-chips" id="emd113Mode"></div><div class="emd113-chips" id="emd113Meth"></div><div id="emd113AmtBox"></div><div class="emd113-sum" id="emd113Sum"></div><div id="emd113Err"></div></div>'
+  };
+  b.innerHTML='<div class="emd113-cols">'+saleOrder().map(function(k){return sec[k]||''}).join('')+'</div>';
   renderProducts();recalc();
 }
 function renderProducts(){
@@ -25668,6 +25670,71 @@ setInterval(navBtn,1500);setTimeout(navBtn,300);
 document.addEventListener('keydown',function(e){if(e.key==='Escape'&&S.open&&!S.done)close()});
 
 window.EMDDirectV113={open:open,close:close,commit:commit,collect:collect,returnItems:returnItems,summary:summary,cashIn:cashIn,available:available,calc:calc,state:function(){return S},invoiceHtml:invoiceHtml,netTotal:netTotal,paidOf:paidOf,remainingOf:remainingOf,statusOf:statusOf,newKey:newKey};
+})();
+</script>
+
+<style id="EMD-V114-css">
+#emd114Modal{position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:14px;direction:rtl}
+#emd114Modal .box{background:#fff;border-radius:22px;padding:16px;width:min(480px,100%);max-height:92vh;overflow:auto;box-shadow:0 24px 60px rgba(0,0,0,.35);font-family:inherit}
+#emd114Modal h3{margin:0 0 4px;font-size:19px}#emd114Modal h4{margin:14px 0 6px;font-size:15px}
+#emd114Modal p{margin:4px 0 8px;color:#475569;font-size:13.5px;line-height:1.7}
+#emd114Modal .tabs{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+#emd114Modal .tabs button{border:1px solid #dfe3e8;background:#fff;border-radius:11px;padding:9px 12px;font:inherit;font-size:14px;font-weight:800;cursor:pointer}
+#emd114Modal .tabs button.on{background:#111827;color:#fff;border-color:#111827}
+#emd114Modal .row{display:flex;align-items:center;gap:6px;background:#f8fafc;border:1px solid #e8eaee;border-radius:12px;padding:6px 10px;margin:6px 0}
+#emd114Modal .row b{flex:1;font-size:15px}
+#emd114Modal .row button{border:0;background:#e2e8f0;border-radius:10px;width:44px;height:44px;font-size:18px;cursor:pointer}
+#emd114Modal .row button[disabled]{opacity:.3}
+#emd114Modal .foot{display:flex;gap:8px;margin-top:12px}
+#emd114Modal .foot button{flex:1;border:0;border-radius:14px;padding:13px;font:inherit;font-size:15px;font-weight:900;cursor:pointer;background:#f1f5f9;color:#334155}
+#emd114Modal .foot .p{background:#0f766e;color:#fff}
+</style>
+<script id="EMD-V114-layout">
+(function(){'use strict';
+if(window.__EMD_V114__)return;window.__EMD_V114__=true;
+/* V114: ترتيب الأزرار والأقسام يحدده المستخدم من الإعدادات */
+var GROUPS={
+ nav:{title:'🧭 الأزرار الرئيسية (الشريط العلوي)',hint:'ترتيب أزرار: الرئيسية، الطلبات، المالية، المنتجات، بيع مباشر…'},
+ sale:{title:'🛒 أقسام نافذة البيع المباشر',hint:'ترتيب: بيانات العميل، المنتجات، الملاحظات، الفاتورة، استلام المبلغ.',def:['cust','prod','note','cart','pay'],labels:{cust:'👤 بيانات العميل',prod:'🔎 المنتجات',note:'📝 الملاحظات',cart:'🧺 الفاتورة',pay:'💳 استلام المبلغ'}},
+ fin:{title:'💰 تبويبات المالية',hint:'ترتيب: الملخص، الفواتير، التحصيل، المندوب، المصروفات، الأسعار.',def:['sum','led','due','cour','exp','price'],labels:{sum:'📊 الملخص',led:'🧾 الفواتير',due:'💵 التحصيل',cour:'🚚 المندوب',exp:'💸 المصروفات',price:'🏷️ الأسعار'}}
+};
+function D(){return window.db}
+function saved(g){var d=D();return d&&d.uiOrder&&Array.isArray(d.uiOrder[g])?d.uiOrder[g]:null}
+function persist(){try{if(typeof window.save==='function')window.save();else localStorage.setItem('emd_business_v1',JSON.stringify(D()))}catch(e){}}
+function merge(sv,keys){var out=[];(sv||[]).forEach(function(k){if(keys.indexOf(k)>=0&&out.indexOf(k)<0)out.push(k)});keys.forEach(function(k){if(out.indexOf(k)<0)out.push(k)});return out}
+function order(g,def){return merge(saved(g),def)}
+function sortItems(g,items,keyFn){var o=order(g,items.map(keyFn));return items.slice().sort(function(a,b){return o.indexOf(keyFn(a))-o.indexOf(keyFn(b))})}
+/* الشريط الرئيسي: نستخدم CSS order فلا نلمس ترتيب الأزرار الأصلي (والإرجاع للأصل فوري) */
+function navKey(b){return b.id||b.getAttribute('data-v')||(b.textContent||'').trim()}
+function navEls(){var n=document.querySelector('nav.nav');return n?[].slice.call(n.children).filter(function(x){return x.tagName==='BUTTON'}):[]}
+function navKeys(){return navEls().map(navKey)}
+function navLabel(b){return (b.textContent||'').trim()}
+function applyNav(){var els=navEls(),sv=saved('nav');els.forEach(function(b,i){var ix=sv?sv.indexOf(navKey(b)):-1;b.style.order=ix>=0?String(ix+1):(sv?String(500+i):'')})}
+var navObs=null;
+function watchNav(){var n=document.querySelector('nav.nav');if(!n||n.__emd114)return;n.__emd114=1;applyNav();new MutationObserver(function(){applyNav()}).observe(n,{childList:true})}
+function curKeys(g){return g==='nav'?merge(saved('nav'),navKeys()):order(g,GROUPS[g].def)}
+function labelOf(g,k){if(g==='nav'){var b=navEls().find(function(x){return navKey(x)===k});return b?navLabel(b):k}return GROUPS[g].labels[k]||k}
+function setOrder(g,keys){var d=D();if(!d.uiOrder)d.uiOrder={};if(keys)d.uiOrder[g]=keys;else delete d.uiOrder[g];persist();if(g==='nav')applyNav();refreshOthers(g)}
+function refreshOthers(g){try{if(g==='fin'&&document.getElementById('emd75Tabs')){var t=document.querySelector('#emd75Tabs');var cur=window.EMDMoneyV75;if(cur&&cur.render)cur.render()}}catch(e){}
+ try{var st=window.EMDDirectV113&&window.EMDDirectV113.state();if(g==='sale'&&st&&st.open&&st.tab==='new'&&!st.done)window.EMDDirectV113.open('new')}catch(e){}}
+var cg='nav';
+function close(){var m=document.getElementById('emd114Modal');if(m)m.remove()}
+function open(){close();var m=document.createElement('div');m.id='emd114Modal';document.body.appendChild(m);
+ m.addEventListener('click',function(e){if(e.target===m)return close();var t=e.target.closest('[data-a]');if(!t)return;var a=t.getAttribute('data-a'),v=t.getAttribute('data-v');
+  if(a==='g'){cg=v;paint()}
+  else if(a==='up'||a==='dn'){var ks=curKeys(cg),i=ks.indexOf(v),j=a==='up'?i-1:i+1;if(i<0||j<0||j>=ks.length)return;var x=ks[i];ks[i]=ks[j];ks[j]=x;setOrder(cg,ks);paint()}
+  else if(a==='reset'){setOrder(cg,null);paint()}
+  else if(a==='x')close()});
+ paint()}
+function paint(){var m=document.getElementById('emd114Modal');if(!m)return;var ks=curKeys(cg);
+ m.innerHTML='<div class="box"><h3>↕️ ترتيب الأزرار والأقسام</h3><p>رتّبها على حسب ما يناسبك باستخدام الأسهم. يُحفظ الترتيب مع بياناتك.</p><div class="tabs">'+Object.keys(GROUPS).map(function(g){return '<button class="'+(g===cg?'on':'')+'" data-a="g" data-v="'+g+'">'+GROUPS[g].title.split(' ')[0]+' '+GROUPS[g].title.split(' ').slice(1,3).join(' ')+'</button>'}).join('')+'</div><h4>'+GROUPS[cg].title+'</h4><p>'+GROUPS[cg].hint+'</p>'
+  +ks.map(function(k,i){return '<div class="row"><b>'+labelOf(cg,k).replace(/</g,'&lt;')+'</b><button data-a="up" data-v="'+k.replace(/"/g,'')+'" aria-label="أعلى"'+(i===0?' disabled':'')+'>▲</button><button data-a="dn" data-v="'+k.replace(/"/g,'')+'" aria-label="أسفل"'+(i===ks.length-1?' disabled':'')+'>▼</button></div>'}).join('')
+  +'<div class="foot"><button data-a="reset">↩︎ الترتيب الافتراضي</button><button class="p" data-a="x">تم</button></div></div>'}
+function inject(){var g=document.getElementById('emd327SystemGrid');if(!g||document.getElementById('emd114Item'))return;
+ var b=document.createElement('button');b.type='button';b.className='emd327-item';b.id='emd114Item';b.setAttribute('data-emd108-skip','1');
+ b.innerHTML='<b>↕️ ترتيب الأزرار والأقسام</b><span>رتّب أزرار الشريط وأقسام البيع المباشر وتبويبات المالية كما تريد.</span>';b.addEventListener('click',open);g.insertBefore(b,g.firstChild)}
+setInterval(function(){watchNav();inject()},1200);watchNav();inject();
+window.EMDLayoutV114={order:order,sort:sortItems,open:open,set:setOrder,applyNav:applyNav};
 })();
 </script>
 </body>
