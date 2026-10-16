@@ -5,7 +5,7 @@
 <!-- EMD BUILD V408: WhatsApp direct tracking + public star rating redesign -->
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
-<title>EMD Business — Standalone V120</title>
+<title>EMD Business — Standalone V121</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--text:#18202a;--muted:#687384;--line:#e4e8ef;--accent:#18202a;--soft:#eef2f7;--ok:#16794c;--warn:#a56a00;--danger:#b23b3b}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial;background:var(--bg);color:var(--text)}
@@ -19173,7 +19173,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V120</div>
+<div id="emdStandaloneV2Badge">EMD Business • V121</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -26006,7 +26006,7 @@ if(window.__EMD_V120__)return;window.__EMD_V120__=true;
 function D(){return window.db}
 function ign(){var d=D();return d&&Array.isArray(d.parseIgnore)?d.parseIgnore.filter(Boolean):[]}
 function digitsFix(s){return String(s).replace(/[٠-٩]/g,function(d){return '٠١٢٣٤٥٦٧٨٩'.indexOf(d)})}
-var BUILTIN=[/⚠️?/,/اكتب\s*اسم\s*الكتاب/,/غي[ّر]*ر\s*الرقم\s*إذا/,/^\W*لتثبيت\s*الطلب/,/(?:حو[ّ]?ل|حوّل|حول)\s*(?:على|الى|إلى)\s*[\d٠-٩]{6,}/,/^\W*المنتج\s*\(?\s*العدد\s*\)?\W*$/,/^\W*صورة\s*التحويل/];
+var BUILTIN=[/^\W*▫️/,/^\W*📖\s*المنتجات\s*المتوفرة/,/^\W*للطلب\s*أرسل\s*لنا/,/^\W*🛍️/,/⚠️?/,/اكتب\s*اسم\s*الكتاب/,/غي[ّر]*ر\s*الرقم\s*إذا/,/^\W*لتثبيت\s*الطلب/,/(?:حو[ّ]?ل|حوّل|حول)\s*(?:على|الى|إلى)\s*[\d٠-٩]{6,}/,/^\W*المنتج\s*\(?\s*العدد\s*\)?\W*$/,/^\W*صورة\s*التحويل/];
 function clean(raw){
   var extra=ign().map(function(x){return String(x).trim()}).filter(Boolean);
   var out=[];
@@ -26016,6 +26016,12 @@ function clean(raw){
     if(t&&extra.some(function(x){return t.indexOf(x)>=0}))return;
     var m=t.match(/^[^\p{L}\p{N}]*التوصيل\s*[:：]?\s*\(?\s*(مكتب|مندوب|الى المنزل|إلى المنزل|استلام[^)\n]*)\)?\s*$/u);
     if(m){out.push('طريقة التوصيل: '+m[1].trim());return}
+    var dm=t.match(/^(طريقة\s*التوصيل)\s*[:：]\s*\(?\s*([^()\n]*?)\s*\)?\s*$/);
+    if(dm&&dm[2]){out.push(dm[1]+': '+dm[2]);return}
+    /* الكمية بين قوسين: «- ( 2 ) اسم» أو «اسم - ( 2 )» → «اسم × 2» ليفهمها التحليل */
+    var T=digitsFix(t),q1=T.match(/^[-–—•·*]?\s*\(\s*(\d{1,3})\s*\)\s*[-–—:]?\s*(.+)$/),q2=T.match(/^[-–—•·*]?\s*(.*?[^\d\s(\-–—:])\s*[-–—:]?\s*\(\s*(\d{1,3})\s*\)\s*$/);
+    if(q1&&!/^\d{6,}/.test(q1[2])&&/\D/.test(q1[2])){out.push(q1[2].trim()+' × '+q1[1]);return}
+    if(q2&&!/(?:الهاتف|الرقم|الاسم|الولاية|المكان|التوصيل)/.test(q2[1])){out.push(q2[1].trim()+' × '+q2[2]);return}
     out.push(line)});
   return out.join('\n');
 }
@@ -26044,6 +26050,96 @@ function inject(){var g=document.getElementById('emd327SystemGrid');if(!g||docum
  b.innerHTML='<b>🧹 جمل يتجاهلها التحليل</b><span>علّم التطبيق يتجاهل أسطر معيّنة في رسائل الطلبات.</span>';b.addEventListener('click',open);g.appendChild(b)}
 setInterval(inject,1500);inject();
 window.EMDParseCleanV120={clean:clean,open:open};
+})();
+</script>
+<style id="EMD-V121-css">
+#emd121Modal{position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:12px;direction:rtl}
+#emd121Modal .box{background:#fff;border-radius:22px;padding:16px;width:min(560px,100%);max-height:94vh;overflow:auto;font-family:inherit}
+#emd121Modal h3{margin:0 0 4px;font-size:19px}#emd121Modal p{margin:4px 0 10px;color:#475569;font-size:13.5px;line-height:1.8}
+#emd121Modal .st{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+#emd121Modal .st button{border:1px solid #dfe3e8;background:#fff;border-radius:12px;padding:10px 12px;font:inherit;font-size:14px;font-weight:800;cursor:pointer;min-height:44px}
+#emd121Modal .st button.on{background:#111827;color:#fff;border-color:#111827}
+#emd121Modal textarea{width:100%;box-sizing:border-box;min-height:250px;border:1px solid #dfe3e8;border-radius:14px;padding:12px;font:inherit;font-size:15px;line-height:1.8;direction:rtl;background:#f8fafc}
+#emd121Modal .op{background:#f8fafc;border:1px solid #e8eaee;border-radius:14px;padding:10px;margin:10px 0}
+#emd121Modal label.c{display:flex;gap:8px;align-items:center;font-size:14.5px;padding:6px 0}
+#emd121Modal label.c input{width:20px;height:20px}
+#emd121Modal input[type=text]{width:100%;box-sizing:border-box;border:1px solid #dfe3e8;border-radius:12px;padding:11px;font:inherit;font-size:15px;margin:4px 0}
+#emd121Modal .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+#emd121Modal .acts button{flex:1 1 140px;border:0;border-radius:14px;padding:13px;font:inherit;font-size:15px;font-weight:900;cursor:pointer;min-height:48px}
+#emd121Modal .g{background:#16a34a;color:#fff}#emd121Modal .w{background:#25d366;color:#fff}#emd121Modal .l{background:#f1f5f9;color:#334155}
+</style>
+<script id="EMD-V121-templates">
+(function(){'use strict';
+if(window.__EMD_V121__)return;window.__EMD_V121__=true;
+/* V121: رسائل طلب جاهزة للمتجر ترسلها لعملائها، بأشكال مختلفة، يقرأها التطبيق تلقائيًا */
+var STYLES=[['a','🧩 منظّم بالأيقونات'],['b','📄 مختصر'],['c','🛒 عدة منتجات'],['d','🌷 ودّي + قائمة المنتجات'],['e','💳 مع طريقة الدفع']];
+var DEF={style:'a',greet:'',deliv:'مكتب أو مندوب أو الى المنزل',catalog:false,prices:true,payNo:'',payName:'',payNote:'أرسل صورة التحويل',closing:'شكرًا لثقتكم 🌷'};
+function D(){return window.db}
+function cfg(){var d=D(),c=Object.assign({},DEF,(d&&d.orderTpl)||{});return c}
+function setCfg(c){var d=D();d.orderTpl=c;try{if(typeof window.save==='function')window.save()}catch(e){}}
+function store(){try{var p=window.EMDBusinessProfileV333&&window.EMDBusinessProfileV333.get();return String(p&&p.name||'').trim()||'متجرنا'}catch(e){return 'متجرنا'}}
+function num(v){var x=parseFloat(String(v).replace(/[٠-٩]/g,function(d){return '٠١٢٣٤٥٦٧٨٩'.indexOf(d)}));return isFinite(x)?x:0}
+function price(p){var v=num(p.salePrice!=null?p.salePrice:(p.unitPrice!=null?p.unitPrice:(p.price!=null?p.price:p.defaultPrice)));return v>0?v:0}
+function catalog(c){
+  var ps=(D().products||[]).filter(function(p){return p&&String(p.name||'').trim()});
+  if(!ps.length)return '';
+  return '📖 المنتجات المتوفرة:\n'+ps.slice(0,40).map(function(p){var pr=price(p);return '▫️ '+String(p.name).trim()+(c.prices&&pr?' — '+(Math.round(pr*1000)/1000)+' ر.ع':'')}).join('\n')+'\n';
+}
+function pay(c,tag){
+  if(!c.payNo&&!c.payName)return '';
+  return '\n'+(tag?'💳 ':'')+'لتثبيت الطلب حوّل على '+(c.payNo||'—')+(c.payName?' باسم '+c.payName:'')+(c.payNote?' و'+c.payNote.replace(/^و/,''):'')+'\n';
+}
+function gen(c){
+  var s=store(),g=c.greet||('أهلًا بك في '+s+' 🌷'),cat=c.catalog?catalog(c):'',L=[];
+  var dl=c.deliv?'('+c.deliv+')':'(مكتب)';
+  if(c.style==='a'){
+    L=['🟢 طلب جديد — '+s,'','👤 الاسم: ','📞 الهاتف: ','📍 الولاية: ','🚚 التوصيل: '+dl.replace(/^\(/,'(اختر: '),'','📚 الطلب:','المنتج (العدد)','- ( 1 ) اكتب اسم المنتج','','⚠️ غيّر الرقم إذا تريد أكثر من نسخة'];
+    if(cat)L.splice(2,0,cat.trim(),'');
+  }else if(c.style==='b'){
+    L=[g,'','الاسم: ','الرقم: ','المكان: ','المنتج: ','العدد: 1','التوصيل: '+dl.replace(/^\(/,'(اختر: ')];
+    if(cat)L.splice(2,0,cat.trim(),'');
+  }else if(c.style==='c'){
+    L=['🟢 طلب جديد — '+s,'','👤 الاسم: ','📞 الهاتف: ','📍 الولاية: ','🚚 التوصيل: '+dl.replace(/^\(/,'(اختر: '),'','🛍️ المنتجات (اكتب العدد قبل اسم كل منتج، وامسح الأسطر الزائدة):','- ( 1 ) اسم المنتج الأول','- ( 1 ) اسم المنتج الثاني','- ( 1 ) اسم المنتج الثالث','','📝 ملاحظات: '];
+    if(cat)L.splice(2,0,cat.trim(),'');
+  }else if(c.style==='d'){
+    L=[g,'',cat?cat.trim():'','','للطلب أرسل لنا البيانات التالية:','','الاسم: ','رقم الهاتف: ','الولاية: ','طريقة التوصيل: '+dl.replace(/^\(/,'(اختر: '),'','الكتب:','المنتج (العدد)','- ( 1 ) اسم المنتج','','📝 ملاحظات: '];
+    if(!cat)L.splice(2,2);
+  }else{
+    L=['🟢 طلب جديد — '+s,'','👤 الاسم: ','📞 الهاتف: ','📍 الولاية: ','🚚 التوصيل: '+dl.replace(/^\(/,'(اختر: '),'','📚 الكتب:','المنتج (العدد)','- ( 1 ) اسم المنتج'];
+    if(cat)L.splice(2,0,cat.trim(),'');
+    var p=pay(c,true);if(p)L.push(p.trimEnd());else L.push('','💳 لتثبيت الطلب حوّل على (رقم الحساب) باسم (اسم المستفيد) وأرسل صورة التحويل');
+  }
+  if(c.style!=='e'&&pay(c,true))L.push(pay(c,true).trimEnd());
+  if(c.closing)L.push('',c.closing);
+  return L.filter(function(x,i,a){return !(x===''&&a[i-1]==='')}).join('\n').replace(/\n{3,}/g,'\n\n').trim();
+}
+var C=null;
+function close(){var m=document.getElementById('emd121Modal');if(m)m.remove()}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function toast(t){var e=document.createElement('div');e.className='emd103-toast';e.textContent=t;document.body.appendChild(e);setTimeout(function(){e.style.opacity='0'},2400);setTimeout(function(){e.remove()},2900)}
+function open(){close();C=cfg();var m=document.createElement('div');m.id='emd121Modal';document.body.appendChild(m);
+  m.innerHTML='<div class="box"><h3>📝 رسائل طلب جاهزة لعملائك</h3><p>اختر الشكل، عدّل ما تريد، ثم انسخه أو أرسله لعميلك. العميل يعبّي بياناته ويرجّعه لك، والتطبيق يقرأه تلقائيًا في «استيراد طلب».</p><div class="st" id="emd121St"></div>'
+   +'<textarea id="emd121Tx" aria-label="نص الرسالة"></textarea>'
+   +'<div class="op"><b style="font-size:14px">⚙️ خيارات</b><input type="text" id="emd121Gr" placeholder="رسالة الترحيب (اتركها فاضية للافتراضية)"><input type="text" id="emd121Dl" placeholder="خيارات التوصيل: مكتب أو مندوب…"><label class="c"><input type="checkbox" id="emd121Cat"> إضافة قائمة منتجاتي</label><label class="c"><input type="checkbox" id="emd121Pr"> إظهار الأسعار في القائمة</label><input type="text" id="emd121PN" inputmode="tel" placeholder="رقم التحويل (اختياري)"><input type="text" id="emd121PM" placeholder="باسم (اسم المستفيد، اختياري)"><input type="text" id="emd121Cl" placeholder="جملة الختام"></div>'
+   +'<div class="acts"><button class="g" data-a="copy">📋 نسخ الرسالة</button><button class="w" data-a="wa">💬 إرسال واتساب</button><button class="l" data-a="reset">↩︎ إعادة توليد</button><button class="l" data-a="x">إغلاق</button></div></div>';
+  var tx=document.getElementById('emd121Tx');
+  function sync(){document.getElementById('emd121St').innerHTML=STYLES.map(function(s){return '<button data-a="st" data-v="'+s[0]+'" class="'+(C.style===s[0]?'on':'')+'">'+s[1]+'</button>'}).join('');tx.value=gen(C)}
+  document.getElementById('emd121Gr').value=C.greet;document.getElementById('emd121Dl').value=C.deliv;document.getElementById('emd121Cat').checked=!!C.catalog;document.getElementById('emd121Pr').checked=!!C.prices;document.getElementById('emd121PN').value=C.payNo;document.getElementById('emd121PM').value=C.payName;document.getElementById('emd121Cl').value=C.closing;
+  function read(){C.greet=document.getElementById('emd121Gr').value.trim();C.deliv=document.getElementById('emd121Dl').value.trim();C.catalog=document.getElementById('emd121Cat').checked;C.prices=document.getElementById('emd121Pr').checked;C.payNo=document.getElementById('emd121PN').value.trim();C.payName=document.getElementById('emd121PM').value.trim();C.closing=document.getElementById('emd121Cl').value.trim();setCfg(C)}
+  m.addEventListener('input',function(e){if(e.target===tx)return;read();tx.value=gen(C)});
+  m.addEventListener('change',function(e){if(e.target===tx)return;read();tx.value=gen(C)});
+  m.addEventListener('click',function(e){if(e.target===m)return close();var b=e.target.closest('[data-a]');if(!b)return;var a=b.getAttribute('data-a');
+    if(a==='st'){C.style=b.getAttribute('data-v');setCfg(C);sync()}
+    else if(a==='copy'){try{navigator.clipboard.writeText(tx.value).then(function(){toast('📋 تم نسخ الرسالة')},function(){tx.select();document.execCommand('copy');toast('📋 تم النسخ')})}catch(x){tx.select();try{document.execCommand('copy');toast('📋 تم النسخ')}catch(y){toast('اضغط مطولًا على النص لنسخه')}}}
+    else if(a==='wa'){window.open('https://wa.me/?text='+encodeURIComponent(tx.value),'_blank')}
+    else if(a==='reset'){tx.value=gen(C)}
+    else if(a==='x')close()});
+  sync()}
+function addEntry(){var ta=document.getElementById('raw');if(!ta||document.getElementById('emd121Entry'))return;var acts=ta.parentNode&&ta.parentNode.querySelector('.actions');if(!acts)return;
+  var b=document.createElement('button');b.type='button';b.className='secondary';b.id='emd121Entry';b.textContent='📝 رسائل جاهزة للعملاء';b.onclick=open;acts.appendChild(b)}
+function inject(){var g=document.getElementById('emd327SystemGrid');if(g&&!document.getElementById('emd121Item')){var b=document.createElement('button');b.type='button';b.className='emd327-item';b.id='emd121Item';b.setAttribute('data-emd108-skip','1');b.innerHTML='<b>📝 رسائل طلب جاهزة للعملاء</b><span>قوالب بأشكال مختلفة ترسلها لعملائك ليسجلوا بياناتهم.</span>';b.addEventListener('click',open);g.appendChild(b)}addEntry()}
+setInterval(inject,1500);inject();
+window.EMDOrderTemplatesV121={gen:gen,cfg:cfg,open:open,styles:STYLES};
 })();
 </script>
 </body>
