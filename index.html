@@ -5,7 +5,7 @@
 <!-- EMD BUILD V408: WhatsApp direct tracking + public star rating redesign -->
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
-<title>EMD Business — Standalone V118</title>
+<title>EMD Business — Standalone V119</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--text:#18202a;--muted:#687384;--line:#e4e8ef;--accent:#18202a;--soft:#eef2f7;--ok:#16794c;--warn:#a56a00;--danger:#b23b3b}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial;background:var(--bg);color:var(--text)}
@@ -19173,7 +19173,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V118</div>
+<div id="emdStandaloneV2Badge">EMD Business • V119</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -25894,6 +25894,98 @@ function inject(){var g=document.getElementById('emd327SystemGrid');if(!g||docum
  b.innerHTML='<b>🧾 اقتراح إرسال الفاتورة</b><span></span>';b.addEventListener('click',function(){setOn(!on())});g.appendChild(b);paint()}
 setInterval(inject,1500);inject();
 window.EMDInvPromptV117={on:on,set:setOn,check:check};
+})();
+</script>
+<style id="EMD-V119-css">
+#emd119Modal{position:fixed;inset:0;background:rgba(15,23,42,.7);z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:16px;direction:rtl}
+#emd119Modal .box{background:#fff;border-radius:22px;padding:20px;width:min(440px,100%);max-height:94vh;overflow:auto;box-shadow:0 24px 60px rgba(0,0,0,.4);font-family:inherit;text-align:center}
+#emd119Modal h3{margin:0 0 6px;font-size:20px}#emd119Modal p{margin:6px 0 12px;color:#475569;font-size:14px;line-height:1.8}
+#emd119Modal .code{font-family:monospace;direction:ltr;font-size:28px;font-weight:900;letter-spacing:2px;background:#f1f5f9;border:2px dashed #94a3b8;border-radius:14px;padding:14px 8px;margin:10px 0;user-select:all}
+#emd119Modal input[type=text],#emd119Modal input[type=password],#emd119Modal input[type=tel]{width:100%;box-sizing:border-box;border:1px solid #dfe3e8;border-radius:12px;padding:13px;font:inherit;font-size:18px;text-align:center;margin:6px 0;direction:ltr}
+#emd119Modal button{display:block;width:100%;border:0;border-radius:14px;padding:14px;font:inherit;font-size:16px;font-weight:900;cursor:pointer;margin-top:10px;min-height:48px}
+#emd119Modal .b1{background:#0f766e;color:#fff}#emd119Modal .b2{background:#eef2ff;color:#3730a3}#emd119Modal .b3{background:#f1f5f9;color:#334155}
+#emd119Modal .err{color:#b91c1c;font-weight:800;min-height:22px;font-size:14px}
+#emd119Modal label.chk{display:flex;gap:8px;align-items:center;justify-content:center;font-size:14px;margin-top:10px}
+.emd119-forgot{display:block;margin:14px auto 0;background:none;border:0;color:#2563eb;font:inherit;font-size:15px;font-weight:800;text-decoration:underline;cursor:pointer;padding:10px}
+</style>
+<script id="EMD-V119-recovery">
+(function(){'use strict';
+if(window.__EMD_V119__)return;window.__EMD_V119__=true;
+/* V119: استرجاع رمز المدير برمز استرجاع يُحفظ مرة واحدة (٣ أسطر منطق: إنشاء، عرض مرة، استخدام) */
+var SK='emd_v108_staff',WHO='emd_v108_who',FK='emd_v119_fail';
+function rd(){try{var c=JSON.parse(localStorage.getItem(SK)||'{}')||{};c.owner=c.owner||{};return c}catch(e){return {owner:{}}}}
+function wr(c){localStorage.setItem(SK,JSON.stringify(c))}
+function $(id){return document.getElementById(id)}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function toast(t){var e=document.createElement('div');e.className='emd103-toast';e.textContent=t;document.body.appendChild(e);setTimeout(function(){e.style.opacity='0'},2800);setTimeout(function(){e.remove()},3300)}
+/* نفس خوارزمية V108 تمامًا */
+function hash(pin,salt){var s=String(salt||'emd')+':'+String(pin);try{if(window.crypto&&crypto.subtle&&window.TextEncoder)return crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)).then(function(b){return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,'0')}).join('')})}catch(e){}
+  var h=5381;for(var i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))>>>0;return Promise.resolve('d'+h.toString(16))}
+function salt(){return Math.random().toString(36).slice(2,10)}
+var AL='ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+function genCode(){var a=new Uint8Array(12);try{crypto.getRandomValues(a)}catch(e){for(var i=0;i<12;i++)a[i]=Math.floor(Math.random()*256)}var o='';for(var j=0;j<12;j++){o+=AL[a[j]%AL.length];if(j%4===3&&j<11)o+='-'}return o}
+function norm(c){return String(c||'').toUpperCase().replace(/[^A-Z0-9]/g,'')}
+function ownerSession(){try{var w=JSON.parse(sessionStorage.getItem(WHO)||'null');return !!(w&&w.id==='owner')}catch(e){return false}}
+function enabled(){var c=rd();return !!(c.enabled&&c.owner&&c.owner.pin)}
+function hasRec(){var c=rd();return !!(c.owner&&c.owner.rec&&c.owner.rec.h)}
+function close(){var m=$('emd119Modal');if(m)m.remove()}
+function modal(html){close();var m=document.createElement('div');m.id='emd119Modal';m.innerHTML='<div class="box">'+html+'</div>';(document.getElementById('emd108Lock')||document.body).appendChild(m);return m}
+/* إنشاء رمز جديد وعرضه مرة واحدة */
+function createAndShow(){
+  var code=genCode(),sl=salt();
+  hash(norm(code),sl).then(function(h){var c=rd();c.owner.rec={salt:sl,h:h,at:Date.now()};wr(c);
+    var m=modal('<div style="font-size:38px">🛟</div><h3>رمز استرجاع المدير</h3><p>احفظ هذا الرمز في مكان آمن (صوّر الشاشة أو اكتبه). <b>لن يظهر مرة ثانية.</b> إذا نسيت رمزك السري تدخل به وتختار رمزًا جديدًا.</p><div class="code" id="emd119Code">'+esc(code)+'</div><button class="b2" id="emd119Cp">📋 نسخ الرمز</button><label class="chk"><input type="checkbox" id="emd119Ok"> حفظت الرمز في مكان آمن</label><button class="b1" id="emd119Done" disabled style="opacity:.5">تم</button>');
+    $('emd119Cp').onclick=function(){try{navigator.clipboard.writeText(code).then(function(){toast('📋 تم النسخ')})}catch(e){toast('اضغط مطولًا على الرمز لنسخه')}};
+    $('emd119Ok').onchange=function(){var d=$('emd119Done');d.disabled=!this.checked;d.style.opacity=this.checked?1:.5};
+    $('emd119Done').onclick=close;window.__emd119LastCode=code})}
+/* إعدادات الرمز (للمدير) */
+function manage(){
+  if(rd().enabled&&!ownerSession()){toast('🔒 هذا الخيار للمدير فقط');return}
+  var h=hasRec();
+  var m=modal('<div style="font-size:38px">🛟</div><h3>رمز استرجاع المدير</h3><p>الحالة: <b style="color:'+(h?'#166534':'#b45309')+'">'+(h?'✅ تم إنشاء رمز استرجاع':'⚠️ لا يوجد رمز استرجاع')+'</b><br>الرمز يخلّيك تعيد رمز المدير لو نسيته، بدون ما تفقد بياناتك.</p><button class="b1" id="emd119Gen">'+(h?'🔄 إنشاء رمز جديد (يلغي القديم)':'➕ إنشاء رمز استرجاع')+'</button><button class="b3" id="emd119Cl">إغلاق</button>');
+  $('emd119Cl').onclick=close;$('emd119Gen').onclick=function(){if(h&&!confirm('الرمز القديم سيتوقف عن العمل. متأكد؟'))return;createAndShow()}}
+/* شاشة الاسترجاع (من شاشة القفل) */
+function failState(){try{return JSON.parse(localStorage.getItem(FK)||'{}')||{}}catch(e){return {}}}
+function recover(){
+  var c=rd();
+  if(!c.owner.rec){modal('<div style="font-size:38px">⚠️</div><h3>ما فيه رمز استرجاع</h3><p>ما تم إنشاء رمز استرجاع لهذا الجهاز قبل كذا. الحلول المتاحة:<br>• استرجع نسخة احتياطية من ملف (النسخة تحمل رمزك القديم، فلا تفيد إلا لو تتذكره).<br>• تواصل مع الدعم.</p><button class="b3" id="emd119Cl">إغلاق</button>');$('emd119Cl').onclick=close;return}
+  var m=modal('<div style="font-size:38px">🔑</div><h3>استرجاع رمز المدير</h3><p>اكتب رمز الاسترجاع الذي حفظته، ثم اختر رمزًا سريًا جديدًا (٤ أرقام).</p><input type="text" id="emd119C" placeholder="XXXX-XXXX-XXXX" autocomplete="off" autocapitalize="characters"><input type="tel" id="emd119P" maxlength="4" inputmode="numeric" placeholder="الرمز الجديد ••••" autocomplete="off"><div class="err" id="emd119E"></div><button class="b1" id="emd119Go">✅ تأكيد</button><button class="b3" id="emd119Cl">إلغاء</button>');
+  $('emd119Cl').onclick=close;
+  $('emd119Go').onclick=function(){
+    var f=failState(),er=$('emd119E');
+    if(f.until&&Date.now()<f.until){er.textContent='🚫 محاولات كثيرة. حاول بعد '+Math.ceil((f.until-Date.now())/60000)+' دقيقة.';return}
+    var code=norm($('emd119C').value),np=$('emd119P').value.replace(/\D/g,'');
+    if(code.length<12){er.textContent='اكتب الرمز كاملًا (١٢ حرفًا).';return}
+    if(np.length!==4){er.textContent='الرمز الجديد لازم يكون ٤ أرقام.';return}
+    var c2=rd();
+    hash(code,c2.owner.rec.salt).then(function(h){
+      if(h!==c2.owner.rec.h){var n=(f.n||0)+1,o={n:n};if(n>=5){o={n:0,until:Date.now()+5*60000};er.textContent='🚫 ٥ محاولات غلط. انتظر ٥ دقائق.'}else er.textContent='❌ رمز الاسترجاع غير صحيح ('+(5-n)+' محاولات متبقية)';try{localStorage.setItem(FK,JSON.stringify(o))}catch(e){}return}
+      var sl=c2.owner.salt||salt();
+      hash(np,sl).then(function(ph){c2.owner.salt=sl;c2.owner.pin=ph;wr(c2);try{localStorage.removeItem(FK)}catch(e){}
+        close();toast('✅ تم تغيير رمز المدير. ادخل بالرمز الجديد');
+        /* الرمز القديم استُخدم؛ ننشئ واحدًا جديدًا بعد أول دخول */
+        var cc=rd();delete cc.owner.rec;wr(cc);try{sessionStorage.setItem('emd_v119_needrec','1')}catch(e){}})})}}
+/* ربط شاشة القفل */
+function decorate(){var lk=$('emd108Lock');if(!lk)return;var pad=lk.querySelector('.emd108-pad');if(!pad||lk.querySelector('.emd119-forgot'))return;
+  var crown=(lk.querySelector('.card>div')||{}).textContent||'';
+  var isOwner=/👑/.test(crown);
+  var b=document.createElement('button');b.type='button';b.className='emd119-forgot';
+  if(isOwner){b.textContent='🔑 نسيت رمز المدير؟';b.onclick=recover}
+  else{b.textContent='🔑 نسيت رمزي؟';b.onclick=function(){modal('<div style="font-size:38px">👷</div><h3>نسيت رمزك؟</h3><p>اطلب من المدير يغيّر لك الرمز من:<br><b>الموظفين ← تعديل ← رمز سري جديد</b></p><button class="b3" id="emd119Cl">حسنًا</button>');$('emd119Cl').onclick=close}}
+  pad.parentNode.appendChild(b)}
+new MutationObserver(function(){decorate()}).observe(document.documentElement,{childList:true,subtree:true});
+/* بعد دخول المدير لأول مرة: نفرض إنشاء رمز استرجاع */
+var nudged=false;
+function nudge(){if(nudged||$('emd119Modal'))return;if(!enabled()||!ownerSession())return;if(hasRec()&&!sessionStorage.getItem('emd_v119_needrec'))return;
+  nudged=true;try{sessionStorage.removeItem('emd_v119_needrec')}catch(e){}
+  var m=modal('<div style="font-size:38px">🛟</div><h3>أنشئ رمز استرجاع المدير</h3><p>لو نسيت رمزك السري لاحقًا ما فيه طريقة تدخل بها. أنشئ رمز استرجاع الآن واحفظه في مكان آمن.</p><button class="b1" id="emd119Y">➕ إنشاء الرمز الآن</button><button class="b3" id="emd119N">لاحقًا</button>');
+  $('emd119Y').onclick=createAndShow;$('emd119N').onclick=function(){close()}}
+setInterval(nudge,2500);
+function inject(){var g=$('emd327SystemGrid');if(!g||$('emd119Item'))return;
+ var b=document.createElement('button');b.type='button';b.className='emd327-item';b.id='emd119Item';b.setAttribute('data-emd108-skip','1');
+ b.innerHTML='<b>🛟 رمز استرجاع المدير</b><span>إنشاء رمز تسترجع به رمز المدير إذا نسيته.</span>';b.addEventListener('click',manage);g.appendChild(b)}
+setInterval(inject,1500);inject();
+window.EMDOwnerRecoveryV119={manage:manage,recover:recover,hash:hash,hasRec:hasRec};
 })();
 </script>
 </body>
