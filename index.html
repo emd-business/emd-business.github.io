@@ -5,7 +5,7 @@
 <!-- EMD BUILD V408: WhatsApp direct tracking + public star rating redesign -->
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
-<title>EMD Business — Standalone V119</title>
+<title>EMD Business — Standalone V120</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--text:#18202a;--muted:#687384;--line:#e4e8ef;--accent:#18202a;--soft:#eef2f7;--ok:#16794c;--warn:#a56a00;--danger:#b23b3b}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial;background:var(--bg);color:var(--text)}
@@ -19173,7 +19173,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V119</div>
+<div id="emdStandaloneV2Badge">EMD Business • V120</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -25986,6 +25986,64 @@ function inject(){var g=$('emd327SystemGrid');if(!g||$('emd119Item'))return;
  b.innerHTML='<b>🛟 رمز استرجاع المدير</b><span>إنشاء رمز تسترجع به رمز المدير إذا نسيته.</span>';b.addEventListener('click',manage);g.appendChild(b)}
 setInterval(inject,1500);inject();
 window.EMDOwnerRecoveryV119={manage:manage,recover:recover,hash:hash,hasRec:hasRec};
+})();
+</script>
+<style id="EMD-V120-css">
+#emd120Modal{position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:14px;direction:rtl}
+#emd120Modal .box{background:#fff;border-radius:22px;padding:16px;width:min(460px,100%);max-height:92vh;overflow:auto;font-family:inherit}
+#emd120Modal h3{margin:0 0 4px;font-size:19px}#emd120Modal p{margin:4px 0 10px;color:#475569;font-size:13.5px;line-height:1.8}
+#emd120Modal .row{display:flex;gap:6px;align-items:center;background:#f8fafc;border:1px solid #e8eaee;border-radius:12px;padding:6px 10px;margin:6px 0}
+#emd120Modal .row b{flex:1;font-size:14px;overflow-wrap:anywhere}
+#emd120Modal .row button{border:0;background:#fee2e2;color:#b91c1c;border-radius:10px;width:42px;height:42px;font-size:16px;cursor:pointer}
+#emd120Modal input{width:100%;box-sizing:border-box;border:1px solid #dfe3e8;border-radius:12px;padding:12px;font:inherit;font-size:16px}
+#emd120Modal .b{display:block;width:100%;border:0;border-radius:14px;padding:13px;font:inherit;font-size:15px;font-weight:900;cursor:pointer;margin-top:8px;min-height:46px}
+#emd120Modal .b1{background:#0f766e;color:#fff}#emd120Modal .b3{background:#f1f5f9;color:#334155}
+</style>
+<script id="EMD-V120-parse">
+(function(){'use strict';
+if(window.__EMD_V120__)return;window.__EMD_V120__=true;
+/* V120: تنظيف رسائل الطلب قبل التحليل (أسطر القالب، رقم التحويل الخاص بالمتجر، «(مكتب» بدون إغلاق…) + قائمة جمل يضيفها المستخدم */
+function D(){return window.db}
+function ign(){var d=D();return d&&Array.isArray(d.parseIgnore)?d.parseIgnore.filter(Boolean):[]}
+function digitsFix(s){return String(s).replace(/[٠-٩]/g,function(d){return '٠١٢٣٤٥٦٧٨٩'.indexOf(d)})}
+var BUILTIN=[/⚠️?/,/اكتب\s*اسم\s*الكتاب/,/غي[ّر]*ر\s*الرقم\s*إذا/,/^\W*لتثبيت\s*الطلب/,/(?:حو[ّ]?ل|حوّل|حول)\s*(?:على|الى|إلى)\s*[\d٠-٩]{6,}/,/^\W*المنتج\s*\(?\s*العدد\s*\)?\W*$/,/^\W*صورة\s*التحويل/];
+function clean(raw){
+  var extra=ign().map(function(x){return String(x).trim()}).filter(Boolean);
+  var out=[];
+  String(raw).split(/\r?\n/).forEach(function(line){
+    var t=line.trim();
+    if(t&&BUILTIN.some(function(r){return r.test(t)}))return;
+    if(t&&extra.some(function(x){return t.indexOf(x)>=0}))return;
+    var m=t.match(/^[^\p{L}\p{N}]*التوصيل\s*[:：]?\s*\(?\s*(مكتب|مندوب|الى المنزل|إلى المنزل|استلام[^)\n]*)\)?\s*$/u);
+    if(m){out.push('طريقة التوصيل: '+m[1].trim());return}
+    out.push(line)});
+  return out.join('\n');
+}
+function wrap(){var f=window.parse;if(typeof f!=='function'||f.__v120)return;
+  var g=function(){var ta=document.getElementById('raw');if(!ta)return f.apply(this,arguments);var orig=ta.value;
+    try{ta.value=clean(orig)}catch(e){}
+    try{return f.apply(this,arguments)}finally{ta.value=orig}};
+  g.__v120=true;window.parse=g}
+wrap();setTimeout(wrap,1700);setTimeout(wrap,4300);setInterval(wrap,3000);
+/* إدارة الجمل المتجاهلة */
+function close(){var m=document.getElementById('emd120Modal');if(m)m.remove()}
+function persist(){try{if(typeof window.save==='function')window.save()}catch(e){}}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function open(){close();var m=document.createElement('div');m.id='emd120Modal';document.body.appendChild(m);
+  m.addEventListener('click',function(e){if(e.target===m)return close();var b=e.target.closest('[data-a]');if(!b)return;var a=b.getAttribute('data-a');
+    if(a==='x')close();
+    else if(a==='add'){var v=String(document.getElementById('emd120In').value||'').trim();if(v.length<3){return}var d=D();d.parseIgnore=ign().concat([v]);persist();paint()}
+    else if(a==='del'){var d2=D(),l=ign();l.splice(+b.getAttribute('data-i'),1);d2.parseIgnore=l;persist();paint()}});
+  paint()}
+function paint(){var m=document.getElementById('emd120Modal');if(!m)return;var l=ign();
+  m.innerHTML='<div class="box"><h3>🧹 جمل يتجاهلها التحليل</h3><p>أي سطر في رسالة الطلب فيه إحدى هذه الجمل يُتجاهل عند التحليل (مثل تنبيهات قالب الرسالة، أو رقم تحويلك). يكفي تكتب جزءًا مميزًا من السطر.</p>'
+   +(l.length?l.map(function(x,i){return '<div class="row"><b>'+esc(x)+'</b><button data-a="del" data-i="'+i+'" aria-label="حذف">🗑️</button></div>'}).join(''):'<p>ما أضفت جملًا بعد. التطبيق يتجاهل تلقائيًا تنبيهات القالب المعروفة.</p>')
+   +'<input id="emd120In" placeholder="مثال: لتثبيت الطلب حوّل على" autocomplete="off"><button class="b b1" data-a="add">➕ إضافة جملة</button><button class="b b3" data-a="x">إغلاق</button></div>'}
+function inject(){var g=document.getElementById('emd327SystemGrid');if(!g||document.getElementById('emd120Item'))return;
+ var b=document.createElement('button');b.type='button';b.className='emd327-item';b.id='emd120Item';b.setAttribute('data-emd108-skip','1');
+ b.innerHTML='<b>🧹 جمل يتجاهلها التحليل</b><span>علّم التطبيق يتجاهل أسطر معيّنة في رسائل الطلبات.</span>';b.addEventListener('click',open);g.appendChild(b)}
+setInterval(inject,1500);inject();
+window.EMDParseCleanV120={clean:clean,open:open};
 })();
 </script>
 </body>
