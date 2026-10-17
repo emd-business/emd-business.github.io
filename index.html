@@ -8,11 +8,11 @@
 <link rel="manifest" href="/manifest.webmanifest"/>
 <meta name="theme-color" content="#0f172a"/>
 <meta name="mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="default"/>
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V124</title>
+<title>EMD Business — Standalone V125</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--text:#18202a;--muted:#687384;--line:#e4e8ef;--accent:#18202a;--soft:#eef2f7;--ok:#16794c;--warn:#a56a00;--danger:#b23b3b}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial;background:var(--bg);color:var(--text)}
@@ -19180,7 +19180,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V124</div>
+<div id="emdStandaloneV2Badge">EMD Business • V125</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -20589,7 +20589,7 @@ try{(window.__EMD_V75_NO_V55_OBS__=1)||new MutationObserver(function(ms){ms.forE
     lines.forEach(function(line){
       var l=dig(line);
       if(LABEL.test(l)||/تحويل|حوال|مستفيد/.test(l)){out.push(line);return}
-      var m=l.match(/^(.*?)(?:\+?\s*968[\s-]*)?(?<!\d)(\d{4}[\s-]?\d{4})(?!\d)(.*)$/);
+      var m=(function(s){var re=/(?:\+?\s*968[\s-]*)?(\d{4}[\s-]?\d{4})(?!\d)/g,x;while((x=re.exec(s))){var st=x.index+x[0].length-x[1].length;if(st>0&&/\d/.test(s.charAt(st-1))){re.lastIndex=x.index+1;continue}return [s,s.slice(0,x.index),x[1],s.slice(x.index+x[0].length)]}return null})(l);
       if(!m){out.push(line);return}
       var before=m[1].replace(/[:：\-–,،]+\s*$/,'').trim(),after=m[3].replace(/^[\s:：\-–,،]+/,'').trim();
       if(!before&&!after){out.push(m[2].replace(/[\s-]/g,''));return}
@@ -26422,6 +26422,41 @@ function apply(r){
 function inject(){var g=document.getElementById('emd327SystemGrid');if(g&&!document.getElementById('emd124Item')){var b=document.createElement('button');b.type='button';b.className='emd327-item';b.id='emd124Item';b.setAttribute('data-emd108-skip','1');b.innerHTML='<b>🛟 استرجاع الطلبات المفقودة</b><span>يفحص النسخ التلقائية ويرجع طلبًا اختفى أو حالة رجعت للخلف.</span>';b.addEventListener('click',open);g.appendChild(b)}}
 setInterval(inject,1500);inject();
 window.EMDRecoverV124={open:open,scan:scan,apply:apply};
+})();
+</script>
+<style id="EMD-V125-ios-css">
+@supports (-webkit-touch-callout:none){input,select,textarea{font-size:16px!important}}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{padding-bottom:env(safe-area-inset-bottom)}
+#emd125Ios{padding-right:68px!important;position:relative;z-index:5;margin:8px 8px 4px;background:#0f172a;color:#fff;border-radius:16px;padding:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;box-shadow:0 4px 14px rgba(0,0,0,.2);direction:rtl;font-family:inherit}
+#emd125Ios .t{flex:1 1 220px;font-size:14px;line-height:1.8;font-weight:700}
+#emd125Ios button,#emd125Ios a{border:0;border-radius:12px;padding:10px 14px;font:inherit;font-size:14px;font-weight:900;cursor:pointer;min-height:44px;text-decoration:none;display:inline-flex;align-items:center}
+#emd125Ios .go{background:#f59e0b;color:#111}#emd125Ios .no{background:#1e293b;color:#cbd5e1}
+</style>
+<script id="EMD-V125-ios">
+(function(){'use strict';
+if(window.__EMD_V125_IOS__)return;window.__EMD_V125_IOS__=true;
+/* V125: آيفون — إرشاد التثبيت الصحيح (Safari ← مشاركة ← إضافة إلى الشاشة الرئيسية)، وتنبيه لو فُتح من داخل تطبيق (واتساب/انستغرام...) */
+var UA=navigator.userAgent||'',DK='emd_v125_iosdismiss';
+function ios(){return /iPhone|iPad|iPod/i.test(UA)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)}
+function std(){try{return window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true}catch(e){return false}}
+function inApp(){return /FBAN|FBAV|Instagram|Line\/|MicroMessenger|Snapchat|TikTok|Twitter|GSA\/|WhatsApp/i.test(UA)}
+function safari(){return /Safari/i.test(UA)&&!/CriOS|FxiOS|EdgiOS|OPiOS|Chrome/i.test(UA)&&!inApp()}
+function dismissed(){try{return !!localStorage.getItem(DK)}catch(e){return false}}
+function show(){
+  if(!ios()||std()||dismissed()||document.getElementById('emd125Ios'))return;
+  if(document.getElementById('emd108Lock')||document.getElementById('emd122Ban'))return;
+  var msg,extra='';
+  if(inApp())msg='📱 أنت تفتح التطبيق من داخل تطبيق آخر. للتثبيت وحفظ بياناتك بأمان: اضغط ⋯ أو أيقونة المتصفح ثم «فتح في Safari».';
+  else if(!safari())msg='📱 للتثبيت على آيفون: اضغط زر المشاركة ⬆️ ثم «إضافة إلى الشاشة الرئيسية». (إن لم يظهر الخيار افتح الرابط في Safari).';
+  else msg='📲 ثبّت التطبيق على آيفون: اضغط زر المشاركة ⬆️ أسفل الشاشة ← «إضافة إلى الشاشة الرئيسية» ← «إضافة». هكذا تُحفظ بياناتك ولا يحذفها Safari.';
+  var b=document.createElement('div');b.id='emd125Ios';b.setAttribute('data-emd108-skip','1');
+  b.innerHTML='<div class="t">'+msg+'</div><a class="go" href="/iphone.html" target="_blank" rel="noopener">شرح بالصور</a><button type="button" class="no">لاحقًا</button>';
+  b.querySelector('.no').onclick=function(){try{localStorage.setItem(DK,'1')}catch(e){}b.remove()};
+  var host=document.querySelector('.app')||document.body;host.insertBefore(b,host.firstChild);
+}
+setTimeout(show,6000);setInterval(show,15000);
+window.EMDiOSV125={show:show,ios:ios,inApp:inApp,safari:safari};
 })();
 </script>
 </body>
