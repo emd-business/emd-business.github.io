@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V123</title>
+<title>EMD Business — Standalone V124</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--text:#18202a;--muted:#687384;--line:#e4e8ef;--accent:#18202a;--soft:#eef2f7;--ok:#16794c;--warn:#a56a00;--danger:#b23b3b}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial;background:var(--bg);color:var(--text)}
@@ -19180,7 +19180,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V123</div>
+<div id="emdStandaloneV2Badge">EMD Business • V124</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -26305,6 +26305,123 @@ var oc=HTMLAnchorElement.prototype.click;
 HTMLAnchorElement.prototype.click=function(){if(isFile(this)){save(this);return}return oc.apply(this,arguments)};
 document.addEventListener('click',function(e){var a=e.target&&e.target.closest?e.target.closest('a[download]'):null;if(isFile(a)){e.preventDefault();e.stopPropagation();save(a)}},true);
 window.EMDAndroidV123={save:save};
+})();
+</script>
+<script id="EMD-V124-xtab">
+(function(){'use strict';
+if(window.__EMD_V124_XTAB__)return;window.__EMD_V124_XTAB__=true;
+/* V124: تزامن النوافذ. لو التطبيق مفتوح في أكثر من تبويب/نافذة على نفس الجهاز (متصفح + تطبيق مثبّت)،
+   أي حفظ من نافذة قديمة كان يكتب بياناتها القديمة فوق الجديدة (طلب يختفي أو حالة ترجع).
+   الآن كل نافذة تتبنى فورًا أي تغيير تكتبه نافذة أخرى، قبل أن تحفظ هي. */
+var MAIN='emd_business_v1',last=null;
+try{last=localStorage.getItem(MAIN)}catch(e){}
+try{var prev=Storage.prototype.setItem;
+  Storage.prototype.setItem=function(k,v){var r=prev.apply(this,arguments);if(this===window.localStorage&&k===MAIN){try{last=localStorage.getItem(MAIN)}catch(e){}}return r}}catch(e){}
+function note(t){try{if(typeof window.toast==='function')window.toast(t)}catch(e){}}
+function redraw(){['render','renderCustomers','renderProducts','renderStock'].forEach(function(f){try{if(typeof window[f]==='function')window[f]()}catch(e){}})}
+function adopt(raw,why){
+  try{
+    if(!raw||raw===last)return false;
+    var nd=JSON.parse(raw);if(!nd||typeof nd!=='object'||!Array.isArray(nd.orders))return false;
+    last=raw;window.db=nd;redraw();
+    window.__emd124Adopted=(window.__emd124Adopted||0)+1;
+    note('🔄 تحدّثت البيانات من نافذة أخرى مفتوحة للتطبيق');
+    return true
+  }catch(e){return false}
+}
+/* capture أول: لازم نتبنى البيانات الجديدة قبل أي مستمع قديم (مثل إعادة حساب المخزون) يحفظ نسخته القديمة */
+window.addEventListener('storage',function(e){if(e.key===MAIN&&e.storageArea===window.localStorage)adopt(e.newValue,'storage')},true);
+function recheck(){try{adopt(localStorage.getItem(MAIN),'focus')}catch(e){}}
+document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')recheck()},true);
+window.addEventListener('focus',recheck,true);
+window.addEventListener('pageshow',recheck,true);
+window.EMDXTabV124={adopt:adopt,recheck:recheck};
+})();
+</script>
+<style id="EMD-V124-css">
+#emd124Modal{position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:2147483647;display:flex;align-items:flex-start;justify-content:center;padding:12px;direction:rtl;overflow:auto}
+#emd124Modal .box{background:#fff;border-radius:22px;padding:16px;width:min(560px,100%);margin:8px 0;font-family:inherit;color:#17212b}
+#emd124Modal h3{margin:0 0 6px;font-size:19px}#emd124Modal p{margin:4px 0 10px;color:#475569;font-size:13.5px;line-height:1.8}
+#emd124Modal h4{margin:14px 0 6px;font-size:15px}
+#emd124Modal .row{display:flex;gap:10px;align-items:flex-start;padding:9px 6px;border-bottom:1px solid #eef0f3;font-size:14px;line-height:1.6}
+#emd124Modal .row input{width:20px;height:20px;margin-top:3px;flex:none}
+#emd124Modal .row small{display:block;color:#64748b;font-size:12px}
+#emd124Modal .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+#emd124Modal .acts button{flex:1 1 140px;border:0;border-radius:14px;padding:13px;font:inherit;font-size:15px;font-weight:900;cursor:pointer;min-height:48px}
+#emd124Modal .g{background:#16a34a;color:#fff}#emd124Modal .l{background:#f1f5f9;color:#334155}
+#emd124Modal .ok{background:#ecfdf5;border:1px solid #a7f3d0;border-radius:12px;padding:10px;margin:10px 0;font-size:13.5px;line-height:1.8;color:#065f46}
+</style>
+<script id="EMD-V124-fix">
+(function(){'use strict';
+if(window.__EMD_V124__)return;window.__EMD_V124__=true;
+/* V124: أداة استرجاع الطلبات المفقودة من النسخ التلقائية (الإصلاح الأساسي لسبب الاختفاء في وحدة تزامن النوافذ أعلاه). */
+var MAIN='emd_business_v1';
+var RANK={'new':1,'waiting':2,'ready':3,'packing':4,'shipped':5,'received':6};
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function cur(){var d=window.db;if(d&&typeof d==='object')return d;try{return JSON.parse(localStorage.getItem(MAIN)||'{}')}catch(e){return {}}}
+function idOf(o){return String(o&&(o.id!=null?o.id:o.orderNumber!=null?o.orderNumber:o.number!=null?o.number:'')||'')}
+function openIDB(){return new Promise(function(res,rej){try{var r=indexedDB.open('emd_protect_v66',1);r.onsuccess=function(){res(r.result)};r.onerror=function(){rej(r.error)};r.onblocked=function(){rej(new Error('blocked'))}}catch(e){rej(e)}})}
+function allSnaps(){return openIDB().then(function(d){return new Promise(function(res,rej){
+  if(!d.objectStoreNames.contains('snaps')){res([]);return}
+  var out=[],c=d.transaction('snaps','readonly').objectStore('snaps').openCursor();
+  c.onsuccess=function(){var k=c.result;if(k){out.push(k.value);k.continue()}else res(out)};c.onerror=function(){rej(c.error)}})})}
+function archivedIds(){try{if(window.EMDArchiveV67&&window.EMDArchiveV67.exportAll)return Promise.resolve(window.EMDArchiveV67.exportAll()).then(function(a){var m={};(a||[]).forEach(function(r){m[idOf(r.order||r)]=1});return m},function(){return {}})}catch(e){}return Promise.resolve({})}
+function scan(){
+  return Promise.all([allSnaps(),archivedIds()]).then(function(r){
+    var snaps=(r[0]||[]).filter(function(s){return s&&s.keys&&s.keys[MAIN]}).sort(function(a,b){return b.at-a.at});
+    var arch=r[1]||{},d=cur(),now={};(Array.isArray(d.orders)?d.orders:[]).forEach(function(o){now[idOf(o)]=o});
+    var seen={},missing=[],back=[];
+    snaps.forEach(function(s){
+      var db;try{db=JSON.parse(s.keys[MAIN])}catch(e){return}
+      (db&&Array.isArray(db.orders)?db.orders:[]).forEach(function(o){
+        var id=idOf(o);if(!id||seen[id])return;seen[id]=1;
+        var c=now[id];
+        if(!c){if(!arch[id])missing.push({o:o,at:s.at})}
+        else{var a=RANK[String(o.status||'new')]||0,b=RANK[String(c.status||'new')]||0;if(a>b&&(a>=5))back.push({o:o,cur:c,at:s.at})}
+      })
+    });
+    return {missing:missing,back:back,snaps:snaps.length}
+  })
+}
+function fmt(t){try{return new Date(t).toLocaleString('ar-OM',{dateStyle:'medium',timeStyle:'short'})}catch(e){return ''}}
+var ST={'new':'جديد','waiting':'بانتظار المنتج','ready':'جاهز','packing':'قيد التجهيز','shipped':'تم الشحن','received':'تم الاستلام'};
+function close(){var m=document.getElementById('emd124Modal');if(m)m.remove()}
+function open(){
+  close();var m=document.createElement('div');m.id='emd124Modal';m.setAttribute('data-emd108-skip','1');
+  m.innerHTML='<div class="box"><h3>🛟 استرجاع الطلبات المفقودة</h3><p>أبحث في النسخ الاحتياطية التلقائية المخزنة داخل التطبيق عن طلبات اختفت أو رجعت حالتها للخلف.</p><div id="emd124Body">⏳ جارٍ الفحص…</div></div>';
+  m.addEventListener('click',function(e){if(e.target===m)close()});document.body.appendChild(m);
+  scan().then(function(r){render(r)},function(e){document.getElementById('emd124Body').innerHTML='تعذر قراءة النسخ الاحتياطية: '+esc(e&&e.message||e)+'<div class="acts"><button type="button" class="l" id="emd124X">إغلاق</button></div>';var x=document.getElementById('emd124X');if(x)x.onclick=close})
+}
+function render(r){
+  var b=document.getElementById('emd124Body');if(!b)return;
+  if(!r.missing.length&&!r.back.length){b.innerHTML='<div class="ok">✅ لم أجد طلبات مفقودة ولا حالات رجعت للخلف في '+r.snaps+' نسخة تلقائية.</div><div class="acts"><button type="button" class="l" id="emd124X">إغلاق</button></div>';document.getElementById('emd124X').onclick=close;return}
+  var h='';
+  if(r.missing.length){h+='<h4>📦 طلبات غير موجودة الآن ('+r.missing.length+')</h4>'+r.missing.map(function(x,i){var o=x.o;return '<label class="row"><input type="checkbox" checked data-k="m" data-i="'+i+'"><span><b>'+esc(idOf(o))+'</b> · '+esc(o.name||'بدون اسم')+' · '+esc(ST[o.status]||o.status||'')+'<small>آخر ظهور في نسخة: '+esc(fmt(x.at))+'</small></span></label>'}).join('')}
+  if(r.back.length){h+='<h4>↩️ طلبات رجعت حالتها للخلف ('+r.back.length+')</h4>'+r.back.map(function(x,i){var o=x.o;return '<label class="row"><input type="checkbox" checked data-k="b" data-i="'+i+'"><span><b>'+esc(idOf(o))+'</b> · '+esc(o.name||'بدون اسم')+'<small>الآن: '+esc(ST[x.cur.status]||x.cur.status)+' ← كانت: '+esc(ST[o.status]||o.status)+' (نسخة '+esc(fmt(x.at))+')</small></span></label>'}).join('')}
+  b.innerHTML=h+'<p>ألغِ تحديد أي طلب لا تريد استرجاعه. سأحفظ نسخة احتياطية قبل التطبيق.</p><div class="acts"><button type="button" class="g" id="emd124Go">✅ استرجاع المحدد</button><button type="button" class="l" id="emd124X">إغلاق</button></div>';
+  document.getElementById('emd124X').onclick=close;
+  document.getElementById('emd124Go').onclick=function(){apply(r)}
+}
+function apply(r){
+  var pick=function(k){return Array.prototype.slice.call(document.querySelectorAll('#emd124Body input[data-k='+k+']:checked')).map(function(i){return +i.getAttribute('data-i')})};
+  var pm=pick('m'),pb=pick('b');if(!pm.length&&!pb.length){close();return}
+  var pre=Promise.resolve();try{if(window.EMDProtectV66&&window.EMDProtectV66.snapshot)pre=Promise.resolve(window.EMDProtectV66.snapshot()).catch(function(){})}catch(e){}
+  pre.then(function(){
+    var d=cur();if(!Array.isArray(d.orders))d.orders=[];
+    var at=new Date().toISOString(),added=0,fixed=0,have={};d.orders.forEach(function(o){have[idOf(o)]=o});
+    pm.forEach(function(i){var o=JSON.parse(JSON.stringify(r.missing[i].o));if(have[idOf(o)])return;o.recoveredAt=at;d.orders.push(o);have[idOf(o)]=o;added++});
+    pb.forEach(function(i){var x=r.back[i],c=have[idOf(x.o)];if(!c)return;['status','preparationStatus','shippedAt','receivedAt','company','deliveryMethod','tracking','stockDeducted','packed','packedAt','shipments','events','history'].forEach(function(k){if(x.o[k]!==undefined)c[k]=JSON.parse(JSON.stringify(x.o[k]))});c.recoveredAt=at;fixed++});
+    window.db=d;
+    try{if(typeof window.save==='function')window.save();else localStorage.setItem(MAIN,JSON.stringify(d))}catch(e){alert('تعذر الحفظ: '+(e&&e.message||e));return}
+    var b=document.getElementById('emd124Body');
+    if(b)b.innerHTML='<div class="ok">✅ تم: استرجعت '+added+' طلب، وأرجعت حالة '+fixed+' طلب.</div><div class="acts"><button type="button" class="g" id="emd124X">تم</button></div>';
+    var x=document.getElementById('emd124X');if(x)x.onclick=close;
+    try{if(typeof window.render==='function')window.render()}catch(e){}
+  })
+}
+function inject(){var g=document.getElementById('emd327SystemGrid');if(g&&!document.getElementById('emd124Item')){var b=document.createElement('button');b.type='button';b.className='emd327-item';b.id='emd124Item';b.setAttribute('data-emd108-skip','1');b.innerHTML='<b>🛟 استرجاع الطلبات المفقودة</b><span>يفحص النسخ التلقائية ويرجع طلبًا اختفى أو حالة رجعت للخلف.</span>';b.addEventListener('click',open);g.appendChild(b)}}
+setInterval(inject,1500);inject();
+window.EMDRecoverV124={open:open,scan:scan,apply:apply};
 })();
 </script>
 </body>
