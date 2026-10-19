@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V127</title>
+<title>EMD Business — Standalone V128</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--text:#18202a;--muted:#687384;--line:#e4e8ef;--accent:#18202a;--soft:#eef2f7;--ok:#16794c;--warn:#a56a00;--danger:#b23b3b}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial;background:var(--bg);color:var(--text)}
@@ -893,6 +893,7 @@ function orderSearchHay(o){
 }
 function searchOrderMatch(o,q){
  q=normSearchText(q); if(!q)return true;
+ if(window.EMDPQ&&EMDPQ.parse(q))return EMDPQ.hit(o.phone,q)||EMDPQ.idHit(o,q);
  const hay=orderSearchHay(o);
  const tokens=q.split(' ').filter(Boolean);
  return tokens.every(t=>{
@@ -985,7 +986,7 @@ function auditShippingMessageV375(o){
 }
 function renderCustomers(){
  let q=(document.getElementById('customerSearch')?.value||'').trim().toLowerCase();
- let arr=db.customers.filter(c=>(c.name||'').toLowerCase().includes(q)||(c.phone||'').includes(q));
+ let arr=db.customers.filter(c=>(c.name||'').toLowerCase().includes(q)||(c.phone||'').includes(q)||(window.EMDPQ&&EMDPQ.hit(c.phone,q)));
  document.getElementById('customersList').innerHTML=arr.length?arr.map(c=>`<div class="product"><span>👤 <b>${esc(c.name||'غير مذكور')}</b><br><span class="muted">📱 ${esc(c.phone)} · 📍 ${esc(c.place||'')}</span></span><span style="display:flex;gap:7px;align-items:center"><span class="pill">📦 ${(c.orders||[]).length} طلب</span><button class="secondary" onclick="showCustomerHistory('${esc(c.phone)}')">📋 السجل</button></span></div>`).join(''):'<div class="empty">لا يوجد عملاء بعد.</div>';
 }
 function showCustomerHistory(phone){
@@ -2366,7 +2367,7 @@ function openWhatsApp(order){
     const q=(document.getElementById('emdShipSearchV124')?.value||'').trim().toLowerCase();
     const mode=document.getElementById('emdShipFilterV124')?.value||'shipped';
     document.querySelectorAll('#emdShipListV124 .emd-ship-card-v34').forEach(card=>{
-      const okQ=!q || (card.dataset.shipSearch||'').includes(q);
+      const okQ=!q || (window.EMDPQ?EMDPQ.has(card.dataset.shipSearch||'',q):(card.dataset.shipSearch||'').includes(q));
       const okS=mode==='all' || (card.dataset.shipStatus||'')===mode;
       card.style.display=okQ&&okS?'block':'none';
     });
@@ -2390,7 +2391,7 @@ function openWhatsApp(order){
         <div style="border:1px solid #eee;border-radius:13px;padding:12px;text-align:center">📬 مستلمة<b style="display:block;font-size:24px">${received.length}</b></div>
       </div>
       <div id="emdShipListV124">
-      ${shipped.length?shipped.map(o=>`<div class="emd-ship-card-v34" data-ship-search="${esc34((o.id+' '+(o.name||'')+' '+(o.phone||'')+' '+(o.tracking||'')).toLowerCase())}" data-ship-status="shipped">
+      ${shipped.length?shipped.map(o=>`<div class="emd-ship-card-v34" data-ship-search="${esc34((o.id+' '+(o.name||'')+' '+(o.phone||'')+' '+(window.EMDPQ?EMDPQ.canon(o.phone):'')+' '+(o.tracking||'')).toLowerCase())}" data-ship-status="shipped">
         <b>${esc34(o.id)} — ${esc34(o.name||'اسم غير مذكور')}</b>
         <div class="muted" style="margin:7px 0">📱 ${esc34(o.phone||'')} · 🚚 ${esc34(o.company||'غير محددة')} · ${esc34(o.deliveryMethod||'')}</div>
         ${o.tracking?`<div>🔢 التتبع: <b>${esc34(o.tracking)}</b></div>`:''}
@@ -2935,7 +2936,7 @@ function openWhatsApp(order){
     if(!el)return;
     const arr=(db.customers||[]).filter(c=>
       String(c.name||'').toLowerCase().includes(q)||
-      phone42(c.phone).includes(phone42(q))||
+      ((phone42(q)&&phone42(c.phone).includes(phone42(q)))||(window.EMDPQ&&EMDPQ.hit(c.phone,q)))||
       String(c.place||'').toLowerCase().includes(q)
     );
     el.innerHTML=arr.length?arr.map(c=>`
@@ -5687,7 +5688,7 @@ function openWhatsApp(order){
     const all=data();
     const q=String(document.getElementById('customerPageSearch')?.value||'').trim().toLowerCase();
     const sort=document.getElementById('customerPageSort76')?.value||'recent';
-    const filtered=all.filter(c=>!q||String(c.name||'').toLowerCase().includes(q)||String(c.phone||'').includes(phone(q))||String(c.place||c.location||'').toLowerCase().includes(q));
+    const filtered=all.filter(c=>!q||String(c.name||'').toLowerCase().includes(q)||((phone(q)&&String(c.phone||'').includes(phone(q)))||(window.EMDPQ&&EMDPQ.hit(c.phone,q)))||String(c.place||c.location||'').toLowerCase().includes(q));
     filtered.sort((a,b)=>sort==='orders'?(b._count-a._count):sort==='name'?String(a.name||'').localeCompare(String(b.name||''),'ar'):sort==='phone'?String(a.phone).localeCompare(String(b.phone)):b._lastTime-a._lastTime);
     const total=all.length, repeat=all.filter(c=>c._count>1).length, active=all.reduce((n,c)=>n+c._orders.filter(o=>!['shipped','received'].includes(o.status||'new')).length,0), totalOrders=all.reduce((n,c)=>n+c._count,0);
     const stats=document.getElementById('emdCustomerStats76');
@@ -5731,6 +5732,7 @@ function openWhatsApp(order){
     wrapped.__v76=true;window.show=wrapped;
   }
   setTimeout(renderPage,100);
+  window.__emdRenderCustPageV76=renderPage;
 })();
 </script>
 
@@ -6401,7 +6403,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   const oldRC=window.renderCustomers, oldRP=window.renderProducts;
   window.renderCustomers=function(){
     let q=(document.getElementById('customerSearch')?.value||'').trim().toLowerCase();
-    let arr=(db.customers||[]).filter(c=>(c.name||'').toLowerCase().includes(q)||(c.phone||'').includes(q));
+    let arr=(db.customers||[]).filter(c=>(c.name||'').toLowerCase().includes(q)||(c.phone||'').includes(q)||(window.EMDPQ&&EMDPQ.hit(c.phone,q)));
     const el=document.getElementById('customersList'); if(!el)return;
     el.innerHTML=arr.length?arr.map(c=>{
       const os=(db.orders||[]).filter(o=>o.phone===c.phone); let pieces=0,active=0,counts={};
@@ -7736,8 +7738,8 @@ else {wrapAddInventory();setTimeout(renderArrival,300)}
    if(!map[p].name && o.name)map[p].name=o.name;
   });
   let rows=Object.values(map).filter(x=>{
-   const hay=norm((x.name||'')+' '+(x.phone||''));
-   return !q||hay.includes(q);
+   const hay=norm((x.name||'')+' '+(x.phone||'')+' '+(window.EMDPQ?EMDPQ.canon(x.phone):''));
+   return !q||(window.EMDPQ?EMDPQ.has(hay,q):hay.includes(q));
   }).sort((a,b)=>(b.orders||[]).length-(a.orders||[]).length);
   c.innerHTML=rows.length?rows.map((x,i)=>{
    const arr=x.orders||[], active=arr.filter(o=>!['received','completed','cancelled','canceled'].includes(status(o))).length;
@@ -7897,12 +7899,12 @@ else {wrapAddInventory();setTimeout(renderArrival,300)}
   const out=[];
   orders().forEach(o=>{
    const its=o.products||o.items||[];
-   const hay=norm([o.id,o.orderNumber,o.name,o.phone,o.customerPhone,o.place,o.company,o.deliveryCompany,...its.flatMap(i=>[i.name,i.product,i.productName])].join(' '));
-   if(hay.includes(q))out.push({type:'order',o});
+   const hay=norm([o.id,o.orderNumber,o.name,o.phone,(window.EMDPQ?EMDPQ.canon(o.phone||o.customerPhone):''),o.customerPhone,o.place,o.company,o.deliveryCompany,...its.flatMap(i=>[i.name,i.product,i.productName])].join(' '));
+   if(window.EMDPQ?EMDPQ.has(hay,q):hay.includes(q))out.push({type:'order',o});
   });
   customers().forEach(x=>{
-   const hay=norm([x.name,x.phone,x.mobile,x.place,x.note].join(' '));
-   if(hay.includes(q))out.push({type:'customer',x});
+   const hay=norm([x.name,x.phone,(window.EMDPQ?EMDPQ.canon(x.phone||x.mobile):''),x.mobile,x.place,x.note].join(' '));
+   if(window.EMDPQ?EMDPQ.has(hay,q):hay.includes(q))out.push({type:'customer',x});
   });
   products().forEach(p=>{
    const hay=norm([p.name,p.productName,p.title,p.code].join(' '));
@@ -7988,8 +7990,8 @@ else {wrapAddInventory();setTimeout(renderArrival,300)}
   const rows=orders().filter(o=>{
    if(!matchFilter(o))return false;
    const its=o.products||o.items||[];
-   const hay=norm([o.id,o.orderNumber,o.name,o.phone,o.customerPhone,o.place,o.company,o.deliveryCompany,...its.flatMap(i=>[i.name,i.product,i.productName])].join(' '));
-   return !q||hay.includes(q);
+   const hay=norm([o.id,o.orderNumber,o.name,o.phone,(window.EMDPQ?EMDPQ.canon(o.phone||o.customerPhone):''),o.customerPhone,o.place,o.company,o.deliveryCompany,...its.flatMap(i=>[i.name,i.product,i.productName])].join(' '));
+   return !q||(window.EMDPQ?EMDPQ.has(hay,q):hay.includes(q));
   });
   c.innerHTML=rows.length?rows.slice().reverse().map(o=>{
    const its=o.products||o.items||[];
@@ -9104,7 +9106,7 @@ else {wrapAddInventory();setTimeout(renderArrival,300)}
    body.innerHTML='<input id="emd220OrderSearch" class="emd220-search" placeholder="ابحث بالاسم أو الهاتف أو رقم الطلب..." oninput="emdV220RenderOrders()"><div id="emdV220Orders"></div>';
    window.emdV220RenderOrders=function(){
     const q=(document.getElementById('emd220OrderSearch')?.value||'').toLowerCase();
-    const list=os.filter(o=>JSON.stringify(o).toLowerCase().includes(q)).slice().reverse();
+    const list=os.filter(o=>JSON.stringify(o).toLowerCase().includes(q)||(window.EMDPQ&&(EMDPQ.hit(o.phone||o.customerPhone,q)||EMDPQ.idHit(o,q)))).slice().reverse();
     document.getElementById('emdV220Orders').innerHTML=list.length?list.map(o=>`<div class="emd220-row"><div><div class="emd220-name">📦 ${esc(oid(o))} · ${esc(o.name||'بدون اسم')}</div><div class="emd220-meta">📞 ${esc(o.phone||'—')} · الحالة: ${esc(__emdSt(o.status||'new'))}</div></div><button class="emd220-btn" onclick="emdV220OpenOrder('${esc(oid(o))}')">التفاصيل</button></div>`).join(''):'<div class="emd220-empty">لا توجد طلبات.</div>';
    }; emdV220RenderOrders();
   } else if(tab==='profile'){
@@ -9112,7 +9114,7 @@ else {wrapAddInventory();setTimeout(renderArrival,300)}
    window.emdV220RenderCustomers=function(){
     const q=(document.getElementById('emd220CustomerSearch')?.value||'').toLowerCase(),d=db();
     const cs=arr(d.customers), os=arr(d.orders);
-    const map=cs.map(c=>({c,o:os.filter(x=>String(x.phone||x.customerPhone||'')===String(c.phone||''))})).filter(x=>(x.c.name||'').toLowerCase().includes(q)||String(x.c.phone||'').includes(q));
+    const map=cs.map(c=>({c,o:os.filter(x=>String(x.phone||x.customerPhone||'')===String(c.phone||''))})).filter(x=>(x.c.name||'').toLowerCase().includes(q)||String(x.c.phone||'').includes(q)||(window.EMDPQ&&EMDPQ.hit(x.c.phone,q)));
     document.getElementById('emdV220Customers').innerHTML=map.length?map.map(x=>`<div class="emd220-row"><div><div class="emd220-name">👤 ${esc(x.c.name||'بدون اسم')}</div><div class="emd220-meta">📞 ${esc(x.c.phone||'—')} · ${x.o.length} طلبات</div></div><button class="emd220-btn" onclick="emdV220OpenProfile('${esc(x.c.phone||'')}')">فتح الملف</button></div>`).join(''):'<div class="emd220-empty">لا توجد نتائج محفوظة.</div>';
    }; emdV220RenderCustomers();
   } else if(tab==='waiting'){
@@ -10968,10 +10970,10 @@ function mountTools168(){
    const f=document.getElementById('emdV168Filter').value;
    const all=read168();
    all.forEach(x=>{
-     const hay=n168([x.name,x.phone,x.place,...items168(x).map(i=>i.name)].join(' '));
+     const hay=n168([x.name,x.phone,(window.EMDPQ?EMDPQ.canon(x.phone):''),x.place,...items168(x).map(i=>i.name)].join(' '));
      let status=x.status;
      if(status==='waiting') status=ready168(x)?'ready':'waiting';
-     x.__v168match=(!q||hay.includes(q))&&(f==='all'||status===f);
+     x.__v168match=(!q||(window.EMDPQ?EMDPQ.has(hay,q):hay.includes(q)))&&(f==='all'||status===f);
    });
    write168(all);
    renderSummary();
@@ -11299,8 +11301,8 @@ function render175(){
    const s=state175(x);
    if(f==='active' && !['ready','wait','notify'].includes(s))return false;
    if(f!=='active'&&f!=='all'&&s!==f)return false;
-   const hay=norm175([x.name,x.phone,x.place,...(x.items||[]).map(i=>i.name)].join(' '));
-   return !q||hay.includes(q);
+   const hay=norm175([x.name,x.phone,(window.EMDPQ?EMDPQ.canon(x.phone):''),x.place,...(x.items||[]).map(i=>i.name)].join(' '));
+   return !q||(window.EMDPQ?EMDPQ.has(hay,q):hay.includes(q));
  });
  const host=document.getElementById('emdV175List'); if(!host)return;
  if(!list.length){host.innerHTML='<div class="emd-v175-empty">لا توجد متابعة مطابقة حاليًا.</div>';return}
@@ -11499,8 +11501,8 @@ function render(){
     const s=state(x);
     if(f==='active'&&!['ready','wait','notified'].includes(s))return false;
     if(f!=='active'&&f!=='all'&&s!==f)return false;
-    const hay=norm([x.name,x.phone,x.place,...(x.items||[]).map(i=>i.name)].join(' '));
-    return !q||hay.includes(q);
+    const hay=norm([x.name,x.phone,(window.EMDPQ?EMDPQ.canon(x.phone):''),x.place,...(x.items||[]).map(i=>i.name)].join(' '));
+    return !q||(window.EMDPQ?EMDPQ.has(hay,q):hay.includes(q));
   });
   const host=document.getElementById('emdV185List');if(!host)return;
   if(!list.length){host.innerHTML='<div class="emd-v185-empty">لا توجد متابعات مسجلة حاليًا.</div>';return}
@@ -19180,7 +19182,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V127</div>
+<div id="emdStandaloneV2Badge">EMD Business • V128</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -26547,6 +26549,26 @@ function mergeDb(local,remote,archived){
 }
 window.EMDMergeV126={merge:mergeDb,stamp:stamp,idOf:idOf};
 wrap();setInterval(wrap,2000);setTimeout(function(){try{stamp()}catch(e){}},800);
+})();
+</script>
+<script id="EMD-V128-phone-search">
+(function(){'use strict';
+if(window.EMDPQ)return;
+/* V128: بحث برقم الهاتف يفهم كل الصيغ (+968، 00968، مسافات، شرطات، أرقام عربية وهندية) */
+function dg(s){return String(s==null?'':s).replace(/[٠-٩]/g,function(d){return '٠١٢٣٤٥٦٧٨٩'.indexOf(d)}).replace(/[۰-۹]/g,function(d){return '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)}).replace(/\D/g,'')}
+function canon(p){var x=dg(p);if(x.indexOf('00')===0)x=x.slice(2);if(x.length>8&&x.indexOf('968')===0)x=x.slice(3);return x}
+/* استعلام «رقمي»: أرقام ومسافات و+ و- فقط، و3 أرقام فأكثر */
+function parse(q){q=String(q==null?'':q).trim();if(!q||!/^[+\d\s\-().٠-٩۰-۹]+$/.test(q))return null;var x=dg(q);if(x.length<3)return null;return x}
+function cands(q){var x=parse(q);if(!x)return null;var out=[x],t=String(q).trim();
+  if(x.indexOf('00')===0)out.push(x.slice(2));var y=out[out.length-1];
+  if(/^(\+|00)/.test(t)&&y.indexOf('968')===0)out.push(y.slice(3));else if(y.indexOf('968')===0&&y.length>3)out.push(y.slice(3));
+  return out.filter(function(v,i){return v&&out.indexOf(v)===i})}
+function hit(phone,q){var c=cands(q);if(!c)return false;var p=canon(phone);if(!p)return false;return c.some(function(v){return p.indexOf(v)>=0})}
+function has(hay,q){hay=String(hay||'');q=String(q||'');if(!q)return true;if(hay.indexOf(q)>=0)return true;var c=cands(q);return !!c&&c.some(function(v){return hay.indexOf(v)>=0})}
+function idHit(o,q){var x=parse(q);if(!x)return false;return [o&&o.id,o&&o.number,o&&o.orderNumber].some(function(v){return v!=null&&dg(v).indexOf(x)>=0})}
+/* بحث صفحة العملاء: كان oninput يستدعي renderCustomers لكن نسخة لاحقة منها تحدّث نافذة العملاء فقط، فكانت قائمة الصفحة لا تتفلتر */
+var t=null;document.addEventListener('input',function(e){var el=e.target;if(!el||el.id!=='customerPageSearch')return;clearTimeout(t);t=setTimeout(function(){try{if(typeof window.__emdRenderCustPageV76==='function')window.__emdRenderCustPageV76()}catch(x){}},120)},true);
+window.EMDPQ={canon:canon,parse:parse,cands:cands,hit:hit,has:has,idHit:idHit,dg:dg};
 })();
 </script>
 </body>
