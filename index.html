@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V126</title>
+<title>EMD Business — Standalone V127</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--text:#18202a;--muted:#687384;--line:#e4e8ef;--accent:#18202a;--soft:#eef2f7;--ok:#16794c;--warn:#a56a00;--danger:#b23b3b}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial;background:var(--bg);color:var(--text)}
@@ -19180,7 +19180,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V126</div>
+<div id="emdStandaloneV2Badge">EMD Business • V127</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -23887,14 +23887,26 @@ function autoMerge(r){
       return push(true).then(function(){var n=res.stats.added+res.stats.updated;if(n)toast('☁️ دمجنا '+n+' تعديل من جهازك الثاني')})})
   }).catch(function(e){merging=false;busy=false;if(e&&e.net){setState('offline',e.message);return}conflictDlg(r)});
   return true}
-/* فحص دوري خفيف: كل 45 ثانية والتطبيق ظاهر ولا أحد يكتب */
+/* فحص دوري كل 3 ثوانٍ والتطبيق ظاهر: استعلام صغير جدًا، ويتباطأ تلقائيًا لو انقطع النت */
+var pollGap=3000,pollAt=0;
+function softApply(){return token().then(function(t){return call('/rest/v1/emd_vaults?select=data,updated_at&user_id=eq.'+uid(),{token:t})}).then(function(a){
+  var row=a&&a[0];if(!row||!row.data||!row.data.keys||!row.data.keys[MAIN])return false;var keys=row.data.keys;
+  var pre=Promise.resolve();try{if(window.EMDProtectV66&&window.EMDProtectV66.snapshot)pre=Promise.resolve(window.EMDProtectV66.snapshot()).catch(function(){})}catch(e){}
+  return pre.then(function(){
+    Object.keys(keys).forEach(function(k){if(k==='emd_business_ai_settings_v3201'||k===MAIN)return;lsSet(k,keys[k])});
+    window.db=JSON.parse(keys[MAIN]);try{if(typeof window.save==='function')window.save()}catch(e){}
+    ['render','renderCustomers','renderProducts','renderStock'].forEach(function(f){try{if(typeof window[f]==='function')window[f]()}catch(e){}});
+    var nk=collectKeys();setMeta({lastRemote:row.updated_at,lastHash:hashKeys(nk),lastData:dataHash(nk),conflict:null});return true})})}
 function typing(){var a=document.activeElement;return !!(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName))||!!document.querySelector('.emd93-ov')}
-setInterval(function(){if(!uid()||busy||merging||document.hidden||typing())return;
-  remoteMeta().then(function(r){if(!r)return;var m=meta();if(m.lastRemote&&r.updated_at===m.lastRemote)return;
-    var keys=collectKeys();if(m.lastHash&&hashKeys(keys)!==m.lastHash){autoMerge(r)}else{check()}}).catch(function(){})},45000);
+function poll(){setTimeout(poll,pollGap);
+  if(!uid()||busy||merging||document.hidden||typing()||blocked)return;
+  remoteMeta().then(function(r){pollGap=3000;if(!r)return;var m=meta();if(m.lastRemote&&r.updated_at===m.lastRemote)return;
+    var keys=collectKeys();if(m.lastHash&&hashKeys(keys)!==m.lastHash){autoMerge(r)}else{busy=true;softApply().then(function(ok){busy=false;if(ok){setState('ok');toast('☁️ وصل تحديث من جهازك الثاني')}},function(){busy=false})}
+  }).catch(function(e){pollGap=e&&e.net?30000:15000})}
+setTimeout(poll,5000);
 var stableT=null,lastSeen='';
 function watch(){if(!uid()||blocked)return;var h=hashKeys(collectKeys());if(h===meta().lastHash){lastSeen=h;return}
-  if(h!==lastSeen){lastSeen=h;clearTimeout(stableT);stableT=setTimeout(function(){push()},4000)}}
+  if(h!==lastSeen){lastSeen=h;clearTimeout(stableT);stableT=setTimeout(function(){push()},1200)}}
 
 /* ===== الواجهة ===== */
 function chip(){
@@ -23994,7 +24006,7 @@ function init(){
   else if(pendingRecovery){blocked=true;setTimeout(function(){open('newpw')},500)}
   else if(justConfirmed){setTimeout(function(){toast('✅ تأكد إيميلك وأنت مسجّل دخول');afterLogin()},800)}
   else if(session())setTimeout(check,2500);
-  setInterval(function(){paint();watch()},3000);
+  setInterval(function(){paint();watch()},1000);
   document.addEventListener('visibilitychange',function(){if(!session())return;if(document.hidden){if(hashKeys(collectKeys())!==meta().lastHash)push()}else check()});
   window.addEventListener('online',function(){if(session())check()});
   window.addEventListener('hashchange',function(){if(/access_token=|error_description=/.test(location.hash))location.reload()});
