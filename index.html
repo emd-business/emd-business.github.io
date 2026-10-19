@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V128</title>
+<title>EMD Business — Standalone V129</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--text:#18202a;--muted:#687384;--line:#e4e8ef;--accent:#18202a;--soft:#eef2f7;--ok:#16794c;--warn:#a56a00;--danger:#b23b3b}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial;background:var(--bg);color:var(--text)}
@@ -893,6 +893,7 @@ function orderSearchHay(o){
 }
 function searchOrderMatch(o,q){
  q=normSearchText(q); if(!q)return true;
+ q=q.replace(/^[a-z0-9]{1,5}-(?=\d)/i,'').replace(/^(?:emd|tb)(?=\d)/i,'').replace(/^#+/,'');
  if(window.EMDPQ&&EMDPQ.parse(q))return EMDPQ.hit(o.phone,q)||EMDPQ.idHit(o,q);
  const hay=orderSearchHay(o);
  const tokens=q.split(' ').filter(Boolean);
@@ -979,7 +980,7 @@ function sendWhatsApp(id){
  if(required.length) msg=String(msg).replace(/\s+$/,'')+'\n\n'+required.join('\n');
  // Remove accidental duplicate blocks from legacy templates.
  msg=msg.replace(/(🔢 رقم التتبع:[^\n]*\n📌 الحالة:[^\n]*(?:\n|$)){2,}/g,'$1');
- window.open('https://wa.me/'+phone+'?text='+encodeURIComponent(msg),'_blank');
+ window.open('https://wa.me/'+phone+'?text='+(window.EMDEncWaV129||encodeURIComponent)(msg),'_blank');
 }
 function auditShippingMessageV375(o){
  try{var list=Array.isArray(o&&o.products)?o.products:(Array.isArray(o&&o.items)?o.items:[]);return list.map(function(x){return {name:String(x&&((x.name||x.product||x.productName||x.title)||'')).trim(),qty:[x&&x.quantity,x&&x.qty,x&&x.count,x&&x.amount].map(Number).find(function(v){return Number.isFinite(v)&&v>0})||1}}).filter(function(x){return x.name});}catch(e){return []}
@@ -1086,7 +1087,7 @@ function openWhatsApp(order){
   if(waPhone.startsWith('0') && waPhone.length===8) waPhone='968'+waPhone;
   if(waPhone.length===8 && !waPhone.startsWith('968')) waPhone='968'+waPhone;
   const msg=makeWaMessage(order);
-  window.open('https://wa.me/'+waPhone+'?text='+encodeURIComponent(msg),'_blank');
+  window.open('https://wa.me/'+waPhone+'?text='+(window.EMDEncWaV129||encodeURIComponent)(msg),'_blank');
 }
 </script>
 <script>
@@ -6837,7 +6838,7 @@ else {wrapAddInventory();setTimeout(renderArrival,300)}
   function items(o){return Array.isArray(o?.products)?o.products:[]}
   function available(name){const p=product(name);return p?Math.max(0,Number(p.stock||0)-Number(p.reserved||0)):0}
   function message(o){const its=items(o);const names=its.map(i=>'• '+i.name+' × '+Number(i.qty||1)).join('\n');return 'السلام عليكم '+(o.name||'عميلنا العزيز')+' 🌷\n\nنود إبلاغك بأن المنتج الذي طلبت إشعارك عند توفره أصبح متوفرًا لدينا الآن.\n\n'+names+'\n\nيمكنك التواصل معنا لإتمام طلبك.\nشكرًا لك 🤍'}
-  function wa(o){const phone=String(o.phone||'').replace(/\D/g,'');if(!phone){alert('لا يوجد رقم واتساب محفوظ لهذا العميل.');return}const url='https://wa.me/'+phone+'?text='+encodeURIComponent(message(o));window.open(url,'_blank');o.notifyStatus='sent_manual';o.notifySentAt=new Date().toISOString();try{localStorage.setItem('emd_business_v1',JSON.stringify(window.db))}catch(e){};renderNotifyCenter()}
+  function wa(o){const phone=String(o.phone||'').replace(/\D/g,'');if(!phone){alert('لا يوجد رقم واتساب محفوظ لهذا العميل.');return}const url='https://wa.me/'+phone+'?text='+(window.EMDEncWaV129||encodeURIComponent)(message(o));window.open(url,'_blank');o.notifyStatus='sent_manual';o.notifySentAt=new Date().toISOString();try{localStorage.setItem('emd_business_v1',JSON.stringify(window.db))}catch(e){};renderNotifyCenter()}
   window.emdV164SendAvailabilityWhatsApp=wa;
   function waitingNotify(){return orders().filter(o=>o.notifyOnAvailable===true && o.status!=='received' && o.notifyStatus!=='sent_manual' && items(o).length && items(o).every(i=>available(i.name)>=Number(i.qty||1)))}
   function pendingNotify(){return orders().filter(o=>o.notifyOnAvailable===true && o.status!=='received' && o.notifyStatus!=='sent_manual' && !items(o).every(i=>available(i.name)>=Number(i.qty||1)))}
@@ -6937,7 +6938,7 @@ else {wrapAddInventory();setTimeout(renderArrival,300)}
   window.emdV190OpenWhatsApp=function(phone,text){
     phone=String(phone||'').replace(/\D/g,'');
     if(!phone)return;
-    window.open('https://wa.me/'+phone+'?text='+encodeURIComponent(text||''),'_blank');
+    window.open('https://wa.me/'+phone+'?text='+(window.EMDEncWaV129||encodeURIComponent)(text||''),'_blank');
   };
 })();
 </script>
@@ -6974,7 +6975,7 @@ else {wrapAddInventory();setTimeout(renderArrival,300)}
     const p=normalizePhone(data&&data.phone);
     if(!p){alert('لا يوجد رقم هاتف صالح لهذا العميل.');return;}
     const msg=window.emdBuildWhatsAppMessageV191(type,data||{});
-    window.open('https://wa.me/'+p+'?text='+encodeURIComponent(msg),'_blank');
+    window.open('https://wa.me/'+p+'?text='+(window.EMDEncWaV129||encodeURIComponent)(msg),'_blank');
   };
   // Follow-up after shipping = received/arrival confirmation template.
   const oldFollow=window.emdFollowShip112;
@@ -6991,7 +6992,7 @@ else {wrapAddInventory();setTimeout(renderArrival,300)}
             items:o.products||o.items,company:o.company||o.shippingCompany,
             method:o.method||o.deliveryMethod
           });
-          window.open('https://wa.me/'+p+'?text='+encodeURIComponent(msg),'_blank');
+          window.open('https://wa.me/'+p+'?text='+(window.EMDEncWaV129||encodeURIComponent)(msg),'_blank');
           return;
         }
       }catch(e){}
@@ -7760,7 +7761,7 @@ else {wrapAddInventory();setTimeout(renderArrival,300)}
  window.emdV200WhatsApp=function(p){
    if(!p){alert('لا يوجد رقم هاتف محفوظ.');return}
    const text='السلام عليكم 🌷\n\nنتواصل معك بخصوص طلباتك معنا. 🤍';
-   window.open('https://wa.me/'+p+'?text='+encodeURIComponent(text),'_blank');
+   window.open('https://wa.me/'+p+'?text='+(window.EMDEncWaV129||encodeURIComponent)(text),'_blank');
  };
  function inject(){
   if(document.getElementById('emdV200QuickBtn'))return;
@@ -8061,7 +8062,7 @@ else {wrapAddInventory();setTimeout(renderArrival,300)}
    const p=phone(o.phone||o.customerPhone);
    if(!p){alert('لا يوجد رقم هاتف محفوظ لهذا الطلب.');return}
    const m=message(type,o);
-   window.open('https://wa.me/'+p+'?text='+encodeURIComponent(m),'_blank');
+   window.open('https://wa.me/'+p+'?text='+(window.EMDEncWaV129||encodeURIComponent)(m),'_blank');
  }
  function open(id){
   const o=find(id);if(!o){alert('لم يتم العثور على الطلب.');return}
@@ -10180,7 +10181,7 @@ else {wrapAddInventory();setTimeout(renderArrival,300)}
  const getOrders=()=>window.db&&Array.isArray(window.db.orders)?window.db.orders:[];
  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
  function find(id){return getOrders().find(o=>String(o.id)===String(id)||String(o.orderNumber)===String(id)||String(o.number)===String(id))}
- window.emdFollowShip112=function(id){const o=find(id);if(!o)return;const phone=String(o.phone||'').replace(/\D/g,'');if(!phone){alert('لا يوجد رقم هاتف محفوظ لهذا الطلب.');return}let p=phone;if(p.length===8)p='968'+p;const name=o.name&&o.name!=='اسم غير مذكور'?o.name:'';const msg='السلام عليكم'+(name?' '+name:'')+'،\nنود التأكد من وصول طلبكم. هل تم استلام الطلب؟\nرقم الطلب: '+String(o.number||o.orderNumber||o.id||'');window.open('https://wa.me/'+p+'?text='+encodeURIComponent(msg),'_blank')};
+ window.emdFollowShip112=function(id){const o=find(id);if(!o)return;const phone=String(o.phone||'').replace(/\D/g,'');if(!phone){alert('لا يوجد رقم هاتف محفوظ لهذا الطلب.');return}let p=phone;if(p.length===8)p='968'+p;const name=o.name&&o.name!=='اسم غير مذكور'?o.name:'';const msg='السلام عليكم'+(name?' '+name:'')+'،\nنود التأكد من وصول طلبكم. هل تم استلام الطلب؟\nرقم الطلب: '+String(o.number||o.orderNumber||o.id||'');window.open('https://wa.me/'+p+'?text='+(window.EMDEncWaV129||encodeURIComponent)(msg),'_blank')};
  window.emdReceive112=function(id){const o=find(id);if(!o)return;if(o.status!=='shipped'){return}if(!confirm('تأكيد أن الطلب '+String(o.number||o.orderNumber||o.id||'')+' تم استلامه؟'))return;o.status='received';o.receivedAt=o.receivedAt||new Date().toISOString();if(typeof window.save==='function')window.save();if(typeof window.render==='function')window.render();try{if(typeof window.render105==='function')window.render105()}catch(e){} };
  function enhance(){const box=document.getElementById('emdV105Follow');if(!box)return;box.querySelectorAll('.emd-v105-order').forEach(btn=>{if(btn.dataset.v112)return;btn.dataset.v112='1';const id=btn.dataset.id;const tools=document.createElement('div');tools.className='emd-v112-tools';tools.innerHTML='<button type="button" class="emd-v112-wa">💬 متابعة واتساب</button><button type="button" class="emd-v112-rec">✅ تم الاستلام</button>';tools.querySelector('.emd-v112-wa').onclick=e=>{e.stopPropagation();window.emdFollowShip112(id)};tools.querySelector('.emd-v112-rec').onclick=e=>{e.stopPropagation();window.emdReceive112(id)};btn.insertAdjacentElement('afterend',tools)});}
  function install(){enhance();setTimeout(enhance,50)}
@@ -10866,7 +10867,7 @@ window.emdV167Notify=function(id){
  const text='السلام عليكم '+(x.name||'عميلنا العزيز')+' 🌷\\n\\nنود إبلاغك بأن المنتج الذي طلبت إشعارك عند توفره أصبح متوفرًا لدينا الآن.\\n\\n'+x.items.map(i=>'• '+i.name+' × '+i.qty).join('\\n')+'\\n\\nإذا كنت ترغب بإتمام الطلب، تواصل معنا أو أخبرنا لنجهز طلبك. 🤍';
  x.status='notified'; x.notifiedAt=new Date().toISOString(); x.message=text; write(a); render();
  const phone=String(x.phone||'').replace(/\\D/g,'');
- if(phone) window.open('https://wa.me/'+phone+'?text='+encodeURIComponent(text),'_blank');
+ if(phone) window.open('https://wa.me/'+phone+'?text='+(window.EMDEncWaV129||encodeURIComponent)(text),'_blank');
 };
 window.emdV167Convert=function(id){ if(window.emdV169Convert) return window.emdV169Convert(id); };
 window.emdV167Close=function(id){
@@ -11321,7 +11322,7 @@ window.emdV175Notify=function(id){
  const a=read175(),x=a.find(i=>String(i.id)===String(id));if(!x)return;
  const text=window.emdBuildWhatsAppMessage('available',{name:x.name,phone:x.phone,items:x.items});
  x.status='notified';x.notifiedAt=new Date().toISOString();x.message=text;localStorage.setItem(IK,JSON.stringify(a));render175();
- const phone=String(x.phone||'').replace(/\D/g,'');if(phone)window.open('https://wa.me/'+phone+'?text='+encodeURIComponent(text),'_blank');
+ const phone=String(x.phone||'').replace(/\D/g,'');if(phone)window.open('https://wa.me/'+phone+'?text='+(window.EMDEncWaV129||encodeURIComponent)(text),'_blank');
 };
 window.emdV175Convert=function(id){
  close175();
@@ -11524,7 +11525,7 @@ function notify(id){
   const text='السلام عليكم '+(x.name||'عميلنا العزيز')+' 🌷\\n\\nالمنتج الذي طلبت إشعارك عند توفره أصبح متوفرًا لدينا الآن.\\n\\n'+(x.items||[]).map(i=>'• '+i.name+' × '+i.qty).join('\\n')+'\\n\\nإذا كنت ترغب بإتمام الطلب، أخبرنا لنجهز طلبك.';
   x.status='notified';x.notifiedAt=new Date().toISOString();save(a);render();
   const phone=String(x.phone||'').replace(/\\D/g,'');
-  if(phone)window.open('https://wa.me/'+phone+'?text='+encodeURIComponent(text),'_blank');
+  if(phone)window.open('https://wa.me/'+phone+'?text='+(window.EMDEncWaV129||encodeURIComponent)(text),'_blank');
 }
 function closeItem(id){
   const a=data(),x=a.find(i=>String(i.id)===String(id));if(!x)return;
@@ -13290,7 +13291,7 @@ window.emdGetWhatsAppTemplate=function(type){
    const due=p.supplierDueDate||'غير محدد';
    const remain=Math.max(0,num(p.totalCost)-num(p.supplierPaid));
    const msg='السلام عليكم '+name+' 🌷\\n\\nبخصوص أمر التوريد '+(p.id||'')+'، نود تذكيركم بأن المبلغ المتبقي هو '+remain.toFixed(3)+' ر.ع.\\nتاريخ الاستحقاق: '+due+'\\n\\nشكرًا لكم 🤍';
-   window.open('https://wa.me/'+ph+'?text='+encodeURIComponent(msg),'_blank');
+   window.open('https://wa.me/'+ph+'?text='+(window.EMDEncWaV129||encodeURIComponent)(msg),'_blank');
  }
  window.emdV270OpenWhatsApp=openWa;
 
@@ -14570,7 +14571,7 @@ setTimeout(apply,500);setTimeout(apply,1500);
 }
  async function copy(v){try{if(navigator.clipboard&&navigator.clipboard.writeText){await navigator.clipboard.writeText(String(v));return true}}catch(e){}return false}
  function audit(a,d){try{if(window.EMDSecurityV315&&typeof window.EMDSecurityV315.record==='function')window.EMDSecurityV315.record(a,d)}catch(e){}}
- function share(o){if(window.emdRemoteTrackingV58&&window.emdRemoteTrackingV58.send)return window.emdRemoteTrackingV58.send(o);var num=String(o&&(o.whatsapp||o.phone||o.customerPhone||'')).replace(/\D/g,'');var u=linkFor(o);if(!num){alert('لا يوجد رقم هاتف للعميل.\nالرابط:\n'+u);return}var phone=num;if(phone.length===8)phone='968'+phone;var msg='مرحبًا '+(safeCustomerName(o)||'عميلنا العزيز')+' 🌷\n\nتم شحن طلبك #'+idOf(o)+' بنجاح 📦🚚\n\nيمكنك متابعة حالة طلبك مباشرة من خلال الرابط التالي:\n🔗 '+u+'\n\nشكرًا لثقتك بنا 🤍\nEMD Business';window.open('https://wa.me/'+phone+'?text='+encodeURIComponent(msg),'_blank')}
+ function share(o){if(window.emdRemoteTrackingV58&&window.emdRemoteTrackingV58.send)return window.emdRemoteTrackingV58.send(o);var num=String(o&&(o.whatsapp||o.phone||o.customerPhone||'')).replace(/\D/g,'');var u=linkFor(o);if(!num){alert('لا يوجد رقم هاتف للعميل.\nالرابط:\n'+u);return}var phone=num;if(phone.length===8)phone='968'+phone;var msg='مرحبًا '+(safeCustomerName(o)||'عميلنا العزيز')+' 🌷\n\nتم شحن طلبك #'+idOf(o)+' بنجاح 📦🚚\n\nيمكنك متابعة حالة طلبك مباشرة من خلال الرابط التالي:\n🔗 '+u+'\n\nشكرًا لثقتك بنا 🤍\nEMD Business';window.open('https://wa.me/'+phone+'?text='+(window.EMDEncWaV129||encodeURIComponent)(msg),'_blank')}
  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
  function tokenFor(o){return String(o&&o.trackingToken||'')}
  function makeToken(){if(window.crypto&&crypto.getRandomValues){const a=new Uint8Array(18);crypto.getRandomValues(a);return 'EMD-'+Array.from(a,x=>x.toString(16).padStart(2,'0')).join('')}return 'EMD-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2)+Math.random().toString(36).slice(2)}
@@ -14857,7 +14858,7 @@ setTimeout(apply,500);setTimeout(apply,1500);
  function injectTool(){const p=document.getElementById('emdQuickPanelFinal');if(!p||document.getElementById('emdTrackingToolV316'))return;const b=document.createElement('button');b.id='emdTrackingToolV316';b.type='button';b.textContent='🔗 تتبع طلبات العملاء';b.style.cssText='display:block;min-width:155px;padding:12px 16px;border:0;border-radius:13px;background:#fff;color:#111;box-shadow:0 6px 18px rgba(0,0,0,.18);font-size:16px;cursor:pointer;';b.onclick=e=>{e.preventDefault();e.stopPropagation();open()};p.appendChild(b)}
  function injectOrderTracking(){if(typeof window.openOrderV26!=='function'||window.openOrderV26.__emdV316)return;}
  function waNumber(o){return String(o&& (o.whatsapp||o.phone||o.customerPhone||'')).replace(/[^0-9]/g,'')}
- function waConfirm(o,rating,note){var num=waNumber(o);var id=idOf(o);var text='تأكيد استلام الطلب #'+id+'\nأؤكد استلام الطلب بنجاح.'+(rating?'\nالتقييم: '+rating+'/5 ⭐':'')+(note?'\nملاحظة: '+note:'');var u='https://wa.me/'+num+'?text='+encodeURIComponent(text);window.open(u,'_blank');return u}
+ function waConfirm(o,rating,note){var num=waNumber(o);var id=idOf(o);var text='تأكيد استلام الطلب #'+id+'\nأؤكد استلام الطلب بنجاح.'+(rating?'\nالتقييم: '+rating+'/5 ⭐':'')+(note?'\nملاحظة: '+note:'');var u='https://wa.me/'+num+'?text='+(window.EMDEncWaV129||encodeURIComponent)(text);window.open(u,'_blank');return u}
 
  function autoReceiveAfter5Days(){
   try{
@@ -14986,7 +14987,7 @@ setTimeout(apply,500);setTimeout(apply,1500);
 }
  function publicLinkReady(){return true /* الروابط تُنشأ على موقع Track & Confirm العام (HTTPS) وليس على هذا الملف */}
  function init(){if(publicView())return;try{autoReceiveAfter5Days()}catch(e){} ensureAllTracking();var notice=document.getElementById('emdTrackingLocalNoticeV370');if(notice&&!publicLinkReady())notice.style.display='block';var v410n=document.getElementById('emdV410PublicLinkNotice');if(v410n)v410n.style.display=publicLinkReady()?'none':'block';injectTool();[500,1200,2500].forEach(t=>setTimeout(injectTool,t));const c=document.getElementById('emdTrackingCloseV316'),r=document.getElementById('emdTrackingRefreshV316'),a=document.getElementById('emdTrackingAllV316');if(c)c.onclick=close;if(r)r.onclick=()=>{renderStats();render();setTimeout(trackingEnhance,20)};if(a)a.onclick=()=>{render('all');setTimeout(trackingEnhance,20)};setTimeout(trackingEnhance,50)}
- function trackingEnhance(){try{var box=document.getElementById('emdTrackingListV316');if(!box)return;Array.prototype.forEach.call(box.querySelectorAll('.emd316-order'),function(card){var text=card.textContent||'';var idm=text.match(/طلب #([^—]+)/);if(!idm)return;var id=idm[1].trim(),o=orders().find(function(x){return idOf(x)===id});if(!o)return;var extra=card.querySelector('.emd316-customer-feedback');if(extra)extra.remove();var d=document.createElement('div');d.className='emd316-customer-feedback';d.style.cssText='margin-top:8px;font-size:12px;color:#687384';var stars=Number(o.customerRating||0)?(' · تقييم العميل: '+'★'.repeat(Number(o.customerRating))+'☆'.repeat(5-Number(o.customerRating))):'';d.textContent=(o.customerReceivedAt?' · ✅ أكد الاستلام':' · ⏳ لم يؤكد الاستلام')+stars;card.querySelector('.emd316-order-main')&&card.querySelector('.emd316-order-main').appendChild(d);var acts=card.querySelector('.emd316-actions');if(acts&&o.phone&&!acts.querySelector('[data-wa-confirm]')){var b=document.createElement('button');b.className='emd316-btn emd316-soft';b.textContent='📲 واتساب';b.setAttribute('data-wa-confirm',id);b.onclick=function(){var u=linkFor(o);var num=waNumber(o);if(num)window.open('https://wa.me/'+num+'?text='+encodeURIComponent('مرحبًا، يمكنك متابعة طلبك #'+id+' من هنا: '+u),'_blank');else alert('لا يوجد رقم هاتف للعميل.');};acts.appendChild(b)}})}catch(e){}}
+ function trackingEnhance(){try{var box=document.getElementById('emdTrackingListV316');if(!box)return;Array.prototype.forEach.call(box.querySelectorAll('.emd316-order'),function(card){var text=card.textContent||'';var idm=text.match(/طلب #([^—]+)/);if(!idm)return;var id=idm[1].trim(),o=orders().find(function(x){return idOf(x)===id});if(!o)return;var extra=card.querySelector('.emd316-customer-feedback');if(extra)extra.remove();var d=document.createElement('div');d.className='emd316-customer-feedback';d.style.cssText='margin-top:8px;font-size:12px;color:#687384';var stars=Number(o.customerRating||0)?(' · تقييم العميل: '+'★'.repeat(Number(o.customerRating))+'☆'.repeat(5-Number(o.customerRating))):'';d.textContent=(o.customerReceivedAt?' · ✅ أكد الاستلام':' · ⏳ لم يؤكد الاستلام')+stars;card.querySelector('.emd316-order-main')&&card.querySelector('.emd316-order-main').appendChild(d);var acts=card.querySelector('.emd316-actions');if(acts&&o.phone&&!acts.querySelector('[data-wa-confirm]')){var b=document.createElement('button');b.className='emd316-btn emd316-soft';b.textContent='📲 واتساب';b.setAttribute('data-wa-confirm',id);b.onclick=function(){var u=linkFor(o);var num=waNumber(o);if(num)window.open('https://wa.me/'+num+'?text='+(window.EMDEncWaV129||encodeURIComponent)('مرحبًا، يمكنك متابعة طلبك #'+id+' من هنا: '+u),'_blank');else alert('لا يوجد رقم هاتف للعميل.');};acts.appendChild(b)}})}catch(e){}}
  window.addEventListener('message',function(ev){
   try{
     var d=ev.data||{};
@@ -15443,7 +15444,7 @@ setTimeout(apply,500);setTimeout(apply,1500);
   function wa(phone,msg){
     var p=String(phone||'').replace(/\D/g,'');if(p.length===8)p='968'+p;
     if(!p){alert('لا يوجد رقم هاتف لهذا الطلب.');return}
-    var u='https://wa.me/'+p+'?text='+encodeURIComponent(msg||'');
+    var u='https://wa.me/'+p+'?text='+(window.EMDEncWaV129||encodeURIComponent)(msg||'');
     window.open(u,'_blank');
   }
   function open(){
@@ -19085,7 +19086,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     if(phone.length===8) phone='968'+phone;
     if(phone.length<10){alert('رقم العميل غير صالح لإرسال رسالة واتساب.');return}
     var msg=buildShippingMessage(o);
-    window.open('https://wa.me/'+phone+'?text='+encodeURIComponent(msg),'_blank');
+    window.open('https://wa.me/'+phone+'?text='+(window.EMDEncWaV129||encodeURIComponent)(msg),'_blank');
   };
 })();
 </script>
@@ -19171,7 +19172,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   function saveToken(id,token){try{const d=JSON.parse(localStorage.getItem(KEY)||'{}');const a=Array.isArray(d.orders)?d.orders:[];const o=a.find(x=>String(x.id||x.orderNumber||x.number)===String(id));if(o){o.clientToken=token;o.client_token=token;o.trackingUrl=PUBLIC+encodeURIComponent(token);localStorage.setItem(KEY,JSON.stringify(d));}}catch(e){}}
   function payload(o){return {action:'create',tracking_number:String(o.trackingNumber||o.tracking_number||o.trackNumber||''),order_ref:String(o.id||o.orderNumber||o.number||''),details:String(o.notes||o.note||o.details||''),items:Array.isArray(o.items)?o.items:[],delivery_location:String(o.location||o.place||o.deliveryLocation||o.address||''),shipping_company:String(o.shippingCompany||o.shipping_company||o.company||o.courier||''),delivery_method:String(o.deliveryMethod||o.delivery_method||o.method||o.delivery||''),customer:{name:String(o.name||o.customerName||'عميل'),phone:String(o.phone||o.customerPhone||o.whatsapp||'')},status:'shipped',shipped_at:new Date().toISOString()};}
   async function ensureLink(o){const existing=o.clientToken||o.client_token||o.trackingToken;if(existing)return PUBLIC+'?token='+encodeURIComponent(existing);const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json','x-emd-client-key':CLIENT_KEY,'apikey':CLIENT_KEY},body:JSON.stringify(payload(o))});const j=await r.json().catch(()=>({}));if(!r.ok||!j.ok||!j.order||!j.order.client_token)throw new Error(j.error||'تعذر إنشاء رابط التتبع');saveToken(o.id||o.orderNumber||o.number,j.order.client_token);return PUBLIC+encodeURIComponent(j.order.client_token);}
-  window.EMDV414SendWhatsApp=async function(id){const o=latestOrder(id);if(!o){alert('تعذر العثور على الطلب.');return}const phone=normPhone(o.phone||o.customerPhone||o.whatsapp);if(phone.length<10){alert('رقم العميل غير صالح لإرسال رسالة واتساب.');return}try{const link=await ensureLink(o);const msg=['🌷 مرحبًا '+(o.name||o.customerName||''),'','📦 تم شحن طلبك #'+(o.id||o.orderNumber||o.number||'')+' بنجاح 🚚','', 'يمكنك متابعة حالة طلبك مباشرة من خلال الرابط التالي:','', '🔗 '+link,'','شكرًا لثقتك بنا 🤍','EMD Business'].join('\n');window.location.href='https://wa.me/'+phone+'?text='+encodeURIComponent(msg);}catch(e){alert('تعذر إنشاء رابط التتبع العام. حاول مرة أخرى.');}};
+  window.EMDV414SendWhatsApp=async function(id){const o=latestOrder(id);if(!o){alert('تعذر العثور على الطلب.');return}const phone=normPhone(o.phone||o.customerPhone||o.whatsapp);if(phone.length<10){alert('رقم العميل غير صالح لإرسال رسالة واتساب.');return}try{const link=await ensureLink(o);const msg=['🌷 مرحبًا '+(o.name||o.customerName||''),'','📦 تم شحن طلبك #'+(o.id||o.orderNumber||o.number||'')+' بنجاح 🚚','', 'يمكنك متابعة حالة طلبك مباشرة من خلال الرابط التالي:','', '🔗 '+link,'','شكرًا لثقتك بنا 🤍','EMD Business'].join('\n');window.location.href='https://wa.me/'+phone+'?text='+(window.EMDEncWaV129||encodeURIComponent)(msg);}catch(e){alert('تعذر إنشاء رابط التتبع العام. حاول مرة أخرى.');}};
 })();
 </script>
 <script id="EMD-V414-WHATSAPP-OVERRIDE">
@@ -19182,7 +19183,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V128</div>
+<div id="emdStandaloneV2Badge">EMD Business • V129</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -19280,7 +19281,7 @@ function saveToken(id,t){try{var d=JSON.parse(localStorage.getItem('emd_business
 function payload(o){return {tracking_number:String(o.trackingNumber||o.tracking_number||o.customerTrackingNumber||''),order_ref:String(o.id||o.orderNumber||o.number||''),details:String(o.notes||o.note||o.details||''),items:Array.isArray(o.items)?o.items:[],delivery_location:String(o.location||o.place||o.deliveryLocation||o.address||''),shipping_company:String(o.shippingCompany||o.shipping_company||o.company||o.courier||''),delivery_method:String(o.deliveryMethod||o.delivery_method||o.method||o.delivery||''),customer:{name:String(o.name||o.customerName||'عميل'),phone:String(o.phone||o.customerPhone||o.whatsapp||'')}}}
 async function resolve(t){try{var r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json','apikey':KEY},body:JSON.stringify({action:'resolve',token:t})}),j=await r.json().catch(function(){return {}});return !!(r.ok&&j.ok&&j.exists&&j.order)}catch(e){return false}}
 async function publicLink(o){var old=o.clientToken||o.client_token||o.trackingToken;if(old&&await resolve(old))return PUBLIC+'?token='+encodeURIComponent(old);var r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json','apikey':KEY},body:JSON.stringify(payload(o))}),j=await r.json().catch(function(){return {}});if(!r.ok||!j.ok||!j.order||!j.order.client_token)throw new Error(j.error||'تعذر إنشاء رابط التتبع');var t=j.order.client_token;saveToken(o.id||o.orderNumber||o.number,t);return PUBLIC+encodeURIComponent(t)}
-async function send(o){var phone=num(o.phone||o.customerPhone||o.whatsapp);if(phone.length<10){alert('رقم العميل غير صالح لإرسال رسالة واتساب.');return}try{var link=await publicLink(o),name=o.name||o.customerName||'عميلنا العزيز',id=o.id||o.orderNumber||o.number||'';var msg='🌷 مرحبًا '+name+'\n\n📦 تم شحن طلبك #'+id+' بنجاح 🚚\n\nيمكنك متابعة حالة طلبك مباشرة من خلال الرابط التالي:\n\n🔗 '+link+'\n\nشكرًا لثقتك بنا 🤍\nEMD Business';window.location.href='https://wa.me/'+phone+'?text='+encodeURIComponent(msg)}catch(e){alert('تعذر إنشاء رابط التتبع العام. تأكد من اتصال الإنترنت ثم حاول مرة أخرى.')}}
+async function send(o){var phone=num(o.phone||o.customerPhone||o.whatsapp);if(phone.length<10){alert('رقم العميل غير صالح لإرسال رسالة واتساب.');return}try{var link=await publicLink(o),name=o.name||o.customerName||'عميلنا العزيز',id=o.id||o.orderNumber||o.number||'';var msg='🌷 مرحبًا '+name+'\n\n📦 تم شحن طلبك #'+id+' بنجاح 🚚\n\nيمكنك متابعة حالة طلبك مباشرة من خلال الرابط التالي:\n\n🔗 '+link+'\n\nشكرًا لثقتك بنا 🤍\nEMD Business';window.location.href='https://wa.me/'+phone+'?text='+(window.EMDEncWaV129||encodeURIComponent)(msg)}catch(e){alert('تعذر إنشاء رابط التتبع العام. تأكد من اتصال الإنترنت ثم حاول مرة أخرى.')}}
 window.EMDV421PublicTrackingLink=publicLink;window.EMDV421SendWhatsApp=send;window.sendWhatsApp=function(id){var o=latest(id);if(!o){alert('تعذر العثور على الطلب.');return}return send(o)};window.share=function(o){return send(o)};
 })();
 </script>
@@ -19296,7 +19297,7 @@ function latest(id){try{var d=JSON.parse(localStorage.getItem('emd_business_v1')
 function saveToken(id,t){try{var d=JSON.parse(localStorage.getItem('emd_business_v1')||'{}'),a=Array.isArray(d.orders)?d.orders:[],o=a.find(function(x){return String(x.id||x.orderNumber||x.number)===String(id)});if(o){o.clientToken=t;o.client_token=t;o.clientTrackingSynced=true;o.trackingUrl=PUBLIC+encodeURIComponent(t);localStorage.setItem('emd_business_v1',JSON.stringify(d));}}catch(e){}}
 function payload(o){return {tracking_number:String(o.trackingNumber||o.tracking_number||o.customerTrackingNumber||''),order_ref:String(o.id||o.orderNumber||o.number||''),details:String(o.notes||o.note||o.details||''),items:Array.isArray(o.items)?o.items:[],delivery_location:String(o.location||o.place||o.deliveryLocation||o.address||''),shipping_company:String(o.shippingCompany||o.shipping_company||o.company||o.courier||''),delivery_method:String(o.deliveryMethod||o.delivery_method||o.method||o.delivery||''),customer:{name:String(o.name||o.customerName||'عميل'),phone:String(o.phone||o.customerPhone||o.whatsapp||'')}}}
 async function publicLink(o){var synced=o.clientTrackingSynced===true && (o.clientToken||o.client_token);if(synced)return PUBLIC+encodeURIComponent(o.clientToken||o.client_token);var r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json','x-emd-client-key':KEY,'apikey':KEY},body:JSON.stringify(payload(o))});var j=await r.json().catch(function(){return {}});if(!r.ok||!j.ok||!j.order||!j.order.client_token)throw new Error(j.error||'تعذر إنشاء رابط التتبع');saveToken(o.id||o.orderNumber||o.number,j.order.client_token);try{o.clientTrackingSynced=true;o.clientToken=j.order.client_token;o.client_token=j.order.client_token;o.trackingUrl=PUBLIC+encodeURIComponent(j.order.client_token)}catch(e){}return PUBLIC+encodeURIComponent(j.order.client_token)}
-async function send(o){var phone=num(o.phone||o.customerPhone||o.whatsapp);if(phone.length<10){alert('رقم العميل غير صالح لإرسال رسالة واتساب.');return}try{var link=await publicLink(o),name=o.name||o.customerName||'عميلنا العزيز',id=o.id||o.orderNumber||o.number||'';var msg='🌷 مرحبًا '+name+'\n\n📦 تم شحن طلبك #'+id+' بنجاح 🚚\n\nيمكنك متابعة حالة طلبك مباشرة من خلال الرابط التالي:\n\n🔗 '+link+'\n\nشكرًا لثقتك بنا 🤍\nEMD Business';window.location.href='https://wa.me/'+phone+'?text='+encodeURIComponent(msg)}catch(e){alert('تعذر إنشاء رابط التتبع العام. تأكد من اتصال الإنترنت ثم حاول مرة أخرى.')}}
+async function send(o){var phone=num(o.phone||o.customerPhone||o.whatsapp);if(phone.length<10){alert('رقم العميل غير صالح لإرسال رسالة واتساب.');return}try{var link=await publicLink(o),name=o.name||o.customerName||'عميلنا العزيز',id=o.id||o.orderNumber||o.number||'';var msg='🌷 مرحبًا '+name+'\n\n📦 تم شحن طلبك #'+id+' بنجاح 🚚\n\nيمكنك متابعة حالة طلبك مباشرة من خلال الرابط التالي:\n\n🔗 '+link+'\n\nشكرًا لثقتك بنا 🤍\nEMD Business';window.location.href='https://wa.me/'+phone+'?text='+(window.EMDEncWaV129||encodeURIComponent)(msg)}catch(e){alert('تعذر إنشاء رابط التتبع العام. تأكد من اتصال الإنترنت ثم حاول مرة أخرى.')}}
 window.EMDV416PublicTrackingLink=publicLink;
 window.EMDV416SendWhatsApp=send;
 window.sendWhatsApp=function(id){var o=latest(id);if(!o){alert('تعذر العثور على الطلب.');return}return send(o)};
@@ -19379,7 +19380,7 @@ function getOrder(id){try{var d=JSON.parse(localStorage.getItem(DBKEY)||'{}'),a=
 function saveToken(id,t){try{var d=JSON.parse(localStorage.getItem(DBKEY)||'{}'),a=Array.isArray(d.orders)?d.orders:[],o=a.find(function(x){return String(x.id||x.orderNumber||x.number)===String(id)});if(o){o.clientToken=t;o.client_token=t;o.clientTrackingSynced=true;o.trackingUrl=PUBLIC+'?token='+enc(t);localStorage.setItem(DBKEY,JSON.stringify(d));}}catch(e){}}
 function token(o){var id=String(o.id||o.orderNumber||o.number||'');var k='emd_public_token_'+id;try{var t=localStorage.getItem(k);if(!t){t=(crypto&&crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random().toString(36).slice(2));localStorage.setItem(k,t)}saveToken(id,t);return t}catch(e){return String(Date.now())+Math.random().toString(36).slice(2)}}
 function makeLink(o){var t=token(o);return PUBLIC+enc(t)}
-function send(id){var o=getOrder(id);if(!o){alert('تعذر العثور على الطلب.');return}var p=String(o.phone||o.customerPhone||o.customer_phone||o.whatsapp||'').replace(/\D/g,'');if(p.length===8)p='968'+p;if(p.length<10){alert('رقم العميل غير صالح لإرسال رسالة واتساب.');return}var link=makeLink(o),name=o.name||o.customerName||o.customer_name||'عميلنا العزيز',ref=o.id||o.orderNumber||o.number||'';var msg='🌷 مرحبًا '+name+'\n\n📦 تم شحن طلبك #'+ref+' بنجاح 🚚\n\nيمكنك متابعة حالة طلبك مباشرة من خلال الرابط التالي:\n\n🔗 '+link+'\n\nشكرًا لثقتك بنا 🤍\nEMD Business';window.location.href='https://wa.me/'+p+'?text='+encodeURIComponent(msg)}
+function send(id){var o=getOrder(id);if(!o){alert('تعذر العثور على الطلب.');return}var p=String(o.phone||o.customerPhone||o.customer_phone||o.whatsapp||'').replace(/\D/g,'');if(p.length===8)p='968'+p;if(p.length<10){alert('رقم العميل غير صالح لإرسال رسالة واتساب.');return}var link=makeLink(o),name=o.name||o.customerName||o.customer_name||'عميلنا العزيز',ref=o.id||o.orderNumber||o.number||'';var msg='🌷 مرحبًا '+name+'\n\n📦 تم شحن طلبك #'+ref+' بنجاح 🚚\n\nيمكنك متابعة حالة طلبك مباشرة من خلال الرابط التالي:\n\n🔗 '+link+'\n\nشكرًا لثقتك بنا 🤍\nEMD Business';window.location.href='https://wa.me/'+p+'?text='+(window.EMDEncWaV129||encodeURIComponent)(msg)}
 window.EMDV425PublicTrackingLink=makeLink;window.EMDV425SendWhatsApp=send;window.sendWhatsApp=send;window.share=function(o){return makeLink(o)};
 })();
 </script>
@@ -19407,7 +19408,7 @@ function enc(v){return encodeURIComponent(String(v==null?'':v));}
 function latest(id){try{var d=JSON.parse(localStorage.getItem('emd_business_v1')||'{}'),a=Array.isArray(d.orders)?d.orders:[];return a.find(function(o){return String(o.id||o.orderNumber||o.number)===String(id)})||null}catch(e){return null}}
 function token(o){var id=String(o.id||o.orderNumber||o.number||'');var k='emd_public_token_'+id;try{var t=localStorage.getItem(k);if(!t){t='EMD-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,14);localStorage.setItem(k,t)}return t}catch(e){return 'EMD-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,14)}}
 function link(o){var t=o.clientToken||o.client_token||o.trackingToken||token(o);return PUBLIC+enc(t)}
-function send(id){var o=latest(id);if(!o){alert('تعذر العثور على الطلب.');return}var p=String(o.phone||o.customerPhone||o.customer_phone||o.whatsapp||'').replace(/\D/g,'');if(p.length===8)p='968'+p;if(p.length<10){alert('رقم العميل غير صالح لإرسال رسالة واتساب.');return}var u=link(o);try{var d=JSON.parse(localStorage.getItem('emd_business_v1')||'{}'),a=Array.isArray(d.orders)?d.orders:[],x=a.find(function(q){return String(q.id||q.orderNumber||q.number)===String(id)});if(x){x.trackingUrl=u;x.clientToken=decodeURIComponent(u.split('/t/')[1].split(/[?#]/)[0]);x.client_token=x.clientToken;localStorage.setItem('emd_business_v1',JSON.stringify(d));}}catch(e){}var name=o.name||o.customerName||'عميلنا العزيز',ref=o.id||o.orderNumber||o.number||'';var msg='🌷 مرحبًا '+name+'\n\n📦 تم شحن طلبك #'+ref+' بنجاح 🚚\n\nيمكنك متابعة حالة طلبك مباشرة من خلال الرابط التالي:\n\n🔗 '+u+'\n\nشكرًا لثقتك بنا 🤍\nEMD Business';window.location.href='https://wa.me/'+p+'?text='+encodeURIComponent(msg)}
+function send(id){var o=latest(id);if(!o){alert('تعذر العثور على الطلب.');return}var p=String(o.phone||o.customerPhone||o.customer_phone||o.whatsapp||'').replace(/\D/g,'');if(p.length===8)p='968'+p;if(p.length<10){alert('رقم العميل غير صالح لإرسال رسالة واتساب.');return}var u=link(o);try{var d=JSON.parse(localStorage.getItem('emd_business_v1')||'{}'),a=Array.isArray(d.orders)?d.orders:[],x=a.find(function(q){return String(q.id||q.orderNumber||q.number)===String(id)});if(x){x.trackingUrl=u;x.clientToken=decodeURIComponent(u.split('/t/')[1].split(/[?#]/)[0]);x.client_token=x.clientToken;localStorage.setItem('emd_business_v1',JSON.stringify(d));}}catch(e){}var name=o.name||o.customerName||'عميلنا العزيز',ref=o.id||o.orderNumber||o.number||'';var msg='🌷 مرحبًا '+name+'\n\n📦 تم شحن طلبك #'+ref+' بنجاح 🚚\n\nيمكنك متابعة حالة طلبك مباشرة من خلال الرابط التالي:\n\n🔗 '+u+'\n\nشكرًا لثقتك بنا 🤍\nEMD Business';window.location.href='https://wa.me/'+p+'?text='+(window.EMDEncWaV129||encodeURIComponent)(msg)}
 window.EMDV427PublicTrackingLink=link;window.linkFor=link;window.emdGetCustomerTrackingLink=link;window.EMDV427SendWhatsApp=send;window.sendWhatsApp=send;window.share=function(o){return link(o)};
 })();
 </script>
@@ -19703,7 +19704,7 @@ window.EMDV16ManualCustomerPicker=render;
     if(!current)return;
     var p=phoneOf(current);if(p.length<10){alert('رقم العميل غير صالح لإرسال رسالة واتساب.');return}
     var msg=messages(current)[selected].text;
-    window.location.href='https://wa.me/'+p+'?text='+encodeURIComponent(msg);
+    window.location.href='https://wa.me/'+p+'?text='+(window.EMDEncWaV129||encodeURIComponent)(msg);
   }
   window.showManualSuccess71=openSuccess;
   document.addEventListener('DOMContentLoaded',function(){
@@ -20170,7 +20171,7 @@ function payload(o){return {tracking_number:String(o.trackingNumber||o.tracking_
 async function resolve(t){try{var r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json','apikey':KEY},body:JSON.stringify({action:'resolve',token:String(t)})});var j=await r.json().catch(function(){return {}});return !!(r.ok&&j.ok&&j.exists&&j.order)}catch(e){return false}}
 async function create(o){var r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json','apikey':KEY,'x-emd-client-key':KEY},body:JSON.stringify(payload(o))});var j=await r.json().catch(function(){return {}});if(!r.ok||!j.ok||!j.order||!j.order.client_token)throw new Error(j.error||'تعذر إنشاء رابط التتبع');return String(j.order.client_token)}
 async function link(o){if(!o)throw new Error('تعذر العثور على الطلب');var t=o.clientToken||o.client_token||o.trackingToken||'';if(t&&await resolve(t)){var old=PUBLIC+enc(t);save(o.id||o.orderNumber||o.number,t,old);return old}t=await create(o);var url=PUBLIC+enc(t);save(o.id||o.orderNumber||o.number,t,url);return url}
-async function send(id){var o=latest(id);if(!o){alert('تعذر العثور على الطلب.');return}var p=phone(o.phone||o.customerPhone||o.customer_phone||o.whatsapp);if(p.length<10){alert('رقم العميل غير صالح لإرسال رسالة واتساب.');return}try{var u=await link(o),name=o.name||o.customerName||o.customer_name||'عميلنا العزيز',ref=o.id||o.orderNumber||o.number||'';var msg='🌷 مرحبًا '+name+'\n\n📦 تم شحن طلبك #'+ref+' بنجاح 🚚\n\nيمكنك متابعة حالة طلبك مباشرة من خلال الرابط التالي:\n\n🔗 '+u+'\n\nشكرًا لثقتك بنا 🤍\nEMD Business';window.location.href='https://wa.me/'+p+'?text='+encodeURIComponent(msg)}catch(e){alert('تعذر إنشاء رابط التتبع العام. تأكد من اتصال الإنترنت ثم حاول مرة أخرى.')}}
+async function send(id){var o=latest(id);if(!o){alert('تعذر العثور على الطلب.');return}var p=phone(o.phone||o.customerPhone||o.customer_phone||o.whatsapp);if(p.length<10){alert('رقم العميل غير صالح لإرسال رسالة واتساب.');return}try{var u=await link(o),name=o.name||o.customerName||o.customer_name||'عميلنا العزيز',ref=o.id||o.orderNumber||o.number||'';var msg='🌷 مرحبًا '+name+'\n\n📦 تم شحن طلبك #'+ref+' بنجاح 🚚\n\nيمكنك متابعة حالة طلبك مباشرة من خلال الرابط التالي:\n\n🔗 '+u+'\n\nشكرًا لثقتك بنا 🤍\nEMD Business';window.location.href='https://wa.me/'+p+'?text='+(window.EMDEncWaV129||encodeURIComponent)(msg)}catch(e){alert('تعذر إنشاء رابط التتبع العام. تأكد من اتصال الإنترنت ثم حاول مرة أخرى.')}}
 window.EMDPublicTrackingLinkV53=link;
 window.emdGetCustomerTrackingLink=link;
 window.linkFor=link;
@@ -20378,7 +20379,7 @@ try{(window.__EMD_V75_NO_V55_OBS__=1)||new MutationObserver(function(ms){ms.forE
       var name=o.name||o.customerName||o.customer_name||'عميلنا العزيز';
       var ref=o.id||o.orderNumber||o.number||'';
       var msg='🌷 مرحبًا '+name+'\n\n📦 تم شحن طلبك #'+ref+' بنجاح 🚚\n\nيمكنك متابعة حالة طلبك مباشرة من خلال الرابط التالي:\n\n🔗 '+u+'\n\nشكرًا لثقتك بنا 🤍\nEMD Business';
-      window.location.href='https://wa.me/'+p+'?text='+encodeURIComponent(msg);
+      window.location.href='https://wa.me/'+p+'?text='+(window.EMDEncWaV129||encodeURIComponent)(msg);
       return true;
     }catch(e){alert('تعذر إنشاء رابط التتبع العام. تأكد من اتصال الإنترنت ثم حاول مرة أخرى.');return false}
   }
@@ -20485,7 +20486,7 @@ try{(window.__EMD_V75_NO_V55_OBS__=1)||new MutationObserver(function(ms){ms.forE
       var u=await ensure(o);if(!u){alert('تعذر إنشاء رابط التتبع العام.');return false}
       var name=o.name||o.customerName||o.customer_name||'عميلنا العزيز',ref=idOf(o).replace(/^#+/,'');
       var msg='🌷 مرحبًا '+name+'\n\n📦 تم شحن طلبك #'+ref+' بنجاح 🚚\n\nيمكنك متابعة حالة طلبك مباشرة من خلال الرابط التالي:\n\n🔗 '+u+'\n\nشكرًا لثقتك بنا 🤍\nEMD Business';
-      window.location.href='https://wa.me/'+p+'?text='+encodeURIComponent(msg);return true;
+      window.location.href='https://wa.me/'+p+'?text='+(window.EMDEncWaV129||encodeURIComponent)(msg);return true;
     }catch(e){console.error(e);alert('تعذر إنشاء رابط التتبع العام.\n'+(e&&e.message?e.message:'تأكد من اتصال الإنترنت ثم حاول مرة أخرى.'));return false}
   }
   async function openRemote(o){try{var u=await ensure(o);if(!u){alert('تعذر إنشاء رابط التتبع لهذا الطلب.');return false}window.open(u,'_blank','noopener');return true}catch(e){console.error(e);alert('تعذر إنشاء رابط التتبع العام. تأكد من اتصال الإنترنت ثم حاول مرة أخرى.');return false}}
@@ -22015,7 +22016,7 @@ function firstPos(a){for(var i=0;i<a.length;i++){var v=num(a[i]);if(v>0)return v
 function store(){try{var p=window.EMDBusinessProfileV333&&window.EMDBusinessProfileV333.get();return p||{}}catch(e){return {}}}
 function storeName(){return String(store().name||'').trim()||'متجري'}
 function waPhone(p){var d=String(p||'').replace(/[٠-٩]/g,function(c){return '٠١٢٣٤٥٦٧٨٩'.indexOf(c)}).replace(/\D/g,'');if(d.indexOf('00')===0)d=d.slice(2);if(d.length===8)d='968'+d;return d}
-function openWa(phone,text){var p=waPhone(phone);window.open('https://wa.me/'+(p||'')+'?text='+encodeURIComponent(text||''),'_blank')}
+function openWa(phone,text){var p=waPhone(phone);window.open('https://wa.me/'+(p||'')+'?text='+(window.EMDEncWaV129||encodeURIComponent)(text||''),'_blank')}
 function toast(t){var el=$('emd75Toast');if(!el)return;el.textContent=t;el.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(function(){el.style.display='none'},2200)}
 function persist(){try{if(typeof window.save==='function')window.save();else localStorage.setItem('emd_business_v1',JSON.stringify(D()))}catch(e){}}
 function canSee(){try{var s=window.EMDSecurityV315;if(!s||!s.hasPermission)return true;return s.hasPermission('*')||s.hasPermission('reports.read')}catch(e){return true}}
@@ -22627,7 +22628,7 @@ function sendNow(){
   }
   try{if(!Array.isArray(o.history))o.history=[];o.history.push({type:'whatsapp',detail:'رسالة واتساب: '+TYPES.filter(function(t){return t.k===cur.k})[0].t,at:new Date().toISOString()})}catch(e){}
   close();
-  window.location.href='https://wa.me/'+p+'?text='+encodeURIComponent(txt);
+  window.location.href='https://wa.me/'+p+'?text='+(window.EMDEncWaV129||encodeURIComponent)(txt);
 }
 function latest(id){var d=(window.db&&window.db.orders)||[];var o=d.find(function(x){return idOf(x)===String(id)});if(o)return o;try{var a=JSON.parse(localStorage.getItem('emd_business_v1')||'{}').orders||[];return a.find(function(x){return idOf(x)===String(id)})||null}catch(e){return null}}
 function open(oOrId,forceType){
@@ -25101,7 +25102,7 @@ function closingHtml(){var C=ccfg(),w=who(),today=dkey(new Date()),r=report(toda
       '<div class="emd93-note">✉️ زر «أرسل إيميل» يفتح الإيميل جاهز بالملخص. الإرسال التلقائي بدون فتح التطبيق بيجي لاحقًا.</div>':'<div class="emd93-note">التقفيلة متوقفة. تقدر تفتحها يدويًا من هنا أي وقت.</div>');
   return h}
 function closingAction(k){var C=ccfg(),r=report(dkey(new Date())),t=closingText(r);
-  if(k==='cwa'){var p=String(C.wa||'').replace(/[٠-٩]/g,function(d){return '٠١٢٣٤٥٦٧٨٩'.indexOf(d)}).replace(/\D/g,'');if(p.length===8)p='968'+p;window.open('https://wa.me/'+p+'?text='+encodeURIComponent(t),'_blank');return}
+  if(k==='cwa'){var p=String(C.wa||'').replace(/[٠-٩]/g,function(d){return '٠١٢٣٤٥٦٧٨٩'.indexOf(d)}).replace(/\D/g,'');if(p.length===8)p='968'+p;window.open('https://wa.me/'+p+'?text='+(window.EMDEncWaV129||encodeURIComponent)(t),'_blank');return}
   if(k==='cmail'){window.location.href='mailto:'+encodeURIComponent(C.email||'')+'?subject='+encodeURIComponent('📊 تقفيلة '+(storeName()||'المتجر')+' '+r.dk)+'&body='+encodeURIComponent(t);return}
   if(k==='ccopy'){try{navigator.clipboard.writeText(t).then(function(){toast('📋 انسخ')})}catch(e){toast('ما قدرنا ننسخ')}return}
   if(k==='cdone'){var w=who(),a=closings().filter(function(x){return x.dk!==r.dk});a.push({dk:r.dk,at:new Date().toISOString(),by:w?w.name:'',r:{newO:r.newO,sales:r.sales,paidToday:r.paidToday,due:r.due,shipped:r.shipped,ds:r.ds}});wr(HK,a.slice(-120));audit('تقفيل اليوم',r.dk);hideBanner();render();toast('🔒 تم تقفيل اليوم');return}}
@@ -25500,7 +25501,7 @@ function waText(s){
   L.push('','شكرًا لتعاملكم 🌷');return L.join('\n');
 }
 function waPhone(p){var d=phoneKey(p);if(d.indexOf('00')===0)d=d.slice(2);if(d.length===8)d='968'+d;return d}
-function shareWa(s){window.open('https://wa.me/'+waPhone(s.customer&&s.customer.phone)+'?text='+encodeURIComponent(waText(s)),'_blank')}
+function shareWa(s){window.open('https://wa.me/'+waPhone(s.customer&&s.customer.phone)+'?text='+(window.EMDEncWaV129||encodeURIComponent)(waText(s)),'_blank')}
 
 /* ---------- الواجهة ---------- */
 var S={open:false,tab:'new',q:'',cart:[],discount:'',discMode:'amt',mode:'full',method:'cash',amount:'',custName:'',custPhone:'',note:'',key:'',done:null,err:'',detail:null,lq:'',lp:'today',lm:'all',more:false};
@@ -25802,7 +25803,7 @@ function showImg(s,blob){
   $('emd113InvImg').src=url;
   var can=!!(file&&navigator.canShare&&navigator.canShare({files:[file]})),sh=$('emd113InvShare'),msg='فاتورتك رقم '+s.id+' من '+storeName()+' 🧾';
   sh.textContent=can?'📤 مشاركة الفاتورة (واتساب)':'💬 فتح محادثة العميل'+(s.customer&&s.customer.phone?'':' (اختر الشخص)');
-  sh.onclick=function(){if(can){navigator.share({files:[file],title:'فاتورة '+s.id,text:msg}).catch(function(){})}else{dl();window.open('https://wa.me/'+waPhone(s.customer&&s.customer.phone)+'?text='+encodeURIComponent(msg+'\n(أرفقت لك صورة الفاتورة)'),'_blank')}};
+  sh.onclick=function(){if(can){navigator.share({files:[file],title:'فاتورة '+s.id,text:msg}).catch(function(){})}else{dl();window.open('https://wa.me/'+waPhone(s.customer&&s.customer.phone)+'?text='+(window.EMDEncWaV129||encodeURIComponent)(msg+'\n(أرفقت لك صورة الفاتورة)'),'_blank')}};
   function dl(){var a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();toast('⬇️ تم حفظ الفاتورة')}
   $('emd113InvSave').onclick=dl;ov.style.display='flex';
 }
@@ -26179,7 +26180,7 @@ function open(){close();C=cfg();var m=document.createElement('div');m.id='emd121
   m.addEventListener('click',function(e){if(e.target===m)return close();var b=e.target.closest('[data-a]');if(!b)return;var a=b.getAttribute('data-a');
     if(a==='st'){C.style=b.getAttribute('data-v');setCfg(C);sync()}
     else if(a==='copy'){try{navigator.clipboard.writeText(tx.value).then(function(){toast('📋 تم نسخ الرسالة')},function(){tx.select();document.execCommand('copy');toast('📋 تم النسخ')})}catch(x){tx.select();try{document.execCommand('copy');toast('📋 تم النسخ')}catch(y){toast('اضغط مطولًا على النص لنسخه')}}}
-    else if(a==='wa'){window.open('https://wa.me/?text='+encodeURIComponent(tx.value),'_blank')}
+    else if(a==='wa'){window.open('https://wa.me/?text='+(window.EMDEncWaV129||encodeURIComponent)(tx.value),'_blank')}
     else if(a==='reset'){tx.value=gen(C)}
     else if(a==='x')close()});
   sync()}
@@ -26569,6 +26570,69 @@ function idHit(o,q){var x=parse(q);if(!x)return false;return [o&&o.id,o&&o.numbe
 /* بحث صفحة العملاء: كان oninput يستدعي renderCustomers لكن نسخة لاحقة منها تحدّث نافذة العملاء فقط، فكانت قائمة الصفحة لا تتفلتر */
 var t=null;document.addEventListener('input',function(e){var el=e.target;if(!el||el.id!=='customerPageSearch')return;clearTimeout(t);t=setTimeout(function(){try{if(typeof window.__emdRenderCustPageV76==='function')window.__emdRenderCustPageV76()}catch(x){}},120)},true);
 window.EMDPQ={canon:canon,parse:parse,cands:cands,hit:hit,has:has,idHit:idHit,dg:dg};
+})();
+</script>
+<style id="EMD-V129-css">
+#emd129Modal{position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:2147483647;display:flex;align-items:flex-start;justify-content:center;padding:12px;direction:rtl;overflow:auto}
+#emd129Modal .box{background:#fff;border-radius:22px;padding:16px;width:min(460px,100%);margin:8px 0;font-family:inherit;color:#17212b}
+#emd129Modal h3{margin:0 0 6px;font-size:19px}#emd129Modal p{margin:4px 0 10px;color:#475569;font-size:13.5px;line-height:1.8}
+#emd129Modal input{width:100%;box-sizing:border-box;font-size:20px;font-weight:900;letter-spacing:2px;text-align:center;padding:12px;border:1.5px solid #cbd5e1;border-radius:14px;direction:ltr;text-transform:uppercase}
+#emd129Modal .pv{margin:10px 0;padding:10px;border-radius:12px;background:#f1f5f9;text-align:center;font-weight:900;font-size:16px;direction:ltr}
+#emd129Modal .acts{display:flex;gap:8px;margin-top:12px}#emd129Modal .acts button{flex:1;border:0;border-radius:14px;padding:13px;font:inherit;font-size:15px;font-weight:900;cursor:pointer;min-height:48px}
+#emd129Modal .g{background:#16a34a;color:#fff}#emd129Modal .l{background:#f1f5f9;color:#334155}
+#emd129Modal .er{color:#b91c1c;font-size:13px;min-height:18px}
+</style>
+<script id="EMD-V129-prefix">
+(function(){'use strict';
+if(window.__EMD_V129__)return;window.__EMD_V129__=true;
+/* V129: حروف رقم الطلب. العرض فقط (TB-0042)، الرقم المخزّن يبقى #0042 فلا ينكسر بحث ولا تتبع ولا مزامنة. */
+var KEY='emd_v129_order_prefix';
+function get(){try{var v=localStorage.getItem(KEY);return /^[A-Z0-9]{1,5}$/.test(v||'')?v:'EMD'}catch(e){return 'EMD'}}
+var P=get();
+var RX=/#{1,2}(\d{3,7})(?!\d)/g;
+function fmt(s){return typeof s==='string'&&s.indexOf('#')>=0?s.replace(RX,function(m,d){return P+'-'+d}):s}
+/* 1) النصوص الظاهرة في الصفحة */
+function skip(n){var t=n.nodeName;return t==='SCRIPT'||t==='STYLE'||t==='TEXTAREA'||t==='INPUT'||t==='SELECT'||t==='NOSCRIPT'||(n.isContentEditable===true)}
+function proc(n){
+  if(n.nodeType===3){var v=n.nodeValue;if(v&&v.indexOf('#')>=0){var r=fmt(v);if(r!==v)n.nodeValue=r}return}
+  if(n.nodeType!==1||skip(n))return;
+  var w=document.createTreeWalker(n,NodeFilter.SHOW_TEXT,{acceptNode:function(x){var p=x.parentNode;return p&&skip(p)?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT}}),x;
+  while((x=w.nextNode())){var v=x.nodeValue;if(v&&v.indexOf('#')>=0){var r=fmt(v);if(r!==v)x.nodeValue=r}}
+}
+var q=[],tm=null;
+function flush(){tm=null;var l=q;q=[];l.forEach(function(n){try{if(n.isConnected!==false)proc(n)}catch(e){}})}
+function queue(n){q.push(n);if(!tm)tm=setTimeout(flush,60)}
+var mo=new MutationObserver(function(ms){ms.forEach(function(m){if(m.type==='characterData'){queue(m.target)}else m.addedNodes.forEach(function(n){queue(n)})})});
+function start(){if(!document.body)return;proc(document.body);mo.observe(document.body,{childList:true,subtree:true,characterData:true})}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+/* 2) الرسائل الخارجية: واتساب، النسخ، المشاركة */
+function fixUrl(u){try{if(typeof u!=='string'||u.indexOf('wa.me')<0&&u.indexOf('whatsapp')<0)return u;return u.replace(/([?&]text=)([^&#]*)/,function(m,a,b){var t;try{t=decodeURIComponent(b)}catch(e){return m}return a+encodeURIComponent(fmt(t))})}catch(e){return u}}
+try{var wo=window.open;window.open=function(u){var a=Array.prototype.slice.call(arguments);a[0]=fixUrl(u);return wo.apply(this,a)}}catch(e){}
+document.addEventListener('click',function(e){var a=e.target&&e.target.closest&&e.target.closest('a[href]');if(a){var h=a.getAttribute('href');var n=fixUrl(h);if(n!==h)a.setAttribute('href',n)}},true);
+try{if(navigator.clipboard&&navigator.clipboard.writeText){var cw=navigator.clipboard.writeText.bind(navigator.clipboard);navigator.clipboard.writeText=function(t){return cw(fmt(t))}}}catch(e){}
+try{if(navigator.share){var ns=navigator.share.bind(navigator);navigator.share=function(d){if(d&&typeof d==='object'){d=Object.assign({},d);if(d.text)d.text=fmt(d.text);if(d.title)d.title=fmt(d.title)}return ns(d)}}}catch(e){}
+/* 3) الصور المرسومة (فواتير، بطاقات) */
+try{['fillText','strokeText'].forEach(function(k){var o=CanvasRenderingContext2D.prototype[k];CanvasRenderingContext2D.prototype[k]=function(t){var a=Array.prototype.slice.call(arguments);if(typeof t==='string')a[0]=fmt(t);return o.apply(this,a)}})}catch(e){}
+/* 4) الإعداد */
+function close(){var m=document.getElementById('emd129Modal');if(m)m.remove()}
+function open(){
+  close();var m=document.createElement('div');m.id='emd129Modal';m.setAttribute('data-emd108-skip','1');
+  m.innerHTML='<div class="box"><h3>حروف رقم الطلب</h3><p>تظهر قبل رقم كل طلب في التطبيق والرسائل والفواتير. تغيير الحروف لا يمس بياناتك، وطلباتك القديمة تأخذ الحروف الجديدة تلقائيًا.</p><input id="emd129In" maxlength="5" autocomplete="off" autocapitalize="characters" inputmode="latin" value="'+P+'"><div class="pv" id="emd129Pv"></div><div class="er" id="emd129Er"></div><div class="acts"><button type="button" class="g" id="emd129Ok">حفظ</button><button type="button" class="l" id="emd129X">إلغاء</button></div></div>';
+  m.addEventListener('click',function(e){if(e.target===m)close()});document.body.appendChild(m);
+  var inp=document.getElementById('emd129In'),pv=document.getElementById('emd129Pv'),er=document.getElementById('emd129Er');
+  function norm(){return inp.value.toUpperCase().replace(/[^A-Z0-9]/g,'')}
+  function upd(){var v=norm();if(inp.value!==v)inp.value=v;pv.textContent=(v||'—')+'-0042';er.textContent=''}
+  inp.addEventListener('input',upd);upd();
+  document.getElementById('emd129X').onclick=close;
+  document.getElementById('emd129Ok').onclick=function(){var v=norm();if(v.length<1||v.length>5){er.textContent='اكتب من حرف إلى 5 حروف أو أرقام إنجليزية.';return}
+    try{localStorage.setItem(KEY,v)}catch(e){er.textContent='تعذر الحفظ.';return}
+    close();location.reload()};
+  setTimeout(function(){try{inp.focus();inp.select()}catch(e){}},80)
+}
+function inject(){var g=document.getElementById('emd327SystemGrid');if(g&&!document.getElementById('emd129Item')){var b=document.createElement('button');b.type='button';b.className='emd327-item';b.id='emd129Item';b.setAttribute('data-emd108-skip','1');b.innerHTML='<b>🔤 حروف رقم الطلب</b><span>الحالية: '+P+'. تظهر قبل رقم كل طلب مثل '+P+'-0042.</span>';b.addEventListener('click',open);g.appendChild(b)}}
+setInterval(inject,1500);inject();
+window.EMDEncWaV129=function(t){return encodeURIComponent(fmt(String(t==null?'':t)))};
+window.EMDPrefixV129={get:get,fmt:fmt,open:open};
 })();
 </script>
 </body>
