@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V125</title>
+<title>EMD Business — Standalone V126</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--text:#18202a;--muted:#687384;--line:#e4e8ef;--accent:#18202a;--soft:#eef2f7;--ok:#16794c;--warn:#a56a00;--danger:#b23b3b}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial;background:var(--bg);color:var(--text)}
@@ -19180,7 +19180,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V125</div>
+<div id="emdStandaloneV2Badge">EMD Business • V126</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -23867,6 +23867,31 @@ function check(){
     conflict(r);
   }).catch(function(e){setState(e.net?'offline':'error',e.message)});
 }
+
+/* V126: دمج تلقائي على مستوى الطلب بدل نافذة «اختر النسخة» */
+var merging=false;
+function archivedMap(){try{if(window.EMDArchiveV67&&window.EMDArchiveV67.exportAll)return Promise.resolve(window.EMDArchiveV67.exportAll()).then(function(a){var m={};(a||[]).forEach(function(x){var i=window.EMDMergeV126.idOf(x.order||x);if(i)m[i]=1});return m},function(){return {}})}catch(e){}return Promise.resolve({})}
+function autoMerge(r){
+  if(!window.EMDMergeV126||!uid())return false;if(merging)return true;merging=true;busy=true;setState('saving');
+  var row=null;
+  token().then(function(t){return call('/rest/v1/emd_vaults?select=data,updated_at&user_id=eq.'+uid(),{token:t})}).then(function(a){
+    row=a&&a[0];if(!row||!row.data||!row.data.keys||!row.data.keys[MAIN])throw new Error('no remote');
+    return archivedMap()}).then(function(arch){
+    var remote=JSON.parse(row.data.keys[MAIN]);try{window.EMDMergeV126.stamp()}catch(e){}
+    var pre=Promise.resolve();try{if(window.EMDProtectV66&&window.EMDProtectV66.snapshot)pre=Promise.resolve(window.EMDProtectV66.snapshot()).catch(function(){})}catch(e){}
+    return pre.then(function(){
+      var res=window.EMDMergeV126.merge(window.db,remote,arch);
+      window.db=res.db;try{if(typeof window.save==='function')window.save()}catch(e){}
+      ['render','renderCustomers','renderProducts','renderStock'].forEach(function(f){try{if(typeof window[f]==='function')window[f]()}catch(e){}});
+      setMeta({lastRemote:row.updated_at,conflict:null});blocked=false;merging=false;busy=false;
+      return push(true).then(function(){var n=res.stats.added+res.stats.updated;if(n)toast('☁️ دمجنا '+n+' تعديل من جهازك الثاني')})})
+  }).catch(function(e){merging=false;busy=false;if(e&&e.net){setState('offline',e.message);return}conflictDlg(r)});
+  return true}
+/* فحص دوري خفيف: كل 45 ثانية والتطبيق ظاهر ولا أحد يكتب */
+function typing(){var a=document.activeElement;return !!(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName))||!!document.querySelector('.emd93-ov')}
+setInterval(function(){if(!uid()||busy||merging||document.hidden||typing())return;
+  remoteMeta().then(function(r){if(!r)return;var m=meta();if(m.lastRemote&&r.updated_at===m.lastRemote)return;
+    var keys=collectKeys();if(m.lastHash&&hashKeys(keys)!==m.lastHash){autoMerge(r)}else{check()}}).catch(function(){})},45000);
 var stableT=null,lastSeen='';
 function watch(){if(!uid()||blocked)return;var h=hashKeys(collectKeys());if(h===meta().lastHash){lastSeen=h;return}
   if(h!==lastSeen){lastSeen=h;clearTimeout(stableT);stableT=setTimeout(function(){push()},4000)}}
@@ -23958,7 +23983,8 @@ function restoreHist(id,label){if(!confirm('ترجع لنسخة '+label+'؟\nب�
   token().then(function(t){return call('/rest/v1/emd_vault_history?select=data&id=eq.'+encodeURIComponent(id),{token:t})}).then(function(a){if(!a||!a[0])throw new Error('النسخة غير موجودة.');return applyRemote(a[0].data,'☁️ رجعنا لنسخة '+label,true)})
   .catch(function(e){msg('err',e.message)})}
 var conflictRow=null;
-function conflict(r){blocked=true;conflictRow=r;setMeta({conflict:true});setState('idle');if(ov&&(view==='newpw'||view==='chpw'))return;view='conflict';sheet();render()}
+function conflict(r){if(autoMerge(r))return;conflictDlg(r)}
+function conflictDlg(r){blocked=true;conflictRow=r;setMeta({conflict:true});setState('idle');if(ov&&(view==='newpw'||view==='chpw'))return;view='conflict';sheet();render()}
 function toast(t){var d=document.createElement('div');d.textContent=t;d.style.cssText='position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#111827;color:#fff;padding:12px 18px;border-radius:14px;font-weight:700;font-size:14px;z-index:12100;box-shadow:0 8px 24px rgba(0,0,0,.25);direction:rtl;max-width:90vw;text-align:center';document.body.appendChild(d);setTimeout(function(){d.remove()},3200)}
 function open(v){if(v==='conflict'&&conflictRow){view='conflict'}else view=v||(session()?'account':'login');sheet();render()}
 window.EMDCloudV93={open:open,push:push,pull:pull,check:check,session:session,signOut:auth.signOut,api:{url:URL_,key:KEY,token:token,uid:uid,device:device,version:VERSION}};
@@ -26457,6 +26483,58 @@ function show(){
 }
 setTimeout(show,6000);setInterval(show,15000);
 window.EMDiOSV125={show:show,ios:ios,inApp:inApp,safari:safari};
+})();
+</script>
+<script id="EMD-V126-order-sync">
+(function(){'use strict';
+if(window.__EMD_V126__)return;window.__EMD_V126__=true;
+/* V126: مزامنة على مستوى الطلب الواحد. لكل طلب طابع تعديل _u يسافر معه؛ عند اختلاف جهازين ندمج الطلبات بدل أن تطغى نسخة على أخرى. */
+var MAIN='emd_business_v1',RANK={'new':1,'waiting':2,'ready':3,'packing':4,'shipped':5,'received':6};
+function idOf(o){return String(o&&(o.id!=null?o.id:o.orderNumber!=null?o.orderNumber:o.number!=null?o.number:'')||'')}
+function hs(s){var h=2166136261;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
+function sig(o){var c={};for(var k in o)if(k!=='_u'&&k!=='recoveredAt')c[k]=o[k];return hs(JSON.stringify(c))}
+var cache=null;
+/* يختم أي طلب تغيّر بوقت التعديل — في الذاكرة فقط، ويُحفظ مع أول save طبيعي (لا نحفظ من مؤقّت أبدًا كي لا نكتب نسخة قديمة) */
+function stamp(){
+  var d=window.db;if(!d||!Array.isArray(d.orders))return;
+  var first=!cache;if(first)cache={};var now=Date.now(),seen={};
+  d.orders.forEach(function(o){if(!o||typeof o!=='object')return;var id=idOf(o);if(!id)return;seen[id]=1;var h=sig(o);
+    if(cache[id]===undefined){ if(!o._u)o._u=first?1:now; cache[id]=h }
+    else if(cache[id]!==h){o._u=now;cache[id]=h}});
+  Object.keys(cache).forEach(function(k){if(!seen[k])delete cache[k]});
+}
+function wrap(){
+  if(typeof window.save!=='function'||window.save.__v126)return;
+  var orig=window.save;
+  var w=function(){try{stamp()}catch(e){}return orig.apply(this,arguments)};
+  w.__v126=1;window.save=w;
+}
+function pickOrder(a,b){
+  var ua=+a._u||0,ub=+b._u||0;
+  if(ua!==ub)return ua>ub?a:b;
+  var ra=RANK[String(a.status||'new')]||0,rb=RANK[String(b.status||'new')]||0;
+  return rb>ra?b:a;
+}
+/* دمج: الطلبات والعملاء لكل سجل على حدة، والباقي نسخة هذا الجهاز مع إضافة ما ينقصه */
+function mergeDb(local,remote,archived){
+  var out=JSON.parse(JSON.stringify(local||{})),r=remote||{},st={added:0,updated:0};
+  archived=archived||{};
+  var map={};(out.orders||[]).forEach(function(o,i){map[idOf(o)]=i});
+  if(!Array.isArray(out.orders))out.orders=[];
+  (Array.isArray(r.orders)?r.orders:[]).forEach(function(ro){
+    var id=idOf(ro);if(!id||archived[id])return;
+    if(map[id]===undefined){out.orders.push(JSON.parse(JSON.stringify(ro)));map[id]=out.orders.length-1;st.added++}
+    else{var lo=out.orders[map[id]],w=pickOrder(lo,ro);if(w!==lo){out.orders[map[id]]=JSON.parse(JSON.stringify(ro));st.updated++}}
+  });
+  function union(key,idf){var l=out[key];if(!Array.isArray(l))l=out[key]=[];var seen={};l.forEach(function(x){seen[idf(x)]=1});
+    (Array.isArray(r[key])?r[key]:[]).forEach(function(x){var k=idf(x);if(k&&!seen[k]){l.push(JSON.parse(JSON.stringify(x)));seen[k]=1}})}
+  union('customers',function(c){return String((c&&(c.id||c.phone||c.name))||'')});
+  union('products',function(p){return String((p&&(p.id||p.name))||'')});
+  Object.keys(r).forEach(function(k){if(!(k in out))out[k]=r[k]});
+  return {db:out,stats:st};
+}
+window.EMDMergeV126={merge:mergeDb,stamp:stamp,idOf:idOf};
+wrap();setInterval(wrap,2000);setTimeout(function(){try{stamp()}catch(e){}},800);
 })();
 </script>
 </body>
