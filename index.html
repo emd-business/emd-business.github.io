@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V130</title>
+<title>EMD Business — Standalone V131</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--text:#18202a;--muted:#687384;--line:#e4e8ef;--accent:#18202a;--soft:#eef2f7;--ok:#16794c;--warn:#a56a00;--danger:#b23b3b}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial;background:var(--bg);color:var(--text)}
@@ -19183,7 +19183,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V130</div>
+<div id="emdStandaloneV2Badge">EMD Business • V131</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -22038,7 +22038,7 @@ function orderCost(o){return items(o).reduce(function(s,x){return s+itemCost(x)*
 
 /* التحصيل يبدأ من تاريخ تفعيل الميزة: الطلبات الأقدم تُعتبر محصّلة إلا إذا سُجّل لها دفع */
 function since(){var v=localStorage.getItem(SINCE_KEY);if(!v){v=dkey(new Date());try{localStorage.setItem(SINCE_KEY,v)}catch(e){}}return v}
-function legacy(o){if(o.paymentStatus||num(o.paidAmount)>0)return false;var t=odate(o);return !t||dkey(t)<since()}
+function legacy(o){if(localStorage.getItem('emd_v75_legacy_on')!=='1')return false;if(o.paymentStatus||num(o.paidAmount)>0)return false;var t=odate(o);return !t||dkey(t)<since()}
 function payState(o){if(legacy(o))return 'paid';var s=String(o.paymentStatus||'');if(s==='paid'||s==='transfer'||s==='cash')return 'paid';var p=num(o.paidAmount),t=total(o);if(t>0&&p>=t-0.0005)return 'paid';if(p>0||s==='partial')return 'partial';return 'unpaid'}
 function paid(o){var st=payState(o);if(st==='paid')return total(o);return Math.min(num(o.paidAmount),total(o))}
 function remaining(o){return Math.max(0,total(o)-paid(o))}
@@ -22155,7 +22155,8 @@ function dueHtml(){
     return '<div class="emd75-row"><div class="t"><div><b>'+esc(o.name||'بدون اسم')+'</b>'+(x.days>=3?'<span class="emd75-tag late">'+x.days+' يوم</span>':'')+(m==='cod'&&/shipped|out_for_delivery|received/.test(st)?'<span class="emd75-tag cour">مع المندوب</span>':'')+
       '<div class="m">'+esc(id)+' · '+esc(STLBL[st]||st||'')+(m?' · '+esc(METHOD[m]||m):'')+(payState(o)==='partial'?' · دفع '+fmt(paid(o)):'')+'</div></div><div class="amt">'+fmt(x.rem)+'</div></div>'+
       '<div class="a"><button class="emd75-btn ok sm" data-a="markPaid" data-v="'+esc(id)+'">✅ استلمت المبلغ</button><button class="emd75-btn wa sm" data-a="remind" data-v="'+esc(id)+'">💬 تذكير</button><button class="emd75-btn ghost sm" data-a="invoice" data-v="'+esc(id)+'">🧾 فاتورة</button><button class="emd75-btn ghost sm" data-a="openOrder" data-v="'+esc(id)+'">التفاصيل</button></div></div>'}).join('')+'</div>';
-  h+='<div class="emd75-note" style="margin-top:12px;background:#f1f5f9;color:#475569">نتابع التحصيل للطلبات من '+esc(since())+'. الطلبات الأقدم تُعتبر محصّلة إلا إذا سجّلت لها دفع. <label style="display:inline-flex;gap:6px;align-items:center">تغيير: <input type="date" id="emd75Since" value="'+esc(since())+'" style="border:1px solid #dfe3e8;border-radius:8px;padding:4px"></label></div>';
+  var lgOn=localStorage.getItem('emd_v75_legacy_on')==='1';
+  h+='<div class="emd75-note" style="margin-top:12px;background:#f1f5f9;color:#475569">التحصيل يدوي: الطلب يُحسب غير محصّل حتى تسجّل له دفعة. <label style="display:flex;gap:8px;align-items:center;margin-top:6px;font-weight:700"><input type="checkbox" id="emd75LegacyOn"'+(lgOn?' checked':'')+' style="width:20px;height:20px"> اعتبار الطلبات القديمة (بدون دفعة مسجّلة) محصّلة تلقائيًا</label>'+(lgOn?'<label style="display:inline-flex;gap:6px;align-items:center;margin-top:6px">الأقدم من: <input type="date" id="emd75Since" value="'+esc(since())+'" style="border:1px solid #dfe3e8;border-radius:8px;padding:4px"></label>':'')+'</div>';
   return h;
 }
 function courHtml(){
@@ -22343,6 +22344,7 @@ function onChange(e){
   if(onChange112(t))return;
   if(t.matches('input[data-a="pick"]')){var s=cur.sel[cur.comp]=cur.sel[cur.comp]||{};var id=t.getAttribute('data-v');if(t.checked)s[id]=1;else delete s[id];render();return}
   if(t.id==='emd75CourPhone'){var cs=couriers();cs[cur.comp]=t.value.trim();try{localStorage.setItem(COUR_KEY,JSON.stringify(cs))}catch(x){}toast('💾 تم حفظ رقم المندوب');return}
+  if(t.id==='emd75LegacyOn'){try{localStorage.setItem('emd_v75_legacy_on',t.checked?'1':'0')}catch(x){}render();scheduleStrip();return}
   if(t.id==='emd75Since'&&t.value){try{localStorage.setItem(SINCE_KEY,t.value)}catch(x){}render();scheduleStrip();return}
 }
 function copy(text){
@@ -26653,7 +26655,7 @@ function refresh(){
   return Promise.resolve(window.EMDArchiveV67.exportAll()).then(function(a){var n={};(a||[]).forEach(function(r){var o=r&&(r.order||r);var k=idOf(o);if(k)n[k]=o});cache=n;ready=true},function(){}).then(function(){loading=false})
 }
 var BAD={cancelled:1,canceled:1,returned:1};
-function unpaid(o){try{if(!o||BAD[String(o.status||'')])return false;var M=window.EMDMoneyV75;if(!M)return false;return M.total(o)>0&&M.remaining(o)>0.0005}catch(e){return false}}
+function unpaid(o){try{if(!o||BAD[String(o.status||'')])return false;var M=window.EMDMoneyV75;if(!M)return false;if(!(o.paymentStatus||(+o.paidAmount||0)>0))return false;return M.total(o)>0&&M.remaining(o)>0.0005}catch(e){return false}}
 /* طلبات أُرشفت سابقًا وعليها مبلغ غير محصّل: نرجعها للقائمة النشطة ليبقى التحصيل ممكنًا */
 function rescue(){
   if(!ready||!window.EMDArchiveV67||!window.EMDArchiveV67.restoreOrder)return Promise.resolve(0);
