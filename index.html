@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V129</title>
+<title>EMD Business — Standalone V130</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--text:#18202a;--muted:#687384;--line:#e4e8ef;--accent:#18202a;--soft:#eef2f7;--ok:#16794c;--warn:#a56a00;--danger:#b23b3b}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial;background:var(--bg);color:var(--text)}
@@ -9814,7 +9814,7 @@ else {wrapAddInventory();setTimeout(renderArrival,300)}
  }
  function calc(){
   const d=db(),start=document.getElementById('emd231Start')?.value||'',end=document.getElementById('emd231End')?.value||'';
-  const orders=arr(d.orders).filter(o=>{const q=date(o);return (!start||q>=start)&&(!end||q<=end)&&String(o.status||'').toLowerCase()!=='cancelled'});
+  const orders=arr((window.EMDLifetimeV130?EMDLifetimeV130.all():d.orders)).filter(o=>{const q=date(o);return (!start||q>=start)&&(!end||q<=end)&&String(o.status||'').toLowerCase()!=='cancelled'});
   const salesTotal=orders.reduce((s,o)=>s+sales(o),0);
   const costTotal=orders.reduce((s,o)=>s+cost(o,d),0);
   const ex=expenseTotal(d,start,end),profit=salesTotal-costTotal-ex;
@@ -9989,7 +9989,7 @@ else {wrapAddInventory();setTimeout(renderArrival,300)}
  function sales(o){return n(o.total)||products(o).reduce((s,x)=>s+n(x.unitPrice??x.salePrice??x.price)*n(x.qty??x.quantity??1),0)}
  function calc(){
   const d=db(),now=new Date(),start=new Date(now.getFullYear(),now.getMonth()-2,1),end=now.toISOString().slice(0,10);
-  const orders=arr(d.orders).filter(o=>{const q=date(o);return q>=start.toISOString().slice(0,10)&&q<=end&&String(o.status||'').toLowerCase()!=='cancelled'});
+  const orders=arr((window.EMDLifetimeV130?EMDLifetimeV130.all():d.orders)).filter(o=>{const q=date(o);return q>=start.toISOString().slice(0,10)&&q<=end&&String(o.status||'').toLowerCase()!=='cancelled'});
   const total=orders.reduce((s,o)=>s+sales(o),0);
   const paid=orders.reduce((s,o)=>s+n(o.paidAmount??o.paid??0),0);
   const expenses=arr(d.expenses).filter(x=>String(x.date||'')>=start.toISOString().slice(0,10)&&String(x.date||'')<=end).reduce((s,x)=>s+n(x.amount),0);
@@ -10498,7 +10498,7 @@ patch();setTimeout(patch,300);setTimeout(patch,1000);
 
 <script>
 function openPerformanceV139(){show('performance');renderPerformanceV139()}
-function renderPerformanceV139(){const o=Array.isArray(db.orders)?db.orders:[],p=Array.isArray(db.products)?db.products:[];const total=o.length,received=o.filter(x=>x.status==='received').length,shipped=o.filter(x=>x.status==='shipped').length,packing=o.filter(x=>x.status==='packing').length,ready=o.filter(x=>x.status==='ready').length,waiting=o.filter(x=>x.status==='waiting').length;const todayKey=new Date().toISOString().slice(0,10),today=o.filter(x=>String(x.createdAt||x.date||'').slice(0,10)===todayKey).length;const qty={};o.forEach(x=>(x.items||x.products||[]).forEach(it=>{const n=String(it.name||it.product||'').trim();if(n)qty[n]=(qty[n]||0)+Number(it.qty||it.quantity||1)}));const top=Object.entries(qty).sort((a,b)=>b[1]-a[1]).slice(0,5),low=p.map(x=>({name:x.name||'غير مسمى',avail:Number(x.stock||0)-Number(x.reserved||0)})).sort((a,b)=>a.avail-b.avail).slice(0,5);const stats=[['📋','إجمالي الطلبات',total],['📅','طلبات اليوم',today],['🟢','جاهزة',ready],['🛠️','قيد التجهيز',packing],['🚚','مشحونة',shipped],['📬','مستلمة',received]];document.getElementById('emdV139Stats').innerHTML='<div class="emd-v139-grid">'+stats.map(x=>'<div class="emd-v139-mini"><div>'+x[0]+' '+x[1]+'</div><div class="n">'+x[2]+'</div></div>').join('')+'</div>';const rate=total?Math.round(received/total*100):0;document.getElementById('emdV139Body').innerHTML='<div class="emd-v139-box"><h3 style="margin-top:0">🏆 الإنجاز</h3><div class="emd-v139-row"><span>نسبة الطلبات المستلمة</span><b>'+rate+'%</b></div><div class="emd-v139-row"><span>⏳ بانتظار المنتجات</span><b>'+waiting+'</b></div></div><div class="emd-v139-box"><h3 style="margin-top:0">🔥 الأكثر طلبًا</h3>'+(top.length?top.map((x,i)=>'<div class="emd-v139-row"><span>'+(i+1)+'. '+x[0]+'</span><span class="emd-v139-pill">'+x[1]+' قطعة</span></div>').join(''):'<div class="muted">لا توجد بيانات كافية بعد.</div>')+'</div><div class="emd-v139-box"><h3 style="margin-top:0">📦 المخزون الذي يحتاج انتباه</h3>'+(low.length?low.map(x=>'<div class="emd-v139-row"><span>'+x.name+'</span><span class="emd-v139-pill">متاح '+Math.max(0,x.avail)+'</span></div>').join(''):'<div class="muted">لا توجد منتجات بعد.</div>')+'</div>'}
+function renderPerformanceV139(){const o=(window.EMDLifetimeV130?EMDLifetimeV130.all():(Array.isArray(db.orders)?db.orders:[])),p=Array.isArray(db.products)?db.products:[];const total=o.length,received=o.filter(x=>x.status==='received').length,shipped=o.filter(x=>x.status==='shipped').length,packing=o.filter(x=>x.status==='packing').length,ready=o.filter(x=>x.status==='ready').length,waiting=o.filter(x=>x.status==='waiting').length;const todayKey=new Date().toISOString().slice(0,10),today=o.filter(x=>String(x.createdAt||x.date||'').slice(0,10)===todayKey).length;const qty={};o.forEach(x=>(x.items||x.products||[]).forEach(it=>{const n=String(it.name||it.product||'').trim();if(n)qty[n]=(qty[n]||0)+Number(it.qty||it.quantity||1)}));const top=Object.entries(qty).sort((a,b)=>b[1]-a[1]).slice(0,5),low=p.map(x=>({name:x.name||'غير مسمى',avail:Number(x.stock||0)-Number(x.reserved||0)})).sort((a,b)=>a.avail-b.avail).slice(0,5);const stats=[['📋','إجمالي الطلبات',total],['📅','طلبات اليوم',today],['🟢','جاهزة',ready],['🛠️','قيد التجهيز',packing],['🚚','مشحونة',shipped],['📬','مستلمة',received]];document.getElementById('emdV139Stats').innerHTML='<div class="emd-v139-grid">'+stats.map(x=>'<div class="emd-v139-mini"><div>'+x[0]+' '+x[1]+'</div><div class="n">'+x[2]+'</div></div>').join('')+'</div>';const rate=total?Math.round(received/total*100):0;document.getElementById('emdV139Body').innerHTML='<div class="emd-v139-box"><h3 style="margin-top:0">🏆 الإنجاز</h3><div class="emd-v139-row"><span>نسبة الطلبات المستلمة</span><b>'+rate+'%</b></div><div class="emd-v139-row"><span>⏳ بانتظار المنتجات</span><b>'+waiting+'</b></div></div><div class="emd-v139-box"><h3 style="margin-top:0">🔥 الأكثر طلبًا</h3>'+(top.length?top.map((x,i)=>'<div class="emd-v139-row"><span>'+(i+1)+'. '+x[0]+'</span><span class="emd-v139-pill">'+x[1]+' قطعة</span></div>').join(''):'<div class="muted">لا توجد بيانات كافية بعد.</div>')+'</div><div class="emd-v139-box"><h3 style="margin-top:0">📦 المخزون الذي يحتاج انتباه</h3>'+(low.length?low.map(x=>'<div class="emd-v139-row"><span>'+x.name+'</span><span class="emd-v139-pill">متاح '+Math.max(0,x.avail)+'</span></div>').join(''):'<div class="muted">لا توجد منتجات بعد.</div>')+'</div>'}
 </script>
 
 <style id="EMD-V165-ai-core-style">
@@ -19183,7 +19183,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V129</div>
+<div id="emdStandaloneV2Badge">EMD Business • V130</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -21334,6 +21334,7 @@ function eligible(){
     if(pins.indexOf(id)>=0)return false;
     if(o.keepActiveUntil&&o.keepActiveUntil>Date.now())return false;
     if(DONE.indexOf(String(o.status||''))<0)return false;
+    if(window.EMDLifetimeV130&&EMDLifetimeV130.unpaid(o))return false;
     var t=doneAt(o);return t&&t<=cut;
   });
 }
@@ -21346,6 +21347,7 @@ async function archiveNow(manual){
   try{
     var at=Date.now();
     await putMany(list.map(function(o){return record(o,at)}));       /* أولًا: الحفظ في الأرشيف وتأكيده */
+    try{if(window.EMDLifetimeV130)EMDLifetimeV130.add(list)}catch(e){}
     var gone={};list.forEach(function(o){gone[idOf(o)]=1});
     var d=getDB();
     window.__emdV67Archiving=Date.now();
@@ -21368,6 +21370,7 @@ async function restoreOrder(k){
   r.order.keepActiveUntil=Date.now()+864e5;
   if(typeof window.save==='function')window.save();
   await delKeys([k]);bumpPhones([r.order],-1);
+  try{if(window.EMDLifetimeV130)EMDLifetimeV130.remove(k)}catch(e){}
   var tot=await count();var m=meta();m.total=tot;setMeta(m);
   return r.order;
 }
@@ -22072,7 +22075,7 @@ function range(k){var now=new Date(),t0=new Date(now.getFullYear(),now.getMonth(
   return {s:s,e:e,sk:dkey(s),ek:dkey(new Date(e.getTime()-1))}}
 function summary(k){
   var r=range(k),sales=0,col=0,cost=0,noPrice=0,noCost=0,count=0;
-  arr(D().orders).forEach(function(o){
+  arr((window.EMDLifetimeV130?EMDLifetimeV130.all():D().orders)).forEach(function(o){
     if(cancelled(o))return;var t=odate(o);if(!t||t<r.s||t>=r.e)return;
     count++;var tt=total(o);sales+=tt;col+=paid(o);
     if(tt<=0)noPrice++;var c=orderCost(o);if(tt>0&&c<=0)noCost++;cost+=c;
@@ -26633,6 +26636,35 @@ function inject(){var g=document.getElementById('emd327SystemGrid');if(g&&!docum
 setInterval(inject,1500);inject();
 window.EMDEncWaV129=function(t){return encodeURIComponent(fmt(String(t==null?'':t)))};
 window.EMDPrefixV129={get:get,fmt:fmt,open:open};
+})();
+</script>
+<script id="EMD-V130-lifetime">
+(function(){'use strict';
+if(window.__EMD_V130__)return;window.__EMD_V130__=true;
+/* V130: الأرشيف لا يُسقط إنجازاتك. التقارير والمالية ومركز الأداء تحسب الطلبات النشطة + المؤرشفة، والطلب غير المدفوع لا يُؤرشف. */
+var cache={},ready=false,loading=false;
+function idOf(o){return String(o&&(o.id!=null?o.id:o.orderNumber!=null?o.orderNumber:o.number!=null?o.number:'')||'')}
+function live(){var d=window.db;return d&&Array.isArray(d.orders)?d.orders:[]}
+function all(){var l=live();var seen={};l.forEach(function(o){seen[idOf(o)]=1});var out=l.slice();Object.keys(cache).forEach(function(k){if(!seen[k])out.push(cache[k])});return out}
+function add(list){(list||[]).forEach(function(o){var k=idOf(o);if(k)cache[k]=JSON.parse(JSON.stringify(o))})}
+function remove(k){delete cache[String(k)]}
+function refresh(){
+  if(loading||!window.EMDArchiveV67||!window.EMDArchiveV67.exportAll)return Promise.resolve();loading=true;
+  return Promise.resolve(window.EMDArchiveV67.exportAll()).then(function(a){var n={};(a||[]).forEach(function(r){var o=r&&(r.order||r);var k=idOf(o);if(k)n[k]=o});cache=n;ready=true},function(){}).then(function(){loading=false})
+}
+var BAD={cancelled:1,canceled:1,returned:1};
+function unpaid(o){try{if(!o||BAD[String(o.status||'')])return false;var M=window.EMDMoneyV75;if(!M)return false;return M.total(o)>0&&M.remaining(o)>0.0005}catch(e){return false}}
+/* طلبات أُرشفت سابقًا وعليها مبلغ غير محصّل: نرجعها للقائمة النشطة ليبقى التحصيل ممكنًا */
+function rescue(){
+  if(!ready||!window.EMDArchiveV67||!window.EMDArchiveV67.restoreOrder)return Promise.resolve(0);
+  var ids=Object.keys(cache).filter(function(k){return unpaid(cache[k])});if(!ids.length)return Promise.resolve(0);
+  var n=0,p=Promise.resolve();
+  ids.forEach(function(k){p=p.then(function(){return window.EMDArchiveV67.restoreOrder(k)}).then(function(){remove(k);n++},function(){})});
+  return p.then(function(){if(n){try{if(typeof window.render==='function')window.render()}catch(e){}try{alert('رجّعت '+n+' طلب من الأرشيف لأن عليها مبلغ غير محصّل، حتى لا يضيع التحصيل.')}catch(e){}}return n})
+}
+window.EMDLifetimeV130={all:all,add:add,remove:remove,refresh:refresh,unpaid:unpaid,rescue:rescue,size:function(){return Object.keys(cache).length}};
+setTimeout(function(){refresh().then(function(){return rescue()})},2500);
+setInterval(function(){if(!document.hidden)refresh()},60000);
 })();
 </script>
 </body>
