@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>بلاغات هروب من المدرسة</title>
+<style>
+:root{color-scheme:light;--bg:#f5f6f4;--card:#fff;--line:#e6e6e2;--text:#0b0b0b;--muted:#6f6e69;--accent:#5b3fd6;--bad:#c23b3b;--good:#0f8a4b;--chip:#f1f1ee}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#121211;--card:#1f1f1e;--line:#2e2e2c;--text:#f0efec;--muted:#9a998f;--accent:#9d86ff;--bad:#e66767;--good:#3fbf7f;--chip:#2a2a28}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#121211;--card:#1f1f1e;--line:#2e2e2c;--text:#f0efec;--muted:#9a998f;--accent:#9d86ff;--bad:#e66767;--good:#3fbf7f;--chip:#2a2a28}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 system-ui,Tahoma,Arial,sans-serif}
+main{max-width:720px;margin:0 auto;padding:16px}
+h1{font-size:22px;margin:8px 0 4px}h2{font-size:17px;margin:22px 0 8px}
+.sub{color:var(--muted);margin:0 0 14px;font-size:13px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px}
+label{display:block;font-size:13px;color:var(--muted);margin:8px 0 3px}
+input{width:100%;font:inherit;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text)}
+button{font:inherit;font-weight:700;padding:8px 14px;border:0;border-radius:10px;background:var(--accent);color:#fff;cursor:pointer}
+button.ghost{background:var(--chip);color:var(--text)}button.bad{background:var(--bad)}
+button:disabled{opacity:.5;cursor:default}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.rp{display:flex;flex-direction:column;gap:8px}
+.nm{font-size:18px;font-weight:800;word-break:break-word}
+.meta{font-size:12.5px;color:var(--muted)}
+.cnt{display:inline-block;min-width:28px;text-align:center;padding:1px 8px;border-radius:999px;background:var(--bad);color:#fff;font-weight:800;font-size:13px}
+.tabs{display:flex;gap:6px;margin:6px 0 10px}.tabs button{flex:1}.tabs button.on{background:var(--accent);color:#fff}
+.pl{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line)}.pl:last-child{border:0}
+#st{min-height:22px;font-size:13px;color:var(--muted)}
+.hide{display:none}
+</style>
+</head>
+<body><main>
+<h1>🚩 بلاغات «هروب من المدرسة»</h1>
+<p class="sub">راجع الأسماء التي بلّغ عنها اللاعبون: احظر الاسم السيئ أو تجاهل البلاغ.</p>
+
+<div class="card" id="login">
+  <label for="db">رابط قاعدة البيانات</label>
+  <input id="db" dir="ltr" value="https://emd-school-escape-default-rtdb.asia-southeast1.firebasedatabase.app">
+  <label for="key">Web API Key (من إعدادات مشروع Firebase)</label>
+  <input id="key" dir="ltr" placeholder="AIza...">
+  <label for="em">إيميل حساب المدير</label>
+  <input id="em" dir="ltr" type="email" autocomplete="username">
+  <label for="pw">كلمة السر</label>
+  <input id="pw" dir="ltr" type="password" autocomplete="current-password">
+  <div class="row" style="margin-top:12px"><button id="go">دخول</button></div>
+</div>
+
+<div id="app" class="hide">
+  <div class="row"><button id="rl" class="ghost">🔄 تحديث</button><button id="out" class="ghost">خروج</button></div>
+  <h2>البلاغات <span id="rn" class="meta"></span></h2>
+  <div id="reports"></div>
+  <h2>كل اللاعبين</h2>
+  <div class="tabs" id="tabs"></div>
+  <div class="card" id="players"></div>
+</div>
+<p id="st"></p>
+</main>
+<script>
+const $=id=>document.getElementById(id),DN=['سهل','متوسط','صعب'],BANNED='لاعب محظور';
+const ls={get(k){try{return localStorage.getItem(k)||''}catch(e){return''}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+let tok='',DB='',data={lb:[{},{},{}],rp:{},bn:{}},tab=0;
+['db','key','em'].forEach(k=>{const v=ls.get('sea_'+k);if(v)$(k).value=v});
+const say=t=>$('st').textContent=t;
+async function api(path,method,body){const r=await fetch(DB+path+'.json?auth='+encodeURIComponent(tok),{method:method||'GET',headers:body!==undefined?{'Content-Type':'application/json'}:{},body:body!==undefined?JSON.stringify(body):undefined});
+ if(r.status===401){say('انتهت الجلسة، سجّل الدخول من جديد');show(false);throw new Error('401')}if(!r.ok)throw new Error(path+' '+r.status);return r.json()}
+function show(on){$('login').classList.toggle('hide',on);$('app').classList.toggle('hide',!on)}
+$('go').onclick=async()=>{DB=$('db').value.trim().replace(/\/+$/,'');const key=$('key').value.trim(),em=$('em').value.trim(),pw=$('pw').value;
+ if(!DB||!key||!em||!pw){say('املأ كل الحقول');return}['db','key','em'].forEach(k=>ls.set('sea_'+k,$(k).value.trim()));say('⏳ جاري الدخول...');
+ try{const r=await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key='+encodeURIComponent(key),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:em,password:pw,returnSecureToken:true})});
+  const j=await r.json();if(!r.ok)throw new Error((j.error&&j.error.message)||'login');tok=j.idToken;$('pw').value='';show(true);load()}catch(e){say('❌ تعذّر الدخول: '+e.message)}};
+$('out').onclick=()=>{tok='';show(false);say('')};
+$('rl').onclick=()=>load();
+async function load(){say('⏳ جاري التحميل...');try{const[a,b,c,rp,bn]=await Promise.all([api('/lb/0'),api('/lb/1'),api('/lb/2'),api('/rp'),api('/bn')]);data={lb:[a||{},b||{},c||{}],rp:rp||{},bn:bn||{}};render();say('')}catch(e){if(e.message!=='401')say('❌ '+e.message+' — تأكد أن قواعد Firebase فيها UID حسابك')}}
+function namesOf(uid){const o=[];data.lb.forEach((l,d)=>{if(l[uid])o.push({d,n:l[uid].n,s:l[uid].s})});return o}
+async function act(btn,fn,msg){btn.disabled=true;try{await fn();say('✅ '+msg);await load()}catch(e){btn.disabled=false;if(e.message!=='401')say('❌ '+e.message)}}
+const ban=uid=>async()=>{for(const x of namesOf(uid))await api('/lb/'+x.d+'/'+uid,'PATCH',{n:BANNED});await api('/bn/'+uid,'PUT',true);await api('/rp/'+uid,'DELETE')};
+const dismiss=uid=>()=>api('/rp/'+uid,'DELETE');
+const wipe=uid=>async()=>{for(const x of namesOf(uid))await api('/lb/'+x.d+'/'+uid,'DELETE');await api('/rp/'+uid,'DELETE')};
+function btn(t,cls,fn,msg){const b=document.createElement('button');b.textContent=t;if(cls)b.className=cls;b.onclick=()=>act(b,fn,msg);return b}
+function render(){const R=$('reports');R.innerHTML='';const ids=Object.keys(data.rp).sort((a,b)=>Object.keys(data.rp[b]).length-Object.keys(data.rp[a]).length);
+ $('rn').textContent='('+ids.length+')';
+ if(!ids.length){const c=document.createElement('div');c.className='card meta';c.textContent='لا توجد بلاغات 🎉';R.appendChild(c)}
+ ids.forEach(uid=>{const ns=namesOf(uid),c=document.createElement('div');c.className='card rp';const n=document.createElement('div');n.className='nm';n.textContent=ns.length?ns[0].n:'(لا توجد نتيجة لهذا اللاعب)';
+  const m=document.createElement('div');m.className='meta';const k=document.createElement('span');k.className='cnt';k.textContent=Object.keys(data.rp[uid]).length;m.append(k,' بلاغ • '+(ns.map(x=>DN[x.d]+': '+x.s+' باب').join(' • ')||'—')+' • '+uid);
+  const r=document.createElement('div');r.className='row';r.append(btn('🚫 حظر الاسم','bad',ban(uid),'تم حظر الاسم'),btn('✓ الاسم سليم','ghost',dismiss(uid),'تم تجاهل البلاغ'),btn('🗑️ حذف النتيجة','ghost',wipe(uid),'تم حذف النتيجة'));
+  c.append(n,m,r);R.appendChild(c)});
+ const T=$('tabs');T.innerHTML='';DN.forEach((d,i)=>{const b=document.createElement('button');b.className='ghost'+(i===tab?' on':'');b.textContent=d;b.onclick=()=>{tab=i;render()};T.appendChild(b)});
+ const P=$('players');P.innerHTML='';const l=data.lb[tab],ks=Object.keys(l).sort((a,b)=>(+l[b].s||0)-(+l[a].s||0));
+ if(!ks.length){P.textContent='لا يوجد لاعبون بعد';P.className='card meta';return}P.className='card';
+ ks.forEach(uid=>{const row=document.createElement('div');row.className='pl';const n=document.createElement('div');const b=document.createElement('b');b.textContent=l[uid].n;const s=document.createElement('div');s.className='meta';s.textContent='🚪 '+l[uid].s+(data.bn[uid]?' • محظور':'');n.append(b,s);
+  row.appendChild(n);if(l[uid].n!==BANNED)row.appendChild(btn('🚫 حظر','bad',ban(uid),'تم حظر الاسم'));P.appendChild(row)})}
+</script>
+</body>
+</html>
