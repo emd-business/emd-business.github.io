@@ -58,9 +58,10 @@ button:disabled{opacity:.5;cursor:default}
 <p id="st"></p>
 </main>
 <script>
-const $=id=>document.getElementById(id),DN=['سهل','متوسط','صعب'],BANNED='لاعب محظور';
+const $=id=>document.getElementById(id),DN=['سهل','متوسط','صعب','تحدي اليوم'],BANNED='لاعب محظور';
 const ls={get(k){try{return localStorage.getItem(k)||''}catch(e){return''}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
-let tok='',DB='',data={lb:[{},{},{}],rp:{},bn:{}},tab=0;
+let tok='',DB='',data={lb:[{},{},{},{}],rp:{},bn:{}},tab=0;
+const day=()=>{const d=new Date();return ''+d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0')},lbp=d=>d===3?'/dc/'+day():'/lb/'+d;
 ['db','key','em'].forEach(k=>{const v=ls.get('sea_'+k);if(v)$(k).value=v});
 const say=t=>$('st').textContent=t;
 async function api(path,method,body){const r=await fetch(DB+path+'.json?auth='+encodeURIComponent(tok),{method:method||'GET',headers:body!==undefined?{'Content-Type':'application/json'}:{},body:body!==undefined?JSON.stringify(body):undefined});
@@ -72,12 +73,12 @@ $('go').onclick=async()=>{DB=$('db').value.trim().replace(/\/+$/,'');const key=$
   const j=await r.json();if(!r.ok)throw new Error((j.error&&j.error.message)||'login');tok=j.idToken;$('pw').value='';show(true);load()}catch(e){say('❌ تعذّر الدخول: '+e.message)}};
 $('out').onclick=()=>{tok='';show(false);say('')};
 $('rl').onclick=()=>load();
-async function load(){say('⏳ جاري التحميل...');try{const[a,b,c,rp,bn]=await Promise.all([api('/lb/0'),api('/lb/1'),api('/lb/2'),api('/rp'),api('/bn')]);data={lb:[a||{},b||{},c||{}],rp:rp||{},bn:bn||{}};render();say('')}catch(e){if(e.message!=='401')say('❌ '+e.message+' — تأكد أن قواعد Firebase فيها UID حسابك')}}
+async function load(){say('⏳ جاري التحميل...');try{const[a,b,c,e,rp,bn]=await Promise.all([api('/lb/0'),api('/lb/1'),api('/lb/2'),api(lbp(3)),api('/rp'),api('/bn')]);data={lb:[a||{},b||{},c||{},e||{}],rp:rp||{},bn:bn||{}};render();say('')}catch(e){if(e.message!=='401')say('❌ '+e.message+' — تأكد أن قواعد Firebase فيها UID حسابك')}}
 function namesOf(uid){const o=[];data.lb.forEach((l,d)=>{if(l[uid])o.push({d,n:l[uid].n,s:l[uid].s})});return o}
 async function act(btn,fn,msg){btn.disabled=true;try{await fn();say('✅ '+msg);await load()}catch(e){btn.disabled=false;if(e.message!=='401')say('❌ '+e.message)}}
-const ban=uid=>async()=>{for(const x of namesOf(uid))await api('/lb/'+x.d+'/'+uid,'PATCH',{n:BANNED});await api('/bn/'+uid,'PUT',true);await api('/rp/'+uid,'DELETE')};
+const ban=uid=>async()=>{for(const x of namesOf(uid))await api(lbp(x.d)+'/'+uid,'PATCH',{n:BANNED});await api('/bn/'+uid,'PUT',true);await api('/rp/'+uid,'DELETE')};
 const dismiss=uid=>()=>api('/rp/'+uid,'DELETE');
-const wipe=uid=>async()=>{for(const x of namesOf(uid))await api('/lb/'+x.d+'/'+uid,'DELETE');await api('/rp/'+uid,'DELETE')};
+const wipe=uid=>async()=>{for(const x of namesOf(uid))await api(lbp(x.d)+'/'+uid,'DELETE');await api('/rp/'+uid,'DELETE')};
 function btn(t,cls,fn,msg){const b=document.createElement('button');b.textContent=t;if(cls)b.className=cls;b.onclick=()=>act(b,fn,msg);return b}
 function render(){const R=$('reports');R.innerHTML='';const ids=Object.keys(data.rp).sort((a,b)=>Object.keys(data.rp[b]).length-Object.keys(data.rp[a]).length);
  $('rn').textContent='('+ids.length+')';
