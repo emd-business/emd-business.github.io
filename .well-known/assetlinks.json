@@ -7,7 +7,8 @@
       "namespace": "android_app",
       "package_name": "com.emdbusiness.app",
       "sha256_cert_fingerprints": [
-        "F9:BA:46:0E:6C:8F:1E:88:1F:A0:6E:ED:43:A8:94:C0:68:FD:8D:1E:D6:8A:BF:72:F8:81:A8:1A:B1:28:80:31"
+        "F9:BA:46:0E:6C:8F:1E:88:1F:A0:6E:ED:43:A8:94:C0:68:FD:8D:1E:D6:8A:BF:72:F8:81:A8:1A:B1:28:80:31",
+        "A3:D6:61:68:FE:9E:8A:11:C2:76:16:1E:1B:B6:B4:DE:FE:CA:99:5B:84:6F:95:71:39:E0:85:E2:54:AE:0E:8E"
       ]
     }
   }
