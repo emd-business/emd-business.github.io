@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.emdbusiness.app",
+      "sha256_cert_fingerprints": [
+        "F9:BA:46:0E:6C:8F:1E:88:1F:A0:6E:ED:43:A8:94:C0:68:FD:8D:1E:D6:8A:BF:72:F8:81:A8:1A:B1:28:80:31"
+      ]
+    }
+  }
+]
