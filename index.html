@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V135</title>
+<title>EMD Business — Standalone V136</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--text:#18202a;--muted:#687384;--line:#e4e8ef;--accent:#18202a;--soft:#eef2f7;--ok:#16794c;--warn:#a56a00;--danger:#b23b3b}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial;background:var(--bg);color:var(--text)}
@@ -19185,7 +19185,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V135</div>
+<div id="emdStandaloneV2Badge">EMD Business • V136</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -26800,6 +26800,30 @@ setInterval(function(){if(!document.hidden)refresh()},60000);
     var A=window.EMDArchiveV67;if(!A||typeof A[fn]!=='function')return;
     var f=A[fn];A[fn]=function(){var r=f.apply(this,arguments);Promise.resolve(r).then(function(){setTimeout(update,50)},function(){});return r};
   });
+})();
+</script>
+<!-- V136: strip invisible direction marks (WhatsApp/iPhone copy) before analysing an order, so quantities like ( ٤ ) are read correctly. -->
+<script id="EMD-V136-clean-invisible-before-parse">
+(function(){
+  'use strict';
+  if(window.__EMD_V136_CLEAN__)return;window.__EMD_V136_CLEAN__=true;
+  var INV=/[​-‏‪-‮⁦-⁩؜﻿­᠎]/g;
+  function clean(t){return String(t||'').replace(INV,'').replace(/[    - ]/g,' ')}
+  window.EMDCleanTextV136=clean;
+  function wrap(){
+    var f=window.parse;if(typeof f!=='function'||f.__v136)return;
+    var g=function(){
+      try{var r=document.getElementById('raw');if(r){var v=clean(r.value);if(v!==r.value)r.value=v}}catch(e){}
+      return f.apply(this,arguments);
+    };
+    for(var k in f){try{g[k]=f[k]}catch(e){}}
+    g.__v136=true;window.parse=g;
+  }
+  wrap();
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',wrap);
+  window.addEventListener('load',function(){setTimeout(wrap,0);setTimeout(wrap,1500)});
+  /* تنظيف فوري عند اللصق في خانة الرسالة */
+  document.addEventListener('input',function(e){var t=e.target;if(t&&t.id==='raw'&&INV.test(t.value)){INV.lastIndex=0;var p=t.selectionStart,v=clean(t.value);var d=t.value.length-v.length;t.value=v;try{t.selectionStart=t.selectionEnd=Math.max(0,p-d)}catch(x){}}INV.lastIndex=0},true);
 })();
 </script>
 </body>
