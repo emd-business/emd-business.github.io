@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V133</title>
+<title>EMD Business — Standalone V134</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--text:#18202a;--muted:#687384;--line:#e4e8ef;--accent:#18202a;--soft:#eef2f7;--ok:#16794c;--warn:#a56a00;--danger:#b23b3b}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial;background:var(--bg);color:var(--text)}
@@ -19185,7 +19185,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V133</div>
+<div id="emdStandaloneV2Badge">EMD Business • V134</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -26765,6 +26765,40 @@ setInterval(function(){if(!document.hidden)refresh()},60000);
     var b=t.closest&&t.closest('#emd133Ship button');if(!b)return;
     if(b.getAttribute('data-close')){close();return}
     var id=b.getAttribute('data-id');if(id&&!b.disabled)send(id,b);
+  });
+})();
+</script>
+<!-- V134: "All" orders chip counts active + archived orders. -->
+<script id="EMD-V134-all-includes-archive">
+(function(){
+  'use strict';
+  if(window.__EMD_V134_ALL_ARCH__)return;window.__EMD_V134_ALL_ARCH__=true;
+  var busy=false,again=false;
+  function en(){try{return window.EMDLangV98&&window.EMDLangV98.lang()==='en'}catch(e){return false}}
+  function update(){
+    if(busy){again=true;return}
+    var el=document.getElementById('v115All');if(!el)return;
+    var active=(window.db&&Array.isArray(window.db.orders))?window.db.orders.length:0;
+    var A=window.EMDArchiveV67;
+    if(!A||typeof A.count!=='function'){el.textContent=active;return}
+    busy=true;
+    A.count().then(function(n){
+      n=Number(n)||0;
+      var a=(window.db&&Array.isArray(window.db.orders))?window.db.orders.length:active;
+      el.textContent=a+n;
+      var chip=el.closest('.emd-v115-chip');
+      if(chip)chip.title=en()?(a+' active + '+n+' archived'):(a+' نشطة + '+n+' في الأرشيف');
+    }).catch(function(){el.textContent=active}).then(function(){busy=false;if(again){again=false;update()}});
+  }
+  window.EMDAllCountV134=update;
+  var old=window.render;
+  if(typeof old==='function'){window.render=function(){var r=old.apply(this,arguments);setTimeout(update,30);return r}}
+  function start(){setTimeout(update,300);setTimeout(update,2500)}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+  /* بعد الأرشفة أو الاسترجاع */
+  ['archiveNow','restoreOrder','importAll','reconcile'].forEach(function(fn){
+    var A=window.EMDArchiveV67;if(!A||typeof A[fn]!=='function')return;
+    var f=A[fn];A[fn]=function(){var r=f.apply(this,arguments);Promise.resolve(r).then(function(){setTimeout(update,50)},function(){});return r};
   });
 })();
 </script>
