@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V132</title>
+<title>EMD Business — Standalone V133</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--text:#18202a;--muted:#687384;--line:#e4e8ef;--accent:#18202a;--soft:#eef2f7;--ok:#16794c;--warn:#a56a00;--danger:#b23b3b}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial;background:var(--bg);color:var(--text)}
@@ -19185,7 +19185,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V132</div>
+<div id="emdStandaloneV2Badge">EMD Business • V133</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -26669,6 +26669,103 @@ function rescue(){
 window.EMDLifetimeV130={all:all,add:add,remove:remove,refresh:refresh,unpaid:unpaid,rescue:rescue,size:function(){return Object.keys(cache).length}};
 setTimeout(function(){refresh().then(function(){return rescue()})},2500);
 setInterval(function(){if(!document.hidden)refresh()},60000);
+})();
+</script>
+<!-- V133: after an order moves to "shipped", offer a one-tap button to message the customer. -->
+<style id="EMD-V133-ship-notify-css">
+#emd133Ship{position:fixed;inset:0;z-index:2147483000;display:none;align-items:flex-end;justify-content:center;background:rgba(15,23,42,.45);font-family:inherit}
+#emd133Ship.show{display:flex}
+#emd133Ship .bx{width:min(520px,100%);background:#fff;border-radius:22px 22px 0 0;padding:20px 18px calc(18px + env(safe-area-inset-bottom));box-shadow:0 -10px 40px rgba(0,0,0,.25);animation:emd133up .22s ease-out}
+@keyframes emd133up{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+#emd133Ship .hd{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+#emd133Ship .ic{width:46px;height:46px;border-radius:14px;background:#e8f7ef;display:flex;align-items:center;justify-content:center;font-size:24px;flex:none}
+#emd133Ship h3{margin:0;font-size:18px;color:#0f172a}
+#emd133Ship .sub{color:#64748b;font-size:13.5px;margin:2px 0 0}
+#emd133Ship .ls{max-height:46vh;overflow:auto;margin:12px 0 4px;display:flex;flex-direction:column;gap:8px}
+#emd133Ship .it{display:flex;align-items:center;gap:10px;border:1px solid #e2e8f0;border-radius:14px;padding:10px 12px}
+#emd133Ship .it .nm{flex:1;min-width:0;font-weight:700;color:#0f172a;font-size:14.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#emd133Ship .it .nm small{display:block;font-weight:500;color:#64748b;font-size:12.5px}
+#emd133Ship .it.done{opacity:.55}
+#emd133Ship button{font:inherit;border:0;border-radius:14px;cursor:pointer;font-weight:700}
+#emd133Ship .wa{background:#16a34a;color:#fff;padding:13px 16px;font-size:16px;width:100%}
+#emd133Ship .wa.sm{width:auto;padding:9px 13px;font-size:14px;flex:none}
+#emd133Ship .later{background:#f1f5f9;color:#334155;padding:12px 16px;font-size:15px;width:100%;margin-top:8px}
+#emd133Ship .warn{background:#fff7ed;color:#9a3412;border-radius:12px;padding:9px 12px;font-size:13px;margin-top:10px}
+</style>
+<div id="emd133Ship" role="dialog" aria-modal="true"><div class="bx" id="emd133Box"></div></div>
+<script id="EMD-V133-ship-notify-js">
+(function(){
+  'use strict';
+  if(window.__EMD_V133_SHIP_NOTIFY__)return;window.__EMD_V133_SHIP_NOTIFY__=true;
+  var KEY='emd_business_v1',lastAct=0,prev=null,timer=null,pending={};
+  function en(){try{return window.EMDLangV98&&window.EMDLangV98.lang()==='en'}catch(e){return false}}
+  function T(a,e){return en()?e:a}
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+  function oid(o){return String(o&&(o.id||o.orderNumber||o.number)||'')}
+  function map(raw){var m={};try{var d=JSON.parse(raw||'{}');(d.orders||[]).forEach(function(o){var k=oid(o);if(k)m[k]={s:String(o.status||''),o:o}})}catch(e){}return m}
+  ['pointerdown','keydown','click','touchstart'].forEach(function(ev){document.addEventListener(ev,function(){lastAct=Date.now()},true)});
+  try{prev=map(localStorage.getItem(KEY))}catch(e){prev={}}
+  var orig=Storage.prototype.setItem;
+  Storage.prototype.setItem=function(k,v){
+    var r=orig.apply(this,arguments);
+    try{
+      if(this===window.localStorage&&k===KEY){
+        var now=map(v),userMade=(Date.now()-lastAct)<6000;
+        Object.keys(now).forEach(function(id){
+          var p=prev&&prev[id];
+          if(userMade&&now[id].s==='shipped'&&p&&p.s&&p.s!=='shipped'&&p.s!=='received')pending[id]=1;
+        });
+        prev=now;
+        if(Object.keys(pending).length){clearTimeout(timer);timer=setTimeout(showPrompt,450)}
+      }
+    }catch(e){}
+    return r;
+  };
+  function getOrder(id){try{var d=JSON.parse(localStorage.getItem(KEY)||'{}');return (d.orders||[]).find(function(o){return oid(o)===id})||null}catch(e){return null}}
+  function phoneOf(o){return String(o&&(o.phone||o.customerPhone||o.whatsapp)||'').replace(/\D/g,'')}
+  function label(o){return 'EMD-'+String(oid(o)).replace(/^#/,'')}
+  function close(){var el=document.getElementById('emd133Ship');if(el)el.classList.remove('show')}
+  function send(id,btn){
+    try{
+      if(typeof window.sendWhatsApp!=='function'){alert(T('تعذر فتح رسالة واتساب.','Could not open the WhatsApp message.'));return}
+      var many=document.querySelectorAll('#emd133Box .it').length>1;
+      if(!many)close();else if(btn){var it=btn.closest('.it');if(it)it.classList.add('done');btn.textContent=T('✓ تم الفتح','✓ Opened')}
+      window.sendWhatsApp(id);
+    }catch(e){}
+  }
+  window.EMDShipNotifyV133={send:send,close:close};
+  function showPrompt(){
+    var ids=Object.keys(pending);pending={};
+    var orders=ids.map(getOrder).filter(function(o){return o&&String(o.status)==='shipped'});
+    if(!orders.length)return;
+    var box=document.getElementById('emd133Box'),el=document.getElementById('emd133Ship');if(!box||!el)return;
+    var h;
+    if(orders.length===1){
+      var o=orders[0],ok=phoneOf(o).length>=8;
+      h='<div class="hd"><div class="ic">🚚</div><div><h3>'+T('تم شحن الطلب ✅','Order shipped ✅')+'</h3>'+
+        '<p class="sub">'+esc(label(o))+' · '+esc(o.name||o.customerName||T('عميل','Customer'))+'</p></div></div>'+
+        '<p class="sub" style="margin:10px 0 14px">'+T('أخبر عميلك أن طلبه في الطريق، مع رقم التتبع ورابط متابعة الطلب.','Let your customer know the order is on its way, with the tracking number and link.')+'</p>'+
+        (ok?'':'<div class="warn">'+T('⚠️ لا يوجد رقم هاتف صالح لهذا العميل، أضفه من تفاصيل الطلب.','⚠️ This customer has no valid phone number. Add it from the order details.')+'</div>')+
+        '<button class="wa" type="button" data-id="'+esc(oid(o))+'" '+(ok?'':'disabled style="opacity:.5"')+'>💬 '+T('أرسل رسالة الشحن للعميل','Send shipping message to customer')+'</button>'+
+        '<button class="later" type="button" data-close="1">'+T('لاحقًا','Later')+'</button>';
+    }else{
+      h='<div class="hd"><div class="ic">🚚</div><div><h3>'+T('تم شحن '+orders.length+' طلبات ✅',orders.length+' orders shipped ✅')+'</h3>'+
+        '<p class="sub">'+T('أرسل لكل عميل رسالة تخبره أن طلبه في الطريق.','Message each customer that the order is on its way.')+'</p></div></div><div class="ls">'+
+        orders.map(function(o){var ok=phoneOf(o).length>=8;return '<div class="it"><div class="nm">'+esc(o.name||o.customerName||T('عميل','Customer'))+'<small>'+esc(label(o))+(ok?'':' · '+T('بدون رقم','no phone'))+'</small></div>'+
+          '<button class="wa sm" type="button" data-id="'+esc(oid(o))+'" '+(ok?'':'disabled style="opacity:.5"')+'>💬 '+T('إرسال','Send')+'</button></div>'}).join('')+
+        '</div><button class="later" type="button" data-close="1">'+T('إغلاق','Close')+'</button>';
+    }
+    box.innerHTML=h;
+    el.classList.add('show');
+  }
+  document.addEventListener('click',function(e){
+    var el=document.getElementById('emd133Ship');if(!el||!el.classList.contains('show'))return;
+    var t=e.target;
+    if(t===el){close();return}
+    var b=t.closest&&t.closest('#emd133Ship button');if(!b)return;
+    if(b.getAttribute('data-close')){close();return}
+    var id=b.getAttribute('data-id');if(id&&!b.disabled)send(id,b);
+  });
 })();
 </script>
 </body>
