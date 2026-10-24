@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V134</title>
+<title>EMD Business — Standalone V135</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--text:#18202a;--muted:#687384;--line:#e4e8ef;--accent:#18202a;--soft:#eef2f7;--ok:#16794c;--warn:#a56a00;--danger:#b23b3b}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial;background:var(--bg);color:var(--text)}
@@ -19185,7 +19185,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V134</div>
+<div id="emdStandaloneV2Badge">EMD Business • V135</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -23844,7 +23844,7 @@ function push(force){
   return remoteMeta().then(function(r){
     if(!force&&r&&m.lastRemote&&r.updated_at!==m.lastRemote){busy=false;if(m.lastData&&dataHash(keys)===m.lastData){pull('☁️ حدّثت بياناتك من جهازك الثاني');return false}conflict(r);return false}
     var archive=[];var ap=Promise.resolve();try{if(window.EMDArchiveV67&&window.EMDArchiveV67.exportAll)ap=Promise.resolve(window.EMDArchiveV67.exportAll()).then(function(a){archive=a||[]},function(){})}catch(e){}
-    return ap.then(function(){var c=countsOf(keys),data={v:1,keys:keys,archive:archive},now=new Date().toISOString();c.h=dataHash(keys);
+    return ap.then(function(){var c=countsOf(keys),data={v:1,keys:keys,archive:archive},now=new Date().toISOString();c.h=dataHash(keys);c.active=c.orders;c.archived=archive.length;c.orders=c.active+c.archived;
       return token().then(function(t){var up=function(full){var b={user_id:uid(),data:data,counts:c,updated_at:now};if(full){b.device=device();b.app_version=VERSION}return call('/rest/v1/emd_vaults?on_conflict=user_id',{method:'POST',token:t,prefer:'resolution=merge-duplicates,return=representation',body:b})};
       return up(true).catch(function(e){var j=e&&e.body||{};if(j.code==='42703'||j.code==='PGRST204'||/column/i.test(String(j.message||'')))return up(false);throw e}).then(function(rows){
         var row=rows&&rows[0]||{updated_at:now};setMeta({lastHash:h,lastData:dataHash(keys),lastRemote:row.updated_at,lastPush:Date.now(),conflict:null});blocked=false;
