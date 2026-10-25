@@ -29491,23 +29491,23 @@ function drawForm(o,c,logo,s,k){var h=H(),DPM=8,W=Math.round(c.w*DPM),Ht=Math.ro
     if(val)t(val,big?6.2*u:fs,true,'right',R-lw,y-(big?0.9*u:0),mw);if(left)left.d(y);y+=lh;dots(L,R-lw+0.6*u,y-1.6*u)}
   /* المرسل: اسم المتجر، ويسارًا رقم المتجر بخط كبير والشعار */
   var sph=ph(pf.phone||pf.whatsapp);
-  row('المرسل',e.store?(pf.name||''):'',false,(sph||(e.logo&&logo))?{w:cw*0.56,d:function(yy){var xl=L,ls=7.4*u;if(e.logo&&logo){x.drawImage(logo,L,yy-1.6*u,ls,ls);xl=L+ls+1.4*u}if(sph)ltr(sph,7.6*u,true,'left',xl,yy-1.4*u,cw*0.56-(xl-L))}}:null);
-  if(e.name||e.phone){var cp=e.phone?ph(o.phone):'';row('المستلم',e.name?(o.name||''):'',false,cp?{w:tw(cp,6*u,true),d:function(yy){ltr(cp,6*u,true,'left',L,yy-0.6*u)}}:null)}
+  row('المرسل',e.store?(pf.name||''):'',false,(sph||(e.logo&&logo))?{w:cw*0.4,d:function(yy){var xl=L,ls=6.4*u;if(e.logo&&logo){x.drawImage(logo,L,yy-0.8*u,ls,ls);xl=L+ls+1.4*u}if(sph)ltr(sph,5*u,true,'left',xl,yy+0.2*u,cw*0.4-(xl-L))}}:null);
+  if(e.name||e.phone){y+=1.2*u;var cp=e.phone?ph(o.phone):'';row('المستلم',e.name?(o.name||''):'',false,cp?{w:tw(cp,8*u,true),d:function(yy){ltr(cp,8*u,true,'left',L,yy-2.2*u)}}:null)}
   if(e.place)row('الولاية',String(o.place||o.location||'').replace(/\s*-\s*/g,' · '),false,null);
-  var items=(o.products||[]).filter(function(p){return p&&p.name});
-  if(e.items&&items.length){t('المنتجات :',fs,true,'right',R,y);var lw=tw('المنتجات :',fs,true)+1.6*u,max=4;
-    items.slice(0,max).forEach(function(p,i){var more=(i===max-1&&items.length>max)?'  (+'+(items.length-max)+')':'';t('• '+p.name+more,4.4*u,true,'right',R-lw,y+0.3*u,cw-lw-11*u);f(4.6*u,true);x.textAlign='left';x.fillText('× '+num(p.qty||1),L,y+0.3*u);y+=6*u});y+=1.6*u;dots(L,R,y-1.6*u);y+=1*u}
   /* الدوائر: مدفوع/غير مدفوع ومكتب/منزل، تُعلَّم تلقائيًا من بيانات الطلب */
   var due=h.dueOf(o),cur=(pf.currency==='OMR'||!pf.currency)?'ر.ع':pf.currency,m=String(o.method||o.deliveryMethod||o.delivery_method||''),off=/مكتب/.test(m),home=!off&&/منزل|البيت|توصيل|مندوب/.test(m);
   var amtW=e.amount?cw*0.38:0,gw=cw-amtW-(amtW?2*u:0),cr=2.3*u,gy=y,colW=gw/2;
   function opt(lbl,on,col,r){var xr=R-col*colW,yy=gy+r*7.4*u;circ(xr-cr,yy+cr+0.2*u,cr,on);t(lbl,fs,true,'right',xr-2*cr-1.6*u,yy,colW-2*cr-2*u)}
   opt('مدفوع',due<=0,0,0);opt('غير مدفوع',due>0,1,0);opt('مكتب',off,0,1);opt('منزل',home,1,1);
-  if(amtW){var bh=13.6*u,bx=L,by=gy-0.4*u;x.fillRect(bx,by,amtW,bh);x.fillStyle='#fff';if(due>0){t('عند الاستلام',3.6*u,true,'center',bx+amtW/2,by+1.4*u,amtW-2*u);t(due.toFixed(3)+' '+cur,6*u,true,'center',bx+amtW/2,by+5.6*u,amtW-2*u)}else t('مدفوع ✓',6.4*u,true,'center',bx+amtW/2,by+3.6*u,amtW-2*u);x.fillStyle='#000'}
+  if(amtW){var bh=13.6*u,bx=L,by=gy-0.4*u;x.fillRect(bx,by,amtW,bh);x.fillStyle='#fff';if(due>0){t('عند الاستلام',3.6*u,true,'center',bx+amtW/2,by+1.4*u,amtW-2*u);t(due.toFixed(3)+' '+cur,6*u,true,'center',bx+amtW/2,by+Math.max(5.6*u,1.4*u+16),amtW-2*u)}else t('مدفوع ✓',6.4*u,true,'center',bx+amtW/2,by+3.6*u,amtW-2*u);x.fillStyle='#000'}
   y=gy+14.8*u;
   if(e.fee){var fe=num(o.deliveryFee!=null&&o.deliveryFee!==''?o.deliveryFee:(o.shippingFee||o.delivery||0));t('رسوم الشحن : '+(fe>0?fe.toFixed(3)+' '+cur:'مجانًا'),4.4*u,true,'right',R,y);y+=6.4*u}
   /* ملاحظات ورقم الطلب */
   var note=String(o.note||o.notes||'').trim();lab='ملاحظات :';t(lab,fs,true,'right',R,y);var nw=tw(lab,fs,true)+1.6*u,cdw=e.code?tw(code,4.4*u,true)+2*u:0;
   if(e.note&&note)t(note,4.4*u,false,'right',R-nw,y+0.4*u,cw-nw-cdw);if(e.code)ltr(code,4.4*u,true,'left',L,y+0.4*u);y+=lh;dots(L+cdw,R-nw+0.6*u,y-1.6*u);
+  y+=0.6*u;var items=(o.products||[]).filter(function(p){return p&&p.name});
+  if(e.items&&items.length){t('المنتجات :',fs,true,'right',R,y);var lw=tw('المنتجات :',fs,true)+1.6*u,max=4;
+    items.slice(0,max).forEach(function(p,i){var more=(i===max-1&&items.length>max)?'  (+'+(items.length-max)+')':'';t('• '+p.name+more,4.4*u,true,'right',R-lw,y+0.3*u,cw-lw-11*u);f(4.6*u,true);x.textAlign='left';x.fillText('× '+num(p.qty||1),L,y+0.3*u);y+=6*u});}
   if(y>Ht-P+1)fit=false;
   if(s.border){x.lineWidth=Math.max(3,Math.round(u*0.6));x.strokeRect(P*0.45,P*0.45,W-P*0.9,Ht-P*0.9)}
   return {cv:cv,fit:fit,used:y/Ht}}
