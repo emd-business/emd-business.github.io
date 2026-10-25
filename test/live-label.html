@@ -29427,7 +29427,8 @@ var TPL={
   full:{l:'كامل',d:'كل المعلومات',els:E(['logo','store','code','name','phone','place','items','courier','note','fee','amount','qr','barcode'])},
   short:{l:'مختصر بلا اسم',d:'الهاتف والعنوان والمبلغ ورقم الطلب',els:E(['code','phone','place','amount','barcode'])},
   big:{l:'خط كبير',d:'الاسم والهاتف بخط كبير والمبلغ',els:E(['code','name','phone','place','amount'])},
-  min:{l:'الأبسط',d:'رقم الطلب والهاتف فقط',els:E(['code','phone'])}};
+  min:{l:'الأبسط',d:'رقم الطلب والهاتف فقط',els:E(['code','phone'])},
+  form:{l:'نموذج المرسل والمستلم',d:'مثل الملصق الورقي مع المنتجات',els:E(['logo','store','code','name','phone','place','items','note','amount'])}};
 var FS={s:[0.85,'صغير'],m:[1,'متوسط'],l:[1.2,'كبير']};
 function slot(which){var d={};try{d=JSON.parse(ls('emd423_'+which)||'{}')||{}}catch(e){}
   var def=which==='quick'?'short':'classic';var t=TPL[d.tpl]||d.tpl==='custom'?d.tpl:def;
@@ -29473,8 +29474,45 @@ function drawFlex(o,c,logo,s,k){var h=H(),DPM=8,W=Math.round(c.w*DPM),Ht=Math.ro
   if(s.border){x.lineWidth=Math.max(3,Math.round(u*0.6));x.strokeRect(P*0.45,P*0.45,W-P*0.9,Ht-P*0.9)}
   /* إن زاد المحتوى عن الملصق نُصغّر، وإن بقي فراغ كبير نُكبّر */
   return {cv:cv,fit:fit,used:y/Ht}}
-function draw(o,c,logo,which){var s=slot(which),best=null;
-  for(var k=1.5;k>=0.42;k-=0.06){var r=drawFlex(o,c,logo,s,k);if(r.fit){best=r.cv;break}best=r.cv}
+/* V429: قالب «نموذج المرسل والمستلم» يشبه الملصق الورقي مع المنتجات */
+function drawForm(o,c,logo,s,k){var h=H(),DPM=8,W=Math.round(c.w*DPM),Ht=Math.round(c.h*DPM),cv=document.createElement('canvas');cv.width=W;cv.height=Ht;var x=cv.getContext('2d'),e=s.els,FONT=h.FONT;
+  var u=Math.min(Math.min(W,Ht*1.4)/100*k,W/100*1.05)*FS[s.fs][0],P=Math.round(2.4*DPM),R=W-P,L=P,cw=W-2*P,y=P,fit=true,LW=Math.max(2,Math.round(u*0.42));
+  x.fillStyle='#fff';x.fillRect(0,0,W,Ht);x.fillStyle='#000';x.strokeStyle='#000';x.direction='rtl';x.textBaseline='top';
+  function f(px,b){x.font=(b?'700 ':'600 ')+Math.round(Math.max(px,14))+'px '+FONT}
+  function tw(sv,px,b){f(px,b);return x.measureText(sv).width}
+  function t(sv,px,b,al,xx,yy,mw){f(px,b);x.textAlign=al||'right';x.fillText(sv,xx==null?R:xx,yy==null?y:yy,mw||cw)}
+  function ltr(sv,px,b,al,xx,yy,mw){f(px,b);x.textAlign=al;x.direction='ltr';x.fillText(sv,xx,yy,mw);x.direction='rtl'}
+  function dots(x1,x2,yy){x.save();x.lineWidth=LW;x.setLineDash([LW*1.6,LW*1.6]);x.beginPath();x.moveTo(x1,yy);x.lineTo(x2,yy);x.stroke();x.restore()}
+  function circ(cx,cy,r,on){x.lineWidth=LW*1.3;x.beginPath();x.arc(cx,cy,r,0,Math.PI*2);x.stroke();if(on){x.beginPath();x.arc(cx,cy,r*0.55,0,Math.PI*2);x.fill()}}
+  function ph(v){v=String(v||'').replace(/\D/g,'');return v}
+  var pf=h.prof(),code=h.code(o),fs=5*u,lh=8.6*u,lab;
+  /* سطر بعنوان ثم قيمة ثم خط منقّط */
+  function row(label,val,big,left){lab=label+' :';t(lab,fs,true,'right',R,y);var lw=tw(lab,fs,true)+1.6*u,mw=cw-lw-(left?left.w+2*u:0);
+    if(val)t(val,big?6.2*u:fs,true,'right',R-lw,y-(big?0.9*u:0),mw);if(left)left.d(y);y+=lh;dots(L,R-lw+0.6*u,y-1.6*u)}
+  /* المرسل: اسم المتجر، ويسارًا رقم المتجر بخط كبير والشعار */
+  var sph=ph(pf.phone||pf.whatsapp);
+  row('المرسل',e.store?(pf.name||''):'',false,(sph||(e.logo&&logo))?{w:cw*0.56,d:function(yy){var xl=L,ls=7.4*u;if(e.logo&&logo){x.drawImage(logo,L,yy-1.6*u,ls,ls);xl=L+ls+1.4*u}if(sph)ltr(sph,7.6*u,true,'left',xl,yy-1.4*u,cw*0.56-(xl-L))}}:null);
+  if(e.name||e.phone){var cp=e.phone?ph(o.phone):'';row('المستلم',e.name?(o.name||''):'',false,cp?{w:tw(cp,6*u,true),d:function(yy){ltr(cp,6*u,true,'left',L,yy-0.6*u)}}:null)}
+  if(e.place)row('الولاية',String(o.place||o.location||'').replace(/\s*-\s*/g,' · '),false,null);
+  var items=(o.products||[]).filter(function(p){return p&&p.name});
+  if(e.items&&items.length){t('المنتجات :',fs,true,'right',R,y);var lw=tw('المنتجات :',fs,true)+1.6*u,max=4;
+    items.slice(0,max).forEach(function(p,i){var more=(i===max-1&&items.length>max)?'  (+'+(items.length-max)+')':'';t('• '+p.name+more,4.4*u,true,'right',R-lw,y+0.3*u,cw-lw-11*u);f(4.6*u,true);x.textAlign='left';x.fillText('× '+num(p.qty||1),L,y+0.3*u);y+=6*u});y+=1.6*u;dots(L,R,y-1.6*u);y+=1*u}
+  /* الدوائر: مدفوع/غير مدفوع ومكتب/منزل، تُعلَّم تلقائيًا من بيانات الطلب */
+  var due=h.dueOf(o),cur=(pf.currency==='OMR'||!pf.currency)?'ر.ع':pf.currency,m=String(o.method||o.deliveryMethod||o.delivery_method||''),off=/مكتب/.test(m),home=!off&&/منزل|البيت|توصيل|مندوب/.test(m);
+  var amtW=e.amount?cw*0.38:0,gw=cw-amtW-(amtW?2*u:0),cr=2.3*u,gy=y,colW=gw/2;
+  function opt(lbl,on,col,r){var xr=R-col*colW,yy=gy+r*7.4*u;circ(xr-cr,yy+cr+0.2*u,cr,on);t(lbl,fs,true,'right',xr-2*cr-1.6*u,yy,colW-2*cr-2*u)}
+  opt('مدفوع',due<=0,0,0);opt('غير مدفوع',due>0,1,0);opt('مكتب',off,0,1);opt('منزل',home,1,1);
+  if(amtW){var bh=13.6*u,bx=L,by=gy-0.4*u;x.fillRect(bx,by,amtW,bh);x.fillStyle='#fff';if(due>0){t('عند الاستلام',3.6*u,true,'center',bx+amtW/2,by+1.4*u,amtW-2*u);t(due.toFixed(3)+' '+cur,6*u,true,'center',bx+amtW/2,by+5.6*u,amtW-2*u)}else t('مدفوع ✓',6.4*u,true,'center',bx+amtW/2,by+3.6*u,amtW-2*u);x.fillStyle='#000'}
+  y=gy+14.8*u;
+  if(e.fee){var fe=num(o.deliveryFee!=null&&o.deliveryFee!==''?o.deliveryFee:(o.shippingFee||o.delivery||0));t('رسوم الشحن : '+(fe>0?fe.toFixed(3)+' '+cur:'مجانًا'),4.4*u,true,'right',R,y);y+=6.4*u}
+  /* ملاحظات ورقم الطلب */
+  var note=String(o.note||o.notes||'').trim();lab='ملاحظات :';t(lab,fs,true,'right',R,y);var nw=tw(lab,fs,true)+1.6*u,cdw=e.code?tw(code,4.4*u,true)+2*u:0;
+  if(e.note&&note)t(note,4.4*u,false,'right',R-nw,y+0.4*u,cw-nw-cdw);if(e.code)ltr(code,4.4*u,true,'left',L,y+0.4*u);y+=lh;dots(L+cdw,R-nw+0.6*u,y-1.6*u);
+  if(y>Ht-P+1)fit=false;
+  if(s.border){x.lineWidth=Math.max(3,Math.round(u*0.6));x.strokeRect(P*0.45,P*0.45,W-P*0.9,Ht-P*0.9)}
+  return {cv:cv,fit:fit,used:y/Ht}}
+function draw(o,c,logo,which){var s=slot(which),best=null,fn=s.tpl==='form'?drawForm:drawFlex;
+  for(var k=1.5;k>=0.42;k-=0.06){var r=fn(o,c,logo,s,k);if(r.fit){best=r.cv;break}best=r.cv}
   return best}
 function active(which){return slot(which).tpl!=='classic'}
 
