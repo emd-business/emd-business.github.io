@@ -29245,7 +29245,7 @@ function bulkBtn(){var bar=$('emdV341BulkBar');if(!bar||bar.querySelector('[data
   if(ref&&ref.parentNode)ref.parentNode.insertBefore(b,ref);else (bar.querySelector('.emd-v36-bulk-main')||bar).appendChild(b)}
 function tick(){try{modalBtn()}catch(e){}try{bulkBtn()}catch(e){}}
 window.EMDLabelV418={open:open,render:render,config:cfg,_last:function(){return last},_h:{draw:draw,code:code,dueOf:dueOf,track:track,courier:courier,c128:c128,prof:prof,getLogo:getLogo,orderOf:orderOf,FONT:FONT}};
-function boot(){tick();setInterval(tick,800)}
+function boot(){tick();setInterval(function(){if(!document.hidden)tick()},1200)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
 </script>
@@ -29382,7 +29382,7 @@ document.addEventListener('change',function(e){var t=e.target;if(!t.closest||!t.
   k[key]=t.type==='checkbox'?(t.checked?1:0):(key==='lang'||key==='gap'?t.value:num(t.value,k[key]));save(k);
   if(key==='density'){var l=t.closest('label');if(l)l.firstChild.textContent='درجة السواد ('+k.density+')'}},true);
 var wt=setInterval(function(){watch();if(mo)clearInterval(wt)},1000);
-window.EMDPrinterV422={connect:connect,print:printLabels,config:cfg,tspl:tspl,escpos:escpos,testLabel:testLabel};
+window.EMDPrinterV422={connected:function(){return !!(ch&&dev&&dev.gatt.connected)},connect:connect,print:printLabels,config:cfg,tspl:tspl,escpos:escpos,testLabel:testLabel};
 })();
 </script>
 <style id="EMD-V422-btprint-css">
@@ -29481,7 +29481,7 @@ function active(which){return slot(which).tpl!=='classic'}
 /* ===== الملصق السريع ===== */
 function quickCanvas(id){var h=H();if(!h)return Promise.resolve(null);var o=h.orderOf(id);if(!o)return Promise.resolve(null);var c=(window.EMDQuickV424&&EMDQuickV424.size())||EMDLabelV418.config();
   return h.getLogo().then(function(lg){var s=slot('quick');var cv=s.tpl==='classic'?null:draw(o,c,lg,'quick');if(!cv){var k=1;while(!cv&&k>0.45){cv=h.draw(o,c,lg,k);k-=0.08}cv=cv||h.draw(o,c,lg,0.45)}return {o:o,cv:cv,w:c.w,h:c.h}})}
-function quick(id){if(!id)return;quickCanvas(id).then(function(r){if(!r){toast('لم يُعثر على الطلب',false);return}
+function quick(id){if(!id)return;/* V428: إن لم تكن الطابعة متصلة نفتح نافذة اختيارها فورًا مع الضغطة */var P0=window.EMDPrinterV422;if(P0&&P0.connected&&!P0.connected()&&navigator.bluetooth&&navigator.bluetooth.requestDevice){toast('اختر طابعتك من القائمة لربطها');P0.connect().then(function(){toast('رُبطت الطابعة ✓');quick(id)}).catch(function(e){if(e&&e.name==='NotFoundError')toast('لم تُختر طابعة',false);else toast('تعذّر الاتصال بالطابعة: '+(e&&e.message||''),false)});return}quickCanvas(id).then(function(r){if(!r){toast('لم يُعثر على الطلب',false);return}
   var P=window.EMDPrinterV422;
   if(P&&navigator.bluetooth&&navigator.bluetooth.requestDevice){toast('⚡ جارٍ طباعة الملصق السريع…');P.print([{cv:r.cv,wMm:r.w,hMm:r.h}])}
   else{ls('emd423_peek','quick');EMDLabelV418.open([id]);toast('الطباعة المباشرة تعمل في Chrome على الأندرويد. شارك الصورة لتطبيق الطابعة.')}})}
@@ -29493,7 +29493,7 @@ function addButtons(){
     var q=document.createElement('button');q.type='button';q.className='secondary e423-q';q.setAttribute('data-e423q',id);q.title='طباعة ملصق شحن سريع';q.setAttribute('aria-label','ملصق سريع للطلب '+id);q.textContent='🏷️ ملصق';p.insertBefore(q,b.nextSibling)});
   /* نافذة الطلب: بجانب «🏷️ ملصق الشحن» */
   var m=$('emdOrderModalV26');if(m){var lb=m.querySelector('[data-emd418]');if(lb&&!m.querySelector('[data-e423m]')){var q2=document.createElement('button');q2.type='button';q2.className='secondary e423-q';q2.setAttribute('data-e423m','1');q2.textContent='🏷️ ملصق سريع';lb.parentNode.insertBefore(q2,lb.nextSibling)}}}
-setInterval(addButtons,900);document.addEventListener('DOMContentLoaded',addButtons);
+/* V428: لا نفحص الصفحة إلا والطلبات أو نافذة الطلب ظاهرة */setInterval(function(){if(document.hidden)return;var ov=document.getElementById('orders'),md=document.getElementById('emdOrderModalV26');if((ov&&ov.classList.contains('active'))||(md&&md.style.display!=='none'&&getComputedStyle(md).display!=='none'))addButtons()},1200);document.addEventListener('DOMContentLoaded',addButtons);
 document.addEventListener('click',function(ev){var b=ev.target.closest&&ev.target.closest('[data-e423q],[data-e423m]');if(!b)return;ev.preventDefault();ev.stopPropagation();quick(b.hasAttribute('data-e423m')?oidFromModal():b.getAttribute('data-e423q'))},true);
 
 /* ===== لوحة «🎨 تصميم الملصق» داخل نافذة الملصق ===== */
