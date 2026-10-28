@@ -29506,7 +29506,7 @@ function drawForm(o,c,logo,s,k){var h=H(),DPM=8,W=Math.round(c.w*DPM),Ht=Math.ro
   var due=h.dueOf(o),cur=(pf.currency==='OMR'||!pf.currency)?'ر.ع':pf.currency,m=String(o.method||o.deliveryMethod||o.delivery_method||''),off=/مكتب/.test(m),home=!off&&/منزل|البيت|توصيل|مندوب/.test(m);
   var amtW=e.amount?cw*0.38:0,gw=cw-amtW-(amtW?2*u:0),cr=2.3*u,gy=y,colW=gw/2;
   function opt(lbl,on,col,r){var xr=R-col*colW,yy=gy+r*7.4*u;circ(xr-cr,yy+cr+0.2*u,cr,on);t(lbl,fs,true,'right',xr-2*cr-1.6*u,yy,colW-2*cr-2*u)}
-  opt('مدفوع',due<=0,0,0);opt('غير مدفوع',due>0,1,0);opt('مكتب',off,0,1);opt('منزل',home,1,1);
+  var FP137=window.EMDFeePaidV137?window.EMDFeePaidV137(o):(due<=0?'paid':'unpaid');opt('مدفوع',FP137==='paid',0,0);opt('غير مدفوع',FP137==='unpaid',1,0);opt('مكتب',off,0,1);opt('منزل',home,1,1);
   if(amtW){var bh=13.6*u,bx=L,by=gy-0.4*u;x.fillRect(bx,by,amtW,bh);x.fillStyle='#fff';if(due>0){t('عند الاستلام',3.6*u,true,'center',bx+amtW/2,by+1.4*u,amtW-2*u);t(due.toFixed(3)+' '+cur,6*u,true,'center',bx+amtW/2,by+Math.max(5.6*u,1.4*u+16),amtW-2*u)}else t(window.EMDFixPaidV137?window.EMDFixPaidV137(o):'مدفوع ✓',6.4*u,true,'center',bx+amtW/2,by+3.6*u,amtW-2*u);x.fillStyle='#000'}
   y=gy+14.8*u;
   if(e.fee){var fe=num(o.deliveryFee!=null&&o.deliveryFee!==''?o.deliveryFee:(o.shippingFee||o.delivery||0));t('رسوم الشحن : '+(fe>0?fe.toFixed(3)+' '+cur:'مجانًا'),4.4*u,true,'right',R,y);y+=6.4*u}
@@ -29701,6 +29701,11 @@ body.e424-nocard .e423-q[data-e423q],body.e424-nomodal [data-e423m]{display:none
   .app>header #emdV192SettingsBtn{width:auto!important;margin-top:0!important;padding:9px 14px!important}
   .app>header #emd108Chip{margin:0!important}
 }
+/* زر رسوم التوصيل */
+.e137-fee{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:10px 0;padding:10px 12px;border:1px solid #e3e8ef;border-radius:12px;background:#f8fafc}
+.e137-fee span{font-weight:800;font-size:14px;margin-inline-end:auto}
+.e137-fee button{border:1px solid #cfd6e0;background:#fff;color:#18202a;border-radius:10px;padding:8px 12px;font-weight:800;cursor:pointer;font-size:13px}
+.e137-fee button.on{background:#0f172a;color:#fff;border-color:#0f172a}
 </style>
 <script id="emd-v137-js">
 (function(){'use strict';
@@ -29727,6 +29732,34 @@ document.addEventListener('input',function(e){var t=e.target;if(!t||(t.id!=='emd
 try{var K='emd_whatsapp_templates_v189',T=JSON.parse(localStorage.getItem(K)||'null'),ch=false;
   if(T&&typeof T==='object')Object.keys(T).forEach(function(k){var x=T[k];if(x&&typeof x.text==='string'&&x.text.indexOf('\\n')>=0){x.text=x.text.split('\\n').join('\n');ch=true}});
   if(ch)localStorage.setItem(K,JSON.stringify(T))}catch(e){}
+/* 1ب) رسوم التوصيل: مدفوعة / غير مدفوعة — تُحفظ في الطلب (feePaid) والملصق يعلّم الدائرة على حسبها */
+window.EMDFeePaidV137=function(o){var v=String(o&&o.feePaid||'');return v==='paid'||v==='unpaid'?v:''};
+function feeRow(val,extra){return '<div class="e137-fee" data-e137fee="'+(extra||'')+'"><span>🚚 رسوم التوصيل</span><button type="button" data-v="paid" class="'+(val==='paid'?'on':'')+'">✓ مدفوعة</button><button type="button" data-v="unpaid" class="'+(val==='unpaid'?'on':'')+'">غير مدفوعة</button></div>'}
+function mark(row,v){[].forEach.call(row.querySelectorAll('button[data-v]'),function(b){b.classList.toggle('on',b.getAttribute('data-v')===v)})}
+function orders(){try{return (window.db&&Array.isArray(db.orders))?db.orders:[]}catch(e){return []}}
+function saveDb(){try{window.save&&window.save()}catch(e){}}
+/* أ) في شاشة الطلب الجديد: صف فوق زر الحفظ */
+var pend='';
+function saveBtns(){return [].filter.call(document.querySelectorAll('button'),function(b){return b.offsetParent&&/حفظ الطلب/.test(b.textContent)&&!b.closest('#emd418')})}
+function addOrderRow(){saveBtns().forEach(function(b){var box=b.closest('.actions')||b.parentElement;if(!box||!box.parentNode)return;var prev=box.previousElementSibling;if(prev&&prev.hasAttribute&&prev.hasAttribute('data-e137fee'))return;pend='';var d=document.createElement('div');d.innerHTML=feeRow('','new');box.parentNode.insertBefore(d.firstChild,box)})}
+setInterval(function(){if(!document.hidden)try{addOrderRow()}catch(e){}},1000);
+document.addEventListener('click',function(e){
+  var fb=e.target.closest&&e.target.closest('[data-e137fee] button[data-v]');
+  if(fb){var row=fb.closest('[data-e137fee]'),v=fb.getAttribute('data-v');mark(row,v);
+    if(row.getAttribute('data-e137fee')==='new'){pend=v;return}
+    var L=[];try{L=(window.EMDLabelV418&&EMDLabelV418._last()||[]).map(function(it){return it.o})}catch(x){}
+    L.forEach(function(o){o.feePaid=v});saveDb();
+    var it=document.getElementById('emd418Items');if(it)it.dispatchEvent(new Event('change',{bubbles:true}));return}
+  var sb=e.target.closest&&e.target.closest('button');
+  if(sb&&pend&&/حفظ الطلب/.test(sb.textContent)&&!sb.closest('#emd418')){var v2=pend,before={};orders().forEach(function(o){before[String(o.id)]=1});var n=0;
+    (function look(){var o=orders().find(function(x){return !before[String(x.id)]});if(o){o.feePaid=v2;saveDb();pend='';return}if(++n<40)setTimeout(look,n<5?100:500)})()}
+},true);
+/* ب) في نافذة ملصق الشحن: نفس الصف، ويغيّر الطلب ويعيد رسم الملصق */
+function labelRow(){var ov=document.getElementById('emd418');if(!ov)return;var opts=ov.querySelector('.opts');if(!opts)return;
+  var L=[];try{L=(window.EMDLabelV418&&EMDLabelV418._last()||[]).map(function(it){return it.o})}catch(e){}
+  var v=L.length?window.EMDFeePaidV137(L[0]):'';if(L.some(function(o){return window.EMDFeePaidV137(o)!==v}))v='';
+  var row=opts.querySelector('[data-e137fee]');if(!row){var d=document.createElement('div');d.innerHTML=feeRow(v,'label');opts.appendChild(d.firstChild)}else mark(row,v)}
+new MutationObserver(function(){var ov=document.getElementById('emd418');if(ov&&!ov.__e137){ov.__e137=1;new MutationObserver(function(){setTimeout(labelRow,0)}).observe(ov,{childList:true,subtree:true})}}).observe(document.body,{childList:true});
 /* 7) زر «الموظفين» يدخل في صف أزرار الرأس */
 function moveChip(){var c=document.getElementById('emd108Chip'),h=c&&c.parentElement;if(!c||!h||h.tagName!=='HEADER')return;var g=h.children[1];if(g&&g!==c&&g.tagName==='DIV')g.appendChild(c)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(moveChip,300)});else setTimeout(moveChip,300);
