@@ -29742,11 +29742,16 @@ function saveDb(){try{window.save&&window.save()}catch(e){}}
 var pend='';
 function saveBtns(){return [].filter.call(document.querySelectorAll('button'),function(b){return b.offsetParent&&/حفظ الطلب/.test(b.textContent)&&!b.closest('#emd418')})}
 function addOrderRow(){saveBtns().forEach(function(b){var box=b.closest('.actions')||b.parentElement;if(!box||!box.parentNode)return;var prev=box.previousElementSibling;if(prev&&prev.hasAttribute&&prev.hasAttribute('data-e137fee'))return;pend='';var d=document.createElement('div');d.innerHTML=feeRow('','new');box.parentNode.insertBefore(d.firstChild,box)})}
-setInterval(function(){if(!document.hidden)try{addOrderRow()}catch(e){}},1000);
+/* ج) داخل «📋 تفاصيل الطلب»: نفس الصف في أعلى التفاصيل */
+function detailOrder(){var t=(document.getElementById('emdOrderIdV26')||{}).textContent||'',id=t.split(' · ')[0].trim();if(!id)return null;var o=orders().find(function(x){return String(x.id)===id});if(o)return o;try{o=window.EMDLabelV418&&EMDLabelV418._h.orderOf(id)}catch(e){}if(o)return o;var d=id.replace(/\D/g,'').replace(/^0+/,'');return d?orders().find(function(x){return String(x.id).replace(/\D/g,'').replace(/^0+/,'')===d})||null:null}
+function addDetailRow(){var m=document.getElementById('emdOrderModalV26'),b=document.getElementById('emdOrderBodyV26');if(!m||!b||m.style.display==='none'||!b.firstElementChild)return;var o=detailOrder();if(!o)return;
+  var row=b.querySelector('[data-e137fee="detail"]');if(!row){var d=document.createElement('div');d.innerHTML=feeRow(window.EMDFeePaidV137(o),'detail');b.insertBefore(d.firstChild,b.firstChild)}else mark(row,window.EMDFeePaidV137(o))}
+setInterval(function(){if(!document.hidden)try{addOrderRow();addDetailRow()}catch(e){}},700);
 document.addEventListener('click',function(e){
   var fb=e.target.closest&&e.target.closest('[data-e137fee] button[data-v]');
   if(fb){var row=fb.closest('[data-e137fee]'),v=fb.getAttribute('data-v');mark(row,v);
     if(row.getAttribute('data-e137fee')==='new'){pend=v;return}
+    if(row.getAttribute('data-e137fee')==='detail'){var od=detailOrder();if(od){od.feePaid=v;saveDb();try{window.render&&window.render()}catch(x){}}return}
     var L=[];try{L=(window.EMDLabelV418&&EMDLabelV418._last()||[]).map(function(it){return it.o})}catch(x){}
     L.forEach(function(o){o.feePaid=v});saveDb();
     var it=document.getElementById('emd418Items');if(it)it.dispatchEvent(new Event('change',{bubbles:true}));return}
