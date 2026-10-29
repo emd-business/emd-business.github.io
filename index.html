@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V137</title>
+<title>EMD Business — Standalone V139</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--text:#18202a;--muted:#687384;--line:#e4e8ef;--accent:#18202a;--soft:#eef2f7;--ok:#16794c;--warn:#a56a00;--danger:#b23b3b}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial;background:var(--bg);color:var(--text)}
@@ -19185,7 +19185,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V137</div>
+<div id="emdStandaloneV2Badge">EMD Business • V139</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -29800,5 +29800,103 @@ setTimeout(moveChip,2000);
 })();
 </script>
 <!-- ===== نهاية إصلاحات V137 ===== -->
+<script id="EMD-V139-stock-sync">
+(function(){'use strict';
+if(window.__EMD_V139__)return;window.__EMD_V139__=true;
+/* V139: دمج المخزون بين الجهاز والسحابة بالفرق بدل أخذ رقم الجهاز كما هو،
+   ومنع رجوع المنتجات والطلبات المحذوفة عند الدمج بعد تسجيل الدخول أو من جهاز ثانٍ. */
+var MAIN='emd_business_v1',BK='emd_v93_stockbase_v139',KK='emd_v93_known_v139',PK='emd_v93_stockpend_v139',mseq=0;
+function J(k){try{return JSON.parse(localStorage.getItem(k)||'null')}catch(e){return null}}
+function S(k,v){try{if(v==null)localStorage.removeItem(k);else localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function norm(x){return String(x||'').replace(/[ـ]/g,'').trim().toLowerCase().replace(/\s+/g,' ')}
+function pk(p){return p?(norm(p.name)||(p.id!=null?'#'+p.id:'')):''}
+function idOf(o){return window.EMDMergeV126?window.EMDMergeV126.idOf(o):String(o&&o.id||'')}
+function num(v){var n=Number(v);return isFinite(n)?n:0}
+function r3(n){return Math.round(n*1000)/1000}
+function arr(a){return Array.isArray(a)?a:[]}
+function stocks(d){var m={};arr(d&&d.products).forEach(function(p){var k=pk(p);if(k&&!(k in m))m[k]=num(p.stock)});return m}
+function same(a,b){var ka=Object.keys(a||{}),kb=Object.keys(b||{});if(ka.length!==kb.length)return false;return ka.every(function(k){return k in b&&a[k]===b[k]})}
+function uid(){try{return window.EMDCloudV93.api.uid()||''}catch(e){return ''}}
+function setBase(u,s){if(u)S(BK,{u:u,s:s,at:Date.now()})}
+function getBase(){var b=J(BK);return b&&b.u&&b.u===uid()&&b.s?b.s:null}
+function items(o){return arr(o&&(Array.isArray(o.products)?o.products:o.items)).map(function(x){return {k:norm(x&&(x.name||x.product||x.productName)),q:num(x&&(x.qty!=null?x.qty:(x.quantity!=null?x.quantity:x.count)))}}).filter(function(x){return x.k&&x.q>0})}
+function ded(o){return !!(o&&o.stockDeducted===true&&o.stockReturned!==true)}
+
+/* سجل المحذوفات: ما حُذف من هذا الجهاز لا يرجع من السحابة عند الدمج (يُحفظ داخل البيانات نفسها) */
+function track(){var d=window.db;if(!d||!Array.isArray(d.orders)||!Array.isArray(d.products))return;
+  var now=Date.now(),cur={o:{},p:{}},k=J(KK),t=d._tomb139&&typeof d._tomb139==='object'?d._tomb139:{o:{},p:{}},ch=false;t.o=t.o||{};t.p=t.p||{};
+  d.orders.forEach(function(o){var i=idOf(o);if(i)cur.o[i]=1});d.products.forEach(function(p){var i=pk(p);if(i)cur.p[i]=1});
+  if(k)['o','p'].forEach(function(g){var gone=Object.keys(k[g]||{}).filter(function(i){return !cur[g][i]});if(gone.length&&gone.length<=10)gone.forEach(function(i){t[g][i]=now;ch=true})});
+  ['o','p'].forEach(function(g){Object.keys(t[g]).forEach(function(i){if(cur[g][i]||now-t[g][i]>90*864e5){delete t[g][i];ch=true}})});
+  if(ch||d._tomb139)d._tomb139=t;S(KK,cur)}
+function wrapSave(){if(typeof window.save!=='function'||window.save.__v139)return;var orig=window.save;
+  var w=function(){try{track()}catch(e){}return orig.apply(this,arguments)};w.__v139=1;w.__v126=1;window.save=w}
+
+/* نتذكّر أرقام المخزون كما كانت في السحابة عند آخر تطابق مع هذا الجهاز؛ هي نقطة البداية المشتركة للدمج */
+function commitPending(){var p=J(PK);if(!p)return;if(Date.now()-p.at>6e5){S(PK,null);return}
+  if(window.db&&same(stocks(window.db),p.s)){setBase(p.u,p.s);S(PK,null)}}
+function wrapFetch(){var of=window.fetch;if(typeof of!=='function'||of.__v139)return;
+  var wf=function(input,init){var url0=String(input&&input.url||input||''),m0=String(init&&init.method||'GET').toUpperCase();var p=(m0==='POST'&&url0.indexOf('/rest/v1/emd_vaults?on_conflict=user_id')>=0)?null:of.apply(this,arguments);
+    try{var url=String(input&&input.url||input||''),m=String(init&&init.method||'GET').toUpperCase();
+      if(url.indexOf('/rest/v1/emd_vaults')>=0){
+        if(m==='POST'&&url.indexOf('on_conflict=user_id')>=0){var b=JSON.parse(init.body),s=stocks(JSON.parse(b.data.keys[MAIN])),u=b.user_id;p=guarded(of,input,init,url,u,p);p.then(function(r){if(r&&r.ok)setBase(u,s)},function(){})}
+        else if(m==='GET'&&url.indexOf('select=data')>=0){var u2=decodeURIComponent((url.match(/user_id=eq\.([^&]+)/)||[])[1]||''),seq=mseq;
+          p.then(function(r){if(!r||!r.ok)return;r.clone().json().then(function(a){var row=a&&a[0];if(!row||!row.data||!row.data.keys||!row.data.keys[MAIN])return;
+            S(PK,{u:u2,s:stocks(JSON.parse(row.data.keys[MAIN])),at:Date.now()});setTimeout(function(){if(mseq===seq)commitPending()},1500)}).catch(function(){})},function(){})}
+      }}catch(e){}
+    return p||of(input,init)};
+  wf.__v139=1;window.fetch=wf}
+
+/* الحفظ المشروط: لا يكتب الجهاز فوق نسخة السحابة إلا إذا كانت هي نفسها آخر نسخة رآها.
+   إن حفظ جهاز آخر في اللحظة نفسها، يُرفض هذا الحفظ ثم يُدمج تلقائيًا خلال ثوانٍ بدل أن تضيع تعديلات أحد الجهازين. */
+function guarded(of,input,init,url,u,p){
+  var m=J('emd_v93_sync_b')||{};
+  if(!m.lastRemote||m.conflict||document.querySelector('.emd93-ov')||!u)return of(input,init);
+  var h={};try{var ih=init.headers||{};Object.keys(ih).forEach(function(k){h[k]=ih[k]})}catch(e){}h.Prefer='return=representation';
+  var purl=url.split('/rest/v1/')[0]+'/rest/v1/emd_vaults?user_id=eq.'+encodeURIComponent(u)+'&updated_at=eq.'+encodeURIComponent(m.lastRemote);
+  return of(purl,{method:'PATCH',headers:h,body:init.body}).then(function(r){
+    if(!r.ok)return of(input,init);
+    return r.clone().json().then(function(a){if(Array.isArray(a)&&a.length)return r;
+      return new Response(JSON.stringify({code:'EMD409',message:'⏳ وصل تعديل من جهاز آخر في اللحظة نفسها، وسيُدمج تلقائيًا خلال ثوانٍ.'}),{status:409,headers:{'Content-Type':'application/json'}})},function(){return of(input,init)})
+  },function(){return of(input,init)})}
+
+/* المخزون بعد الدمج = رقم الجهاز + ما تغيّر في السحابة منذ آخر تطابق.
+   إن لم تتوفر نقطة بداية (أول دمج بعد التحديث): نصحح من الطلبات التي خُصمت أو أُرجعت في السحابة فقط. */
+function fixStock(out,L,R,base){
+  var lmap={},rmap={},nL=arr(L.products).length;arr(L.products).forEach(function(p){var k=pk(p);if(k&&!lmap[k])lmap[k]=p});arr(R.products).forEach(function(p){var k=pk(p);if(k&&!rmap[k])rmap[k]=p});
+  if(Array.isArray(out.products))out.products=out.products.filter(function(p,i){return i<nL||!lmap[pk(p)]});
+  var adj={},lo={},ro={};arr(L.orders).forEach(function(o){lo[idOf(o)]=o});arr(R.orders).forEach(function(o){ro[idOf(o)]=o});
+  arr(out.orders).forEach(function(o){var id=idOf(o),r=ro[id];if(!r||JSON.stringify(o)!==JSON.stringify(r))return;var l=lo[id],was=ded(l),now=ded(r);if(was===now)return;
+    if(now)items(r).forEach(function(x){adj[x.k]=(adj[x.k]||0)-x.q});else items(l).forEach(function(x){adj[x.k]=(adj[x.k]||0)+x.q})});
+  var log=[];
+  arr(out.products).forEach(function(p,i){if(i>=nL)return;var k=pk(p),l=lmap[k];if(!l||l!==L.products[i]&&pk(L.products[i])!==k)return;
+    var ls=num(p.stock),v;
+    if(base&&(k in base)&&rmap[k])v=ls+num(rmap[k].stock)-base[k];
+    else if(adj[k])v=ls+adj[k];else return;
+    v=Math.max(0,r3(v));if(v!==ls){p.stock=v;p.updatedAt=new Date().toISOString();log.push({name:p.name,from:ls,to:v})}});
+  return log}
+
+function wrapMerge(){var M=window.EMDMergeV126;if(!M||M.__v139)return;var orig=M.merge;
+  M.merge=function(local,remote,archived){
+    mseq++;S(PK,null);try{track()}catch(e){}
+    var L=local||{},R=remote||{},base=getBase(),R2={};Object.keys(R).forEach(function(k){R2[k]=R[k]});
+    var lt=L._tomb139||{o:{},p:{}},rt=R._tomb139||{o:{},p:{}},tomb={o:{},p:{}};
+    ['o','p'].forEach(function(g){[lt[g]||{},rt[g]||{}].forEach(function(src){Object.keys(src).forEach(function(i){tomb[g][i]=Math.max(tomb[g][i]||0,num(src[i]))})})});
+    var lids={},lps={};arr(L.orders).forEach(function(o){lids[idOf(o)]=1});arr(L.products).forEach(function(p){lps[pk(p)]=1});
+    R2.orders=arr(R.orders).filter(function(o){var i=idOf(o);return lids[i]||!tomb.o[i]});
+    R2.products=arr(R.products).filter(function(p){var k=pk(p);return lps[k]||!tomb.p[k]});
+    var res=orig.call(this,local,R2,archived),log=[];
+    try{log=fixStock(res.db,L,R2,base)}catch(e){}
+    if(Object.keys(tomb.o).length||Object.keys(tomb.p).length)res.db._tomb139=tomb;
+    setBase(uid(),stocks(R));
+    if(log.length){try{var h=J('emd_v93_stocklog_v139')||[];h.unshift({at:new Date().toISOString(),mode:base?'base':'orders',items:log});S('emd_v93_stocklog_v139',h.slice(0,30))}catch(e){}}
+    res.stats.stock=log.length;return res};
+  M.__v139=1}
+
+wrapFetch();wrapMerge();wrapSave();setInterval(function(){wrapSave();wrapMerge()},2000);
+setTimeout(function(){try{track()}catch(e){}commitPending()},2500);
+window.EMDStockSyncV139={fixStock:fixStock,stocks:stocks,base:getBase,track:track,log:function(){return J('emd_v93_stocklog_v139')||[]}};
+})();
+</script>
 </body>
 </html>
