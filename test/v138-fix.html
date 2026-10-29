@@ -29210,7 +29210,7 @@ function draw(o,c,logo,k){k=k||1;var DPM=8,W=Math.round(c.w*DPM),H=Math.round(c.
     if(bh>=5*u){for(var i=0;i<bars.length;i++)if(bars[i]==='1')x.fillRect(bx0+i*mw,y,mw,bh);f((narrow?3:3.6)*u,true);x.textAlign='center';x.direction='ltr';x.fillText(code(o),W/2,y+bh+0.6*u);x.direction='rtl'}}
   x.lineWidth=Math.max(2,u*0.4);
   return cv}
-function render(ids){var c=cfg();return getLogo().then(function(lg){return ids.map(function(id){var o=orderOf(id);if(!o)return null;var dz=window.EMDLabelDesignV423;if(dz&&dz.active('normal'))return {o:o,cv:(window.EMDShiftV137||function(x){return x})(dz.draw(o,c,lg,'normal'),c.w)};window.__emd138w='normal';var cv=null,k=1,k1=0;while(!cv&&k>0.45){cv=draw(o,c,lg,k);if(cv)k1=k;k-=0.08}var z1=(function(w){try{var D=window.EMDLabelDesignV423;return D&&window.EMD138?EMD138.z(D.slot(w).fs,D.FS):1}catch(e){return 1}})('normal');if(k1&&Math.abs(z1-1)>0.001){window.__emd138f=1;try{cv=draw(o,c,lg,k1*z1)||cv}finally{window.__emd138f=0}}return {o:o,cv:(window.EMDShiftV137||function(x){return x})(cv||draw(o,c,lg,0.45),c.w)}}).filter(Boolean)})}
+function render(ids){var c=cfg();return getLogo().then(function(lg){return ids.map(function(id){var o=orderOf(id);if(!o)return null;var dz=window.EMDLabelDesignV423;if(dz&&dz.active('normal'))return {o:o,cv:(window.EMDShiftV137||function(x){return x})(dz.draw(o,c,lg,'normal'),c.w)};window.__emd138w='normal';var cv=null,k=1,k1=0;while(!cv&&k>0.45){cv=draw(o,c,lg,k);if(cv)k1=k;k-=0.08}var z1=(function(w){try{var D=window.EMDLabelDesignV423;return D&&window.EMD138?EMD138.z(D.slot(w).fs,D.FS):1}catch(e){return 1}})('normal');if(k1&&Math.abs(z1-1)>0.001){window.__emd138f=1;try{cv=draw(o,c,lg,k1*z1)||cv}finally{window.__emd138f=0}}if(window.EMD138)EMD138.ov('normal',!!(k1&&z1>1.001&&k1*z1>0.5&&!draw(o,c,lg,k1*z1)));return {o:o,cv:(window.EMDShiftV137||function(x){return x})(cv||draw(o,c,lg,0.45),c.w)}}).filter(Boolean)})}
 function blobOf(cv){return new Promise(function(r){cv.toBlob(function(b){r(b)},'image/png')})}
 /* ===== النافذة ===== */
 var ov=null,cur=[];
@@ -29521,13 +29521,13 @@ function drawForm(o,c,logo,s,k){var h=H(),DPM=8,W=Math.round(c.w*DPM),Ht=Math.ro
   return {cv:cv,fit:fit,used:y/Ht}}
 function draw(o,c,logo,which){var s=slot(which),best=null,fn=s.tpl==='form'?drawForm:drawFlex;
   var km=0.42;s.Z=1;for(var k=1.5;k>=0.42;k-=0.06){var r=fn(o,c,logo,s,k);if(r.fit){best=r.cv;km=k;break}best=r.cv}
-  var z=window.EMD138?EMD138.z(s.fs,FS):1;if(Math.abs(z-1)>0.001){s.Z=z;best=fn(o,c,logo,s,km).cv}
+  var z=window.EMD138?EMD138.z(s.fs,FS):1;var ov=false;if(Math.abs(z-1)>0.001){s.Z=z;var r2=fn(o,c,logo,s,km);best=r2.cv;ov=!r2.fit}if(window.EMD138)EMD138.ov(which,ov)
   return best}
 function active(which){return slot(which).tpl!=='classic'}
 
 /* ===== الملصق السريع ===== */
 function quickCanvas(id){var h=H();if(!h)return Promise.resolve(null);var o=h.orderOf(id);if(!o)return Promise.resolve(null);var c=(window.EMDQuickV424&&EMDQuickV424.size())||EMDLabelV418.config();
-  return h.getLogo().then(function(lg){var s=slot('quick');var cv=s.tpl==='classic'?null:draw(o,c,lg,'quick');if(!cv){window.__emd138w='quick';cv=null;var k=1,k1=0;while(!cv&&k>0.45){cv=h.draw(o,c,lg,k);if(cv)k1=k;k-=0.08}var z1=(function(w){try{var D=window.EMDLabelDesignV423;return D&&window.EMD138?EMD138.z(D.slot(w).fs,D.FS):1}catch(e){return 1}})('quick');if(k1&&Math.abs(z1-1)>0.001){window.__emd138f=1;try{cv=h.draw(o,c,lg,k1*z1)||cv}finally{window.__emd138f=0}}cv=cv||h.draw(o,c,lg,0.45)}return {o:o,cv:(window.EMDShiftV137||function(x){return x})(cv,c.w),w:c.w,h:c.h}})}
+  return h.getLogo().then(function(lg){var s=slot('quick');var cv=s.tpl==='classic'?null:draw(o,c,lg,'quick');if(!cv){window.__emd138w='quick';cv=null;var k=1,k1=0;while(!cv&&k>0.45){cv=h.draw(o,c,lg,k);if(cv)k1=k;k-=0.08}var z1=(function(w){try{var D=window.EMDLabelDesignV423;return D&&window.EMD138?EMD138.z(D.slot(w).fs,D.FS):1}catch(e){return 1}})('quick');if(k1&&Math.abs(z1-1)>0.001){window.__emd138f=1;try{cv=h.draw(o,c,lg,k1*z1)||cv}finally{window.__emd138f=0}}if(window.EMD138)EMD138.ov('quick',!!(k1&&z1>1.001&&k1*z1>0.5&&!h.draw(o,c,lg,k1*z1)));cv=cv||h.draw(o,c,lg,0.45)}return {o:o,cv:(window.EMDShiftV137||function(x){return x})(cv,c.w),w:c.w,h:c.h}})}
 function quick(id){if(!id)return;/* V428: إن لم تكن الطابعة متصلة نفتح نافذة اختيارها فورًا مع الضغطة */var P0=window.EMDPrinterV422;if(P0&&P0.connected&&!P0.connected()&&navigator.bluetooth&&navigator.bluetooth.requestDevice){toast('اختر طابعتك من القائمة لربطها');P0.connect().then(function(){toast('رُبطت الطابعة ✓');quick(id)}).catch(function(e){if(e&&e.name==='NotFoundError')toast('لم تُختر طابعة',false);else toast('تعذّر الاتصال بالطابعة: '+(e&&e.message||''),false)});return}quickCanvas(id).then(function(r){if(!r){toast('لم يُعثر على الطلب',false);return}
   var P=window.EMDPrinterV422;
   if(P&&navigator.bluetooth&&navigator.bluetooth.requestDevice){toast('⚡ جارٍ طباعة الملصق السريع…');P.print([{cv:r.cv,wMm:r.w,hMm:r.h}])}
@@ -29550,7 +29550,7 @@ function panelHTML(){var s=slot(tab),tpls=Object.keys(TPL).filter(function(k){re
   h+='<div class="e423-tpl">'+tpls.map(function(k){return '<button type="button" data-e423p="'+k+'" class="'+(s.tpl===k?'on':'')+'"><b>'+TPL[k].l+'</b><small>'+TPL[k].d+'</small></button>'}).join('')+'<button type="button" data-e423p="custom" class="'+(s.tpl==='custom'?'on':'')+'"><b>مخصص</b><small>اختر العناصر بنفسك</small></button></div>';
   if(s.tpl!=='classic'){h+='<fieldset class="e423-els"><legend>العناصر الظاهرة</legend>'+ELS.map(function(e){return '<label><input type="checkbox" data-e423e="'+e[0]+'"'+(s.els[e[0]]?' checked':'')+'> '+e[1]+'</label>'}).join('')+'</fieldset>';
     h+='<div class="e423-row"><label>حجم الخط<select data-e423s="fs">'+EMD138.opts(s.fs,FS)+'</select></label><label>شكل المبلغ<select data-e423s="amt"><option value="fill"'+(s.amt==='fill'?' selected':'')+'>خلفية سوداء</option><option value="line"'+(s.amt==='line'?' selected':'')+'>إطار فقط (حبر أقل)</option></select></label></div>';
-    h+='<label class="e423-ck"><input type="checkbox" data-e423s="border"'+(s.border?' checked':'')+'> إطار حول الملصق</label>'+EMD138.more(s,'data-e423s','e423-ck',FS)}else h+=EMD138.classic(s,'data-e423s','e423-row','e423-ck',FS);
+    h+='<label class="e423-ck"><input type="checkbox" data-e423s="border"'+(s.border?' checked':'')+'> إطار حول الملصق</label>'+EMD138.more(s,'data-e423s','e423-ck',FS,tab)}else h+=EMD138.classic(s,'data-e423s','e423-row','e423-ck',FS,tab);
   if(tab==='quick')h+='<div class="e423-qpv"><span>معاينة الملصق السريع</span><div id="e423Qpv"></div><p>يُطبع بزر «🏷️ ملصق» في بطاقة الطلب، مباشرةً على الطابعة المربوطة، وبالمقاس المحدد في «⚙️ الإعدادات ← 🏷️ الملصق السريع».</p></div>';
   return h+'</details>'}
 function inject(){var ov=$('emd418');if(!ov)return;var opts=ov.querySelector('.opts');if(!opts||ov.querySelector('.e423'))return;
@@ -29624,7 +29624,7 @@ function body(){var o=opt(),dz=DZ(),s=dz.slot('quick'),T=dz.TPL,cur=o.w?o.w+'x'+
   h+='<section><h3>التصميم</h3><div class="tpl">'+Object.keys(T).map(function(k){return '<button type="button" data-p="'+k+'" class="'+(s.tpl===k?'on':'')+'"><b>'+T[k].l+'</b><small>'+T[k].d+'</small></button>'}).join('')+'<button type="button" data-p="custom" class="'+(s.tpl==='custom'?'on':'')+'"><b>مخصص</b><small>اختر العناصر بنفسك</small></button></div>';
   if(s.tpl!=='classic'){h+='<div class="els">'+dz.ELS.map(function(e){return '<label class="ck"><input type="checkbox" data-e="'+e[0]+'"'+(s.els[e[0]]?' checked':'')+'> '+e[1]+'</label>'}).join('')+'</div>'+
     '<div class="two"><label>حجم الخط<select data-s="fs">'+EMD138.opts(s.fs,dz.FS)+'</select></label><label>شكل المبلغ<select data-s="amt"><option value="fill"'+(s.amt==='fill'?' selected':'')+'>خلفية سوداء</option><option value="line"'+(s.amt==='line'?' selected':'')+'>إطار فقط (حبر أقل)</option></select></label></div>'+
-    '<label class="ck"><input type="checkbox" data-s="border"'+(s.border?' checked':'')+'> إطار حول الملصق</label>'+EMD138.more(s,'data-s','ck',dz.FS)}else h+=EMD138.classic(s,'data-s','two','ck',dz.FS);
+    '<label class="ck"><input type="checkbox" data-s="border"'+(s.border?' checked':'')+'> إطار حول الملصق</label>'+EMD138.more(s,'data-s','ck',dz.FS,'quick')}else h+=EMD138.classic(s,'data-s','two','ck',dz.FS,'quick');
   h+='</section><section class="pv"><h3>المعاينة</h3><div id="e424Pv"><span>جارٍ التجهيز…</span></div></section>';
   var P=window.EMDPrinterV422,pc=P?P.config():{};
   h+='<section><h3>الطابعة</h3><p class="st">'+(pc.name?'الطابعة المحفوظة: <b>'+esc(pc.name)+'</b>':'لم تُربط طابعة بعد')+'</p><div class="two"><button type="button" class="sec" data-a="pair">🔗 ربط الطابعة</button><button type="button" class="sec" data-a="test">🧪 طباعة الملصق السريع تجريبيًا</button></div><p>اللغة ودرجة السواد ونوع الورق تجدها في «⚙️ إعدادات الطابعة» داخل نافذة «ملصق الشحن».</p></section>';
@@ -29808,14 +29808,17 @@ function esc(v){return String(v).replace(/[&<>"]/g,function(c){return {'&':'&amp
 function z(fs,FS){var m=/^p(\d{2,3})$/.exec(fs||'');if(m)return Math.max(50,Math.min(250,+m[1]))/100;return ((FS&&FS[fs])||(FS&&FS.m)||[1])[0]}
 function opts(fs,FS){var h=Object.keys(FS).map(function(k){return '<option value="'+k+'"'+(fs===k?' selected':'')+'>'+FS[k][1]+'</option>'}).join('');
   if(/^p\d{2,3}$/.test(fs||''))h+='<option value="'+esc(fs)+'" selected>مخصص '+Math.round(z(fs,FS)*100)+'٪</option>';return h}
-function pm(s,FS){var p=Math.round(z(s.fs,FS)*100);
+var OV={};function ov(w,v){OV[w]=!!v;[].forEach.call(document.querySelectorAll('.e138-warn[data-w="'+w+'"]'),function(el){el.hidden=!v})}
+function warn(w){return '<div class="e138-warn" data-w="'+w+'"'+(OV[w]?'':' hidden')+'>⚠️ بعض تفاصيل الملصق لا تتسع بهذا الحجم وستُقص عند الطباعة. <button type="button" data-e138m="1">↩️ رجوع للحجم المناسب</button></div>'}
+function pm(s,FS,w){var p=Math.round(z(s.fs,FS)*100);
   return '<div class="e138-pm"><span>حجم الخط يدويًا</span><button type="button" data-e138pm="-10" aria-label="تصغير الخط">−</button><b>'+p+'٪</b><button type="button" data-e138pm="10" aria-label="تكبير الخط">+</button></div>'+
-    '<small class="e138-hint">«متوسط» هو الحجم المناسب للمقاس. إذا خرجت بعض التفاصيل عن الملصق فاختر حجمًا أصغر.</small>'}
+    warn(w||'normal')+'<small class="e138-hint">«متوسط» هو الحجم المناسب للمقاس. إذا خرجت بعض التفاصيل عن الملصق فاختر حجمًا أصغر.</small>'}
 function ibox(s,attr,ck){return '<label class="'+ck+'"><input type="checkbox" '+attr+'="ibox"'+(s.ibox!==false?' checked':'')+'> إطار حول المنتجات</label>'}
-function more(s,attr,ck,FS){return ibox(s,attr,ck)+pm(s,FS)}
-function classic(s,attr,row,ck,FS){return '<div class="'+row+'"><label>حجم الخط<select '+attr+'="fs">'+opts(s.fs,FS)+'</select></label></div>'+more(s,attr,ck,FS)}
-window.EMD138={z:z,opts:opts,more:more,classic:classic};
-document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-e138pm]');if(!b)return;e.preventDefault();
+function more(s,attr,ck,FS,w){return ibox(s,attr,ck)+pm(s,FS,w)}
+function classic(s,attr,row,ck,FS,w){return '<div class="'+row+'"><label>حجم الخط<select '+attr+'="fs">'+opts(s.fs,FS)+'</select></label></div>'+more(s,attr,ck,FS,w)}
+window.EMD138={z:z,opts:opts,more:more,classic:classic,ov:ov};
+document.addEventListener('click',function(e){var m=e.target.closest&&e.target.closest('[data-e138m]');if(m){e.preventDefault();var bx=m.closest('.e423,#e424')||document,se=bx.querySelector('select[data-e423s="fs"],select[data-s="fs"]');if(se){se.value='m';se.dispatchEvent(new Event('change',{bubbles:true}))}return}
+  var b=e.target.closest&&e.target.closest('[data-e138pm]');if(!b)return;e.preventDefault();
   var box=b.closest('.e423,#e424')||document,sel=box.querySelector('select[data-e423s="fs"],select[data-s="fs"]'),D=window.EMDLabelDesignV423;if(!sel||!D)return;
   var p=Math.round(z(sel.value,D.FS)*100)+(+b.getAttribute('data-e138pm'));p=Math.max(50,Math.min(250,Math.round(p/10)*10));
   var v='p'+p;Object.keys(D.FS).forEach(function(k){if(Math.round(D.FS[k][0]*100)===p)v=k});
@@ -29828,6 +29831,9 @@ document.addEventListener('click',function(e){var b=e.target.closest&&e.target.c
 .e138-pm span{flex:1;min-width:110px}
 .e138-pm button{min-width:44px;min-height:40px;border-radius:12px;border:1px solid #c7d2fe;background:#eef2ff;color:#172554;font-size:20px;font-weight:800;cursor:pointer;padding:0}
 .e138-pm b{min-width:52px;text-align:center;font-size:15px}
+.e138-warn{background:#fef2f2;border:1px solid #fecaca;color:#991b1b;border-radius:12px;padding:8px 10px;font-size:12.5px;font-weight:700;line-height:1.7}
+.e138-warn[hidden]{display:none}
+.e138-warn button{margin-top:6px;min-height:36px;border-radius:10px;border:1px solid #991b1b;background:#fff;color:#991b1b;font-weight:800;padding:0 12px;cursor:pointer}
 .e138-hint{display:block;font-size:11.5px;color:#64748b;line-height:1.6}
 </style>
 </body>
