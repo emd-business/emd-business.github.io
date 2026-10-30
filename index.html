@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V146</title>
+<title>EMD Business — Standalone V147</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--text:#18202a;--muted:#687384;--line:#e4e8ef;--accent:#18202a;--soft:#eef2f7;--ok:#16794c;--warn:#a56a00;--danger:#b23b3b}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial;background:var(--bg);color:var(--text)}
@@ -19185,7 +19185,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V146</div>
+<div id="emdStandaloneV2Badge">EMD Business • V147</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -27139,7 +27139,7 @@ function cover(){var W=innerWidth,H=innerHeight,on=false,k=document.body.childre
   document.body.classList.toggle('emd411-covered',on);
   /* رقم النسخة أسفل قائمة «المزيد» (شارة النسخة مخفية على الجوال) */
   var sh=document.getElementById('emd410Sheet');if(sh&&sh.classList.contains('show')){var bx=sh.querySelector('.box');if(bx&&!bx.querySelector('.e141v')){var v=document.createElement('div');v.className='e141v';v.textContent=VER;bx.appendChild(v)}}}
-var VER='EMD Business • V146';
+var VER='EMD Business • V147';
 function boot(){cover();setInterval(cover,500)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
@@ -30720,6 +30720,51 @@ var t0=Date.now();
 function install(){if(Date.now()-t0<1500)return;Object.keys(FNS).forEach(wrapOne)}
 setTimeout(install,1600);setTimeout(install,4200);
 document.addEventListener('click',install,true);
+})();
+</script>
+<!-- EMD V147: زر تحديث التطبيق في الرئيسية -->
+<style id="EMD-V147-style">
+#emd147Reload{display:inline-flex;align-self:stretch;align-items:center;justify-content:center;gap:4px;min-width:44px;min-height:40px;padding:8px 12px;border-radius:12px;border:1px solid rgba(15,23,42,.14);background:rgba(255,255,255,.85);color:#111827;font-size:18px;line-height:1;cursor:pointer;font-family:inherit}
+#emd147Reload.spin span{display:inline-block;animation:e147spin .8s linear infinite}
+@keyframes e147spin{to{transform:rotate(360deg)}}
+#productsModal{overflow-x:hidden}
+#productsModal>div{max-width:min(980px,100%)!important;box-sizing:border-box}
+</style>
+<script id="EMD-V147-reload">
+(function(){'use strict';
+if(window.__EMD_V147__)return;window.__EMD_V147__=true;
+function reload(btn){
+  if(btn){btn.classList.add('spin');btn.disabled=true}
+  try{if(typeof window.save==='function')window.save()}catch(e){}
+  var done=false,go=function(){if(done)return;done=true;location.reload()};
+  setTimeout(go,20000);
+  /* عامل الخدمة يعرض النسخة المحفوظة إذا تأخرت الشبكة 4 ثوانٍ، لذلك نجلب آخر نسخة كاملة أولًا ونضعها مكان المحفوظة */
+  var path=location.pathname,isApp=(path==='/'||path==='/index.html');
+  var p=Promise.resolve();
+  try{if('serviceWorker' in navigator)p=navigator.serviceWorker.getRegistration().then(function(r){return r&&r.update()}).catch(function(){})}catch(e){}
+  if(isApp&&window.fetch){
+    p=p.then(function(){return fetch(path+'?r='+Date.now(),{cache:'no-store'})}).then(function(res){
+      if(!res||!res.ok||!window.caches)return;
+      return caches.keys().then(function(ks){return Promise.all(ks.filter(function(k){return k.indexOf('emd-app-')===0}).map(function(k){
+        return caches.open(k).then(function(c){return c.put('/',res.clone())})}))});
+    }).catch(function(){});
+  }
+  p.then(function(){setTimeout(go,200)},function(){setTimeout(go,200)});
+}
+function mount(){
+  if(document.getElementById('emd147Reload'))return;
+  var more=document.getElementById('emd410More'),set=document.getElementById('emdSettingsHubButtonV327');
+  var ref=more||set;if(!ref||!ref.parentNode)return;
+  var b=document.createElement('button');b.type='button';b.id='emd147Reload';
+  b.title='تحديث التطبيق';b.setAttribute('aria-label','تحديث التطبيق');b.setAttribute('data-emd108-skip','1');
+  b.innerHTML='<span>🔄</span>';
+  b.onclick=function(e){e.preventDefault();reload(b)};
+  ref.parentNode.insertBefore(b,ref);
+}
+window.EMDReloadV147=function(){reload(document.getElementById('emd147Reload'))};
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(mount,800)});else setTimeout(mount,800);
+setTimeout(mount,2500);
+document.addEventListener('click',function(){setTimeout(mount,300)});
 })();
 </script>
 </body>
