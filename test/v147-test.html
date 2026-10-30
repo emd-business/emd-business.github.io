@@ -30727,6 +30727,8 @@ document.addEventListener('click',install,true);
 #emd147Reload{display:inline-flex;align-self:stretch;align-items:center;justify-content:center;gap:4px;min-width:44px;min-height:40px;padding:8px 12px;border-radius:12px;border:1px solid rgba(15,23,42,.14);background:rgba(255,255,255,.85);color:#111827;font-size:18px;line-height:1;cursor:pointer;font-family:inherit}
 #emd147Reload.spin span{display:inline-block;animation:e147spin .8s linear infinite}
 @keyframes e147spin{to{transform:rotate(360deg)}}
+#productsModal{overflow-x:hidden}
+#productsModal>div{max-width:min(980px,100%)!important;box-sizing:border-box}
 </style>
 <script id="EMD-V147-reload">
 (function(){'use strict';
@@ -30734,16 +30736,20 @@ if(window.__EMD_V147__)return;window.__EMD_V147__=true;
 function reload(btn){
   if(btn){btn.classList.add('spin');btn.disabled=true}
   try{if(typeof window.save==='function')window.save()}catch(e){}
-  var go=function(){location.reload()};
-  /* نطلب من عامل الخدمة جلب آخر نسخة ثم نعيد التحميل (الصفحة تُجلب من الشبكة أولًا) */
-  try{
-    if('serviceWorker' in navigator){
-      var t=setTimeout(go,2500);
-      navigator.serviceWorker.getRegistration().then(function(r){return r&&r.update()}).catch(function(){}).then(function(){clearTimeout(t);setTimeout(go,300)});
-      return;
-    }
-  }catch(e){}
-  setTimeout(go,300);
+  var done=false,go=function(){if(done)return;done=true;location.reload()};
+  setTimeout(go,20000);
+  /* عامل الخدمة يعرض النسخة المحفوظة إذا تأخرت الشبكة 4 ثوانٍ، لذلك نجلب آخر نسخة كاملة أولًا ونضعها مكان المحفوظة */
+  var path=location.pathname,isApp=(path==='/'||path==='/index.html');
+  var p=Promise.resolve();
+  try{if('serviceWorker' in navigator)p=navigator.serviceWorker.getRegistration().then(function(r){return r&&r.update()}).catch(function(){})}catch(e){}
+  if(isApp&&window.fetch){
+    p=p.then(function(){return fetch(path+'?r='+Date.now(),{cache:'no-store'})}).then(function(res){
+      if(!res||!res.ok||!window.caches)return;
+      return caches.keys().then(function(ks){return Promise.all(ks.filter(function(k){return k.indexOf('emd-app-')===0}).map(function(k){
+        return caches.open(k).then(function(c){return c.put('/',res.clone())})}))});
+    }).catch(function(){});
+  }
+  p.then(function(){setTimeout(go,200)},function(){setTimeout(go,200)});
 }
 function mount(){
   if(document.getElementById('emd147Reload'))return;
