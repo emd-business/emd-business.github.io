@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V143</title>
+<title>EMD Business — Standalone V144</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--text:#18202a;--muted:#687384;--line:#e4e8ef;--accent:#18202a;--soft:#eef2f7;--ok:#16794c;--warn:#a56a00;--danger:#b23b3b}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial;background:var(--bg);color:var(--text)}
@@ -1442,7 +1442,7 @@ function openWhatsApp(order){
 <h2 style="margin:0">📦 المنتجات</h2>
 <button onclick="closeProducts()" style="border:1px solid #ddd;border-radius:10px;padding:9px 14px;background:#fff;cursor:pointer">إغلاق</button>
 </div>
-<div style="display:grid;grid-template-columns:1fr 160px 190px auto;gap:8px;margin:16px 0;align-items:center">
+<div class="e144-form" style="display:grid;grid-template-columns:1fr 160px 190px auto;gap:8px;margin:16px 0;align-items:center">
 <input id="prodName" placeholder="اسم المنتج" style="border:1px solid #ddd;border-radius:10px;padding:11px"/>
 <input id="prodCode" placeholder="رمز المنتج" style="border:1px solid #ddd;border-radius:10px;padding:11px"/>
 <label style="border:1px solid #ddd;border-radius:10px;padding:10px;cursor:pointer;text-align:center;background:#fafafa">
@@ -3708,7 +3708,7 @@ function openWhatsApp(order){
     if(!document.getElementById('cancelEdit51')){
       const saveBtn=[...document.querySelectorAll('button')].find(x=>(x.textContent||'').includes('إضافة / حفظ'));
       if(saveBtn){
-        const b=document.createElement('button');b.id='cancelEdit51';b.type='button';b.textContent='إلغاء تعديل المنتج ✕';
+        const b=document.createElement('button');b.id='cancelEdit51';b.className='e144-cancel';b.type='button';b.textContent='إلغاء تعديل المنتج ✕';
         b.style.cssText='border:1px solid #ddd;border-radius:10px;padding:10px 13px;background:#fff;cursor:pointer';
         b.onclick=clearForm51;saveBtn.parentNode.appendChild(b);
       }
@@ -3787,12 +3787,12 @@ function openWhatsApp(order){
     const key=norm51(decodeURIComponent(encoded)),x=products51().find(p=>norm51(p.name)===key);if(!x)return;
     const q=Number(prompt('كمية الخصم؟','1'));if(!Number.isFinite(q)||q<=0)return;
     const reserved=(window.db.orders||[]).reduce((n,o)=>{
-      if(['received','cancelled','canceled'].includes(o.status))return n;
+      if(o.stockDeducted===true||!['new','ready','packing'].includes(o.status||'new'))return n; // V144: المشحون خُصم مخزونه عند الشحن
       const its=Array.isArray(o.products)?o.products:(o.product?[{name:o.product,qty:o.quantity||1}]:[]);
       return n+its.reduce((a,i)=>a+(norm51(i.name)===key?Number(i.qty||i.quantity||1):0),0);
     },0);
     const available=Math.max(0,Number(x.stock||0)-reserved);
-    if(q>available){alert('لا يمكن خصم أكثر من المتاح. المتاح الآن: '+available);return}
+    if(q>available){alert('لا يمكن خصم أكثر من المتاح. المتاح الآن: '+available+(reserved>0?'\nالمخزون: '+Number(x.stock||0)+'، والمحجوز لطلبات لم تُشحن بعد: '+reserved:''));return}
     x.stock=Number(x.stock||0)-q;saveDB51();render51();
   };
   window.deleteProductV16=function(encoded){
@@ -5553,7 +5553,7 @@ function openWhatsApp(order){
 
   function reserved75(name){
     const key=norm75(name);let total=0;
-    orders75().filter(o=>!terminal75(o.status||'new')&&allocStatus75(o.status||'new')).forEach(o=>items75(o).forEach(i=>{const p=findProduct75(i.name);if(p&&norm75(p.name)===key)total+=i.qty;}));
+    orders75().filter(o=>!terminal75(o.status||'new')&&allocStatus75(o.status||'new')&&(o.status||'new')!=='shipped'&&o.stockDeducted!==true).forEach(o=>items75(o).forEach(i=>{const p=findProduct75(i.name);if(p&&norm75(p.name)===key)total+=i.qty;}));
     return total;
   }
   function waitingDemand75(name){
@@ -19185,7 +19185,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V143</div>
+<div id="emdStandaloneV2Badge">EMD Business • V144</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -27139,7 +27139,7 @@ function cover(){var W=innerWidth,H=innerHeight,on=false,k=document.body.childre
   document.body.classList.toggle('emd411-covered',on);
   /* رقم النسخة أسفل قائمة «المزيد» (شارة النسخة مخفية على الجوال) */
   var sh=document.getElementById('emd410Sheet');if(sh&&sh.classList.contains('show')){var bx=sh.querySelector('.box');if(bx&&!bx.querySelector('.e141v')){var v=document.createElement('div');v.className='e141v';v.textContent=VER;bx.appendChild(v)}}}
-var VER='EMD Business • V143';
+var VER='EMD Business • V144';
 function boot(){cover();setInterval(cover,500)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
@@ -30630,5 +30630,17 @@ window.EMDFit143Note=function(){try{var c=window.EMDLabelV418.config(),hm=headMm
   return '<div class="e143-note">ℹ️ عرض طابعتك '+hm+' مم، وهو أقل من عرض الملصق المختار ('+c.w+' مم)، لذلك صُمّم الملصق بمقاس '+hm+'×'+c.h+' مم ليملأ الورقة حتى الأسفل.</div>'}catch(e){return ''}};
 })();
 </script>
+<!-- EMD V144: نموذج المنتج على الجوال -->
+<style id="EMD-V144-style">
+#productsModal .e144-cancel{white-space:nowrap}
+@media (max-width:700px){
+  #productsModal .e144-form{grid-template-columns:1fr 1fr!important}
+  #productsModal .e144-form>*{min-width:0;box-sizing:border-box;width:100%}
+  #productsModal .e144-form>#prodName{grid-column:1/-1}
+  #productsModal .e144-form>label{padding:11px 6px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #productsModal .e144-form>label span{display:none}
+  #productsModal .e144-form>button{grid-column:1/-1}
+}
+</style>
 </body>
 </html>

@@ -1,6 +1,6 @@
 /* EMD Business — عامل الخدمة: يفتح التطبيق بدون إنترنت، ويجلب آخر نسخة أولًا عند توفر الاتصال.
    لا يلمس أي طلبات خارجية (التتبع/المزامنة/الدعم) ولا صفحات أخرى مثل owner.html */
-var C='emd-app-v143';
+var C='emd-app-v144';
 var SHELL=['/','/manifest.webmanifest','/icon-192.png','/icon-512.png','/icon-maskable-512.png','/apple-touch-icon.png'];
 self.addEventListener('install',function(e){
   e.waitUntil(caches.open(C).then(function(c){return Promise.all(SHELL.map(function(u){return c.add(u).catch(function(){})}))}).then(function(){return self.skipWaiting()}));
