@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V145</title>
+<title>EMD Business — Standalone V146</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--text:#18202a;--muted:#687384;--line:#e4e8ef;--accent:#18202a;--soft:#eef2f7;--ok:#16794c;--warn:#a56a00;--danger:#b23b3b}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial;background:var(--bg);color:var(--text)}
@@ -19185,7 +19185,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V145</div>
+<div id="emdStandaloneV2Badge">EMD Business • V146</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -27139,7 +27139,7 @@ function cover(){var W=innerWidth,H=innerHeight,on=false,k=document.body.childre
   document.body.classList.toggle('emd411-covered',on);
   /* رقم النسخة أسفل قائمة «المزيد» (شارة النسخة مخفية على الجوال) */
   var sh=document.getElementById('emd410Sheet');if(sh&&sh.classList.contains('show')){var bx=sh.querySelector('.box');if(bx&&!bx.querySelector('.e141v')){var v=document.createElement('div');v.className='e141v';v.textContent=VER;bx.appendChild(v)}}}
-var VER='EMD Business • V145';
+var VER='EMD Business • V146';
 function boot(){cover();setInterval(cover,500)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
@@ -30642,5 +30642,85 @@ window.EMDFit143Note=function(){try{var c=window.EMDLabelV418.config(),hm=headMm
   #productsModal .e144-form>button{grid-column:1/-1}
 }
 </style>
+<!-- EMD V146: نافذة الكمية داخل التطبيق بدل نافذة المتصفح -->
+<style id="EMD-V146-style">
+#e146{position:fixed;inset:0;z-index:2147483000;background:rgba(15,23,42,.55);display:flex;align-items:flex-end;justify-content:center;padding:12px;direction:rtl}
+@media (min-width:701px){#e146{align-items:center}}
+#e146 .e146-box{background:#fff;color:#111827;border-radius:20px;padding:18px;width:min(420px,100%);box-shadow:0 20px 60px rgba(0,0,0,.3);font-family:inherit}
+#e146 h3{margin:0 0 4px;font-size:18px}
+#e146 .e146-name{color:#4b5563;font-size:14px;margin-bottom:6px;word-break:break-word}
+#e146 .e146-info{color:#6b7280;font-size:13px;margin-bottom:12px}
+#e146 .e146-row{display:grid;grid-template-columns:56px 1fr 56px;gap:8px;align-items:center}
+#e146 .e146-row button{height:56px;border:1px solid #d1d5db;border-radius:14px;background:#f9fafb;color:#111827;font-size:26px;font-weight:700;cursor:pointer}
+#e146 input{height:56px;width:100%;box-sizing:border-box;border:2px solid #111827;border-radius:14px;text-align:center;font-size:24px;font-weight:700;color:#111827;background:#fff;-webkit-text-fill-color:#111827;opacity:1;padding:0 8px}
+#e146 .e146-err{display:none;margin-top:10px;padding:9px 11px;border-radius:12px;background:#fef2f2;color:#991b1b;font-size:13.5px;line-height:1.7;white-space:pre-line}
+#e146 .e146-act{display:flex;gap:8px;margin-top:14px}
+#e146 .e146-act button{flex:1;border-radius:14px;padding:13px;font-size:16px;font-weight:700;cursor:pointer}
+#e146 .e146-ok{background:#111827;color:#fff;border:0}
+#e146 .e146-no{background:#fff;color:#111827;border:1px solid #d1d5db}
+</style>
+<script id="EMD-V146-qty">
+(function(){'use strict';
+if(window.__EMD_V146__)return;window.__EMD_V146__=true;
+/* الدوال التي كانت تسأل بنافذة المتصفح prompt: نوع العملية، وكيف نعرف اسم المنتج */
+var FNS={addStockV16:'add',removeStockV16:'remove',addInventoryByProduct33:'add',removeInventory:'remove'};
+function norm(x){return String(x||'').replace(/ـ/g,'').trim().toLowerCase().replace(/\s+/g,' ')}
+function prod(name){var k=norm(name),ps=(window.db&&Array.isArray(db.products))?db.products:[];return ps.find(function(p){return norm(p&&p.name)===k})}
+/* المحجوز بالقاعدة الموحدة (V145) */
+function reserved(name){var k=norm(name),n=0;((window.db&&db.orders)||[]).forEach(function(o){if(!o||!['new','ready','packing'].includes(String(o.status||'new'))||o.stockDeducted===true)return;var a=Array.isArray(o.products)?o.products:(o.product?[{name:o.product,qty:o.quantity||1}]:[]);a.forEach(function(i){if(norm(i.name||i.product)===k)n+=Number(i.qty||i.quantity||1)})});return n}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]})}
+function digits(v){return String(v||'').replace(/[٠-٩]/g,function(d){return '٠١٢٣٤٥٦٧٨٩'.indexOf(d)}).replace(/[۰-۹]/g,function(d){return '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)}).replace(/[^\d.]/g,'')}
+function ask(kind,name,run){
+  var old=document.getElementById('e146');if(old)old.remove();
+  var p=prod(name),stock=p?Number(p.stock||0):null,shown=p?p.name:name;
+  var info=stock==null?'':(kind==='remove'?'المخزون الحالي: '+stock+' · المتاح للخصم: '+Math.max(0,stock-reserved(shown)):'المخزون الحالي: '+stock);
+  var o=document.createElement('div');o.id='e146';
+  o.innerHTML='<div class="e146-box" role="dialog" aria-modal="true"><h3>'+(kind==='add'?'➕ إضافة كمية':'➖ خصم كمية')+'</h3>'+
+    '<div class="e146-name">📦 '+esc(shown)+'</div>'+(info?'<div class="e146-info">'+info+'</div>':'')+
+    '<div class="e146-row"><button type="button" data-d="1">+</button><input id="e146q" type="text" inputmode="numeric" autocomplete="off" value="1" aria-label="الكمية"><button type="button" data-d="-1">−</button></div>'+
+    '<div class="e146-err" id="e146err"></div>'+
+    '<div class="e146-act"><button type="button" class="e146-ok">'+(kind==='add'?'إضافة':'خصم')+'</button><button type="button" class="e146-no">إلغاء</button></div></div>';
+  document.body.appendChild(o);
+  var inp=o.querySelector('#e146q'),err=o.querySelector('#e146err');
+  function close(){o.remove()}
+  function val(){var n=Number(digits(inp.value));return Number.isFinite(n)?n:0}
+  o.querySelectorAll('[data-d]').forEach(function(b){b.onclick=function(){inp.value=String(Math.max(1,val()+Number(b.dataset.d)));err.style.display='none'}});
+  inp.addEventListener('input',function(){err.style.display='none'});
+  o.querySelector('.e146-no').onclick=close;
+  o.addEventListener('click',function(e){if(e.target===o)close()});
+  function ok(){
+    var q=val();if(!(q>0)){err.textContent='أدخل كمية صحيحة أكبر من صفر.';err.style.display='block';return}
+    var msgs=run(String(q));
+    if(msgs.length){err.textContent=msgs.join('\n');err.style.display='block'}else close();
+  }
+  o.querySelector('.e146-ok').onclick=ok;
+  inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();ok()}else if(e.key==='Escape')close()});
+  setTimeout(function(){try{inp.focus();inp.select()}catch(e){}},60);
+}
+var busy=false;
+function wrapOne(fn){
+  var f=window[fn];if(typeof f!=='function'||f.__e146)return;
+  var w=function(enc){
+    var self=this,args=arguments,name=decodeURIComponent(enc||'');
+    if(busy)return f.apply(self,args); /* استدعاء داخلي أثناء التنفيذ: لا نافذة ثانية */
+    ask(FNS[fn],name,function(q){
+      /* نمرّر الكمية للدالة الأصلية كما لو كُتبت في نافذة المتصفح، ونعرض رسائلها داخل النافذة */
+      var op=window.prompt,oa=window.alert,used=false,msgs=[];busy=true;
+      window.prompt=function(){if(!used){used=true;return q}return op.apply(window,arguments)};
+      window.alert=function(m){msgs.push(String(m))};
+      try{f.apply(self,args)}catch(e){msgs.push('تعذّر تنفيذ العملية: '+e.message)}
+      finally{window.prompt=op;window.alert=oa;busy=false}
+      return msgs;
+    });
+  };
+  w.__e146=true;w.__v137=1;window[fn]=w;
+}
+/* بعد أن تُغلّف V137 الدوال لتسجيل حركة المخزون (1.2 ثانية)، ونعيد الفحص قبل كل ضغطة */
+var t0=Date.now();
+function install(){if(Date.now()-t0<1500)return;Object.keys(FNS).forEach(wrapOne)}
+setTimeout(install,1600);setTimeout(install,4200);
+document.addEventListener('click',install,true);
+})();
+</script>
 </body>
 </html>
