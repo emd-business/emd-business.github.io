@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V141</title>
+<title>EMD Business — Standalone V142</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--text:#18202a;--muted:#687384;--line:#e4e8ef;--accent:#18202a;--soft:#eef2f7;--ok:#16794c;--warn:#a56a00;--danger:#b23b3b}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial;background:var(--bg);color:var(--text)}
@@ -18899,7 +18899,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     var wrappedSave=function(id){
       if(!featureOK()){return oldSave.apply(this,arguments)}
       var o=orders().find(function(x){return oid(x)===String(id)});if(!o)return oldSave.apply(this,arguments);
-      var sel=document.getElementById('v26_status');var wanted=sel?String(sel.value):String(o.status||'new');
+      var sel=document.getElementById('v26_status');var wanted=sel?String(sel.value):String(o.status||'new');if(wanted===String(o.status||'new'))return oldSave.apply(this,arguments);/*V142*/
       if(wanted==='received'&&String(o.status)!=='shipped'){alert('لا يمكن تسجيل الطلب كمستلم قبل تسجيله كمشحون.');return}
       if(wanted==='shipped'&&o.stockDeducted!==true){
         if(o.packed!==true){alert('يجب إكمال التجهيز أولًا قبل الشحن.');return}
@@ -19185,7 +19185,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V141</div>
+<div id="emdStandaloneV2Badge">EMD Business • V142</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -27139,7 +27139,7 @@ function cover(){var W=innerWidth,H=innerHeight,on=false,k=document.body.childre
   document.body.classList.toggle('emd411-covered',on);
   /* رقم النسخة أسفل قائمة «المزيد» (شارة النسخة مخفية على الجوال) */
   var sh=document.getElementById('emd410Sheet');if(sh&&sh.classList.contains('show')){var bx=sh.querySelector('.box');if(bx&&!bx.querySelector('.e141v')){var v=document.createElement('div');v.className='e141v';v.textContent=VER;bx.appendChild(v)}}}
-var VER='EMD Business • V141';
+var VER='EMD Business • V142';
 function boot(){cover();setInterval(cover,500)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
@@ -30595,5 +30595,27 @@ window.EMDSetV445={version:'V445',build:build,group:group,run:run,items:I,groups
 })();
 </script>
 
+<!-- EMD V142: حفظ حالة الطلب عند التعديل -->
+<script id="EMD-V142-order-status">
+(function(){'use strict';
+if(window.__EMD_V142__)return;window.__EMD_V142__=true;
+var LBL={cancelled:'❌ ملغي',canceled:'❌ ملغي'},opened={};
+function find(id){var d=window.db;return d&&Array.isArray(d.orders)?d.orders.find(function(x){return String(x.id)===String(id)}):null}
+function ensure(sel,st){if(!sel||!st)return;var ok=[].some.call(sel.options,function(op){return op.value===st});
+  if(!ok){var op=document.createElement('option');op.value=st;op.textContent=LBL[st]||st;sel.insertBefore(op,sel.firstChild)}sel.value=st}
+function fix(id){var o=find(id),sel=document.getElementById('v26_status');if(!o||!sel)return;
+  var st=String(o.status||'new');if(sel.dataset.e142===String(id))return;sel.dataset.e142=String(id);ensure(sel,st);opened[id]=st}
+function wrap(){
+  var f=window.openOrderV26;
+  if(typeof f==='function'&&!f.__v142){var g=function(id){var r=f.apply(this,arguments);try{fix(id)}catch(e){}setTimeout(function(){try{fix(id)}catch(e){}},0);return r};g.__v142=1;window.openOrderV26=g}
+  var s=window.saveOrderV26;
+  if(typeof s==='function'&&!s.__v142){var w=function(id){try{var o=find(id),sel=document.getElementById('v26_status');
+      /* لم يغيّر المستخدم الحالة: احتفظ بالحالة الحالية للطلب (قد تكون تغيّرت من جهاز آخر أثناء فتح النافذة) */
+      if(o&&sel&&opened[id]!==undefined&&sel.value===opened[id])ensure(sel,String(o.status||'new'))}catch(e){}
+      return s.apply(this,arguments)};w.__v142=1;window.saveOrderV26=w}
+}
+wrap();setInterval(wrap,2000);
+})();
+</script>
 </body>
 </html>
