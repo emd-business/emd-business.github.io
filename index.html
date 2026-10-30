@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V144</title>
+<title>EMD Business — Standalone V145</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--text:#18202a;--muted:#687384;--line:#e4e8ef;--accent:#18202a;--soft:#eef2f7;--ok:#16794c;--warn:#a56a00;--danger:#b23b3b}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial;background:var(--bg);color:var(--text)}
@@ -1141,7 +1141,7 @@ function openWhatsApp(order){
   function reservedFor(key){
     let total=0;
     for(const o of allOrders()){
-      if(isCancelled(statusOf(o))||isReceived(statusOf(o))) continue;
+      if(isCancelled(statusOf(o))||isReceived(statusOf(o))||o.stockDeducted===true||statusOf(o)==='shipped') continue;
       for(const it of orderItems(o)) if(norm(it.name)===key) total+=it.qty;
     }
     return total;
@@ -1509,7 +1509,7 @@ function openWhatsApp(order){
   function reserved(name){
     let n=0;
     getOrdersV16().forEach(o=>{
-      if(['received','cancelled','canceled'].includes(o.status))return;
+      if(!(['new','ready','packing'].includes(String(o.status||'new'))&&o.stockDeducted!==true))return;
       items(o).forEach(i=>{if(norm(i.name)===norm(name))n+=i.qty});
     });
     return n;
@@ -1676,7 +1676,7 @@ function openWhatsApp(order){
   function reserved23(except){
     const m={};
     orders23().forEach(o=>{
-      if(o===except||terminal.has(o.status))return;
+      if(o===except||terminal.has(o.status)||o.status==='shipped'||o.stockDeducted===true)return;
       items23(o).forEach(i=>m[norm23(i.name)]=(m[norm23(i.name)]||0)+i.qty);
     });
     return m;
@@ -5170,7 +5170,7 @@ function openWhatsApp(order){
   function reservedFor(name){
     let total=0, n=norm(name);
     orders().forEach(o=>{
-      if(['received','cancelled','canceled'].includes(o.status))return;
+      if(!(['new','ready','packing'].includes(String(o.status||'new'))&&o.stockDeducted!==true))return;
       items(o).forEach(i=>{if(norm(iname(i))===n)total+=iqty(i)})
     });
     return total;
@@ -6159,7 +6159,7 @@ function openWhatsApp(order){
   const products104=()=>window.db&&Array.isArray(window.db.products)?window.db.products:[];
   const items104=o=>{const a=o&&(o.products||o.items);return Array.isArray(a)?a.map(x=>({name:String(x.name||x.product||'').trim(),qty:Math.max(1,Number(x.qty??x.quantity)||1)})).filter(x=>x.name):[]};
   const find104=name=>products104().find(p=>norm104(p.name)===norm104(name))||products104().find(p=>{const a=norm104(p.name),b=norm104(name);return a&&b&&(a.includes(b)||b.includes(a))});
-  function reserved104(name){let n=0;const k=norm104(name);orders104().filter(o=>!['received','cancelled','canceled'].includes(o.status)&&['ready','packing','shipped'].includes(o.status)).forEach(o=>items104(o).forEach(i=>{const p=find104(i.name);if(p&&norm104(p.name)===k)n+=i.qty}));return n}
+  function reserved104(name){let n=0;const k=norm104(name);orders104().filter(o=>(['new','ready','packing'].includes(String(o.status||'new'))&&o.stockDeducted!==true)).forEach(o=>items104(o).forEach(i=>{const p=find104(i.name);if(p&&norm104(p.name)===k)n+=i.qty}));return n}
   function build104(){const map={};orders104().filter(o=>o.status==='waiting').forEach(o=>items104(o).forEach(i=>{const p=find104(i.name),key=p?norm104(p.name):norm104(i.name);if(!map[key])map[key]={name:p?p.name:i.name,demand:0};map[key].demand+=i.qty;}));return Object.values(map).map(x=>{const p=find104(x.name),stock=p?Math.max(0,Number(p.stock||0)):0,available=Math.max(0,stock-reserved104(x.name)),shortage=Math.max(0,x.demand-available);return {...x,available,shortage,registered:!!p};}).filter(x=>x.shortage>0).sort((a,b)=>b.shortage-a.shortage||b.demand-a.demand).slice(0,6)}
   function render104(){const panel=document.getElementById('emdV90DailyPanel');if(!panel)return;let box=document.getElementById('emdV104Need');if(!box){box=document.createElement('div');box.id='emdV104Need';box.className='emd-v104-need';const smart=document.getElementById('emdV99Smart');if(smart&&smart.parentNode===panel)smart.insertAdjacentElement('afterend',box);else panel.appendChild(box)}const arr=build104();box.innerHTML='<div class="emd-v104-head"><div class="emd-v104-title">📦 احتياج المخزن</div><span class="emd-v104-badge">EMD</span></div><div class="emd-v104-sub">المنتجات التي ينقصها المخزون حاليًا لإكمال الطلبات المنتظرة.</div>'+(arr.length?'<div class="emd-v104-list">'+arr.map(x=>'<div class="emd-v104-row"><span class="emd-v104-name">'+esc104(x.name)+'</span><span class="emd-v104-qty">ناقص '+x.shortage+'</span></div>').join('')+'</div><div class="emd-v104-actions"><button type="button" class="emd-v104-btn primary" onclick="try{window.openInventory()}catch(e){}">🏬 فتح المخزن</button><button type="button" class="emd-v104-btn" onclick="try{window.openEMDV92AI()}catch(e){}">🤖 اسأل EMD</button></div>':'<div class="emd-v104-empty">لا توجد نواقص مرتبطة بطلبات منتظرة حاليًا ✅</div>')}
   function install104(){render104();if(typeof window.render==='function'&&!window.__emdV104Wrapped){const old=window.render;window.render=function(){const r=old.apply(this,arguments);setTimeout(render104,0);return r};window.__emdV104Wrapped=true}}
@@ -6507,7 +6507,7 @@ function qtyDemand133(pname){
 function reserved133(pname){
   let q=0;
   orders133().forEach(o=>{
-    if(!o||o.status==='received'||o.status==='cancelled'||o.status==='canceled')return;
+    if(!o||!(['new','ready','packing'].includes(String(o.status||'new'))&&o.stockDeducted!==true))return;
     (o.products||[]).forEach(x=>{if(norm133(x.name)===norm133(pname))q+=Number(x.qty)||0});
   });
   return q;
@@ -19185,7 +19185,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V144</div>
+<div id="emdStandaloneV2Badge">EMD Business • V145</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -27139,7 +27139,7 @@ function cover(){var W=innerWidth,H=innerHeight,on=false,k=document.body.childre
   document.body.classList.toggle('emd411-covered',on);
   /* رقم النسخة أسفل قائمة «المزيد» (شارة النسخة مخفية على الجوال) */
   var sh=document.getElementById('emd410Sheet');if(sh&&sh.classList.contains('show')){var bx=sh.querySelector('.box');if(bx&&!bx.querySelector('.e141v')){var v=document.createElement('div');v.className='e141v';v.textContent=VER;bx.appendChild(v)}}}
-var VER='EMD Business • V144';
+var VER='EMD Business • V145';
 function boot(){cover();setInterval(cover,500)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
