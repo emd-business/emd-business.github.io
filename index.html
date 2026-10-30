@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V147</title>
+<title>EMD Business — Standalone V149</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--text:#18202a;--muted:#687384;--line:#e4e8ef;--accent:#18202a;--soft:#eef2f7;--ok:#16794c;--warn:#a56a00;--danger:#b23b3b}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial;background:var(--bg);color:var(--text)}
@@ -7423,7 +7423,7 @@ else {wrapAddInventory();setTimeout(renderArrival,300)}
  window.emdV196CheckStock=tick;
  setTimeout(()=>{lastSig=signature();},700);
  setInterval(tick,5000);
- window.addEventListener('storage',e=>{if(e.key===DBKEY)tick()});
+ /* V149: التغيير من نافذة أخرى يُتبنّى فقط (V124) ولا يُعاد حفظه */
 })();
 </script>
 
@@ -7515,7 +7515,7 @@ else {wrapAddInventory();setTimeout(renderArrival,300)}
    try{recalc()}catch(e){}
    if(typeof oldPrepare==='function')oldPrepare();
  };
- window.addEventListener('storage',e=>{if(e.key===KEY)try{recalc()}catch(x){}});
+ /* V149: التغيير من نافذة أخرى يُتبنّى فقط (V124) ولا يُعاد حفظه */
 
  // Add a small control to the existing quick menu, without replacing anything.
  function inject(){
@@ -7617,7 +7617,7 @@ else {wrapAddInventory();setTimeout(renderArrival,300)}
  }
  window.emdV198Reconcile=reconcile;
  setTimeout(reconcile,900);
- window.addEventListener('storage',e=>{if(e.key===KEY)reconcile()});
+ /* V149: التغيير من نافذة أخرى يُتبنّى فقط (V124) ولا يُعاد حفظه */
 })();
 </script>
 
@@ -19185,7 +19185,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V147</div>
+<div id="emdStandaloneV2Badge">EMD Business • V149</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -27139,7 +27139,7 @@ function cover(){var W=innerWidth,H=innerHeight,on=false,k=document.body.childre
   document.body.classList.toggle('emd411-covered',on);
   /* رقم النسخة أسفل قائمة «المزيد» (شارة النسخة مخفية على الجوال) */
   var sh=document.getElementById('emd410Sheet');if(sh&&sh.classList.contains('show')){var bx=sh.querySelector('.box');if(bx&&!bx.querySelector('.e141v')){var v=document.createElement('div');v.className='e141v';v.textContent=VER;bx.appendChild(v)}}}
-var VER='EMD Business • V147';
+var VER='EMD Business • V149';
 function boot(){cover();setInterval(cover,500)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
