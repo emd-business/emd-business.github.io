@@ -1048,6 +1048,10 @@ var _gprice153=gprice;gprice=function(g){var x=g.one?g.v[0].p:null;if(!x){var mn
 var _soldOut153=soldOut;soldOut=function(g){return _soldOut153(g)+disc153(g)};
 var _drawP153=drawP;drawP=function(){_drawP153();try{var x=PS.g.v[PS.v].p,m=pct153(x),pp=$('pBox').querySelector('.pin .pp');if(m&&pp)pp.insertAdjacentHTML('beforeend','<span class="dpp">'+(LANG==='en'?'Save ':'وفّر ')+m+'%</span>')}catch(e){}};
 
+/* V154: ترتيب الأصناف حسب اختيار التاجر (brand.co) */
+var _show154=show;show=function(){try{var O=Array.isArray(B.co)?B.co.map(function(x){return String(x).trim()}):[];if(O.length){var I=P.map(function(p,i){return [p,i]});
+  I.sort(function(a,b){var x=O.indexOf(String(a[0].cat||'').trim()),y=O.indexOf(String(b[0].cat||'').trim());x=x<0?999:x;y=y<0?999:y;return x-y||a[1]-b[1]});P=I.map(function(a){return a[0]})}}catch(e){}_show154()};
+
 boot();
 })();
 </script>
