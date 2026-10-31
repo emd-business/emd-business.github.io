@@ -27487,7 +27487,7 @@ function owa(id){var o=findO(id);if(!o)return;var cu=o.customer||{},p=String(cu.
 function openLocal415(id){try{if(typeof window.openOrderV26==='function'){window.openOrderV26(id);return}if(typeof window.openOrder31==='function'){window.openOrder31(id);return}}catch(e){}
   try{show('orders')}catch(e){}}
 function openOrd(id){id=String(id);
-  function hl(){if(!findO(id))return false;open('ord');setTimeout(function(){var e=document.querySelector('#emd411Store [data-o="'+id+'"]');if(e){e.classList.add('emd415-hl');e.scrollIntoView({block:'center',behavior:'smooth'});setTimeout(function(){e.classList.remove('emd415-hl')},4000)}},150);return true}
+  function hl(){if(!findO(id))return false;open('ord');var t0=Date.now(),sc=false,iv=setInterval(function(){var e=document.querySelector('#emd411Store [data-o="'+id+'"]'),end=Date.now()-t0>5000;if(e){e.classList.toggle('emd415-hl',!end);if(!sc){sc=true;e.scrollIntoView({block:'center',behavior:'smooth'})}}if(end)clearInterval(iv)},150);return true}
   if(hl())return;
   var L=(window.db&&Array.isArray(window.db.orders))?window.db.orders:[];for(var i=0;i<L.length;i++)if(String(L[i].storeOrderId)===id){openLocal415(L[i].id);return}
   var r=[];try{r=JSON.parse(localStorage.getItem('emd415_rej')||'[]')}catch(e){}if(r.indexOf(id)>=0){toast('رفضت هذا الطلب من قبل');return}
@@ -31256,7 +31256,7 @@ function storeIds(){var L=(window.db&&Array.isArray(window.db.orders))?window.db
 function homeCard(){var g=document.querySelector('#home .grid');if(!g)return;var c=$('emd415Home');
   if(!pub()){if(c)c.remove();return}
   if(!c){c=document.createElement('div');c.id='emd415Home';c.className='card stat emd415-home';c.setAttribute('role','button');c.tabIndex=0;
-    c.onclick=function(){try{window.EMDStoreV411.open('ord')}catch(e){}};c.onkeydown=function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();c.click()}};g.insertBefore(c,g.firstChild)}
+    c.onclick=function(){try{var X=window.EMDStoreV411,L=X.orders?X.orders():[];if(L.length===1&&X.openOrd){X.openOrd(L[0].id)}else{X.open('ord');if(X.poll)X.poll(true)}}catch(e){}};c.onkeydown=function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();c.click()}};g.insertBefore(c,g.firstChild)}
   else if(c.parentNode!==g||g.firstChild!==c)g.insertBefore(c,g.firstChild);
   var n=newN(),h='<div class="ic">🛍️</div><div class="tx"><b>طلبات متجري</b><small>'+(n?'تنتظر منك القبول أو الرفض':'لا توجد طلبات جديدة')+'</small></div><div class="n">'+n+'</div>';
   if(c.getAttribute('data-n')!==String(n)){c.innerHTML=h;c.setAttribute('data-n',String(n));c.classList.toggle('on',n>0)}}
