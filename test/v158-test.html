@@ -13,6 +13,32 @@
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
 <title>EMD Business — Standalone V158 تجريبية</title>
+<!-- EMD V158: شاشة افتتاح تغطي التطبيق حتى تكتمل الواجهة الأخيرة، فلا تظهر الأشكال والأزرار القديمة أثناء التحميل -->
+<style id="EMD-V158-boot">
+html.emd-boot{background:#0f172a!important}
+html.emd-boot body{opacity:0!important;pointer-events:none!important}
+html.emd-boot::before{content:"EMD Business";position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;padding-bottom:40px;background:#0f172a;color:#d4af37;font:900 30px/1.2 Tahoma,Arial,sans-serif;letter-spacing:.5px}
+html.emd-boot::after{content:"";position:fixed;z-index:2147483647;left:50%;top:50%;width:28px;height:28px;margin:22px 0 0 -14px;border-radius:50%;border:3px solid rgba(212,175,55,.25);border-top-color:#d4af37;animation:emd158spin .8s linear infinite}
+@keyframes emd158spin{to{transform:rotate(360deg)}}
+body{transition:opacity .18s ease}
+</style>
+<script id="EMD-V158-boot-js">
+(function(){'use strict';
+var H=document.documentElement,t0=Date.now(),loaded=false,tl=0,done=false;
+H.classList.add('emd-boot');
+function show(){if(done)return;done=true;H.classList.remove('emd-boot')}
+window.EMDBootV158={show:show};
+window.addEventListener('load',function(){loaded=true;tl=Date.now()});
+(function tick(){
+  if(done)return;var now=Date.now();
+  var hero=document.querySelector('.emd90-hero'),more=document.getElementById('emd410More');
+  if(now-t0>3500||(loaded&&hero&&(more||now-tl>800))){
+    requestAnimationFrame(function(){requestAnimationFrame(function(){setTimeout(show,60)})});return}
+  setTimeout(tick,40);
+})();
+})();
+</script>
+
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--text:#18202a;--muted:#687384;--line:#e4e8ef;--accent:#18202a;--soft:#eef2f7;--ok:#16794c;--warn:#a56a00;--danger:#b23b3b}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial;background:var(--bg);color:var(--text)}
