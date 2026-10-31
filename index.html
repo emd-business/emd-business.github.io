@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V158</title>
+<title>EMD Business — Standalone V159</title>
 <!-- EMD V158: شاشة افتتاح تغطي التطبيق حتى تكتمل الواجهة الأخيرة، فلا تظهر الأشكال والأزرار القديمة أثناء التحميل -->
 <style id="EMD-V158-boot">
 html.emd-boot{background:#0f172a!important}
@@ -28,11 +28,11 @@ var H=document.documentElement,t0=Date.now(),loaded=false,tl=0,done=false;
 H.classList.add('emd-boot');
 function show(){if(done)return;done=true;H.classList.remove('emd-boot')}
 window.EMDBootV158={show:show};
-window.addEventListener('load',function(){loaded=true;tl=Date.now()});
+window.addEventListener('load',function(){loaded=true;tl=Date.now()});var tdc=0;document.addEventListener('DOMContentLoaded',function(){tdc=Date.now()});
 (function tick(){
   if(done)return;var now=Date.now();
   var hero=document.querySelector('.emd90-hero'),more=document.getElementById('emd410More');
-  if(now-t0>3500||(loaded&&hero&&(more||now-tl>800))){
+  if((tdc&&now-tdc>3000)||now-t0>30000||(loaded&&hero&&(more||now-tl>800))){
     requestAnimationFrame(function(){requestAnimationFrame(function(){setTimeout(show,60)})});return}
   setTimeout(tick,40);
 })();
@@ -19212,7 +19212,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V158</div>
+<div id="emdStandaloneV2Badge">EMD Business • V159</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -27585,7 +27585,7 @@ function cover(){var W=innerWidth,H=innerHeight,on=false,k=document.body.childre
   document.body.classList.toggle('emd411-covered',on);
   /* رقم النسخة أسفل قائمة «المزيد» (شارة النسخة مخفية على الجوال) */
   var sh=document.getElementById('emd410Sheet');if(sh&&sh.classList.contains('show')){var bx=sh.querySelector('.box');if(bx&&!bx.querySelector('.e141v')){var v=document.createElement('div');v.className='e141v';v.textContent=VER;bx.appendChild(v)}}}
-var VER='EMD Business • V158';
+var VER='EMD Business • V159';
 function boot(){cover();setInterval(cover,500)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
@@ -31686,6 +31686,58 @@ document.addEventListener('visibilitychange',function(){
 });
 window.addEventListener('online',function(){setTimeout(function(){check('focus')},1500)});
 setInterval(function(){check('timer')},10*60000);
+})();
+</script>
+
+<!-- EMD V159: تنظيف الأزرار المكررة — قائمة «المزيد» بلا تكرار للشريط السفلي، وأزرار الكمبيوتر العائمة إلى الرأس -->
+<style id="EMD-V159-style">
+#emd410Sheet button.e159-dup{display:none!important}
+body.e159-desk #emdNotifyBadgeV317,body.e159-desk #emdV92AiFab{display:none!important}
+body.e159-desk:not(.emd410-tools) #emdQuickMenuFinal{display:none!important}
+body.e159-desk #emdQuickToggleFinal{display:none!important}
+.e159-hb{display:inline-flex;align-self:stretch;align-items:center;justify-content:center;gap:6px;min-height:40px;padding:8px 12px;border-radius:12px;border:1px solid rgba(15,23,42,.14);background:rgba(255,255,255,.85);color:#111827;font:inherit;font-size:14px;font-weight:700;line-height:1;cursor:pointer;position:relative;white-space:nowrap}
+.e159-hb .c{position:absolute;top:-6px;left:-6px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#dc2626;color:#fff;font-size:11px;line-height:18px;text-align:center}
+.e159-hb .c[data-z="1"]{display:none}
+.e159-hb:not(.e159-on){display:none}
+#parsed .e159-dup2,#import .e159-dup2{display:none!important}
+body.e159-modal .emd108-banner{display:none!important}
+</style>
+<script id="EMD-V159-clean">
+(function(){'use strict';
+if(window.__EMD_V159__)return;window.__EMD_V159__=true;
+function $(id){return document.getElementById(id)}
+function lab(b){var c=b.cloneNode(true);[].forEach.call(c.querySelectorAll('i,.cnt'),function(x){x.remove()});return c.textContent.replace(/[^؀-ۿA-Za-z]+/g,'')}
+/* 1) قائمة «☰ المزيد» في الهاتف: لا تعرض ما هو موجود أصلًا في الشريط السفلي */
+function dedupe(){var s=$('emd410Sheet'),b=$('emd410Bar');if(!s||!b)return;
+  var have={};[].forEach.call(b.querySelectorAll('button[data-n]'),function(x){if(x.getAttribute('data-n')!=='more')have[lab(x)]=1});
+  [].forEach.call(s.querySelectorAll('.grid3 button[data-i]'),function(x){var d=!!have[lab(x)];if(x.classList.contains('e159-dup')!==d)x.classList.toggle('e159-dup',d)})}
+var mo=new MutationObserver(function(){dedupe()});
+function watch(){var s=$('emd410Sheet');if(!s||s.__e159)return;s.__e159=1;mo.observe(s,{childList:true,subtree:true,attributes:true,attributeFilter:['class']})}
+/* 2) الكمبيوتر: 🔔 و🤖 و🧰 تنتقل من الزوايا العائمة إلى رأس الصفحة */
+var MQ=window.matchMedia('(max-width:760px),(pointer:coarse) and (max-width:1400px)');
+function desk(){return !MQ.matches}
+function mk(id,html,title,fn){var b=$(id);if(b)return b;b=document.createElement('button');b.type='button';b.id=id;b.className='e159-hb';b.title=title;b.setAttribute('aria-label',title);b.setAttribute('data-emd108-skip','1');b.innerHTML=html;b.onclick=function(e){e.preventDefault();fn()};return b}
+function head(){var set=$('emdSettingsHubButtonV327');if(!set||!set.parentNode)return;var g=set.parentNode;
+  var bell=mk('e159Bell','🔔<span class="c" data-z="1"></span>','التنبيهات',function(){var x=$('emdNotifyBadgeV317');if(x)x.click()});
+  var ai=mk('e159Ai','🤖 <span>اسأل EMD</span>','اسأل EMD',function(){var x=$('emdV92AiFab');if(x)x.click()});
+  var tl=mk('e159Tools','🧰 <span>الأدوات</span>','أدوات النظام',function(){var p=$('emdQuickPanelFinal'),open=p&&getComputedStyle(p).display!=='none';
+    document.body.classList.add('emd410-tools');var t=$('emdQuickToggleFinal');if(t&&!open)t.click()});
+  var ref=$('emd147Reload')||set;[tl,ai,bell].forEach(function(b){if(b.parentNode!==g)g.insertBefore(b,ref)});
+  var c=$('emdNotifyCountV317'),cn=bell.querySelector('.c');if(c&&cn){var v=c.textContent.trim();if(cn.textContent!==v)cn.textContent=v;cn.setAttribute('data-z',(v===''||v==='0')?'1':'0')}
+  var on=desk();document.body.classList.toggle('e159-desk',on);[bell,ai,tl].forEach(function(b){b.classList.toggle('e159-on',on)});
+  if(on&&document.body.classList.contains('emd410-tools')){var p=$('emdQuickPanelFinal');if(p&&getComputedStyle(p).display==='none')document.body.classList.remove('emd410-tools')}}
+/* 3) نافذة الاستيراد: زر «التعلّم» مكرر (يبقى الذي في الأعلى)، واقتراح الشركة القديم مكرر مع أزرار الشركات المحفوظة */
+function importDup(){var top=document.querySelector('.emd103Entry,#emd103Entry');
+  [].forEach.call(document.querySelectorAll('#parsed .emd103Bar button,#parsed #emd103Bar button'),function(b){var d=!!top&&/التعلّم/.test(b.textContent)&&!/غلط/.test(b.textContent);if(b.classList.contains('e159-dup2')!==d)b.classList.toggle('e159-dup2',d)});
+  [].forEach.call(document.querySelectorAll('#emdV61c,.emdV61c'),function(v){var g=v.closest('.formgrid')||v.parentNode&&v.parentNode.parentNode;var has=!!(g&&g.querySelector('.emd79-chips .emd79-chip'));if(v.classList.contains('e159-dup2')!==has)v.classList.toggle('e159-dup2',has)})}
+var ipT=0;new MutationObserver(function(){clearTimeout(ipT);ipT=setTimeout(function(){try{importDup()}catch(e){}},60)}).observe(document.documentElement,{childList:true,subtree:true});
+/* 4) شريط «حان وقت تقفيلة اليوم» لا يظهر فوق النوافذ المفتوحة */
+function modalOpen(){var e=document.elementFromPoint(innerWidth/2,innerHeight/2);for(var x=e;x&&x!==document.body;x=x.parentElement){if(x.id==='emd410Bar'||x.classList.contains('emd108-banner'))return false;var cs=getComputedStyle(x);if(cs.position==='fixed'&&x.offsetHeight>innerHeight*0.4)return true}return false}
+setInterval(function(){if(!document.querySelector('.emd108-banner'))return;var m=modalOpen();if(document.body.classList.contains('e159-modal')!==m)document.body.classList.toggle('e159-modal',m)},600);
+function tick(){try{watch();dedupe();head();importDup()}catch(e){}}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(tick,300)});else setTimeout(tick,300);
+setTimeout(tick,1200);setInterval(tick,1500);
+if(MQ.addEventListener)MQ.addEventListener('change',tick);
 })();
 </script>
 
