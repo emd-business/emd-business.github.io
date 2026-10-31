@@ -12,7 +12,33 @@
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V157</title>
+<title>EMD Business — Standalone V158</title>
+<!-- EMD V158: شاشة افتتاح تغطي التطبيق حتى تكتمل الواجهة الأخيرة، فلا تظهر الأشكال والأزرار القديمة أثناء التحميل -->
+<style id="EMD-V158-boot">
+html.emd-boot{background:#0f172a!important}
+html.emd-boot body{opacity:0!important;pointer-events:none!important}
+html.emd-boot::before{content:"EMD Business";position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;padding-top:110px;padding-bottom:40px;background:#0f172a url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 1024 1024%22%3E%3Cdefs%3E%3ClinearGradient id=%22g%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%231e3a8a%22/%3E%3Cstop offset=%221%22 stop-color=%22%230f172a%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%221024%22 height=%221024%22 rx=%22230%22 fill=%22url(%23g)%22/%3E%3Cg fill=%22%23fff%22%3E%3Crect x=%22190%22 y=%22212%22 width=%22644%22 height=%22520%22 rx=%22150%22/%3E%3Cpath d=%22M290 700 L250 846 Q246 862 262 856 L438 740 Z%22/%3E%3C/g%3E%3Cg fill=%22%231e3a8a%22%3E%3Crect x=%22366%22 y=%22326%22 width=%2276%22 height=%22316%22 rx=%2238%22/%3E%3Crect x=%22366%22 y=%22326%22 width=%22292%22 height=%2276%22 rx=%2238%22/%3E%3Crect x=%22366%22 y=%22566%22 width=%22292%22 height=%2276%22 rx=%2238%22/%3E%3C/g%3E%3Crect x=%22366%22 y=%22446%22 width=%22214%22 height=%2276%22 rx=%2238%22 fill=%22%23f59e0b%22/%3E%3Ccircle cx=%22796%22 cy=%22236%22 r=%2262%22 fill=%22%23f59e0b%22 stroke=%22%230f172a%22 stroke-width=%2226%22/%3E%3C/svg%3E") center calc(50% - 60px)/96px 96px no-repeat;color:#d4af37;font:900 30px/1.2 Tahoma,Arial,sans-serif;letter-spacing:.5px}
+html.emd-boot::after{content:"";position:fixed;z-index:2147483647;left:50%;top:50%;width:28px;height:28px;margin:92px 0 0 -14px;border-radius:50%;border:3px solid rgba(212,175,55,.25);border-top-color:#d4af37;animation:emd158spin .8s linear infinite}
+@keyframes emd158spin{to{transform:rotate(360deg)}}
+body{transition:opacity .18s ease}
+</style>
+<script id="EMD-V158-boot-js">
+(function(){'use strict';
+var H=document.documentElement,t0=Date.now(),loaded=false,tl=0,done=false;
+H.classList.add('emd-boot');
+function show(){if(done)return;done=true;H.classList.remove('emd-boot')}
+window.EMDBootV158={show:show};
+window.addEventListener('load',function(){loaded=true;tl=Date.now()});
+(function tick(){
+  if(done)return;var now=Date.now();
+  var hero=document.querySelector('.emd90-hero'),more=document.getElementById('emd410More');
+  if(now-t0>3500||(loaded&&hero&&(more||now-tl>800))){
+    requestAnimationFrame(function(){requestAnimationFrame(function(){setTimeout(show,60)})});return}
+  setTimeout(tick,40);
+})();
+})();
+</script>
+
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--text:#18202a;--muted:#687384;--line:#e4e8ef;--accent:#18202a;--soft:#eef2f7;--ok:#16794c;--warn:#a56a00;--danger:#b23b3b}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial;background:var(--bg);color:var(--text)}
@@ -19186,7 +19212,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V157</div>
+<div id="emdStandaloneV2Badge">EMD Business • V158</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -27559,7 +27585,7 @@ function cover(){var W=innerWidth,H=innerHeight,on=false,k=document.body.childre
   document.body.classList.toggle('emd411-covered',on);
   /* رقم النسخة أسفل قائمة «المزيد» (شارة النسخة مخفية على الجوال) */
   var sh=document.getElementById('emd410Sheet');if(sh&&sh.classList.contains('show')){var bx=sh.querySelector('.box');if(bx&&!bx.querySelector('.e141v')){var v=document.createElement('div');v.className='e141v';v.textContent=VER;bx.appendChild(v)}}}
-var VER='EMD Business • V157';
+var VER='EMD Business • V158';
 function boot(){cover();setInterval(cover,500)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
@@ -31581,6 +31607,87 @@ if(!hook())document.addEventListener('DOMContentLoaded',hook);
 })();
 </script>
 <!-- ===== نهاية EMD V156 ===== -->
+
+<!-- EMD V158: وصول التحديثات فورًا (فحص النسخة الجديدة + تحديث تلقائي آمن + شريط «يتوفر تحديث») -->
+<style id="EMD-V158-style">
+#emd158Bar{position:fixed;left:12px;right:12px;top:calc(env(safe-area-inset-top,0px) + 10px);z-index:2147483600;max-width:520px;margin:0 auto;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;background:#0f172a;color:#fff;border:1px solid #d4af37;box-shadow:0 10px 30px rgba(0,0,0,.35);font:700 14px/1.5 Tahoma,Arial,sans-serif;direction:rtl}
+#emd158Bar .t{flex:1}
+#emd158Bar button{border:0;border-radius:10px;min-height:40px;padding:8px 12px;font:inherit;cursor:pointer}
+#emd158Bar .go{background:#d4af37;color:#0f172a;font-weight:900}
+#emd158Bar .no{background:transparent;color:#cbd5e1}
+</style>
+<script id="EMD-V158-update">
+(function(){'use strict';
+if(window.__EMD_V158__)return;window.__EMD_V158__=true;
+/* V158: يعرف التطبيق رقم نسخته من العنوان، ويقرأ رقم آخر نسخة منشورة من عامل الخدمة (sw.js) بلا ذاكرة مؤقتة.
+   إذا وُجدت نسخة أحدث: يحدّث تلقائيًا عند الفتح أو عند العودة للتطبيق إن لم يكن المستخدم يكتب شيئًا، وإلا يظهر شريط «يتوفر تحديث». */
+var m=/V(\d{3,})/.exec(document.title||''),CUR=m?+m[1]:0;
+var CHECK=window.EMD158_CHECK_URL||'/sw.js';
+var web=/^https?:$/.test(location.protocol),path=location.pathname,isApp=(path==='/'||path==='/index.html');
+if(!CUR||!web||(!isApp&&!window.EMD158_CHECK_URL))return;
+var t0=Date.now(),touched=false,hiddenAt=0,last=0,busy=false,bar=null,later=0;
+['pointerdown','keydown','touchstart'].forEach(function(n){document.addEventListener(n,function(){touched=true},{capture:true,passive:true})});
+function ss(k,v){try{if(v===undefined)return sessionStorage.getItem(k);sessionStorage.setItem(k,v)}catch(e){return null}}
+function remote(){
+  var u=CHECK+(CHECK.indexOf('?')<0?'?':'&')+'t='+Date.now();
+  return fetch(u,{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(s){
+    var x=/emd-app-v(\d+)/.exec(s)||/V(\d{3,})/.exec(s);return x?+x[1]:0}).catch(function(){return 0});
+}
+function typing(){
+  var a=document.activeElement;
+  if(a&&(a.tagName==='TEXTAREA'||a.isContentEditable||(a.tagName==='INPUT'&&!/^(button|submit|checkbox|radio|range|color|file)$/i.test(a.type||''))))return true;
+  var ts=document.querySelectorAll('textarea');
+  for(var i=0;i<ts.length;i++){var e=ts[i];if(e.value&&e.value.trim()&&e.offsetParent!==null)return true}
+  return false;
+}
+function update(n){
+  if(busy)return;busy=true;ss('emd158_try',String(n));
+  hideBar();
+  try{if(typeof window.save==='function')window.save()}catch(e){}
+  var done=false,go=function(){if(done)return;done=true;location.reload()};
+  setTimeout(go,15000);
+  var p=Promise.resolve();
+  try{if('serviceWorker' in navigator)p=navigator.serviceWorker.getRegistration().then(function(r){return r&&r.update()}).catch(function(){})}catch(e){}
+  if(isApp&&window.caches){
+    p=p.then(function(){return fetch(path+'?r='+Date.now(),{cache:'no-store'})}).then(function(res){
+      if(!res||!res.ok)return;
+      return caches.keys().then(function(ks){return Promise.all(ks.filter(function(k){return k.indexOf('emd-app-')===0}).map(function(k){
+        return caches.open(k).then(function(c){return c.put('/',res.clone())})}))});
+    }).catch(function(){});
+  }
+  p.then(function(){setTimeout(go,200)},function(){setTimeout(go,200)});
+}
+function hideBar(){if(bar){bar.remove();bar=null}}
+function showBar(n){
+  if(bar||Date.now()<later)return;
+  bar=document.createElement('div');bar.id='emd158Bar';bar.setAttribute('role','status');bar.setAttribute('data-emd108-skip','1');
+  bar.innerHTML='<span class="t">✨ يتوفر تحديث جديد للتطبيق</span><button type="button" class="go">تحديث الآن</button><button type="button" class="no">لاحقًا</button>';
+  bar.querySelector('.go').onclick=function(e){e.preventDefault();update(n)};
+  bar.querySelector('.no').onclick=function(e){e.preventDefault();later=Date.now()+30*60000;hideBar()};
+  document.body.appendChild(bar);
+}
+/* why: «early» = فُتح التطبيق للتو ولم يلمسه المستخدم، «back» = عاد إليه بعد غياب دقيقة أو أكثر */
+function check(why){
+  if(busy||document.hidden)return;var now=Date.now();if(now-last<20000&&why!=='btn')return;last=now;
+  remote().then(function(n){
+    if(!n||n<=CUR){hideBar();return}
+    var tried=ss('emd158_try')===String(n);
+    var calm=!typing()&&!document.querySelector('#emd158Bar');
+    if(!tried&&calm&&((why==='early'&&!touched&&Date.now()-t0<25000)||why==='back'))update(n);
+    else showBar(n);
+  });
+}
+window.EMDUpdateV158={check:function(){return check('btn')},cur:CUR,remote:remote};
+setTimeout(function(){check('early')},2500);
+document.addEventListener('visibilitychange',function(){
+  if(document.hidden){hiddenAt=Date.now();return}
+  var away=hiddenAt?Date.now()-hiddenAt:0;hiddenAt=0;
+  setTimeout(function(){check(away>=60000?'back':'focus')},800);
+});
+window.addEventListener('online',function(){setTimeout(function(){check('focus')},1500)});
+setInterval(function(){check('timer')},10*60000);
+})();
+</script>
 
 </body>
 </html>
