@@ -31699,6 +31699,8 @@ body.e159-desk #emdQuickToggleFinal{display:none!important}
 .e159-hb .c{position:absolute;top:-6px;left:-6px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#dc2626;color:#fff;font-size:11px;line-height:18px;text-align:center}
 .e159-hb .c[data-z="1"]{display:none}
 .e159-hb:not(.e159-on){display:none}
+#parsed .e159-dup2,#import .e159-dup2{display:none!important}
+body.e159-modal .emd108-banner{display:none!important}
 </style>
 <script id="EMD-V159-clean">
 (function(){'use strict';
@@ -31724,7 +31726,15 @@ function head(){var set=$('emdSettingsHubButtonV327');if(!set||!set.parentNode)r
   var c=$('emdNotifyCountV317'),cn=bell.querySelector('.c');if(c&&cn){var v=c.textContent.trim();if(cn.textContent!==v)cn.textContent=v;cn.setAttribute('data-z',(v===''||v==='0')?'1':'0')}
   var on=desk();document.body.classList.toggle('e159-desk',on);[bell,ai,tl].forEach(function(b){b.classList.toggle('e159-on',on)});
   if(on&&document.body.classList.contains('emd410-tools')){var p=$('emdQuickPanelFinal');if(p&&getComputedStyle(p).display==='none')document.body.classList.remove('emd410-tools')}}
-function tick(){try{watch();dedupe();head()}catch(e){}}
+/* 3) نافذة الاستيراد: زر «التعلّم» مكرر (يبقى الذي في الأعلى)، واقتراح الشركة القديم مكرر مع أزرار الشركات المحفوظة */
+function importDup(){var top=document.querySelector('.emd103Entry,#emd103Entry');
+  [].forEach.call(document.querySelectorAll('#parsed .emd103Bar button,#parsed #emd103Bar button'),function(b){var d=!!top&&/التعلّم/.test(b.textContent)&&!/غلط/.test(b.textContent);if(b.classList.contains('e159-dup2')!==d)b.classList.toggle('e159-dup2',d)});
+  [].forEach.call(document.querySelectorAll('#emdV61c,.emdV61c'),function(v){var g=v.closest('.formgrid')||v.parentNode&&v.parentNode.parentNode;var has=!!(g&&g.querySelector('.emd79-chips .emd79-chip'));if(v.classList.contains('e159-dup2')!==has)v.classList.toggle('e159-dup2',has)})}
+var ipT=0;new MutationObserver(function(){clearTimeout(ipT);ipT=setTimeout(function(){try{importDup()}catch(e){}},60)}).observe(document.documentElement,{childList:true,subtree:true});
+/* 4) شريط «حان وقت تقفيلة اليوم» لا يظهر فوق النوافذ المفتوحة */
+function modalOpen(){var e=document.elementFromPoint(innerWidth/2,innerHeight/2);for(var x=e;x&&x!==document.body;x=x.parentElement){if(x.id==='emd410Bar'||x.classList.contains('emd108-banner'))return false;var cs=getComputedStyle(x);if(cs.position==='fixed'&&x.offsetHeight>innerHeight*0.4)return true}return false}
+setInterval(function(){if(!document.querySelector('.emd108-banner'))return;var m=modalOpen();if(document.body.classList.contains('e159-modal')!==m)document.body.classList.toggle('e159-modal',m)},600);
+function tick(){try{watch();dedupe();head();importDup()}catch(e){}}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(tick,300)});else setTimeout(tick,300);
 setTimeout(tick,1200);setInterval(tick,1500);
 if(MQ.addEventListener)MQ.addEventListener('change',tick);
