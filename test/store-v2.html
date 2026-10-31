@@ -545,6 +545,34 @@ s.dold{color:var(--muted);font-weight:400;font-size:.8em;text-decoration-thickne
 .zsum{font-size:14px;margin:10px 0 0;padding:10px 12px;border:1px dashed var(--accent);border-radius:var(--btn-r);text-align:center}
 .zsum:empty{display:none}
 select#fCity{width:100%;font:inherit}
+/* V157 تتبع الطلب */
+.trk{margin:16px 0 4px;padding:12px 14px;border:1px dashed var(--accent);border-radius:var(--card-r);text-align:start;font-size:13px;display:grid;gap:6px}
+.trk a[dir="ltr"]{word-break:break-all;color:var(--accent);font-size:12.5px}
+.trk .row2,.trkp .row2{display:flex;gap:8px;flex-wrap:wrap}
+.trk .row2>*{flex:1;justify-content:center;text-align:center;text-decoration:none}
+.trkp{position:fixed;inset:0;z-index:80;background:var(--bg);color:var(--ink);overflow:auto;padding:24px 16px calc(24px + env(safe-area-inset-bottom,0px))}
+html.trk-on body{overflow:hidden}
+.trkp .box{max-width:520px;margin:0 auto;text-align:center}
+.trkp .lg{width:64px;height:64px;border-radius:50%;object-fit:cover;border:1px solid var(--line)}
+.trkp .sn{display:block;color:var(--muted);margin-top:6px}
+.trkp h1{margin:6px 0 4px;font-size:30px}
+.trkp .ic{font-size:44px;margin-top:20vh}
+.trkp .spin{margin:30vh auto}
+.trkp .steps{list-style:none;margin:22px 0 6px;padding:0;text-align:start;display:grid;gap:0}
+.trkp .steps li{position:relative;display:flex;align-items:center;gap:12px;padding:10px 0;color:var(--muted);font-weight:600}
+.trkp .steps li span{width:30px;height:30px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-size:14px;flex:none;background:var(--surface);z-index:1}
+.trkp .steps li+li::before{content:"";position:absolute;inset-inline-start:14px;top:-10px;height:20px;width:2px;background:var(--line)}
+.trkp .steps li.ok,.trkp .steps li.now{color:var(--ink)}
+.trkp .steps li.ok span{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.trkp .steps li.now span{border-color:var(--accent);color:var(--accent)}
+.trkp .steps li.ok+li::before,.trkp .steps li.ok+li.now::before{background:var(--accent)}
+.trkp .upd{font-size:12px;color:var(--muted);text-align:start}
+.trkp .trx{margin:20px 0;padding:14px;border:1px solid #f87171;border-radius:var(--card-r);display:grid;gap:4px;color:var(--muted)}
+.trkp .trx b{color:#dc2626}
+.trkp .its{margin:18px 0;padding:14px;border:1px solid var(--line);border-radius:var(--card-r);background:var(--surface);text-align:start;display:grid;gap:6px;font-size:14px}
+.trkp .its div{display:flex;justify-content:space-between;gap:10px}
+.trkp .its .t{font-weight:700;border-top:1px solid var(--line);padding-top:6px}
+.trkp .row2>*{flex:1;justify-content:center;text-decoration:none;margin:0}
 </style>
 </head>
 <body>
@@ -1071,6 +1099,41 @@ $('sheet').addEventListener('change',function(e){var s=e.target;if(s.id!=='fCity
   if(s.value==='__o'){var i=document.createElement('input');i.id='fCity';i.setAttribute('list','wilayat');i.maxLength=60;s.parentNode.replaceChild(i,s);ZF=+ST.ship||0;zsum();i.focus();return}
   ZF=s.value?zfee(s.value):null;zsum();paint()});
 var _promise156=promise;promise=function(){if(!zones().length)return _promise156();var a=T.ar.promShipS,b=T.en.promShipS;T.ar.promShipS='حسب المنطقة';T.en.promShipS='By area';try{return _promise156()}finally{T.ar.promShipS=a;T.en.promShipS=b}};
+
+/* V157: رابط تتبع الطلب للزبون (?s=المتجر&t=الرمز) */
+Object.assign(T.ar,{trTitle:'تتبّع طلبك',trLink:'رابط تتبّع طلبك',trCopy:'نسخ الرابط',trCopied:'✓ نُسخ الرابط',trOpen:'فتح صفحة التتبع',trWa:'رابط تتبّع الطلب:',trHi:'مرحبًا %s',trNo:'طلب رقم',
+  trS1:'استلمنا طلبك',trS2:'قيد التجهيز',trS3:'في الطريق إليك',trS4:'تم التوصيل',trX:'اعتُذر عن هذا الطلب',trXs:'تواصل مع المتجر لمعرفة التفاصيل.',trNf:'لم نجد هذا الطلب',trNfP:'تأكد من الرابط، أو تواصل مع المتجر.',
+  trShop:'تسوّق من المتجر',trAsk:'تواصل مع المتجر',trUpd:'آخر تحديث',trItems:'المنتجات',trRef:'تحديث'});
+Object.assign(T.en,{trTitle:'Track your order',trLink:'Your order tracking link',trCopy:'Copy link',trCopied:'✓ Link copied',trOpen:'Open tracking page',trWa:'Order tracking link:',trHi:'Hello %s',trNo:'Order',
+  trS1:'Order received',trS2:'Being prepared',trS3:'On the way',trS4:'Delivered',trX:'This order was declined',trXs:'Contact the store for details.',trNf:'Order not found',trNfP:'Check the link or contact the store.',
+  trShop:'Shop the store',trAsk:'Contact the store',trUpd:'Last update',trItems:'Items',trRef:'Refresh'});
+function trUrl(tk){return location.origin+location.pathname+'?s='+encodeURIComponent(SLUG)+'&t='+encodeURIComponent(tk)}
+var _done157=done;done=function(n,r){_done157(n,r);var tk=r&&r.token;if(!tk||window.__PV)return;var u=trUrl(tk),box=$('coBox').querySelector('.done');if(!box)return;
+  try{var L=JSON.parse(localStorage.getItem('emdStoreTrack')||'[]');L.unshift({s:SLUG,t:tk,at:Date.now()});localStorage.setItem('emdStoreTrack',JSON.stringify(L.slice(0,10)))}catch(e){}
+  var wa=box.querySelector('a.wa');if(wa){var m=wa.href.match(/text=([^&]*)/);if(m)wa.href=wa.href.replace(m[0],'text='+encodeURIComponent(decodeURIComponent(m[1])+'\n'+t('trWa')+' '+u))}
+  var d=document.createElement('div');d.className='trk';d.innerHTML='<b>📦 '+esc(t('trLink'))+'</b><a href="'+esc(u)+'" dir="ltr">'+esc(u.replace(/^https?:\/\//,''))+'</a><div class="row2"><button type="button" class="btn ghost" data-trc>'+esc(t('trCopy'))+'</button><a class="btn ghost" href="'+esc(u)+'">'+esc(t('trOpen'))+'</a></div>';
+  var code=box.querySelector('code');(code||box.lastChild).insertAdjacentElement('afterend',d);
+  d.querySelector('[data-trc]').onclick=function(){var b=this;try{navigator.clipboard.writeText(u).then(function(){b.textContent=t('trCopied')})}catch(e){}}};
+var TKN=(new URLSearchParams(location.search).get('t')||'').trim();
+function trStage(o){if(o.status==='rejected'||o.stage==='cancel')return -1;if(o.stage==='done')return 3;if(o.stage==='ship')return 2;if(o.status==='accepted'||o.stage==='prep')return 1;return 0}
+function trDate(s){try{return new Date(s).toLocaleString(LANG==='en'?'en-GB':'ar-OM',{day:'numeric',month:'short',hour:'numeric',minute:'2-digit'})}catch(e){return ''}}
+function track(){if(!TKN||window.__PV||DEMO)return;var w=$('trk')||document.createElement('div');w.id='trk';w.className='trkp';document.body.appendChild(w);document.documentElement.classList.add('trk-on');
+  w.innerHTML='<div class="box"><div class="spin" aria-hidden="true"></div></div>';
+  rpc('emd_store_track',{p_slug:SLUG,p_token:TKN}).then(function(o){
+    if(!o){w.innerHTML='<div class="box"><div class="ic">🔎</div><h1 class="display">'+esc(t('trNf'))+'</h1><p class="subt">'+esc(t('trNfP'))+'</p><button type="button" class="go" data-trx>'+esc(t('trShop'))+'</button></div>';return}
+    var st=trStage(o),S=[t('trS1'),t('trS2'),t('trS3'),t('trS4')],wa=waNum(o.wa||B.wa),lg=safeUrl(o.logo);
+    w.innerHTML='<div class="box">'+(lg?'<img class="lg" alt="" src="'+esc(lg)+'">':'')+'<small class="sn">'+esc(o.store||B.name||'')+'</small><h1 class="display">'+esc(t('trTitle'))+'</h1>'+
+     '<p class="subt">'+(o.first?esc(t('trHi',o.first))+' · ':'')+esc(t('trNo'))+' <b dir="ltr">#'+esc(o.id)+'</b> · '+esc(trDate(o.created_at))+'</p>'+
+     (st<0?'<div class="trx"><b>'+esc(t('trX'))+'</b>'+esc(t('trXs'))+'</div>':'<ol class="steps">'+S.map(function(x,i){return '<li class="'+(i<st?'ok':i===st?'now':'')+'"><span>'+(i<st||st===3?'✓':i===st?'●':'')+'</span>'+esc(x)+'</li>'}).join('')+'</ol>')+
+     (o.stage_at?'<p class="upd">'+esc(t('trUpd'))+': '+esc(trDate(o.stage_at))+'</p>':'')+
+     '<div class="its"><b>'+esc(t('trItems'))+'</b>'+(o.items||[]).map(function(i){return '<div><span>'+esc(i.name)+' × '+(+i.qty||1)+'</span><span>'+money((+i.price||0)*(+i.qty||1))+'</span></div>'}).join('')+
+     '<div><span>'+esc(t('delivery'))+'</span><span>'+(+o.ship?money(o.ship):esc(t('free')))+'</span></div><div class="t"><span>'+esc(LANG==='en'?'Total':'الإجمالي')+'</span><span>'+money(o.total)+'</span></div></div>'+
+     '<div class="row2">'+(wa?'<a class="go wa" target="_blank" rel="noopener" href="https://wa.me/'+wa+'?text='+encodeURIComponent((LANG==='en'?'About my order #':'بخصوص طلبي رقم ')+o.id)+'">'+esc(t('trAsk'))+'</a>':'')+'<button type="button" class="btn ghost" data-trr>'+esc(t('trRef'))+'</button></div>'+
+     '<button type="button" class="btn ghost" data-trx style="width:100%;justify-content:center;margin-top:8px">'+esc(t('trShop'))+'</button></div>'})
+  .catch(function(){w.innerHTML='<div class="box"><div class="ic">📶</div><h1 class="display">'+esc(t('net'))+'</h1><p class="subt">'+esc(t('netP'))+'</p><button type="button" class="go" data-trr>'+esc(t('retry'))+'</button></div>'})}
+document.addEventListener('click',function(e){if(e.target.closest('[data-trr]')){track();return}
+  if(e.target.closest('[data-trx]')){var w=$('trk');if(w)w.remove();document.documentElement.classList.remove('trk-on');try{history.replaceState(null,'',location.pathname+'?s='+encodeURIComponent(SLUG))}catch(x){}TKN=''}});
+var _boot157=boot;boot=function(){_boot157();if(TKN)track()};
 
 boot();
 })();
