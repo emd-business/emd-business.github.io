@@ -537,6 +537,11 @@ html:not([data-lx])[data-shape="round"] .card .img{border-radius:18px}
 html:not([data-lx])[data-shape="arch"] .card .img{border-radius:999px 999px 10px 10px}
 html:not([data-lx])[data-shape="square"] .card .img{border-radius:2px}
 @media(max-width:620px){html:not([data-lx])[data-cols="3"] .grid{grid-template-columns:repeat(3,1fr);gap:8px}html:not([data-lx])[data-cols="3"] .card h3{font-size:14px}html:not([data-lx])[data-cols="3"] .card .add{padding:7px 4px;font-size:12px}}
+/* V153 الخصم */
+.dpc{position:absolute;top:8px;left:8px;z-index:2;background:#c0392b;color:#fff;font:700 12px/1.2 var(--body);border-radius:999px;padding:4px 9px;box-shadow:0 4px 12px -4px rgba(0,0,0,.35);direction:rtl}
+.card .img .dpc{top:auto;bottom:12px;left:12px}
+s.dold{color:var(--muted);font-weight:400;font-size:.8em;text-decoration-thickness:1px;margin-inline-start:4px}
+.pbox .pp .dpp{display:inline-block;margin-inline-start:10px;background:#c0392b;color:#fff;font-size:12px;font-weight:700;border-radius:999px;padding:3px 10px;vertical-align:middle}
 </style>
 </head>
 <body>
@@ -1018,8 +1023,8 @@ var _grid152=grid;grid=function(){if(LX[B.layout]){_grid152();return}
   $('secTitle').textContent=col||t('all');$('count').textContent=L.length+t('pieces');
   $('grid').innerHTML=!P.length?'<p class="empty" style="grid-column:1/-1">'+esc(t('noItems'))+'</p>':L.length?L.map(function(g){var x=g.v[0].p,i=G152.indexOf(g),n=0;g.v.forEach(function(y){n+=cart[y.p.key]||0});
     var out=!g.in,old=g.one&&+x.old_price>+x.price?+x.old_price:0,many=(B.gal&&B.gal[g.img.key]&&B.gal[g.img.key].length)?'<span class="c152m">'+(B.gal[g.img.key].length+1)+' ▣</span>':'';
-    return '<article class="card"><button type="button" class="img c152o" data-g152="'+i+'" aria-label="'+esc(g.base)+'">'+pic(g.img)+(out?'<span class="tag out">'+esc(t('out'))+'</span>':'')+many+'</button>'+
-     '<div class="meta"><h3><button type="button" class="c152t" data-g152="'+i+'">'+esc(g.base)+'</button></h3><span class="price">'+gprice(g)+(old?'<s>'+money(old)+'</s>':'')+'</span></div>'+(g.descr?'<div class="sub">'+esc(g.descr)+'</div>':'')+
+    return '<article class="card"><button type="button" class="img c152o" data-g152="'+i+'" aria-label="'+esc(g.base)+'">'+pic(g.img)+(out?'<span class="tag out">'+esc(t('out'))+'</span>':'')+many+disc153(g)+'</button>'+
+     '<div class="meta"><h3><button type="button" class="c152t" data-g152="'+i+'">'+esc(g.base)+'</button></h3><span class="price">'+gprice(g)+'</span></div>'+(g.descr?'<div class="sub">'+esc(g.descr)+'</div>':'')+
      (g.one?'<button type="button" class="add'+(n?' in':'')+'" data-id="'+esc(x.key)+'"'+(out?' disabled':'')+'>'+esc(out?t('na'):n?t('inBag')+' ('+n+')':t('add'))+'</button>'
       :'<button type="button" class="add c152v'+(n?' in':'')+'" data-g152="'+i+'"'+(out?' disabled':'')+'>'+esc(out?t('na'):n?t('inBag')+' ('+n+')':(LANG==='en'?'Choose size':'اختر الحجم'))+'</button>')+'</article>'}).join('')
    :'<p class="empty" style="grid-column:1/-1">'+esc(t('none'))+'</p>';
@@ -1033,6 +1038,15 @@ $('grid').addEventListener('click',function(e){var b=e.target.closest('[data-g15
 document.addEventListener('click',function(e){var b=e.target.closest('#c152 [data-lxinfo]');if(!b)return;var x=(B.info||[])[+b.getAttribute('data-lxinfo')]||{};
   $('pBox').innerHTML='<div class="pin"><h2 class="display">'+esc(x.t||'')+'</h2><p class="pd" style="white-space:pre-line">'+esc(x.b||'')+'</p><button type="button" class="go" data-pclose>'+esc(t('close'))+'</button></div>';$('psheet').classList.add('show')});
 var _lxR152=lxRender;lxRender=function(){_lxR152();var nt=$('notice');if(nt&&!LX[B.layout]){nt.textContent=B.notice||'';nt.hidden=!B.notice}};
+
+/* V153: الخصم: نسبة الخصم على الصورة، والسعر السابق مشطوبًا بجانب السعر، في كل التصاميم وصفحة المنتج */
+function pct153(p){var o=+p.old_price,n=+p.price;return o>n&&o>0?Math.round((o-n)/o*100):0}
+function disc153(g){var m=0;g.v.forEach(function(y){if(y.p.in_stock||g.v.length===1)m=Math.max(m,pct153(y.p))});if(!m)return '';
+  return '<span class="dpc">'+(LANG==='en'?(g.one?'':'Up to ')+'−'+m+'%':'خصم '+(g.one?'':'حتى ')+m+'%')+'</span>'}
+var _gprice153=gprice;gprice=function(g){var x=g.one?g.v[0].p:null;if(!x){var mn=null;g.v.forEach(function(y){if(!mn||+y.p.price<+mn.price)mn=y.p});x=mn}
+  var o=x&&pct153(x)?+x.old_price:0;return _gprice153(g)+(o?' <s class="dold">'+money(o)+'</s>':'')};
+var _soldOut153=soldOut;soldOut=function(g){return _soldOut153(g)+disc153(g)};
+var _drawP153=drawP;drawP=function(){_drawP153();try{var x=PS.g.v[PS.v].p,m=pct153(x),pp=$('pBox').querySelector('.pin .pp');if(m&&pp)pp.insertAdjacentHTML('beforeend','<span class="dpp">'+(LANG==='en'?'Save ':'وفّر ')+m+'%</span>')}catch(e){}};
 
 boot();
 })();
