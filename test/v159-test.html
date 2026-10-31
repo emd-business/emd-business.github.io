@@ -28,11 +28,11 @@ var H=document.documentElement,t0=Date.now(),loaded=false,tl=0,done=false;
 H.classList.add('emd-boot');
 function show(){if(done)return;done=true;H.classList.remove('emd-boot')}
 window.EMDBootV158={show:show};
-window.addEventListener('load',function(){loaded=true;tl=Date.now()});
+window.addEventListener('load',function(){loaded=true;tl=Date.now()});var tdc=0;document.addEventListener('DOMContentLoaded',function(){tdc=Date.now()});
 (function tick(){
   if(done)return;var now=Date.now();
   var hero=document.querySelector('.emd90-hero'),more=document.getElementById('emd410More');
-  if(now-t0>3500||(loaded&&hero&&(more||now-tl>800))){
+  if((tdc&&now-tdc>3000)||now-t0>30000||(loaded&&hero&&(more||now-tl>800))){
     requestAnimationFrame(function(){requestAnimationFrame(function(){setTimeout(show,60)})});return}
   setTimeout(tick,40);
 })();
