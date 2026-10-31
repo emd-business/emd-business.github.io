@@ -512,6 +512,14 @@ html[data-lx="rest"]{--bg:#fbf3df;--surface:#ffffff;--ink:#3d0d0d;--muted:#8a5a4
 .rs-c small{display:block;color:var(--muted);font-size:12.5px;margin:3px 0 6px;line-height:1.6}
 .rs-c .sv{display:inline-block;background:#fdf0c4;color:#7a1414;border-radius:6px;padding:1px 8px;font-size:12px;font-weight:700;margin-inline-end:6px}
 .rs-c i{font-style:normal;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums}
+/* V151 معرض صور المنتج */
+.pgal{position:relative;background:var(--line)}
+.pgal .pgs{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;aspect-ratio:1;max-height:56vh}
+.pgal .pgs::-webkit-scrollbar{display:none}
+.pgal .pgs img{flex:0 0 100%;width:100%;height:100%;object-fit:cover;scroll-snap-align:center}
+.pgal .pgd{position:absolute;bottom:10px;left:0;right:0;display:flex;justify-content:center;gap:6px}
+.pgal .pgd button{width:8px;height:8px;border-radius:9px;border:0;padding:0;background:rgba(255,255,255,.55);box-shadow:0 0 0 1px rgba(0,0,0,.15);transition:width .2s}
+.pgal .pgd button.on{width:20px;background:#fff}
 </style>
 </head>
 <body>
@@ -975,6 +983,15 @@ if(DEMO){document.documentElement.classList.add('demo');
     else{var d=D[cur].brand,h=Array.isArray(d.hide)?d.hide.slice():[],k=b.getAttribute('data-czh'),i=h.indexOf(k);if(i<0)h.push(k);else h.splice(i,1);set('hide',h)}
     custom()});
   var _done=done;done=function(n,r){_done(n,r);var c=$('coBox').querySelector('.done');if(c)c.insertAdjacentHTML('beforeend','<p class="subt" style="margin-top:10px">'+esc(t('lxDemoDone'))+'</p>')}}
+
+/* V151: معرض صور المنتج (brand.gal[مفتاح المنتج] = صور إضافية؛ الصورة الأولى هي صورة المنتج) */
+var _drawP151=drawP;drawP=function(){_drawP151();try{var x=PS.g.v[PS.v].p,ex=(B&&B.gal&&Array.isArray(B.gal[x.key]))?B.gal[x.key]:[];
+  var L=[x.image].concat(ex).map(safeUrl).filter(Boolean).slice(0,6);if(L.length<2)return;var im=$('pBox').querySelector('.pimg');if(!im)return;
+  var w=document.createElement('div');w.className='pgal';
+  w.innerHTML='<div class="pgs">'+L.map(function(u){return '<img alt="" loading="lazy" decoding="async" src="'+esc(u)+'">'}).join('')+'</div><div class="pgd">'+L.map(function(u,i){return '<button type="button" data-pg="'+i+'" aria-label="'+(i+1)+'"'+(i?'':' class="on"')+'></button>'}).join('')+'</div>';
+  im.parentNode.replaceChild(w,im);var s=w.firstChild,D=w.querySelectorAll('.pgd button');
+  s.addEventListener('scroll',function(){var i=Math.round(Math.abs(s.scrollLeft)/Math.max(1,s.clientWidth));for(var j=0;j<D.length;j++)D[j].classList.toggle('on',j===i)},{passive:true});
+  w.querySelector('.pgd').addEventListener('click',function(e){var b=e.target.closest('[data-pg]');if(!b)return;e.stopPropagation();var i=+b.getAttribute('data-pg'),r=document.documentElement.dir==='rtl'||getComputedStyle(s).direction==='rtl';s.scrollTo({left:(r?-1:1)*i*s.clientWidth,behavior:'smooth'})})}catch(e){}};
 
 boot();
 })();
