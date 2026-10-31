@@ -520,6 +520,23 @@ html[data-lx="rest"]{--bg:#fbf3df;--surface:#ffffff;--ink:#3d0d0d;--muted:#8a5a4
 .pgal .pgd{position:absolute;bottom:10px;left:0;right:0;display:flex;justify-content:center;gap:6px}
 .pgal .pgd button{width:8px;height:8px;border-radius:9px;border:0;padding:0;background:rgba(255,255,255,.55);box-shadow:0 0 0 1px rgba(0,0,0,.15);transition:width .2s}
 .pgal .pgd button.on{width:20px;background:#fff}
+/* V152 الثيمات القديمة */
+.card button.img{padding:0;font:inherit;color:inherit;cursor:pointer;width:100%}
+.card .c152t{all:unset;cursor:pointer;font:inherit}
+.card .c152t:focus-visible,.card button.img:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.card .price .from{font-size:12px;color:var(--muted);font-weight:400}
+.c152m{position:absolute;bottom:10px;left:10px;font-size:11px;background:rgba(0,0,0,.55);color:#fff;border-radius:999px;padding:2px 8px}
+#c152{margin-top:28px;display:grid;gap:16px}
+#c152[hidden]{display:none}
+.c152f{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.c152f span{border:1px solid var(--line);background:var(--surface);border-radius:var(--btn-r);padding:7px 14px;font-size:13px}
+.c152l{display:flex;gap:10px;align-items:center;border:1px dashed var(--accent);border-radius:var(--card-r);padding:12px 14px;font-size:13px;color:var(--muted)}
+.c152l b{display:block;color:var(--ink)}
+.c152l .ic{font-size:22px}
+html:not([data-lx])[data-shape="round"] .card .img{border-radius:18px}
+html:not([data-lx])[data-shape="arch"] .card .img{border-radius:999px 999px 10px 10px}
+html:not([data-lx])[data-shape="square"] .card .img{border-radius:2px}
+@media(max-width:620px){html:not([data-lx])[data-cols="3"] .grid{grid-template-columns:repeat(3,1fr);gap:8px}html:not([data-lx])[data-cols="3"] .card h3{font-size:14px}html:not([data-lx])[data-cols="3"] .card .add{padding:7px 4px;font-size:12px}}
 </style>
 </head>
 <body>
@@ -992,6 +1009,30 @@ var _drawP151=drawP;drawP=function(){_drawP151();try{var x=PS.g.v[PS.v].p,ex=(B&
   im.parentNode.replaceChild(w,im);var s=w.firstChild,D=w.querySelectorAll('.pgd button');
   s.addEventListener('scroll',function(){var i=Math.round(Math.abs(s.scrollLeft)/Math.max(1,s.clientWidth));for(var j=0;j<D.length;j++)D[j].classList.toggle('on',j===i)},{passive:true});
   w.querySelector('.pgd').addEventListener('click',function(e){var b=e.target.closest('[data-pg]');if(!b)return;e.stopPropagation();var i=+b.getAttribute('data-pg'),r=document.documentElement.dir==='rtl'||getComputedStyle(s).direction==='rtl';s.scrollTo({left:(r?-1:1)*i*s.clientWidth,behavior:'smooth'})})}catch(e){}};
+
+/* V152: تحسين الثيمات القديمة (بدون تصميم جديد): الأحجام في بطاقة واحدة، صفحة المنتج، التنويه، المميزات، الأسئلة، الآراء */
+var G152=[];
+function cls152(g){return (!col||String(g.cat||'').trim()===col)&&(!q||(g.base+' '+(g.descr||'')+' '+(g.cat||'')+' '+g.v.map(function(y){return y.p.name}).join(' ')).toLowerCase().indexOf(q.toLowerCase())>-1)}
+var _grid152=grid;grid=function(){if(LX[B.layout]){_grid152();return}
+  G152=groups();var L=G152.filter(cls152);
+  $('secTitle').textContent=col||t('all');$('count').textContent=L.length+t('pieces');
+  $('grid').innerHTML=!P.length?'<p class="empty" style="grid-column:1/-1">'+esc(t('noItems'))+'</p>':L.length?L.map(function(g){var x=g.v[0].p,i=G152.indexOf(g),n=0;g.v.forEach(function(y){n+=cart[y.p.key]||0});
+    var out=!g.in,old=g.one&&+x.old_price>+x.price?+x.old_price:0,many=(B.gal&&B.gal[g.img.key]&&B.gal[g.img.key].length)?'<span class="c152m">'+(B.gal[g.img.key].length+1)+' ▣</span>':'';
+    return '<article class="card"><button type="button" class="img c152o" data-g152="'+i+'" aria-label="'+esc(g.base)+'">'+pic(g.img)+(out?'<span class="tag out">'+esc(t('out'))+'</span>':'')+many+'</button>'+
+     '<div class="meta"><h3><button type="button" class="c152t" data-g152="'+i+'">'+esc(g.base)+'</button></h3><span class="price">'+gprice(g)+(old?'<s>'+money(old)+'</s>':'')+'</span></div>'+(g.descr?'<div class="sub">'+esc(g.descr)+'</div>':'')+
+     (g.one?'<button type="button" class="add'+(n?' in':'')+'" data-id="'+esc(x.key)+'"'+(out?' disabled':'')+'>'+esc(out?t('na'):n?t('inBag')+' ('+n+')':t('add'))+'</button>'
+      :'<button type="button" class="add c152v'+(n?' in':'')+'" data-g152="'+i+'"'+(out?' disabled':'')+'>'+esc(out?t('na'):n?t('inBag')+' ('+n+')':(LANG==='en'?'Choose size':'اختر الحجم'))+'</button>')+'</article>'}).join('')
+   :'<p class="empty" style="grid-column:1/-1">'+esc(t('none'))+'</p>';
+  extra152()};
+function extra152(){var w=$('c152');if(!w){w=document.createElement('div');w.id='c152';$('grid').parentNode.appendChild(w)}
+  if(LX[B.layout]){w.innerHTML='';w.hidden=true;return}
+  var F=Array.isArray(B.feats)&&!hid('feats')?B.feats.filter(function(f){return f&&f.t}):[];
+  var h=(F.length?'<div class="c152f">'+F.map(function(f){return '<span>'+esc((f.i?f.i+' ':'')+f.t)+'</span>'}).join('')+'</div>':'')+leadBox('c152l')+infoBtns()+reviews();
+  w.innerHTML=h;w.hidden=!h}
+$('grid').addEventListener('click',function(e){var b=e.target.closest('[data-g152]');if(!b||b.disabled)return;e.stopPropagation();openP(G152[+b.getAttribute('data-g152')])},true);
+document.addEventListener('click',function(e){var b=e.target.closest('#c152 [data-lxinfo]');if(!b)return;var x=(B.info||[])[+b.getAttribute('data-lxinfo')]||{};
+  $('pBox').innerHTML='<div class="pin"><h2 class="display">'+esc(x.t||'')+'</h2><p class="pd" style="white-space:pre-line">'+esc(x.b||'')+'</p><button type="button" class="go" data-pclose>'+esc(t('close'))+'</button></div>';$('psheet').classList.add('show')});
+var _lxR152=lxRender;lxRender=function(){_lxR152();var nt=$('notice');if(nt&&!LX[B.layout]){nt.textContent=B.notice||'';nt.hidden=!B.notice}};
 
 boot();
 })();
