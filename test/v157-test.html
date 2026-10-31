@@ -31252,11 +31252,16 @@ function st(){try{return window.EMDStoreV411&&window.EMDStoreV411.state()}catch(
 function pub(){var s=st();return !!(s&&s.pubAt)}
 function newN(){try{return (window.EMDStoreV411.orders()||[]).length}catch(e){return 0}}
 function storeIds(){var L=(window.db&&Array.isArray(window.db.orders))?window.db.orders:[],m={};L.forEach(function(o){if(o&&(o.source==='store'||o.storeOrderId))m[String(o.id)]=1});return m}
-/* خانة «طلبات متجري» في الرئيسية */
+/* خانة «طلبات متجري» في الرئيسية: الضغط يُلتقط من أعلى الصفحة (لا يضيع إذا أعادت الرئيسية بناء البطاقات) */
+var hcT=0;function hcGo(e){var c=e.target&&e.target.closest&&e.target.closest('#emd415Home');if(!c)return;e.preventDefault();e.stopPropagation();if(e.stopImmediatePropagation)e.stopImmediatePropagation();
+  if(Date.now()-hcT<600)return;hcT=Date.now();
+  try{var X=window.EMDStoreV411,L=X.orders?X.orders():[];if(L.length===1&&X.openOrd)X.openOrd(L[0].id);else{X.open('ord');if(X.poll)X.poll(true)}}catch(x){}}
+window.addEventListener('click',hcGo,true);
+document.addEventListener('keydown',function(e){if((e.key==='Enter'||e.key===' ')&&e.target&&e.target.id==='emd415Home')hcGo(e)},true);
 function homeCard(){var g=document.querySelector('#home .grid');if(!g)return;var c=$('emd415Home');
   if(!pub()){if(c)c.remove();return}
   if(!c){c=document.createElement('div');c.id='emd415Home';c.className='card stat emd415-home';c.setAttribute('role','button');c.tabIndex=0;
-    c.onclick=function(){try{var X=window.EMDStoreV411,L=X.orders?X.orders():[];if(L.length===1&&X.openOrd){X.openOrd(L[0].id)}else{X.open('ord');if(X.poll)X.poll(true)}}catch(e){}};c.onkeydown=function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();c.click()}};g.insertBefore(c,g.firstChild)}
+    c.onclick=null;c.onkeydown=function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();c.click()}};g.insertBefore(c,g.firstChild)}
   else if(c.parentNode!==g||g.firstChild!==c)g.insertBefore(c,g.firstChild);
   var n=newN(),h='<div class="ic">🛍️</div><div class="tx"><b>طلبات متجري</b><small>'+(n?'تنتظر منك القبول أو الرفض':'لا توجد طلبات جديدة')+'</small></div><div class="n">'+n+'</div>';
   if(c.getAttribute('data-n')!==String(n)){c.innerHTML=h;c.setAttribute('data-n',String(n));c.classList.toggle('on',n>0)}}
