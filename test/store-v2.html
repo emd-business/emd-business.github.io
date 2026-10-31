@@ -542,6 +542,9 @@ html:not([data-lx])[data-shape="square"] .card .img{border-radius:2px}
 .card .img .dpc{top:auto;bottom:12px;left:12px}
 s.dold{color:var(--muted);font-weight:400;font-size:.8em;text-decoration-thickness:1px;margin-inline-start:4px}
 .pbox .pp .dpp{display:inline-block;margin-inline-start:10px;background:#c0392b;color:#fff;font-size:12px;font-weight:700;border-radius:999px;padding:3px 10px;vertical-align:middle}
+.zsum{font-size:14px;margin:10px 0 0;padding:10px 12px;border:1px dashed var(--accent);border-radius:var(--btn-r);text-align:center}
+.zsum:empty{display:none}
+select#fCity{width:100%;font:inherit}
 </style>
 </head>
 <body>
@@ -1051,6 +1054,23 @@ var _drawP153=drawP;drawP=function(){_drawP153();try{var x=PS.g.v[PS.v].p,m=pct1
 /* V154: ترتيب الأصناف حسب اختيار التاجر (brand.co) */
 var _show154=show;show=function(){try{var O=Array.isArray(B.co)?B.co.map(function(x){return String(x).trim()}):[];if(O.length){var I=P.map(function(p,i){return [p,i]});
   I.sort(function(a,b){var x=O.indexOf(String(a[0].cat||'').trim()),y=O.indexOf(String(b[0].cat||'').trim());x=x<0?999:x;y=y<0?999:y;return x-y||a[1]-b[1]});P=I.map(function(a){return a[0]})}}catch(e){}_show154()};
+
+/* V156: رسوم التوصيل حسب المنطقة (brand.zones=[{n,f}]). السيرفر يحسب الرسوم نفسها حسب اسم المنطقة */
+var ZF=null;
+function zones(){return Array.isArray(B.zones)?B.zones.filter(function(z){return z&&z.n}):[]}
+function zfee(n){var Z=zones();for(var i=0;i<Z.length;i++)if(String(Z[i].n).trim()===String(n||'').trim())return Math.max(0,+Z[i].f||0);return null}
+var _totals156=totals;totals=function(){var o=_totals156();if(ZF!=null&&o.ids.length){var free=o.fr>0&&o.sub>=o.fr;o.ship=free?0:ZF;o.tot=o.sub+o.ship}return o};
+function zsum(){var el=$('zSum');if(!el)return;var o=totals();el.innerHTML=ZF==null?'':esc(t('delivery'))+': <b>'+(o.ship?money(o.ship):esc(t('free')))+'</b> · '+(LANG==='en'?'Total':'الإجمالي')+': <b>'+money(o.tot)+'</b>'}
+var _form156=form;form=function(){var h=_form156(),Z=zones();ZF=null;if(!Z.length)return h;
+  var cur=zfee(LAST.city)!=null?LAST.city:'',other=LANG==='en'?'Other area':'منطقة أخرى';
+  var sel='<select id="fCity" data-z156>'+'<option value="">'+(LANG==='en'?'Choose your area':'اختر منطقتك')+'</option>'+Z.map(function(z){var f=Math.max(0,+z.f||0);return '<option value="'+esc(z.n)+'"'+(cur===z.n?' selected':'')+'>'+esc(z.n)+' · '+(f?money(f):esc(t('free')))+'</option>'}).join('')+'<option value="__o">'+esc(other)+' · '+(+ST.ship?money(+ST.ship):esc(t('free')))+'</option></select>';
+  h=h.replace(/<input id="fCity"[^>]*>/,sel);if(cur)ZF=zfee(cur);
+  return h.replace('<div class="err" id="err"','<div class="zsum" id="zSum"></div><div class="err" id="err"')};
+$('checkout').addEventListener('click',function(){setTimeout(zsum,0)});
+$('sheet').addEventListener('change',function(e){var s=e.target;if(s.id!=='fCity'||!s.hasAttribute('data-z156'))return;
+  if(s.value==='__o'){var i=document.createElement('input');i.id='fCity';i.setAttribute('list','wilayat');i.maxLength=60;s.parentNode.replaceChild(i,s);ZF=+ST.ship||0;zsum();i.focus();return}
+  ZF=s.value?zfee(s.value):null;zsum();paint()});
+var _promise156=promise;promise=function(){if(!zones().length)return _promise156();var a=T.ar.promShipS,b=T.en.promShipS;T.ar.promShipS='حسب المنطقة';T.en.promShipS='By area';try{return _promise156()}finally{T.ar.promShipS=a;T.en.promShipS=b}};
 
 boot();
 })();
