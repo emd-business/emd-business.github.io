@@ -157,6 +157,95 @@ body[data-shape="stage"] .spot{display:block}
 .alc .nm{font-weight:700;font-size:14px}
 .alc .pr{color:#FDE68A;font-weight:800}
 .alc .add{margin-top:8px;width:100%;border:0;border-radius:10px;background:#D97706;color:#1C140D;padding:7px;font-weight:800;font-size:13px}
+
+body[data-shape="lotus"]{--a1:#FB7185;--a2:#FDA4AF;--bg:#18181B;--ink:#fde8ec;--muted:#b9a3a8;--card:#232227;--line:rgba(251,113,133,.3)}
+body[data-shape="aurora"]{--a1:#4ADE80;--a2:#38BDF8;--bg:#090D16;--ink:#e6f6ff;--muted:#8fa3b8;--card:#101726;--line:rgba(56,189,248,.25)}
+body[data-shape="scroll"]{--a1:#D97706;--a2:#FEF3C7;--bg:#1C1613;--ink:#fdf3dc;--muted:#bba78a;--card:#2a211b;--line:rgba(217,119,6,.3)}
+body[data-shape="cabinet"]{--a1:#D4AF37;--a2:#991B1B;--bg:#140D0B;--ink:#f5e9d3;--muted:#b49e84;--card:#22150f;--line:rgba(212,175,55,.3)}
+/* ===== زهرة اللوتس ===== */
+#lotus .hero{text-align:center;padding:18px 0 4px}
+.bloom{position:relative;width:260px;height:260px;margin:0 auto}
+.petal{position:absolute;left:50%;top:50%;width:46px;height:96px;margin:-96px 0 0 -23px;transform-origin:50% 100%;border-radius:50% 50% 50% 50%/70% 70% 30% 30%;transform:rotate(var(--r)) scale(.15);opacity:0;transition:transform 1s cubic-bezier(.3,1.4,.5,1),opacity .6s}
+.petal.o{background:linear-gradient(#fda4af,#be123c);height:118px;margin-top:-118px;width:54px;margin-left:-27px}
+.petal.m{background:linear-gradient(#fecdd3,#fb7185)}
+.petal.i{background:linear-gradient(#fff1f2,#fda4af);height:70px;margin-top:-70px;width:36px;margin-left:-18px}
+#lotus.open .petal{transform:rotate(var(--r)) scale(1);opacity:.92}
+.bud{position:absolute;left:50%;top:50%;width:62px;height:62px;margin:-31px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#fde68a,#d97706);border:0;font-size:24px;font-weight:800;color:#18181B;z-index:3;box-shadow:0 0 30px rgba(253,230,138,.5)}
+#lotus h1{margin:4px 0 0;color:var(--a2);font-size:26px}
+#lotus .sub{color:var(--muted);font-size:13px;margin-bottom:16px}
+.lgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+@media(min-width:640px){.lgrid{grid-template-columns:repeat(3,1fr)}}
+.lcard{background:linear-gradient(160deg,#2b2429,#1d1b20);padding:16px 10px 14px;text-align:center;border:1px solid var(--line);border-radius:70px 8px 70px 8px}
+.lgrid .lcard:nth-child(2n){border-radius:8px 70px 8px 70px}
+.lcard .im{height:96px;display:grid;place-items:center}.lcard .im svg{height:80px;width:auto}
+.lcard .nm{font-weight:700;font-size:14px}.lcard .pr{color:var(--a1);font-weight:800}
+.lcard .add{margin-top:8px;border:0;border-radius:999px;background:linear-gradient(90deg,#FB7185,#FDA4AF);color:#18181B;padding:7px 16px;font-weight:800;font-size:13px}
+/* ===== الشفق القطبي ===== */
+#aurora .hero{position:relative;height:250px;overflow:hidden;text-align:center}
+.rib{position:absolute;width:160%;height:90px;left:-30%;border-radius:50%;filter:blur(28px);opacity:.75;animation:sway 9s ease-in-out infinite alternate}
+.rib.b{top:40px;animation-duration:12s;animation-delay:-3s}.rib.c{top:95px;animation-duration:15s;animation-delay:-6s}.rib.a{top:-5px}
+@keyframes sway{0%{transform:translateX(-8%) skewX(-12deg) scaleY(.8)}100%{transform:translateX(8%) skewX(12deg) scaleY(1.25)}}
+#aurora .ttl{position:absolute;bottom:26px;left:0;right:0;z-index:2}
+#aurora h1{margin:0;font-size:30px;color:#fff;text-shadow:0 0 18px rgba(74,222,128,.6)}
+#aurora .sub{color:#bfe3f5;font-size:13px}
+.moods{display:flex;gap:8px;justify-content:center;margin:14px 0 16px;flex-wrap:wrap}
+.moods button{border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:999px;padding:6px 14px;font-size:13px;display:flex;gap:6px;align-items:center}
+.moods button i{width:12px;height:12px;border-radius:50%}
+.moods button.on{border-color:#fff;background:rgba(255,255,255,.08)}
+.agrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+@media(min-width:640px){.agrid{grid-template-columns:repeat(3,1fr)}}
+.acard{position:relative;background:var(--card);border-radius:16px;padding:18px 10px 14px;text-align:center;overflow:hidden;animation:float 5s ease-in-out infinite}
+.agrid .acard:nth-child(2n){animation-delay:-2.5s}
+@keyframes float{50%{transform:translateY(-5px)}}
+.acard:before{content:"";position:absolute;top:0;left:0;right:0;height:70px;background:linear-gradient(var(--m1),transparent);opacity:.35}
+.acard .im{position:relative;height:110px;display:grid;place-items:center}.acard .im svg{height:92px;width:auto}
+.acard .nm{font-weight:700;font-size:14px}.acard .pr{color:var(--m1);font-weight:800}
+.acard .add{margin-top:8px;width:100%;border:0;border-radius:10px;background:linear-gradient(90deg,var(--m1),var(--m2));color:#06101c;padding:7px;font-weight:800;font-size:13px}
+/* ===== مخطوطة البردي ===== */
+#scroll .ttl{text-align:center;padding:24px 0 10px}
+#scroll h1{margin:0;font-family:Amiri,serif;font-size:34px;color:#FEF3C7}
+#scroll .sub{color:var(--muted);font-size:13px}
+.scr{position:relative;display:flex;align-items:stretch;margin:6px 0 4px}
+.roll{flex:none;width:22px;border-radius:11px;background:linear-gradient(90deg,#3b2414,#a16207 40%,#fde68a 50%,#a16207 60%,#3b2414);box-shadow:0 4px 10px rgba(0,0,0,.5);position:relative;z-index:2}
+.roll:before,.roll:after{content:"";position:absolute;left:50%;width:30px;height:12px;margin-left:-15px;border-radius:6px;background:#D4AF37}
+.roll:before{top:-6px}.roll:after{bottom:-6px}
+.parch{flex:1;overflow-x:auto;scroll-snap-type:x mandatory;background:#f5e6c4 radial-gradient(circle at 30% 40%,rgba(160,110,40,.18),transparent 60%);margin:10px -4px;box-shadow:inset 0 0 30px rgba(120,70,20,.45);transform-origin:right;animation:unfurl 1.4s cubic-bezier(.6,0,.2,1) both;scrollbar-width:none}
+.parch::-webkit-scrollbar{display:none}
+@keyframes unfurl{from{transform:scaleX(.04)}}
+.strip{display:flex;gap:18px;padding:18px 20px;width:max-content}
+.med{scroll-snap-align:center;width:150px;text-align:center;color:#3b2414}
+.med .mring{width:110px;height:110px;margin:0 auto 6px;border-radius:50%;border:3px double #a16207;display:grid;place-items:center;background:rgba(255,255,255,.35)}
+.med .mring svg{height:72px;width:auto}
+.med .nm{font-family:Amiri,serif;font-size:17px;font-weight:700}
+.med .pr{color:#92400e;font-weight:800;font-size:14px}
+.med .add{margin-top:6px;border:1px solid #92400e;background:#92400e;color:#FEF3C7;border-radius:4px;padding:4px 14px;font-weight:700;font-size:12.5px}
+#scroll .hint{text-align:center;color:var(--muted);font-size:12px;margin:2px 0 18px}
+.rows .r{display:flex;align-items:center;gap:12px;padding:10px 12px;margin-bottom:10px;background:#f5e6c4;color:#3b2414;border-radius:4px;box-shadow:inset 0 0 18px rgba(120,70,20,.35)}
+.rows .r svg{height:52px;width:auto;flex:none}
+.rows .r .nm{font-family:Amiri,serif;font-weight:700;font-size:16px}
+.rows .r .pr{color:#92400e;font-weight:800;font-size:13px}
+.rows .r .add{margin-inline-start:auto;border:0;background:#92400e;color:#FEF3C7;border-radius:4px;padding:6px 12px;font-weight:700;font-size:12.5px}
+/* ===== الخزانة السرية ===== */
+#cabinet .ttl{text-align:center;padding:24px 0 14px}
+#cabinet h1{margin:0;font-family:Amiri,serif;font-size:34px;color:#D4AF37}
+#cabinet .sub{color:var(--muted);font-size:13px}
+.cab{background:linear-gradient(#4a2c1a,#2d190e);border:6px solid #1a0e08;border-radius:10px;padding:10px;box-shadow:0 18px 40px rgba(0,0,0,.6),inset 0 0 0 2px #6b4226}
+.drw{margin-bottom:10px}
+.drw:last-child{margin-bottom:0}
+.dfront{width:100%;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border:0;border-radius:6px;background:linear-gradient(#7c4a2a,#5a3219);color:#f5e9d3;font-size:16px;font-weight:700;box-shadow:inset 0 0 0 2px #3a2010,inset 0 2px 0 #9a6238;transition:transform .45s}
+.dfront .knob{width:38px;height:12px;border-radius:6px;background:linear-gradient(#fde68a,#a16207);box-shadow:0 1px 3px #000}
+.drw.op .dfront{transform:translateY(-2px) scale(1.02);box-shadow:inset 0 0 0 2px #3a2010,0 10px 18px rgba(0,0,0,.6)}
+.tray2{display:grid;grid-template-rows:0fr;transition:grid-template-rows .5s}
+.drw.op .tray2{grid-template-rows:1fr}
+.tray2>div{overflow:hidden}
+.velvet{display:flex;gap:10px;overflow-x:auto;padding:12px 8px;margin:0 6px;background:radial-gradient(#7f1d1d,#450a0a);border-radius:0 0 6px 6px;box-shadow:inset 0 6px 12px rgba(0,0,0,.6);scrollbar-width:none}
+.vitem{flex:none;width:118px;text-align:center;background:rgba(0,0,0,.25);border:1px solid rgba(212,175,55,.35);border-radius:6px;padding:8px 6px}
+.vitem svg{height:64px;width:auto}
+.vitem .nm{font-size:12.5px;font-weight:700}.vitem .pr{color:#D4AF37;font-weight:800;font-size:12.5px}
+.vitem .add{margin-top:4px;border:0;background:#D4AF37;color:#140D0B;border-radius:4px;padding:3px 10px;font-weight:800;font-size:12px}
+.secret{padding:16px;text-align:center;color:#fde68a;font-size:14px}
+.secret b{display:inline-block;margin-top:6px;padding:6px 18px;border:1px dashed #D4AF37;font-size:20px;letter-spacing:2px}
+#cabinet .tip{text-align:center;color:var(--muted);font-size:12px;margin:12px 0}
 /* ===== السلة المشتركة ===== */
 .cartbar{position:fixed;left:12px;right:12px;bottom:12px;z-index:60;max-width:560px;margin:0 auto;display:none;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;border-radius:16px;background:#14110a;color:#f3e6bb;border:1px solid #D4AF37;box-shadow:0 10px 30px rgba(0,0,0,.35)}
 body[data-shape="orbit"] .cartbar{background:#1E293B;border-radius:999px}
@@ -184,7 +273,7 @@ body[data-shape="star"] .cartbar{border-radius:0;clip-path:polygon(14px 0,calc(1
 </style>
 </head>
 <body data-shape="star">
-<div class="switch"><span>التصميم:</span><button data-s="star" class="on">الفسيفساء العربية</button><button data-s="orbit">المدار الذهبي</button><button data-s="hive">خلايا العسل</button><button data-s="stage">مسرح الإضاءة</button><button data-s="shoji">الأبواب المنزلقة</button><button data-s="dunes">الكثبان الرملية</button></div>
+<div class="switch"><span>التصميم:</span><button data-s="star" class="on">الفسيفساء العربية</button><button data-s="orbit">المدار الذهبي</button><button data-s="hive">خلايا العسل</button><button data-s="stage">مسرح الإضاءة</button><button data-s="shoji">الأبواب المنزلقة</button><button data-s="dunes">الكثبان الرملية</button><button data-s="lotus">زهرة اللوتس</button><button data-s="aurora">الشفق القطبي</button><button data-s="scroll">مخطوطة البردي</button><button data-s="cabinet">الخزانة السرية</button></div>
 <div class="badge">معاينة تجريبية</div>
 
 <!-- الفسيفساء العربية -->
@@ -240,6 +329,28 @@ body[data-shape="star"] .cartbar{border-radius:0;clip-path:polygon(14px 0,calc(1
   </div>
   <div class="wrap"><div class="trail"><div class="t" id="trt"></div><div class="bar"><b id="trb"></b><span class="cam" id="trc">🐪</span></div></div><div class="dgrid" id="dgrid"></div></div>
 </section>
+<!-- زهرة اللوتس -->
+<section id="lotus" class="shape">
+  <div class="hero"><div class="bloom" id="bloom"><button class="bud" id="bud" aria-label="افتح الزهرة">ن</button></div><h1>عطور نور</h1><div class="sub">اضغط قلب الزهرة لتتفتح من جديد</div></div>
+  <div class="wrap"><div class="lgrid" id="lgrid"></div></div>
+</section>
+<!-- الشفق القطبي -->
+<section id="aurora" class="shape">
+  <div class="hero"><div class="rib a"></div><div class="rib b"></div><div class="rib c"></div><div class="ttl"><h1>عطور نور</h1><div class="sub">اختر مزاجك لتتغير ألوان المتجر</div></div></div>
+  <div class="wrap"><div class="moods" id="moods"></div><div class="agrid" id="agrid"></div></div>
+</section>
+<!-- مخطوطة البردي -->
+<section id="scroll" class="shape">
+  <div class="ttl"><h1>عطور نور</h1><div class="sub">حكاية العطر منذ القدم</div></div>
+  <div class="wrap"><div class="scr"><div class="roll"></div><div class="parch" id="parch"><div class="strip" id="strip"></div></div><div class="roll"></div></div>
+  <div class="hint">اسحب المخطوطة يمينًا ويسارًا</div><div class="rows" id="rows"></div></div>
+</section>
+<!-- الخزانة السرية -->
+<section id="cabinet" class="shape">
+  <div class="ttl"><h1>عطور نور</h1><div class="sub">خزانة الكنوز العطرية</div></div>
+  <div class="wrap"><div class="cab" id="cab"></div><div class="tip">افتح الأدراج لتكتشف ما بداخلها، وابحث عن الدرج السري</div></div>
+</section>
+
 <div class="spot" id="spot"></div>
 
 <div class="foot">متجر يعمل بنظام EMD Business</div>
@@ -332,7 +443,29 @@ const paint0=paint;paint=function(){paint0();let n=0;for(const i in cart)n+=cart
  trt.textContent=n>=5?'وصلت القافلة! التوصيل مجاني':`أضف ${cnt(5-n)} لتصل القافلة ويصبح التوصيل مجانيًا`};
 paint();
 
-document.querySelectorAll('.switch button').forEach(b=>b.onclick=()=>{document.body.dataset.shape=b.dataset.s;document.querySelectorAll('.shape').forEach(x=>x.classList.toggle('on',x.id===b.dataset.s));if(b.dataset.s==='shoji'){shoji.classList.remove('open');setTimeout(()=>shoji.classList.add('open'),60)}
+/* زهرة اللوتس */
+[['o',8,22.5],['m',8,0],['i',6,30]].forEach(([c,n,off])=>{for(let k=0;k<n;k++){const p=document.createElement('div');p.className='petal '+c;p.style.setProperty('--r',(off+k*360/n)+'deg');p.style.transitionDelay=({i:0,m:.25,o:.5}[c]+k*.03)+'s';bloom.insertBefore(p,bud)}});
+function rebloom(){lotus.classList.remove('open');setTimeout(()=>lotus.classList.add('open'),450)}
+bud.onclick=rebloom;
+lgrid.innerHTML=P.map((x,i)=>`<div class="lcard"><div class="im">${bottle(x.c)}</div><div class="nm">${x.n}</div><div class="pr">${fmt(x.p)} ر.ع</div><button class="add" onclick="add(${i})">أضف إلى السلة</button></div>`).join('');
+/* الشفق القطبي */
+const MO=[{n:'هادئ',a:'#38BDF8',b:'#4ADE80',ks:['مسك']},{n:'دافئ',a:'#F59E0B',b:'#F43F5E',ks:['عود','بخور']},{n:'رومانسي',a:'#F472B6',b:'#A855F7',ks:['عطور']},{n:'الكل',a:'#4ADE80',b:'#38BDF8',ks:null}];
+let mood=3;
+function drawAurora(){const m=MO[mood];const rs=aurora.querySelectorAll('.rib');
+ rs[0].style.background=`linear-gradient(90deg,transparent,${m.a},transparent)`;rs[1].style.background=`linear-gradient(90deg,transparent,${m.b},${m.a},transparent)`;rs[2].style.background=`linear-gradient(90deg,transparent,${m.b},transparent)`;
+ aurora.style.setProperty('--m1',m.a);aurora.style.setProperty('--m2',m.b);
+ moods.innerHTML=MO.map((o,k)=>`<button class="${k===mood?'on':''}" onclick="mood=${k};drawAurora()"><i style="background:linear-gradient(${o.a},${o.b})"></i>${o.n}</button>`).join('');
+ agrid.innerHTML=P.map((x,i)=>m.ks&&!m.ks.includes(x.k)?'':`<div class="acard"><div class="im">${bottle(x.c)}</div><div class="nm">${x.n}</div><div class="pr">${fmt(x.p)} ر.ع</div><button class="add" onclick="add(${i})">أضف إلى السلة</button></div>`).join('')}
+drawAurora();
+/* مخطوطة البردي */
+strip.innerHTML=P.map((x,i)=>`<div class="med"><div class="mring">${bottle(x.c)}</div><div class="nm">${x.n}</div><div class="pr">${fmt(x.p)} ر.ع</div><button class="add" onclick="add(${i})">أضف</button></div>`).join('');
+rows.innerHTML=P.map((x,i)=>`<div class="r">${bottle(x.c)}<div><div class="nm">${x.n}</div><div class="pr">${fmt(x.p)} ر.ع</div></div><button class="add" onclick="add(${i})">أضف</button></div>`).join('');
+/* الخزانة السرية */
+const DR=[...new Set(P.map(x=>x.k))];
+cab.innerHTML=DR.map(k=>`<div class="drw"><button class="dfront" onclick="this.parentNode.classList.toggle('op')"><span>درج ${k}</span><span class="knob"></span></button><div class="tray2"><div><div class="velvet">${P.map((x,i)=>x.k!==k?'':`<div class="vitem">${bottle(x.c)}<div class="nm">${x.n}</div><div class="pr">${fmt(x.p)} ر.ع</div><button class="add" onclick="add(${i})">أضف</button></div>`).join('')}</div></div></div></div>`).join('')
+ +`<div class="drw"><button class="dfront" onclick="this.parentNode.classList.toggle('op')"><span>🗝️ الدرج السري</span><span class="knob"></span></button><div class="tray2"><div><div class="velvet" style="display:block"><div class="secret">وجدت مفتاح الخصم!<br><b>NOOR10</b><br><small>خصم ١٠٪ على طلبك (للعرض فقط)</small></div></div></div></div></div>`;
+
+document.querySelectorAll('.switch button').forEach(b=>b.onclick=()=>{if(b.dataset.s==='lotus')rebloom();if(b.dataset.s==='scroll'){parch.style.animation='none';void parch.offsetWidth;parch.style.animation=''}document.body.dataset.shape=b.dataset.s;document.querySelectorAll('.shape').forEach(x=>x.classList.toggle('on',x.id===b.dataset.s));if(b.dataset.s==='shoji'){shoji.classList.remove('open');setTimeout(()=>shoji.classList.add('open'),60)}
  document.querySelectorAll('.switch button').forEach(x=>x.classList.toggle('on',x===b));scrollTo(0,0);sizeRings()});
 </script>
 </body>
