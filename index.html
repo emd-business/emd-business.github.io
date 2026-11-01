@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V159</title>
+<title>EMD Business — Standalone V161</title>
 <!-- EMD V158: شاشة افتتاح تغطي التطبيق حتى تكتمل الواجهة الأخيرة، فلا تظهر الأشكال والأزرار القديمة أثناء التحميل -->
 <style id="EMD-V158-boot">
 html.emd-boot{background:#0f172a!important}
@@ -6091,7 +6091,7 @@ function openWhatsApp(order){
   function notify(force){
     const c=cfg(), msg=text();
     if(!('Notification' in window)){alert(msg);return}
-    const send=()=>{try{new Notification('EMD Business',{body:msg.replace('📊 ملخص EMD Business اليوم\n\n','').replace(/\n/g,' · '),tag:'emd-daily-summary'})}catch(e){alert(msg)}};
+    const send=()=>{try{(window.EMD161N||function(a,b){return new Notification(a,b)})('EMD Business',{body:msg.replace('📊 ملخص EMD Business اليوم\n\n','').replace(/\n/g,' · '),tag:'emd-daily-summary'})}catch(e){alert(msg)}};
     if(Notification.permission==='granted'){send();return}
     if(Notification.permission!=='denied')Notification.requestPermission().then(p=>{if(p==='granted')send();else if(force)alert(msg)});else if(force)alert(msg);
   }
@@ -19212,7 +19212,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V159</div>
+<div id="emdStandaloneV2Badge">EMD Business • V161</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -27585,7 +27585,7 @@ function cover(){var W=innerWidth,H=innerHeight,on=false,k=document.body.childre
   document.body.classList.toggle('emd411-covered',on);
   /* رقم النسخة أسفل قائمة «المزيد» (شارة النسخة مخفية على الجوال) */
   var sh=document.getElementById('emd410Sheet');if(sh&&sh.classList.contains('show')){var bx=sh.querySelector('.box');if(bx&&!bx.querySelector('.e141v')){var v=document.createElement('div');v.className='e141v';v.textContent=VER;bx.appendChild(v)}}}
-var VER='EMD Business • V159';
+var VER='EMD Business • V161';
 function boot(){cover();setInterval(cover,500)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
@@ -31738,6 +31738,211 @@ function tick(){try{watch();dedupe();head();importDup()}catch(e){}}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(tick,300)});else setTimeout(tick,300);
 setTimeout(tick,1200);setInterval(tick,1500);
 if(MQ.addEventListener)MQ.addEventListener('change',tick);
+})();
+</script>
+
+<!-- ===== EMD V161: إشعارات الجوال ===== -->
+<style id="EMD-V161-push-style">
+#e161W{position:fixed;inset:0;z-index:2147483647;display:none;align-items:flex-end;justify-content:center;background:rgba(15,23,42,.45);direction:rtl}
+#e161W.show{display:flex}
+#e161W .bx{width:100%;max-width:520px;max-height:92vh;overflow:auto;background:var(--card,#fff);color:var(--text,#18202a);border-radius:22px 22px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px));box-shadow:0 -10px 30px rgba(15,23,42,.2)}
+@media(min-width:761px){#e161W{align-items:center}#e161W .bx{border-radius:22px}}
+#e161W .hd{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px}
+#e161W h3{margin:0;font-size:19px;font-weight:900}
+#e161W .x{border:0;background:var(--soft,#eef2f7);color:inherit;border-radius:12px;padding:8px 12px;font-weight:900;cursor:pointer}
+#e161W .sub{font-size:13px;color:var(--muted,#687384);line-height:1.8;margin:0 0 12px}
+#e161W .st{border-radius:14px;padding:11px 13px;font-size:13.5px;font-weight:800;line-height:1.7;margin-bottom:12px;background:#f1f5f9;color:#334155}
+#e161W .st.ok{background:#ecfdf5;color:#065f46}#e161W .st.bad{background:#fef2f2;color:#991b1b}#e161W .st.warn{background:#fffbeb;color:#92400e}
+#e161W .main{width:100%;border:0;border-radius:14px;padding:14px;font-size:16px;font-weight:900;cursor:pointer;background:#13294b;color:#fff;box-shadow:0 0 0 2px #c9a24a inset}
+#e161W .main.off{background:var(--soft,#eef2f7);color:var(--text,#18202a);box-shadow:none}
+#e161W .kinds{margin:14px 0 4px;border:1px solid var(--line,#e4e8ef);border-radius:16px;overflow:hidden}
+#e161W .kinds label{display:flex;align-items:center;gap:10px;padding:12px 13px;border-top:1px solid var(--line,#e4e8ef);cursor:pointer}
+#e161W .kinds label:first-child{border-top:0}
+#e161W .kinds b{display:block;font-size:14.5px}#e161W .kinds small{display:block;font-size:12px;color:var(--muted,#687384);line-height:1.6}
+#e161W .kinds input{width:22px;height:22px;accent-color:#13294b;flex:none}
+#e161W .kinds.dis{opacity:.5;pointer-events:none}
+#e161W .row2{display:flex;gap:8px;margin-top:12px}
+#e161W .row2 button{flex:1;border:1px solid var(--line,#e4e8ef);background:var(--card,#fff);color:inherit;border-radius:12px;padding:11px;font-weight:800;cursor:pointer}
+#e161W .note{font-size:12px;color:var(--muted,#687384);line-height:1.8;margin-top:12px}
+#e161Item b .e161dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#16a34a;margin-inline-start:6px;vertical-align:middle}
+</style>
+<script id="EMD-V161-push">
+(function(){
+'use strict';
+var FN='https://pfkstppvnebagbdckgbu.supabase.co/functions/v1/push',FNKEY='sb_publishable__tfVZiyph-xyB87GzmHrkQ_9DVpPHJ0';
+var CK='emd161_push',SK='emd161_seen';
+var KINDS=[
+  ['store','🛍️ طلب جديد من المتجر','يصل حتى لو كان التطبيق مغلقًا (يتطلب تسجيل الدخول).'],
+  ['customer','⭐ تأكيد الاستلام والتقييم','عندما يؤكد العميل الاستلام أو يقيّم الطلب.'],
+  ['stock','📦 نفاد المخزون أو قربه','عندما تصل كمية منتج إلى حد التنبيه.'],
+  ['summary','📊 ملخص اليوم','ملخص المبيعات والطلبات في وقت الإغلاق.']
+];
+function cfg(){var c={};try{c=JSON.parse(localStorage.getItem(CK)||'{}')||{}}catch(e){}c.k=c.k||{};KINDS.forEach(function(k){if(c.k[k[0]]===undefined)c.k[k[0]]=true});return c}
+function save(c){try{localStorage.setItem(CK,JSON.stringify(c))}catch(e){}}
+function sup(){return 'Notification' in window&&'serviceWorker' in navigator&&'PushManager' in window}
+function ios(){return /iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)}
+function std(){try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true}catch(e){return false}}
+function perm(){return 'Notification' in window?Notification.permission:'unsupported'}
+function cloud(){var c=window.EMDCloudV93;return c&&c.api}
+function logged(){try{var c=cloud();return !!(c&&c.uid())}catch(e){return false}}
+function b64(s){s=(s+'===='.slice((s.length+3)%4)).replace(/-/g,'+').replace(/_/g,'/');var r=atob(s),a=new Uint8Array(r.length);for(var i=0;i<r.length;i++)a[i]=r.charCodeAt(i);return a}
+function call(body,needAuth){
+  var go=function(tk){var h={apikey:FNKEY,'Content-Type':'application/json'};if(tk)h['x-emd-token']=tk;
+    return fetch(FN,{method:'POST',headers:h,body:JSON.stringify(body)}).then(function(r){return r.json().catch(function(){return {}}).then(function(j){if(!r.ok||!j.ok){var e=new Error(j.error||('HTTP '+r.status));e.status=r.status;throw e}return j})})};
+  if(!needAuth)return go('');
+  var c=cloud();if(!c||!logged())return Promise.reject(Object.assign(new Error('login'),{login:true}));
+  return c.token().then(go);
+}
+function reg(){return navigator.serviceWorker.getRegistration().then(function(r){return r||navigator.serviceWorker.ready})}
+
+/* إظهار إشعار من داخل التطبيق عبر عامل الخدمة (الطريقة التي تعمل على أندرويد) */
+function show(title,o){
+  o=o||{};if(perm()!=='granted')return Promise.resolve(false);
+  return reg().then(function(r){if(r&&r.showNotification)return r.showNotification(title,{body:o.body||'',tag:o.tag,icon:'icon-192.png',badge:'icon-192.png',dir:'rtl',lang:'ar',data:{go:o.go||''}}).then(function(){return true});
+    try{new Notification(title,o);return true}catch(e){return false}}).catch(function(){return false});
+}
+/* ملخص اليوم القديم (V97) يمر من هنا بدل new Notification الذي لا يعمل على أندرويد */
+window.EMD161N=function(t,o){var c=cfg();if(c.on&&c.k.summary===false)return;show(t,o).then(function(ok){if(!ok){try{new Notification(t,o)}catch(e){}}})};
+
+/* ===== التفعيل والإيقاف ===== */
+function subscribe(){
+  return reg().then(function(r){if(!r||!r.pushManager)throw new Error('nosw');
+    return r.pushManager.getSubscription().then(function(s){if(s)return s;
+      return call({action:'key'},false).then(function(j){return r.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64(j.key)})})})});
+}
+function sendSub(s,c){var j=s.toJSON();return call({action:'subscribe',endpoint:j.endpoint,keys:j.keys,kinds:c.k},true)}
+function enable(){
+  var c=cfg();
+  if(!sup()){status('unsupported');return}
+  status('busy');
+  Notification.requestPermission().then(function(p){
+    if(p!=='granted'){c.on=false;save(c);status(p==='denied'?'denied':'idle');return}
+    c.on=true;c.srv=false;save(c);markSeen();
+    subscribe().then(function(s){c.ep=s.endpoint;save(c);
+      if(!logged()){status('nologin');return}
+      return sendSub(s,c).then(function(){c.srv=true;c.srvAt=Date.now();save(c);status('ok')})})
+    .catch(function(e){status(e&&e.login?'nologin':'srverr')});
+  });
+}
+function disable(){
+  var c=cfg();c.on=false;c.srv=false;save(c);
+  reg().then(function(r){return r&&r.pushManager&&r.pushManager.getSubscription()}).then(function(s){if(!s)return;
+    var ep=s.endpoint;s.unsubscribe().catch(function(){});if(logged())call({action:'unsubscribe',endpoint:ep},true).catch(function(){})}).catch(function(){});
+  status('idle');
+}
+function prefs(){var c=cfg();if(!c.on||!c.srv||!c.ep)return;call({action:'prefs',endpoint:c.ep,kinds:c.k},true).catch(function(){})}
+function test(){
+  var c=cfg();if(!c.on)return;
+  if(c.srv&&logged()){call({action:'test',endpoint:c.ep||'https://x'},true).then(function(j){if(!j.sent)show('EMD Business',{body:'✅ الإشعارات تعمل على هذا الجهاز',tag:'emd-test'})}).catch(function(){show('EMD Business',{body:'✅ الإشعارات تعمل على هذا الجهاز',tag:'emd-test'})})}
+  else show('EMD Business',{body:'✅ الإشعارات تعمل على هذا الجهاز',tag:'emd-test'});
+}
+/* بعد تسجيل الدخول لاحقًا: نربط الجهاز بالحساب تلقائيًا، ونجدد الربط كل يوم */
+function resync(){
+  var c=cfg();if(!c.on||perm()!=='granted'||!sup()||!logged())return;
+  if(c.srv&&c.srvAt&&Date.now()-c.srvAt<864e5)return;
+  subscribe().then(function(s){c.ep=s.endpoint;return sendSub(s,c)}).then(function(){c.srv=true;c.srvAt=Date.now();save(c);status()}).catch(function(){});
+}
+
+/* ===== المراقبة داخل التطبيق: التقييم والاستلام، والمخزون، وطلبات المتجر إن لم يكن الجهاز مربوطًا بالسحابة ===== */
+function seen(){try{return JSON.parse(localStorage.getItem(SK)||'{}')||{}}catch(e){return {}}}
+function num(v){if(v==null||v==='')return 0;var n=parseFloat(String(v).replace(/[٠-٩]/g,function(d){return '٠١٢٣٤٥٦٧٨٩'.indexOf(d)}).replace(/[,٬]/g,'').replace(/٫/g,'.'));return isNaN(n)?0:n}
+function collect(){
+  var out=[];
+  try{var ev=JSON.parse(localStorage.getItem('emd_v72_customer_events')||'[]');(Array.isArray(ev)?ev:[]).forEach(function(e){if(!e||e.read)return;
+    var st=e.stars?' '+'★★★★★'.slice(0,e.stars):'';
+    if(e.kind==='store')out.push({id:'ev_'+e.id,k:'store',t:'🛍️ طلب جديد من المتجر',b:(e.name||'زبون')+(e.comment?' · '+e.comment:''),go:'store:'+String(e.id||'').replace(/^store/,'')});
+    else out.push({id:'ev_'+e.id,k:'customer',t:e.kind==='rating'?'⭐ تقييم جديد'+st:'📬 العميل أكّد الاستلام'+st,b:'#'+String(e.orderId||'').replace(/^#+/,'')+' — '+(e.name||'بدون اسم')+(e.comment?' · '+e.comment:''),go:'bell'});
+  })}catch(e){}
+  try{var d=window.db||JSON.parse(localStorage.getItem('emd_business_v1')||'{}');(Array.isArray(d.products)?d.products:[]).forEach(function(p){
+    var min=p.minStock!=null?p.minStock:(p.lowStock!=null?p.lowStock:p.alertAt);if(min===undefined||min===null||min==='')return;
+    var q=num(p.stock!=null?p.stock:(p.quantity!=null?p.quantity:(p.qty!=null?p.qty:p.inventory))),m=num(min),nm=String(p.name||p.title||p.productName||'منتج');
+    if(q<=m)out.push({id:'st_'+(p.id||nm)+'_'+(q<=0?0:1),k:'stock',t:q<=0?'📦 نفد المخزون':'📦 المخزون قارب على النفاد',b:nm+' — المتوفر: '+q+' · حد التنبيه: '+m,go:'bell'});
+  })}catch(e){}
+  return out;
+}
+function markSeen(){var s={};collect().forEach(function(x){s[x.id]=Date.now()});try{localStorage.setItem(SK,JSON.stringify(s))}catch(e){}}
+function watch(){
+  var c=cfg();if(!c.on||perm()!=='granted')return;
+  var s=seen(),now=Date.now(),list=collect(),ch=false,live={};
+  list.forEach(function(x){live[x.id]=1;if(s[x.id])return;s[x.id]=now;ch=true;
+    if(c.k[x.k]===false)return;
+    if(x.k==='store'&&c.srv)return; /* وصل من السحابة */
+    if(!document.hidden&&x.k!=='stock')return; /* التطبيق أمامك: يكفي الجرس */
+    show(x.t,{body:x.b,tag:x.id,go:x.go});
+  });
+  Object.keys(s).forEach(function(k){if(!live[k]&&now-s[k]>3*864e5){delete s[k];ch=true}});
+  if(ch)try{localStorage.setItem(SK,JSON.stringify(s))}catch(e){}
+}
+
+/* ===== فتح ما يخص الإشعار عند الضغط عليه ===== */
+function go(g){g=String(g||'');setTimeout(function(){
+  if(g.indexOf('store:')===0){try{window.EMDStoreV411.openOrd(g.slice(6));return}catch(e){}}
+  if(g){try{window.EMDNotificationsV317.open()}catch(e){}}
+},600)}
+if('serviceWorker' in navigator)navigator.serviceWorker.addEventListener('message',function(e){if(e.data&&e.data.emd161go!==undefined)go(e.data.emd161go)});
+try{var q=new URLSearchParams(location.search).get('emdgo');if(q){go(q);history.replaceState(null,'',location.pathname+location.hash)}}catch(e){}
+
+/* ===== النافذة ===== */
+var W=null,last='';
+function el(){if(W)return W;W=document.createElement('div');W.id='e161W';W.innerHTML='<div class="bx" role="dialog" aria-modal="true" aria-labelledby="e161T"><div class="hd"><h3 id="e161T">🔔 الإشعارات</h3><button type="button" class="x" data-a="x">إغلاق ✕</button></div>'+
+  '<p class="sub">تصلك تنبيهات على الجوال بالطلبات الجديدة وما يحتاج انتباهك، والضغط على الإشعار يفتح ما يخصه مباشرة.</p>'+
+  '<div class="st" id="e161S"></div><button type="button" class="main" id="e161M" data-a="m"></button>'+
+  '<div class="kinds" id="e161K">'+KINDS.map(function(k){return '<label><input type="checkbox" data-k="'+k[0]+'"><span><b>'+k[1]+'</b><small>'+k[2]+'</small></span></label>'}).join('')+'</div>'+
+  '<div class="row2"><button type="button" data-a="t">📨 إرسال إشعار تجريبي</button></div>'+
+  '<div class="note" id="e161N"></div></div>';
+  document.body.appendChild(W);
+  W.addEventListener('click',function(e){if(e.target===W){close();return}var b=e.target.closest('[data-a]');if(!b)return;var a=b.getAttribute('data-a');
+    if(a==='x')close();else if(a==='m'){cfg().on&&perm()==='granted'?disable():enable()}else if(a==='t')test()});
+  W.addEventListener('change',function(e){var k=e.target.getAttribute('data-k');if(!k)return;var c=cfg();c.k[k]=!!e.target.checked;save(c);prefs()});
+  return W}
+function open(){var w=el();document.body.appendChild(w);w.classList.add('show');resync();status()}
+function close(){if(W)W.classList.remove('show')}
+function status(force){
+  var c=cfg(),p=perm(),s=force||'';
+  if(!s){if(!sup())s=ios()&&!std()?'ios':'unsupported';else if(p==='denied')s='denied';else if(c.on&&p==='granted')s=c.srv?'ok':(logged()?'srverr':'nologin');else s='idle'}
+  last=s;item();if(!W)return;
+  var M={
+    idle:['','الإشعارات غير مفعّلة على هذا الجهاز.'],
+    busy:['','جارٍ التفعيل… وافق على طلب الإذن الذي يظهر لك.'],
+    ok:['ok','✅ الإشعارات مفعّلة على هذا الجهاز، وطلبات المتجر تصلك حتى لو كان التطبيق مغلقًا.'],
+    nologin:['warn','✅ الإشعارات مفعّلة، لكن طلبات المتجر لا تصلك والتطبيق مغلق إلا بعد تسجيل الدخول بحسابك. سيُربط الجهاز تلقائيًا بعد الدخول.'],
+    srverr:['warn','✅ الإشعارات مفعّلة داخل التطبيق، وتعذّر ربط الجهاز بالسحابة الآن. ستُعاد المحاولة تلقائيًا عند الاتصال.'],
+    denied:['bad','الإشعارات محظورة لهذا التطبيق. افتح إعدادات المتصفح أو الجوال ← الإشعارات ← اسمح لـ EMD Business، ثم ارجع إلى هنا.'],
+    ios:['warn','على الآيفون تعمل الإشعارات فقط بعد إضافة التطبيق إلى الشاشة الرئيسية: اضغط زر المشاركة ⬆️ ثم «إضافة إلى الشاشة الرئيسية»، وافتح التطبيق من الأيقونة وفعّل الإشعارات من هنا (iOS 16.4 أو أحدث).'],
+    unsupported:['bad','هذا المتصفح لا يدعم الإشعارات. استخدم Chrome على أندرويد أو التطبيق من Google Play.']
+  }[s]||['',''];
+  var S=W.querySelector('#e161S');S.className='st '+M[0];S.textContent=M[1];
+  var on=c.on&&p==='granted',btn=W.querySelector('#e161M');
+  btn.textContent=on?'إيقاف الإشعارات على هذا الجهاز':'🔔 تفعيل الإشعارات';btn.className='main'+(on?' off':'');
+  btn.style.display=(s==='ios'||s==='unsupported'||s==='denied')?'none':'';
+  btn.disabled=s==='busy';
+  var K=W.querySelector('#e161K');K.className='kinds'+(on?'':' dis');
+  [].forEach.call(K.querySelectorAll('input'),function(i){i.checked=c.k[i.getAttribute('data-k')]!==false});
+  W.querySelector('.row2').style.display=on?'':'none';
+  W.querySelector('#e161N').textContent='الإشعارات خاصة بهذا الجهاز؛ فعّلها على كل جوال تريد أن تصله. تنبيهات المخزون والتقييم تظهر عندما يكون التطبيق مفتوحًا أو في الخلفية.';
+}
+
+/* ===== بطاقة في الإعدادات ===== */
+function item(){
+  var hub=document.getElementById('e445');if(!hub)return;
+  var it=document.getElementById('e161Item');
+  if(!it){var secs=hub.querySelectorAll('.e445-sec'),grid=null;
+    [].forEach.call(secs,function(s){var t=s.querySelector('.e445-t');if(!grid&&t&&/الرسائل والطلبات/.test(t.textContent))grid=s.querySelector('.emd327-grid')});
+    if(!grid){var g0=hub.querySelector('.emd327-grid');grid=g0}
+    if(!grid)return;
+    it=document.createElement('button');it.type='button';it.id='e161Item';it.className='emd327-item';
+    it.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();open()},true);
+    grid.insertBefore(it,grid.firstChild)}
+  var c=cfg(),on=c.on&&perm()==='granted';
+  var h='<b>🔔 الإشعارات'+(on?'<i class="e161dot"></i>':'')+'</b><span>'+(on?'مفعّلة على هذا الجهاز. اضغط لاختيار الأنواع أو إيقافها.':'طلبات المتجر الجديدة، والتقييمات، والمخزون، وملخص اليوم على جوالك.')+'</span>';
+  if(it.innerHTML!==h)it.innerHTML=h;
+}
+new MutationObserver(function(){if(document.getElementById('e445')&&!document.getElementById('e161Item'))item()}).observe(document.documentElement,{childList:true,subtree:true});
+
+window.EMDPushV161={open:open,close:close,enable:enable,disable:disable,test:test,show:show,status:function(){status();return last}};
+setInterval(watch,30000);
+document.addEventListener('visibilitychange',function(){if(document.hidden)setTimeout(watch,1500);else{watch();resync()}});
+setTimeout(function(){watch();resync()},8000);
 })();
 </script>
 
