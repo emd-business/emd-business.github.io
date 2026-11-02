@@ -241,7 +241,7 @@ button{font-family:inherit;cursor:pointer;color:inherit}
     <div class="greet"><i id="dot"></i><span id="gt"></span></div>
     <h1 id="h1"></h1>
     <p class="lead">قهوة مختصة بأجواء هادئة، وحلويات طازجة، ومساحة للعمل والاسترخاء في قلب مسقط.</p>
-    <div class="ctas"><button class="btn d" onclick="go('menu')">اطلب قهوتك</button><button class="btn l" onclick="go('ws')">احجز طاولة عمل</button></div>
+    <div class="ctas"><button class="btn d" onclick="go('menu')">اطلب قهوتك</button><button class="btn l wsOnly" onclick="go('ws')">احجز طاولة عمل</button></div>
     <div class="arch"><div class="im"></div><div class="tag"><span>🌿 <b>Mellow Coffee</b></span><span id="crowd"></span></div></div>
   </div>
 </header>
@@ -263,7 +263,7 @@ button{font-family:inherit;cursor:pointer;color:inherit}
   <button class="more" id="more"></button>
 </div></section>
 
-<section class="ws" id="ws"><div class="wrap">
+<section class="ws wsOnly" id="ws"><div class="wrap">
   <h2 class="sh rv"><small>مساحتك الهادئة للعمل</small>احجز طاولتك</h2>
   <p class="lead rv">اختر اليوم والوقت، ثم اختر طاولتك من المخطط: بجانب النافذة، أو مع مقبس كهرباء، أو في الركن الهادئ.</p>
   <div class="wsg">
@@ -296,6 +296,8 @@ button{font-family:inherit;cursor:pointer;color:inherit}
 <div class="ty" id="ty"><div><div class="c"><div class="steam"><i></i><i></i><i></i></div></div><h3 id="tyh">شكرًا لك</h3><p id="typ"></p><p style="font-size:11.5px;margin-top:8px">هذه معاينة فقط، لم يُرسل أي طلب أو حجز</p></div></div>
 
 <script>
+/* ميزة حجز الطاولة جاهزة لكنها مخفية الآن؛ تُفعَّل بتغيير WS إلى true */
+const WS=false;if(!WS)document.write('<style>.wsOnly{display:none!important}</style>');
 /* المنتجات: تأتي من التطبيق. هنا بيانات تجريبية */
 const CATS=['قهوة مختصة','مشروبات ساخنة','مشروبات باردة','حلويات','معجنات','البن للمنزل'];
 const P=[
@@ -357,7 +359,7 @@ function drawQz(){qbar.style.width=(QA.length/3*100)+'%';
  const [f,t,st]=QA;let id=t===0?(f===0?'mch':'lat'):t===1?(f===2||st===2?'v60':'lat'):(f===0?'icl':'ber');if(st===0&&t!==2)id='tgo';if(t===0&&st===1)id='lat';
  const x=P.find(p=>p.id===id),why=['يوقظك بلطف','يناسب هدوءك','يجاري نشاطك'][f]+' · '+['مناسب للطريق','لجلسة مريحة','يرافقك في عملك'][st];
  const side=t===0?P.find(p=>p.id==='brw'):P.find(p=>p.id==='alm');
- qzb.innerHTML=`<div class="step"><div class="res"><div class="ph" style="background-image:url(mlw/${x.img||'art'}.jpg)"></div><div><span class="why">${why}</span><h4>${x.n}</h4><p>${x.nt}</p><div class="pr">${fmt(x.p)}</div></div></div><p class="lead" style="font-size:13px">ويرافقه بشكل رائع: <b style="color:var(--br)">${side.n}</b></p><div class="rrow"><button class="btn d" onclick="add('${x.id}',this)">أضف ${x.n}</button><button class="btn l" onclick="QA=[];drawQz()">أعد الاختيار</button></div>${st===2?`<div style="margin-top:10px;font-size:13px"><a href="#ws" onclick="go('ws');return false" style="color:var(--br);font-weight:700">💻 احجز طاولة عمل لجلستك</a></div>`:''}</div>`}
+ qzb.innerHTML=`<div class="step"><div class="res"><div class="ph" style="background-image:url(mlw/${x.img||'art'}.jpg)"></div><div><span class="why">${why}</span><h4>${x.n}</h4><p>${x.nt}</p><div class="pr">${fmt(x.p)}</div></div></div><p class="lead" style="font-size:13px">ويرافقه بشكل رائع: <b style="color:var(--br)">${side.n}</b></p><div class="rrow"><button class="btn d" onclick="add('${x.id}',this)">أضف ${x.n}</button><button class="btn l" onclick="QA=[];drawQz()">أعد الاختيار</button></div>${WS&&st===2?`<div style="margin-top:10px;font-size:13px"><a href="#ws" onclick="go('ws');return false" style="color:var(--br);font-weight:700">💻 احجز طاولة عمل لجلستك</a></div>`:''}</div>`}
 drawQz();
 
 /* القائمة: أقسام + بحث + ترتيب + عرض تدريجي */
