@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>متجر الحلوى التجريبي</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@600;700;800&family=Cairo:wght@400;600;700&display=swap">
+<style>
+:root{--c1:#4f6fd6;--c1d:#3a52ad;--c1l:#e3e9ff;--pink:#f59ab8;--mint:#7fd1a8;--sun:#ffc94d;--bg:#f6f8ff;--ink:#1f2a4d;--muted:#6b7598}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;overflow-x:hidden}
+body{font-family:Cairo,Tahoma,sans-serif;background:var(--bg);color:var(--ink);padding-bottom:100px}
+button{font-family:inherit;cursor:pointer}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px}
+.badge{position:fixed;top:8px;left:8px;z-index:70;background:#b91c1c;color:#fff;font-size:11px;padding:2px 8px;border-radius:6px}
+h2{font-family:"Baloo Bhaijaan 2";font-size:26px;margin:28px 0 4px;color:var(--c1d)}
+.h2s{color:var(--muted);font-size:13px;margin-bottom:14px}
+
+/* أشكال الحلوى */
+.g{position:absolute;pointer-events:none}
+.g.ring{width:34px;height:34px;border-radius:50%;border:9px solid var(--k);box-shadow:inset 0 0 0 2px rgba(255,255,255,.35)}
+.g.belt{width:56px;height:16px;border-radius:5px;background:var(--k);background-image:radial-gradient(rgba(255,255,255,.75) 1px,transparent 1.5px);background-size:5px 5px}
+.g.mallow{width:30px;height:30px;border-radius:50%;background:linear-gradient(var(--k) 50%,#fff 50%);box-shadow:inset -3px -3px 5px rgba(0,0,0,.08)}
+.g.star{width:36px;height:36px;background:var(--k);clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}
+.g.heart{width:28px;height:28px;background:var(--k);clip-path:path('M14 26C-6 12 4-2 14 7 24-2 34 12 14 26Z')}
+.g.bear{width:26px;height:34px;background:var(--k);border-radius:45% 45% 40% 40%;opacity:.95}
+.g.bear:before,.g.bear:after{content:"";position:absolute;top:-5px;width:10px;height:10px;border-radius:50%;background:inherit}
+.g.bear:before{right:1px}.g.bear:after{left:1px}
+
+/* الواجهة */
+.hero{position:relative;min-height:400px;overflow:hidden;background:radial-gradient(circle at 50% 30%,#fff 0,#dfe7ff 45%,#c9d6ff 100%);text-align:center;padding:30px 16px 20px;border-radius:0 0 36px 36px}
+.hero .fl{animation:flt var(--d) ease-in-out infinite alternate}
+@keyframes flt{from{transform:translateY(0) rotate(var(--r0))}to{transform:translateY(-22px) rotate(var(--r1))}}
+.logo{position:relative;z-index:2;width:118px;height:118px;margin:0 auto;border-radius:50%;background:#fff;box-shadow:0 12px 28px rgba(79,111,214,.35);display:grid;place-items:center;animation:pop .8s cubic-bezier(.3,1.6,.5,1)}
+.logo img{width:100%;height:100%;border-radius:50%;object-fit:cover}
+.logo svg{width:76%}
+@keyframes pop{from{transform:scale(0)}}
+.ttl{position:relative;z-index:2;font-family:"Baloo Bhaijaan 2";font-size:34px;font-weight:800;color:var(--c1d);margin:12px 0 0;text-shadow:0 3px 0 #fff,0 6px 0 rgba(79,111,214,.18)}
+.ttl span{display:inline-block;animation:jump 2.8s ease-in-out infinite}
+@keyframes jump{0%,80%,100%{transform:none}88%{transform:translateY(-10px) rotate(-6deg)}}
+.tag{position:relative;z-index:2;color:var(--muted);font-size:14px;margin-top:2px}
+.pills{position:relative;z-index:2;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.pills span{background:#fff;border-radius:999px;padding:5px 12px;font-size:12.5px;font-weight:700;color:var(--c1d);box-shadow:0 4px 10px rgba(79,111,214,.18)}
+.cta{position:relative;z-index:2;margin-top:16px;border:0;background:var(--c1);color:#fff;font-weight:800;font-size:16px;padding:12px 26px;border-radius:999px;box-shadow:0 6px 0 var(--c1d);animation:wig 3s ease-in-out infinite}
+@keyframes wig{0%,85%,100%{transform:none}90%{transform:rotate(-4deg)}95%{transform:rotate(4deg)}}
+.cta:active{transform:translateY(4px);box-shadow:0 2px 0 var(--c1d)}
+
+/* املأ كيسك */
+.mixer{display:flex;gap:14px;align-items:flex-start}
+.trayv{flex:1;perspective:700px}
+.tray{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:10px;background:#fff;border-radius:16px;box-shadow:0 22px 30px -14px rgba(31,42,77,.4),inset 0 0 0 3px #eef1fb;transform:rotateX(28deg);transform-origin:50% 100%}
+.bin{position:relative;height:84px;border-radius:10px;background:#f3f5fc;box-shadow:inset 0 6px 10px rgba(31,42,77,.12);overflow:hidden;border:0;padding:0}
+.bin .g{position:absolute;transform:scale(.62)}
+.bin b{position:absolute;bottom:3px;left:0;right:0;font-size:10.5px;color:var(--ink);background:rgba(255,255,255,.85);padding:1px 0}
+.bin:active{transform:scale(.95)}
+.bin.hit{animation:hitb .35s}
+@keyframes hitb{50%{transform:scale(.92)}}
+.bagw{flex:none;width:118px;text-align:center}
+.bag{position:relative;width:110px;height:150px;margin:0 auto;transition:transform .3s}
+.bag.shake{animation:shk .4s}
+@keyframes shk{25%{transform:rotate(-5deg)}75%{transform:rotate(5deg)}}
+.bag .body{position:absolute;inset:18px 4px 0;border-radius:6px 6px 16px 16px;background:linear-gradient(90deg,rgba(255,255,255,.55),rgba(255,255,255,.25) 40%,rgba(255,255,255,.6));border:2px solid #cfd8f5;overflow:hidden;backdrop-filter:blur(1px)}
+.bag .fill{position:absolute;left:0;right:0;bottom:0;height:0;transition:height .4s cubic-bezier(.3,1.4,.5,1)}
+.bag .fill .g{position:absolute;transform:scale(.5)}
+.bag .tie{position:absolute;top:0;left:50%;width:56px;height:22px;margin-left:-28px;background:var(--c1);clip-path:polygon(0 0,100% 0,70% 100%,30% 100%);border-radius:4px}
+.bag .tie:after{content:"";position:absolute;top:-8px;left:50%;width:26px;height:14px;margin-left:-13px;border:3px solid var(--pink);border-radius:50%}
+.bagw .wt{font-family:"Baloo Bhaijaan 2";font-size:20px;font-weight:800;color:var(--c1d);margin-top:6px}
+.bagw .pr{font-size:13px;color:var(--muted)}
+.mixbtns{display:flex;gap:8px;margin-top:12px}
+.mixbtns button{flex:1;border:0;border-radius:12px;padding:11px;font-weight:800;font-size:14px}
+.mixbtns .addmix{background:var(--c1);color:#fff;box-shadow:0 4px 0 var(--c1d)}
+.mixbtns .clr{flex:none;background:#fff;color:var(--muted);border:1px solid #dfe5f7}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;min-height:24px}
+.chips span{font-size:11.5px;background:#fff;border-radius:999px;padding:2px 9px;border:1px solid #e2e7f7}
+.flyg{position:fixed;z-index:80;transition:transform .55s cubic-bezier(.5,-0.5,.6,1);pointer-events:none}
+
+/* المنتجات بشكل حلوى مغلفة */
+.cats{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:6px}
+.cats::-webkit-scrollbar{display:none}
+.cats button{flex:none;border:0;background:#fff;color:var(--ink);border-radius:999px;padding:8px 14px;font-size:13.5px;font-weight:700;box-shadow:0 3px 8px rgba(79,111,214,.12)}
+.cats button.on{background:var(--c1);color:#fff}
+.plist{display:grid;grid-template-columns:repeat(2,1fr);gap:22px 30px;padding:14px 18px 0}
+@media(min-width:640px){.plist{grid-template-columns:repeat(3,1fr)}}
+.wrapc{position:relative;background:#fff;border-radius:22px;padding:8px 8px 12px;text-align:center;box-shadow:0 14px 26px -14px rgba(31,42,77,.45);opacity:0;transform:scale(.6) rotate(-6deg);transition:opacity .5s,transform .6s cubic-bezier(.3,1.5,.5,1)}
+.wrapc.in{opacity:1;transform:none}
+.wrapc:before,.wrapc:after{content:"";position:absolute;top:50%;width:26px;height:46px;margin-top:-23px;background:var(--tw);clip-path:polygon(0 0,100% 30%,100% 70%,0 100%,30% 50%);transition:transform .4s}
+.wrapc:before{right:-22px;transform:scaleX(-1)}
+.wrapc:after{left:-22px}
+.wrapc:hover:before,.wrapc.wig:before{transform:scaleX(-1) rotate(12deg)}
+.wrapc:hover:after,.wrapc.wig:after{transform:rotate(-12deg)}
+.wrapc .ph{height:130px;border-radius:16px;background:#eef1fb center/cover no-repeat;position:relative;overflow:hidden}
+.wrapc .ph:after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.5) 50%,transparent 65%);transform:translateX(-120%);animation:shine 5s ease-in-out infinite}
+@keyframes shine{0%,65%{transform:translateX(-120%)}90%,100%{transform:translateX(120%)}}
+.wrapc .nm{font-weight:700;font-size:14px;margin-top:6px;line-height:1.35}
+.wrapc .note{font-size:11px;color:var(--muted)}
+.wrapc .pr{font-family:"Baloo Bhaijaan 2";font-weight:800;font-size:18px;color:var(--c1d)}
+.wrapc .pr small{font-family:Cairo;font-size:11px;color:var(--muted)}
+.wrapc .add{margin-top:4px;border:0;background:var(--tw);color:var(--ink);border-radius:999px;padding:6px 14px;font-weight:800;font-size:13px;box-shadow:0 3px 0 rgba(0,0,0,.15)}
+.wrapc .add:active{transform:translateY(3px);box-shadow:none}
+
+/* عربة المناسبات */
+.event{position:relative;margin-top:26px;border-radius:24px;overflow:hidden;min-height:230px;background:#c9d6ff center/cover;display:flex;align-items:flex-end}
+.event .ov{width:100%;padding:16px;background:linear-gradient(transparent,rgba(31,42,77,.85));color:#fff}
+.event h3{margin:0;font-family:"Baloo Bhaijaan 2";font-size:22px}
+.event p{margin:2px 0 10px;font-size:13px;opacity:.9}
+.event button{border:0;background:var(--sun);color:var(--ink);font-weight:800;border-radius:999px;padding:9px 18px}
+.foot{text-align:center;color:var(--muted);font-size:12px;padding:24px 0}
+
+/* السلة */
+.cartbar{position:fixed;left:12px;right:12px;bottom:12px;z-index:60;max-width:560px;margin:0 auto;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:22px;background:var(--c1d);color:#fff;box-shadow:0 12px 30px rgba(31,42,77,.4);transform:translateY(140%);transition:transform .45s cubic-bezier(.3,1.4,.5,1)}
+.cartbar.show{transform:none}
+.cartbar .ic{position:relative;font-size:26px}
+.cartbar .ic b{position:absolute;top:-6px;left:-8px;background:var(--pink);color:var(--ink);font-size:11px;border-radius:999px;min-width:18px;height:18px;display:grid;place-items:center}
+.cartbar.bump .ic{animation:bmp .4s}
+@keyframes bmp{50%{transform:scale(1.35) rotate(-10deg)}}
+.cartbar .sum{flex:1;font-size:14px}.cartbar .sum b{font-family:"Baloo Bhaijaan 2";font-size:18px}
+.cartbar .go{border:0;background:#fff;color:var(--c1d);font-weight:800;border-radius:999px;padding:9px 16px}
+.sheet{position:fixed;inset:0;z-index:90;background:rgba(31,42,77,.45);display:none;align-items:flex-end;justify-content:center}
+.sheet.show{display:flex}
+.sheet .bx{width:100%;max-width:560px;background:#fff;border-radius:26px 26px 0 0;padding:18px 16px 26px;max-height:84vh;overflow:auto}
+.sheet h3{margin:0 0 8px;font-family:"Baloo Bhaijaan 2";font-size:22px;color:var(--c1d);display:flex;justify-content:space-between}
+.ln{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 0;border-bottom:1px dashed #dfe5f7;font-size:14px}
+.ln small{color:var(--muted)}
+.tot{display:flex;justify-content:space-between;font-weight:800;font-size:17px;margin:14px 0}
+.ok{width:100%;border:0;background:var(--c1);color:#fff;font-weight:800;font-size:16px;padding:13px;border-radius:14px}
+.done{position:fixed;inset:0;z-index:95;display:none;place-items:center;background:rgba(246,248,255,.96);text-align:center;overflow:hidden}
+.done.show{display:grid}
+.done p{font-family:"Baloo Bhaijaan 2";font-size:26px;color:var(--c1d);margin:0}
+.done .bg{position:absolute;inset:0}
+.done .g{animation:burst 1.6s cubic-bezier(.2,.8,.3,1) forwards}
+@keyframes burst{from{transform:translate(0,0) rotate(0) scale(.3);opacity:1}to{transform:translate(var(--x),var(--y)) rotate(var(--r)) scale(1);opacity:0}}
+/* لوحة التاجر */
+.cfgbtn{position:fixed;top:8px;right:8px;z-index:70;border:0;background:var(--c1d);color:#fff;border-radius:999px;padding:6px 12px;font-size:12px;font-weight:700}
+.fld{margin:10px 0}.fld label{display:block;font-size:13px;font-weight:700;margin-bottom:4px;color:var(--c1d)}
+.fld input[type=text]{width:100%;padding:9px 10px;border:1px solid #dfe5f7;border-radius:10px;font-family:inherit;font-size:14px}
+.sw{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.sw button{width:34px;height:34px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1px #ccd}
+.pbtn{border:1px solid var(--c1);background:#fff;color:var(--c1d);border-radius:8px;padding:6px 10px;font-size:12.5px;font-weight:700}
+</style>
+</head>
+<body>
+<div class="badge">معاينة تجريبية</div>
+<button class="cfgbtn" id="cfgBtn">⚙️ جرّب كتاجر</button>
+
+<header class="hero" id="hero">
+  <div class="logo" id="logoBox"></div>
+  <div class="ttl" id="ttl"></div>
+  <div class="tag" id="tag">حلوى وجيلاتين بلمسة فرح، يُجهَّز طلبك خلال ٢–٣ أيام</div>
+  <div class="pills"><span>🍬 جيلاتين</span><span>💐 باقات</span><span>🍪 كوكيز</span><span>🎉 مناسبات</span></div>
+  <button class="cta" onclick="document.getElementById('mixSec').scrollIntoView({behavior:'smooth'})">املأ كيسك بنفسك</button>
+</header>
+
+<main class="wrap">
+  <section id="mixSec">
+    <h2>املأ كيسك بنفسك</h2>
+    <div class="h2s">اضغط أي خانة لتضيف ٥٠ جرامًا منها إلى كيسك</div>
+    <div class="mixer">
+      <div class="trayv"><div class="tray" id="tray"></div></div>
+      <div class="bagw"><div class="bag" id="bag"><div class="body"><div class="fill" id="fill"></div></div><div class="tie"></div></div><div class="wt" id="wt">0 جم</div><div class="pr" id="mpr">0.000 ر.ع</div></div>
+    </div>
+    <div class="chips" id="chips"></div>
+    <div class="mixbtns"><button class="addmix" id="addMix">أضف الكيس للسلة</button><button class="clr" id="clrMix">تفريغ</button></div>
+  </section>
+
+  <h2>منتجاتنا</h2>
+  <div class="h2s">صواني وباقات وتوزيعات لكل مناسبة</div>
+  <div class="cats" id="cats"></div>
+  <div class="plist" id="plist"></div>
+
+  <div class="event" style="background-image:url(gel/cart.jpg)"><div class="ov"><h3>عربة الحلوى لمناسبتك</h3><p>نحضرها لحفلتك أو معرضك مع تشكيلة جيلاتين كاملة</p><button onclick="add('evt')">احجز العربة</button></div></div>
+  <div class="foot">متجر يعمل بنظام EMD Business</div>
+</main>
+
+<div class="cartbar" id="cartbar"><div class="ic">🛍️<b id="cc">0</b></div><div class="sum">السلة: <b id="ct">0</b> ر.ع</div><button class="go" id="openCart">إتمام الطلب</button></div>
+<div class="sheet" id="sheet"><div class="bx"><h3>سلتك</h3><div id="lines"></div><div class="tot"><span>الإجمالي</span><span id="st"></span></div><button class="ok" id="okBtn">تأكيد الطلب</button></div></div>
+<div class="done" id="done"><div class="bg" id="burst"></div><div><p>تم استلام طلبك! 🎉</p><small style="color:var(--muted)">هذه معاينة فقط، لم يُرسل أي طلب</small></div></div>
+
+<div class="sheet" id="cfg"><div class="bx"><h3><span>إعدادات المتجر (تجربة)</span><button onclick="cfg.classList.remove('show')" style="border:0;background:none;font-size:20px">✕</button></h3>
+<div style="font-size:12.5px;color:var(--muted)">هكذا يتحكم كل تاجر بمتجره. التغييرات على جهازك فقط.</div>
+<div class="fld"><label>اسم المتجر</label><input type="text" id="iName"></div>
+<div class="fld"><label>العبارة تحت الاسم</label><input type="text" id="iTag"></div>
+<div class="fld"><label>لون المتجر</label><div class="sw" id="iSw"></div></div>
+<div class="fld"><label>الشعار</label><button class="pbtn" onclick="pick(f=>{B.logo=f;applyB()})">📷 رفع شعار</button> <button class="pbtn" onclick="B.logo=null;applyB()">الشعار المرسوم</button></div>
+<button class="ok" onclick="cfg.classList.remove('show')">تم</button></div></div>
+<input type="file" id="fileIn" accept="image/*" hidden>
+
+<script>
+const KINDS={ring:['#ff8a5c','#7fd1a8','#ffc94d','#b28cf0'],belt:['#7fd1a8','#e67fa0'],mallow:['#f59ab8'],star:['#f59ab8','#8bd17f'],heart:['#e8546f','#f59ab8'],bear:['#ff8a5c','#ffc94d','#7fd1a8','#e8546f']};
+const BINS=[{n:'حلقات حامضة',k:'ring'},{n:'مارشملو وردي',k:'mallow'},{n:'أشرطة حامضة',k:'belt'},{n:'نجوم جيلي',k:'star'},{n:'قلوب',k:'heart'},{n:'دببة جيلي',k:'bear'}];
+const g=(k,x,y,extra='')=>{const cs=KINDS[k],c=cs[Math.floor(Math.random()*cs.length)];return `<i class="g ${k}" style="--k:${c};left:${x}px;top:${y}px;transform:rotate(${Math.random()*360|0}deg) scale(.62);${extra}"></i>`};
+const P=[
+ {id:'tray',n:'صينية الجيلاتين',note:'110 حبات مع الصينية',p:6,c:'صواني',img:'tray',tw:'#ffc94d'},
+ {id:'bq',n:'باقة جيلاتين',note:'تنسيق وردي أو أزرق',p:4.5,c:'باقات',img:'bouquet',tw:'#f59ab8'},
+ {id:'lol',n:'توزيعات جيلاتين',note:'12 حبة',p:2,c:'توزيعات',img:'lolly',tw:'#7fd1a8'},
+ {id:'bx',n:'بوكسات صغيرة',note:'مغلفة بشعار المتجر',p:1,c:'توزيعات',img:'boxes',tw:'#b28cf0'},
+ {id:'ck',n:'بوكس كوكيز',note:'طري من الداخل',p:3,c:'كوكيز',img:'cookies',tw:'#ffc94d'},
+ {id:'ch',n:'كوكيز سائح الشوكولاتة',note:'الحبة الواحدة',p:.8,c:'كوكيز',img:'choc',tw:'#ff8a5c'},
+ {id:'tw',n:'برج الجيلاتين',note:'الطلب قبل أسبوع',p:15,c:'مناسبات',img:'tower',tw:'#7fd1a8'}
+];
+const fmt=v=>(+v).toFixed(3);
+const B={name:'جيلاتين ستيتش',tag:document.getElementById('tag').textContent,color:'#4f6fd6',logo:null};
+let cart={},mix={};
+
+/* الواجهة */
+const LOGO=`<svg viewBox="0 0 100 100"><circle cx="50" cy="38" r="26" fill="#fff" stroke="var(--c1)" stroke-width="4"/><path d="M50 38m-18 0a18 18 0 1 1 36 0a12 12 0 1 1-24 0a6 6 0 1 1 12 0" fill="none" stroke="var(--pink)" stroke-width="5" stroke-linecap="round"/><rect x="47" y="62" width="6" height="32" rx="3" fill="var(--c1)"/></svg>`;
+function heroCandy(){const h=document.getElementById('hero');h.querySelectorAll('.fl').forEach(e=>e.remove());const ks=Object.keys(KINDS);
+ for(let k=0;k<16;k++){const t=ks[k%ks.length],cs=KINDS[t],el=document.createElement('i');el.className='g fl '+t;el.style.cssText=`--k:${cs[k%cs.length]};left:${(k*37+Math.random()*30)%96}%;top:${8+Math.random()*82}%;--d:${2.5+Math.random()*3}s;--r0:${Math.random()*90|0}deg;--r1:${(Math.random()*90|0)+40}deg;opacity:.85;animation-delay:${-Math.random()*3}s`;h.appendChild(el)}}
+heroCandy();
+addEventListener('scroll',()=>{const y=scrollY;if(y<500)document.querySelectorAll('.hero .fl').forEach((e,k)=>e.style.translate=`0 ${y*(k%3+1)*.15}px`)},{passive:true});
+
+/* املأ كيسك */
+tray.innerHTML=BINS.map((b,i)=>{let h='';for(let k=0;k<7;k++)h+=g(b.k,4+Math.random()*60,2+Math.random()*44);return `<button class="bin" onclick="scoop(${i},this)">${h}<b>${b.n}</b></button>`}).join('');
+const PER=.25;
+function scoop(i,el){el.classList.remove('hit');void el.offsetWidth;el.classList.add('hit');
+ const r=el.getBoundingClientRect(),bg=bag.getBoundingClientRect();
+ for(let k=0;k<3;k++){const d=document.createElement('div');d.innerHTML=g(BINS[i].k,0,0,'position:static');const f=d.firstChild;f.classList.add('flyg');f.style.left=(r.left+r.width/2-15+k*8)+'px';f.style.top=(r.top+20)+'px';f.style.position='fixed';document.body.appendChild(f);
+  setTimeout(()=>{f.style.transform=`translate(${bg.left+bg.width/2-r.left-r.width/2}px,${bg.top+bg.height*.6-r.top-20}px) rotate(400deg) scale(.4)`},20+k*70);setTimeout(()=>f.remove(),650+k*70)}
+ setTimeout(()=>{mix[i]=(mix[i]||0)+50;bag.classList.remove('shake');void bag.offsetWidth;bag.classList.add('shake');drawMix(i)},500)}
+function drawMix(last){const w=Object.values(mix).reduce((a,b)=>a+b,0);wt.textContent=w+' جم';mpr.textContent=fmt(w/50*PER)+' ر.ع';
+ const h=Math.min(100,w/10);fill.style.height=h+'%';
+ if(last!=null){for(let k=0;k<3;k++)fill.insertAdjacentHTML('beforeend',g(BINS[last].k,Math.random()*70,Math.random()*Math.max(10,fill.clientHeight-20)))}
+ if(!w)fill.innerHTML='';
+ chips.innerHTML=Object.keys(mix).map(i=>`<span>${BINS[i].n} ${mix[i]} جم</span>`).join('')}
+addMix.onclick=()=>{const w=Object.values(mix).reduce((a,b)=>a+b,0);if(!w){addMix.textContent='اضغط الخانات أولًا';setTimeout(()=>addMix.textContent='أضف الكيس للسلة',1400);return}
+ const id='mix'+Date.now();cart[id]={n:'كيس مكس '+w+' جم',p:w/50*PER,q:1};mix={};drawMix();paint()};
+clrMix.onclick=()=>{mix={};drawMix()};
+
+/* المنتجات */
+let cat='الكل';
+function drawP(){const cs=['الكل',...new Set(P.map(x=>x.c))];cats.innerHTML=cs.map(c=>`<button class="${c===cat?'on':''}" onclick="cat='${c}';drawP()">${c}</button>`).join('');
+ plist.innerHTML=P.filter(x=>cat==='الكل'||x.c===cat).map(x=>`<div class="wrapc" style="--tw:${x.tw}" id="w${x.id}"><div class="ph" style="background-image:url(gel/${x.img}.jpg)"></div><div class="nm">${x.n}</div><div class="note">${x.note}</div><div class="pr">${fmt(x.p)} <small>ر.ع</small></div><button class="add" onclick="add('${x.id}')">أضف</button></div>`).join('');
+ const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.25});
+ plist.querySelectorAll('.wrapc').forEach((c,n)=>{c.style.transitionDelay=(n%2)*.1+'s';io.observe(c)})}
+drawP();
+
+/* السلة */
+function add(id){if(id==='evt'){cart.evt=cart.evt||{n:'حجز عربة الحلوى (عرض سعر)',p:0,q:0}}else{const x=P.find(y=>y.id===id);cart[id]=cart[id]||{n:x.n,p:x.p,q:0};
+ const c=document.getElementById('w'+id);if(c){c.classList.add('wig');setTimeout(()=>c.classList.remove('wig'),400)}}cart[id].q++;paint()}
+function chg(id,d){cart[id].q+=d;if(cart[id].q<=0)delete cart[id];paint();if(!Object.keys(cart).length)sheet.classList.remove('show')}
+function paint(){let n=0,t=0;for(const k in cart){n+=cart[k].q;t+=cart[k].q*cart[k].p}cc.textContent=n;ct.textContent=fmt(t);cartbar.classList.toggle('show',n>0);
+ cartbar.classList.remove('bump');void cartbar.offsetWidth;cartbar.classList.add('bump');
+ lines.innerHTML=Object.entries(cart).map(([k,x])=>`<div class="ln"><span>${x.n}<br><small>${x.p?x.q+' × '+fmt(x.p)+' ر.ع':'يتواصل معك المتجر بالسعر'}</small></span><span><button class="pbtn" onclick="chg('${k}',-1)">−</button> ${x.q} <button class="pbtn" onclick="chg('${k}',1)">+</button></span></div>`).join('');st.textContent=fmt(t)+' ر.ع'}
+openCart.onclick=()=>sheet.classList.add('show');
+sheet.onclick=e=>{if(e.target===sheet)sheet.classList.remove('show')};
+okBtn.onclick=()=>{sheet.classList.remove('show');const ks=Object.keys(KINDS);let h='';
+ for(let k=0;k<36;k++){const a=Math.random()*Math.PI*2,d=120+Math.random()*260;h+=g(ks[k%ks.length],innerWidth/2-15,innerHeight/2-15,`--x:${Math.cos(a)*d}px;--y:${Math.sin(a)*d}px;--r:${Math.random()*720|0}deg`)}
+ burst.innerHTML=h;done.classList.add('show');setTimeout(()=>{done.classList.remove('show');cart={};paint()},2600)};
+
+/* إعدادات التاجر */
+function shade(h,a){let n=parseInt(h.slice(1),16),r=n>>16,gg=n>>8&255,b=n&255;const f=v=>Math.max(0,Math.min(255,Math.round(a<0?v*(1+a):v+(255-v)*a)));return'#'+((1<<24)|(f(r)<<16)|(f(gg)<<8)|f(b)).toString(16).slice(1)}
+let pickCb=null;fileIn.onchange=()=>{const f=fileIn.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{pickCb&&pickCb(r.result);fileIn.value=''};r.readAsDataURL(f)};
+function pick(cb){pickCb=cb;fileIn.click()}
+function applyB(){const R=document.documentElement.style;R.setProperty('--c1',B.color);R.setProperty('--c1d',shade(B.color,-.25));R.setProperty('--c1l',shade(B.color,.8));
+ ttl.innerHTML=B.name.split(' ').map((w,k)=>`<span style="animation-delay:${k*.25}s">${w}</span>`).join(' ');tag.textContent=B.tag;document.title=B.name;
+ logoBox.innerHTML=B.logo?`<img src="${B.logo}" alt="${B.name}">`:LOGO;
+ iSw.innerHTML=['#4f6fd6','#8b5cf6','#e0608a','#14a38b','#f08a24','#1f2a4d'].map(c=>`<button style="background:${c}" onclick="B.color='${c}';applyB()"></button>`).join('')+`<input type="color" value="${B.color}" oninput="B.color=this.value;applyB()" style="width:40px;height:34px;border:0;background:none">`}
+cfgBtn.onclick=()=>{iName.value=B.name;iTag.value=B.tag;cfg.classList.add('show')};
+iName.oninput=()=>{B.name=iName.value;applyB()};iTag.oninput=()=>{B.tag=iTag.value;applyB()};
+cfg.onclick=e=>{if(e.target===cfg)cfg.classList.remove('show')};
+applyB();
+</script>
+</body>
+</html>
