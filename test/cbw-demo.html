@@ -9,7 +9,7 @@
 <style>
 :root{--g:#183a2b;--gd:#0f2a1e;--gl:#2a5340;--gold:#c9a45c;--gold2:#e6c98a;--cream:#f4ecdf;--paper:#fbf7f0;--ink:#20302a;--muted:#7d8a83;--sec:#183a2b}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;overflow-x:clip}
+html,body{margin:0;overflow-x:clip;overflow-anchor:none}
 body{font-family:Cairo,Tahoma,sans-serif;background:var(--cream);color:var(--ink)}
 button{font-family:inherit;cursor:pointer}
 .wrap{max-width:900px;margin:0 auto;padding:0 18px}
@@ -171,11 +171,68 @@ button{font-family:inherit;cursor:pointer}
 .conf{position:absolute;top:-20px;width:8px;height:14px;background:var(--gold2);animation:conf linear forwards}
 @keyframes conf{to{transform:translateY(110vh) rotate(720deg)}}
 @media(max-width:700px){.hero{flex-direction:column;justify-content:flex-start}.hero .in{padding-bottom:0}.orb{position:relative;order:2;left:auto;bottom:auto;width:74vw;margin:4px auto 50px}}
+
+/* القائمة الكاملة */
+.nav .srb{border:1px solid rgba(201,164,92,.6);background:rgba(255,255,255,.06);color:var(--cream);border-radius:50%;width:36px;height:36px;font-size:15px;margin-inline-start:auto}
+.nav .srb+.cartb{margin-inline-start:0}
+.menu{background:var(--paper);padding:60px 0 50px}
+.menu .sh{color:var(--g)}
+.mtool{position:sticky;top:58px;z-index:20;background:rgba(251,247,240,.94);backdrop-filter:blur(10px);padding:10px 0 8px;margin-top:14px}
+.srch{display:flex;gap:8px;align-items:center}
+.srch input{flex:1;min-width:0;border:1px solid #e3d8c4;background:#fff;border-radius:999px;padding:11px 16px;font:inherit;font-size:14px;color:var(--ink);outline:none}
+.srch input:focus{border-color:var(--gold)}
+.srch select{border:1px solid #e3d8c4;background:#fff;border-radius:999px;padding:10px 10px;font:inherit;font-size:12.5px;color:var(--g);font-weight:700}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:10px 0 2px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chips button{flex:none;border:1px solid #e3d8c4;background:#fff;color:var(--g);border-radius:999px;padding:7px 14px;font-weight:700;font-size:13px}
+.chips button small{opacity:.55;margin-inline-start:4px;font-weight:600}
+.chips button.on{background:var(--g);border-color:var(--g);color:var(--cream)}
+.chips button.on small{color:var(--gold2);opacity:1}
+.pgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:14px}
+@media(min-width:640px){.pgrid{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:900px){.pgrid{grid-template-columns:repeat(4,1fr)}}
+.pc{background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 14px 30px -20px rgba(15,42,30,.5);display:flex;flex-direction:column;animation:pin .5s both}
+@keyframes pin{from{opacity:0;transform:translateY(14px)}}
+.pc .im{aspect-ratio:1;background:#efe6d6 center/cover;position:relative}
+.pc .im.no{display:grid;place-items:center;font-size:44px}
+.pc .im .tg{position:absolute;top:8px;right:8px;background:var(--g);color:var(--gold2);font-size:10.5px;font-weight:700;border-radius:999px;padding:3px 9px}
+.pc .im .off{position:absolute;top:8px;left:8px;background:#b3261e;color:#fff;font-size:10.5px;font-weight:800;border-radius:999px;padding:3px 8px}
+.pc .im .out{position:absolute;inset:0;background:rgba(251,247,240,.7);display:grid;place-items:center;font-weight:800;color:var(--g)}
+.pc .bd{padding:10px 12px 12px;display:flex;flex-direction:column;gap:4px;flex:1}
+.pc h4{margin:0;font-size:14px;line-height:1.45;color:var(--ink);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pc .ct{font-size:11.5px;color:var(--muted)}
+.pc .rw{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:6px}
+.pc .pr{font-weight:800;color:var(--g);font-size:15px}
+.pc .pr s{display:block;color:var(--muted);font-weight:600;font-size:11px}
+.pc .ad{width:36px;height:36px;border-radius:50%;border:0;background:var(--g);color:var(--gold2);font-size:20px;line-height:1}
+.pc .ad:disabled{opacity:.35}
+.pc .ad:active{transform:scale(.9)}
+.more{display:block;margin:22px auto 0;border:1px solid var(--g);background:none;color:var(--g);border-radius:999px;padding:11px 26px;font-weight:800}
+.emp{text-align:center;color:var(--muted);padding:40px 0}
+.cnt{font-size:12.5px;color:var(--muted);margin-top:6px}
+.qv{position:fixed;inset:0;z-index:80;background:rgba(10,25,18,.55);display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .3s}
+.qv.show{opacity:1;pointer-events:auto}
+.qv .sh2{background:var(--paper);width:100%;max-width:560px;margin:0 auto;border-radius:26px 26px 0 0;padding:0 0 18px;transform:translateY(100%);transition:transform .4s cubic-bezier(.2,.8,.2,1);max-height:92svh;overflow:auto}
+.qv.show .sh2{transform:none}
+.qv .big{aspect-ratio:4/3;background:#efe6d6 center/cover;border-radius:26px 26px 0 0;position:relative}
+.qv .big.no{display:grid;place-items:center;font-size:70px}
+.qv .x{position:absolute;top:12px;left:12px;width:36px;height:36px;border-radius:50%;border:0;background:rgba(255,255,255,.85);font-size:18px}
+.qv .in2{padding:16px 18px 0}
+.qv h3{font-family:"El Messiri";font-size:24px;margin:0;color:var(--g)}
+.qv .ds{color:var(--muted);font-size:14px;line-height:1.8;margin:6px 0 0}
+.qv .sz{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.qv .sz button{border:1px solid #e3d8c4;background:#fff;border-radius:999px;padding:7px 14px;font-weight:700;color:var(--g)}
+.qv .sz button.on{background:var(--g);color:var(--cream);border-color:var(--g)}
+.qv .ft{display:flex;align-items:center;gap:12px;margin-top:16px}
+.qv .qt{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #e3d8c4;border-radius:999px;padding:4px}
+.qv .qt button{width:34px;height:34px;border-radius:50%;border:0;background:#efe6d6;font-size:18px;color:var(--g)}
+.qv .ok{flex:1;border:0;border-radius:999px;background:var(--g);color:var(--cream);padding:13px;font-weight:800;font-size:15px}
+.qv .ok b{color:var(--gold2)}
 </style>
 </head>
 <body>
 <div class="badge">معاينة تجريبية</div>
-<nav class="nav" id="nav"><div class="lg"></div><div class="nm">Cookie Bite</div><button class="cartb" id="cartb">السلة<b id="cn">0</b></button></nav>
+<nav class="nav" id="nav"><div class="lg"></div><div class="nm">Cookie Bite</div><button class="srb" id="srb" aria-label="بحث">🔍</button><button class="cartb" id="cartb">السلة<b id="cn">0</b></button></nav>
 
 <header class="hero" id="hero">
   <div class="orb" id="orb"><div class="ph"></div><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="none" stroke="#c9a45c" stroke-width=".4" stroke-dasharray="1 2.2"/><circle cx="50" cy="2" r="1.4" fill="#e6c98a"/></svg></div>
@@ -213,10 +270,18 @@ button{font-family:inherit;cursor:pointer}
 </div></section>
 
 <section class="flav" id="flav">
-  <div class="wrap rv"><h2 class="sh"><small>قائمتنا المميزة</small>اختر نكهتك</h2></div>
+  <div class="wrap rv"><h2 class="sh"><small>الأكثر طلبًا</small>اختر نكهتك</h2></div>
   <div class="carousel" id="car"></div>
   <div class="dots" id="dots"></div>
 </section>
+
+<section class="menu" id="menu"><div class="wrap">
+  <h2 class="sh rv"><small>كل ما نقدّمه</small>القائمة الكاملة</h2>
+  <div class="mtool"><div class="srch"><input id="q" type="search" placeholder="ابحث عن منتج…"><select id="sort"><option value="0">الترتيب الافتراضي</option><option value="1">الأقل سعرًا</option><option value="2">الأعلى سعرًا</option><option value="3">الأحدث</option></select></div><div class="chips" id="chips"></div></div>
+  <div class="cnt" id="cnt"></div>
+  <div class="pgrid" id="pgrid"></div>
+  <button class="more" id="more">عرض المزيد</button>
+</div></section>
 
 <section class="build" id="build"><div class="wrap">
   <h2 class="sh rv"><small>هدية أو لنفسك</small>اصنع علبتك</h2>
@@ -241,17 +306,39 @@ button{font-family:inherit;cursor:pointer}
 </div></section>
 
 <div class="drawer" id="drawer"><div class="pn"><h3><span>سلتك</span><button onclick="drawer.classList.remove('show')" style="border:0;background:none;font-size:22px;color:inherit">✕</button></h3><div class="ls" id="ls"></div><div class="tt"><span>الإجمالي</span><span id="tt"></span></div><button class="go" id="goBtn">تأكيد الطلب</button></div></div>
+<div class="qv" id="qv"><div class="sh2"><div class="big" id="qbig"><button class="x" onclick="qv.classList.remove('show')">✕</button></div><div class="in2"><h3 id="qn"></h3><div class="ds" id="qd"></div><div class="sz" id="qsz"></div><div class="ft"><div class="qt"><button onclick="qq(-1)">−</button><b id="qc">1</b><button onclick="qq(1)">+</button></div><button class="ok" id="qok"></button></div></div></div></div>
 <div class="ty" id="ty"><div><div class="cd"></div><p>تم استلام طلبك، شكرًا لك<br><small style="opacity:.7">هذه معاينة فقط، لم يُرسل أي طلب</small></p></div></div>
 
 <script>
-const F=[
- {id:'cls',n:'كوكيز الشوكولاتة الكلاسيكي',nt:'شوكولاتة بلجيكية ذائبة',p:.8,img:'chocstack',bg:'#3b2418',tg:'الأكثر طلبًا'},
- {id:'lot',n:'كوكيز اللوتس',nt:'كراميل وبسكويت لوتس',p:.9,img:'lotus',bg:'#7a4e22',tg:'محشو'},
- {id:'red',n:'ريد فيلفت بالكريمة',nt:'قلب كريمي أبيض',p:.9,img:'red',bg:'#5e1019',tg:'جديد'},
- {id:'pis',n:'كوكيز الفستق',nt:'فستق بقلب كراميل',p:1,img:'pist',bg:'#3f5a22',tg:'فاخر'},
- {id:'dbl',n:'دبل شوكولاتة',nt:'للعاشقين الحقيقيين',p:1,img:'classic',bg:'#24140d',tg:'مكثف'},
- {id:'mol',n:'الكوكيز الذائب',nt:'ثلاث طبقات من الشوكولاتة',p:1.1,img:'molten',bg:'#2f1d10',tg:'نكهة الموسم'}
+/* المنتجات: تأتي من التطبيق (الاسم، القسم، السعر، الصورة، الوسم، الكمية). هنا بيانات تجريبية */
+const CATS=['كوكيز كلاسيك','كوكيز محشو','علب وهدايا','ميني كوكيز','مشروبات','مناسبات'];
+const P=[
+ {id:'cls',n:'كوكيز الشوكولاتة الكلاسيكي',nt:'شوكولاتة بلجيكية ذائبة',p:.8,img:'chocstack',c:0,tg:'الأكثر طلبًا',feat:1,bg:'#3b2418',box:1},
+ {id:'lot',n:'كوكيز اللوتس',nt:'كراميل وبسكويت لوتس',p:.9,img:'lotus',c:1,tg:'محشو',feat:1,bg:'#7a4e22',box:1},
+ {id:'red',n:'ريد فيلفت بالكريمة',nt:'قلب كريمي أبيض',p:.9,img:'red',c:1,tg:'جديد',feat:1,bg:'#5e1019',box:1,nw:1},
+ {id:'pis',n:'كوكيز الفستق',nt:'فستق بقلب كراميل',p:1,img:'pist',c:1,tg:'فاخر',feat:1,bg:'#3f5a22',box:1},
+ {id:'dbl',n:'دبل شوكولاتة',nt:'للعاشقين الحقيقيين',p:1,img:'classic',c:0,tg:'مكثف',feat:1,bg:'#24140d',box:1},
+ {id:'mol',n:'الكوكيز الذائب',nt:'ثلاث طبقات من الشوكولاتة',p:1.1,img:'molten',c:1,tg:'نكهة الموسم',feat:1,bg:'#2f1d10',box:1,nw:1},
+ {id:'rp',n:'ريد فيلفت بالفستق',nt:'مزيج الكريمة والفستق',p:1.1,img:'redpist',c:1,box:1,nw:1},
+ {id:'wc',n:'كوكيز الشوكولاتة البيضاء',nt:'شوكولاتة بيضاء وتوت',p:.8,img:'classic',c:0,box:1},
+ {id:'oat',n:'كوكيز الشوفان والعسل',nt:'خيار أخف بطعم غني',p:.7,img:'chocstack',c:0,box:1},
+ {id:'nut',n:'كوكيز البندق',nt:'بندق محمّص وشوكولاتة',p:.9,img:'classic',c:0,box:1},
+ {id:'kin',n:'كوكيز كيندر',nt:'محشو بكريمة الحليب',p:1,img:'molten',c:1,box:1},
+ {id:'nut2',n:'كوكيز نوتيلا',nt:'قلب نوتيلا سائل',p:1,img:'lotus',c:1,box:1,o:1.2},
+ {id:'g6',n:'علبة هدية 6 حبات',nt:'تغليف فاخر مع بطاقة',p:5.2,img:'gift',c:2,tg:'هدية',sz:[['6 حبات',5.2],['9 حبات',7.5]]},
+ {id:'g12',n:'علبة التشكيلة 12 حبة',nt:'أفضل النكهات في علبة واحدة',p:9.5,img:'openbox',c:2,o:10.5},
+ {id:'ast',n:'صينية الضيافة',nt:'تشكيلة للمجالس والضيوف',p:14,img:'assort',c:2,sz:[['صغيرة',14],['كبيرة',22]]},
+ {id:'rk',n:'رف الكوكيز الفاخر',nt:'عرض مميز للمناسبات',p:18,img:'rack',c:5},
+ {id:'m1',n:'ميني كوكيز كلاسيك (كوب)',nt:'قطع صغيرة مقرمشة',p:1.5,img:'chocstack',c:3,sz:[['كوب صغير',1.5],['كوب كبير',2.5]]},
+ {id:'m2',n:'ميني كوكيز لوتس (كوب)',nt:'قطع صغيرة بالكراميل',p:1.8,img:'lotus',c:3},
+ {id:'m3',n:'ميني كوكيز مشكّل',nt:'علبة مشاركة للعائلة',p:3.5,img:'assort',c:3,nw:1},
+ {id:'lt',n:'لاتيه بارد',nt:'يرافق الكوكيز بامتياز',p:1.2,img:'latte',c:4,sz:[['وسط',1.2],['كبير',1.5]]},
+ {id:'hc',n:'شوكولاتة ساخنة',nt:'كثيفة ودافئة',p:1.3,img:'',c:4},
+ {id:'sp',n:'لاتيه الفستق',nt:'إصدار محدود',p:1.6,img:'latte',c:4,st:0},
+ {id:'bd',n:'طلب مناسبة (50 حبة)',nt:'أعياد ميلاد وتخرّج، يُطلب قبل يومين',p:35,img:'openbox',c:5,tg:'بالحجز'},
+ {id:'cr',n:'كوكيز بشعار مخصص',nt:'اسم أو شعار مطبوع على كل حبة',p:1.5,img:'thanks',c:5}
 ];
+const F=P.filter(x=>x.feat);
 const fmt=v=>(+v).toFixed(3)+' ر.ع';
 let cart={};
 const go=id=>document.getElementById(id).scrollIntoView({behavior:'smooth'});
@@ -289,16 +376,44 @@ car.querySelectorAll('.fc').forEach(c=>fio.observe(c));
 const SZ=[{n:4,d:0},{n:6,d:.05},{n:12,d:.1}];let sz=1,box=[];
 function drawBox(){tabs.innerHTML=SZ.map((s,k)=>`<button class="${k===sz?'on':''}" onclick="sz=${k};box=box.slice(0,${s.n});drawBox()">${s.n} حبات${s.d?`<small>-${s.d*100}٪</small>`:''}</button>`).join('');
  const n=SZ[sz].n,cols=n===12?4:n===6?3:2;grid.style.gridTemplateColumns=`repeat(${cols},1fr)`;
- grid.innerHTML=Array.from({length:n},(_,k)=>{const x=box[k]&&F.find(f=>f.id===box[k]);return `<div class="sl ${x?'f':''}" style="${x?`background-image:url(cbw/${x.img}.jpg)`:''}"></div>`}).join('');
+ grid.innerHTML=Array.from({length:n},(_,k)=>{const x=box[k]&&P.find(f=>f.id===box[k]);return `<div class="sl ${x?'f':''}" style="${x?`background-image:url(cbw/${x.img}.jpg)`:''}"></div>`}).join('');
  grid.querySelectorAll('.sl.f').forEach((e,k)=>{if(k!==box.length-1)e.style.animation='none'});
  const full=box.length===n;gbox.classList.toggle('full',full);
- const sum=box.reduce((a,id)=>a+F.find(f=>f.id===id).p,0)*(1-SZ[sz].d);bp.textContent=fmt(sum);
+ const sum=box.reduce((a,id)=>a+P.find(f=>f.id===id).p,0)*(1-SZ[sz].d);bp.textContent=fmt(sum);
  bs.textContent=full?'العلبة جاهزة ومغلّفة بالشريط الذهبي':`اختر ${n-box.length} من ${n}`;badd.disabled=!full}
-picks.innerHTML=F.map(x=>`<button onclick="pickB('${x.id}')"><i style="background-image:url(cbw/${x.img}.jpg)"></i>${x.n.replace('كوكيز ','')}</button>`).join('');
+const BX=P.filter(x=>x.box);picks.innerHTML=BX.map(x=>`<button onclick="pickB('${x.id}')"><i style="background-image:url(cbw/${x.img}.jpg)"></i>${x.n.replace('كوكيز ','')}</button>`).join('');
 function pickB(id){if(box.length>=SZ[sz].n)return;box.push(id);drawBox()}
 bclr.onclick=()=>{box=[];drawBox()};
-badd.onclick=()=>{const n=SZ[sz].n,sum=box.reduce((a,id)=>a+F.find(f=>f.id===id).p,0)*(1-SZ[sz].d),k='box'+Date.now();cart[k]={n:`علبة ${n} حبات مشكلة`,p:sum,q:1,img:'gift'};flyFrom(gbox,'gift');box=[];setTimeout(drawBox,200)};
+badd.onclick=()=>{const n=SZ[sz].n,sum=box.reduce((a,id)=>a+P.find(f=>f.id===id).p,0)*(1-SZ[sz].d),k='box'+Date.now();cart[k]={n:`علبة ${n} حبات مشكلة`,p:sum,q:1,img:'gift'};flyFrom(gbox,'gift');box=[];setTimeout(drawBox,200)};
 drawBox();
+
+
+/* القائمة الكاملة: أقسام + بحث + ترتيب + عرض تدريجي */
+let cat=-1,shown=8;const PG=8;
+const img=x=>x.img?`style="background-image:url(cbw/${x.img}.jpg)"`:'';
+function drawChips(){chips.innerHTML=[`<button class="${cat<0?'on':''}" data-c="-1">الكل<small>${P.length}</small></button>`,...CATS.map((c,k)=>{const n=P.filter(x=>x.c===k).length;return n?`<button class="${cat===k?'on':''}" data-c="${k}">${c}<small>${n}</small></button>`:''})].join('')}
+chips.onclick=e=>{const b=e.target.closest('button');if(!b)return;cat=+b.dataset.c;shown=PG;drawChips();drawGrid();const tb=58+menu.querySelector('.mtool').offsetHeight,gy=pgrid.getBoundingClientRect().top;if(gy<tb)window.scrollTo(0,scrollY+gy-tb-10);const nb=chips.querySelector('.on');chips.scrollLeft=nb.offsetLeft-chips.clientWidth/2+nb.offsetWidth/2};
+function list(){const t=q.value.trim();let L=P.filter(x=>(cat<0||x.c===cat)&&(!t||(x.n+' '+x.nt+' '+CATS[x.c]).includes(t)));
+ const so=+sort.value;if(so===1)L.sort((a,b)=>a.p-b.p);if(so===2)L.sort((a,b)=>b.p-a.p);if(so===3)L.sort((a,b)=>(b.nw||0)-(a.nw||0));return L}
+function drawGrid(){const L=list();cnt.textContent=L.length?`${L.length} منتج`:'';
+ pgrid.innerHTML=L.length?L.slice(0,shown).map(x=>{const out=x.st===0;return `<div class="pc" onclick="openQ('${x.id}')"><div class="im ${x.img?'':'no'}" ${img(x)}>${x.img?'':'🍪'}${x.tg?`<span class="tg">${x.tg}</span>`:''}${x.o?`<span class="off">-${Math.round((1-x.p/x.o)*100)}٪</span>`:''}${out?'<span class="out">نفدت الكمية</span>':''}</div><div class="bd"><h4>${x.n}</h4><div class="ct">${CATS[x.c]}${x.sz?' · '+x.sz.length+' أحجام':''}</div><div class="rw"><span class="pr">${x.sz?'من ':''}${fmt(x.p)}${x.o?`<s>${fmt(x.o)}</s>`:''}</span><button class="ad" ${out?'disabled':''} onclick="event.stopPropagation();${x.sz?`openQ('${x.id}')`:`add('${x.id}',this)`}">+</button></div></div></div>`}).join(''):'<div class="emp" style="grid-column:1/-1">لا توجد نتائج مطابقة، جرّب كلمة أخرى</div>';
+ more.style.display=L.length>shown?'':'none';more.textContent=`عرض المزيد (${L.length-shown})`}
+more.onclick=()=>{shown+=PG;drawGrid()};
+let qt0;q.oninput=()=>{clearTimeout(qt0);qt0=setTimeout(()=>{shown=PG;drawGrid()},150)};
+sort.onchange=()=>{shown=PG;drawGrid()};
+srb.onclick=()=>{go('menu');setTimeout(()=>q.focus({preventScroll:true}),600)};
+drawChips();drawGrid();
+
+/* نافذة المنتج */
+let QX,QS=0,QN=1;
+function openQ(id){QX=P.find(x=>x.id===id);QS=0;QN=1;if(QX.st===0)return;
+ qbig.className='big'+(QX.img?'':' no');qbig.style.backgroundImage=QX.img?`url(cbw/${QX.img}.jpg)`:'';qbig.firstChild.nextSibling&&qbig.firstChild.nextSibling.remove();if(!QX.img)qbig.insertAdjacentText('beforeend','🍪');
+ qn.textContent=QX.n;qd.textContent=QX.nt;drawQ();qv.classList.add('show')}
+function drawQ(){qsz.innerHTML=QX.sz?QX.sz.map((s,k)=>`<button class="${k===QS?'on':''}" onclick="QS=${k};drawQ()">${s[0]}</button>`).join(''):'';qc.textContent=QN;
+ const pr=QX.sz?QX.sz[QS][1]:QX.p;qok.innerHTML=`أضف إلى السلة · <b>${fmt(pr*QN)}</b>`}
+function qq(d){QN=Math.max(1,QN+d);drawQ()}
+qok.onclick=()=>{const s=QX.sz?QX.sz[QS]:null,k=QX.id+(s?'|'+QS:''),pr=s?s[1]:QX.p;cart[k]=cart[k]||{n:QX.n+(s?' - '+s[0]:''),p:pr,q:0,img:QX.img||'logo'};cart[k].q+=QN;qv.classList.remove('show');flyFrom(qbig,QX.img||'logo')};
+qv.onclick=e=>{if(e.target===qv)qv.classList.remove('show')};
 
 /* الآراء */
 const RV=[['ألذ كوكيز تذوقته في مسقط، اللوتس خيالي','زبونة دائمة'],['التغليف فاخر ويصلح هدية','طلب هدية'],['وصل الطلب طازجًا ودافئًا','حي الخوير'],['الريد فيلفت بالكريمة لا يُقاوم','طلب ثالث'],['خدمة سريعة وتعامل راقٍ','مناسبة عائلية']];
@@ -308,7 +423,7 @@ rt.innerHTML=[...RV,...RV].map(r=>`<div class="rc"><div class="st">★★★★�
 function flyFrom(el,img){const r=el.getBoundingClientRect(),c=cartb.getBoundingClientRect(),f=document.createElement('div');f.className='fly';f.style.backgroundImage=`url(cbw/${img}.jpg)`;f.style.left=(r.left+r.width/2-27)+'px';f.style.top=(r.top+r.height/2-27)+'px';document.body.appendChild(f);
  requestAnimationFrame(()=>{f.style.transform=`translate(${c.left+c.width/2-r.left-r.width/2}px,${c.top+c.height/2-r.top-r.height/2}px) scale(.3) rotate(360deg)`;f.style.opacity='.5'});
  setTimeout(()=>{f.remove();paint();cartb.classList.remove('bump');void cartb.offsetWidth;cartb.classList.add('bump')},750)}
-function add(id,btn){const x=F.find(f=>f.id===id);cart[id]=cart[id]||{n:x.n,p:x.p,q:0,img:x.img};cart[id].q++;flyFrom(btn.closest('.fc').querySelector('.ph'),x.img)}
+function add(id,btn){const x=P.find(f=>f.id===id);cart[id]=cart[id]||{n:x.n,p:x.p,q:0,img:x.img};cart[id].q++;flyFrom(btn.closest('.fc,.pc')?.querySelector('.ph,.im')||btn,x.img||'logo')}
 function chg(k,d){cart[k].q+=d;if(cart[k].q<=0)delete cart[k];paint()}
 function paint(){let n=0,t=0;for(const k in cart){n+=cart[k].q;t+=cart[k].q*cart[k].p}cn.textContent=n;tt.textContent=fmt(t);
  ls.innerHTML=n?Object.entries(cart).map(([k,x])=>`<div class="ln"><i style="background-image:url(cbw/${x.img}.jpg)"></i><div class="nm">${x.n}<br><small>${fmt(x.p)}</small></div><button class="qb" onclick="chg('${k}',-1)">−</button><b>${x.q}</b><button class="qb" onclick="chg('${k}',1)">+</button></div>`).join(''):'<div class="em">سلتك فارغة 🍪</div>';goBtn.style.display=n?'':'none'}
