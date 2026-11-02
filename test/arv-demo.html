@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>متجر أروفا · ديكور بالليزر</title>
+<meta name="theme-color" content="#2b1d12">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=El+Messiri:wght@500;700&family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--cr:#f6efe6;--cr2:#efe3d3;--w1:#6e4528;--w2:#a1743f;--w3:#c9a06a;--ink:#2b1d12;--mut:#8b7560;--gold:#c08a3e;--blk:#1d1a17;--line:#e6d7c2;--burn:#3a2213}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--cr);color:var(--ink);font-family:"IBM Plex Sans Arabic",Tahoma,sans-serif;overflow-x:clip}
+button{font:inherit;color:inherit;cursor:pointer}
+.wrap{max-width:960px;margin:0 auto;padding:0 18px}
+h2.sh{font-family:"El Messiri";font-size:clamp(26px,7.4vw,40px);margin:0 0 6px;line-height:1.25}
+h2.sh small{display:block;font-family:"IBM Plex Sans Arabic";font-size:12.5px;color:var(--gold);font-weight:700;letter-spacing:.5px}
+.lead{color:var(--mut);font-size:14.5px;line-height:1.8;margin:0 0 14px}
+.btn{border:0;border-radius:14px;padding:12px 20px;font-weight:700;font-size:15px}
+.btn.p{background:linear-gradient(180deg,#7b4d2b,#5a361d);color:#fbeedd;box-shadow:0 4px 0 #3e2412,0 10px 20px -10px #3e2412}
+.btn.p:active{transform:translateY(3px);box-shadow:0 1px 0 #3e2412}
+.btn.l{background:#fff;box-shadow:0 0 0 1.5px var(--line)}
+.rv{opacity:0;transform:translateY(18px);transition:opacity .7s,transform .8s}.rv.in{opacity:1;transform:none}
+section{padding:34px 0}
+
+/* الشريط العلوي */
+.nav{position:fixed;top:0;left:0;right:0;z-index:60;display:flex;align-items:center;gap:8px;padding:10px 14px;transition:background .4s,box-shadow .4s}
+.nav.solid{background:rgba(246,239,230,.93);backdrop-filter:blur(10px);box-shadow:0 1px 0 var(--line)}
+.nav .lg{width:40px;height:40px;border-radius:50%;background:url(arv/logo.jpg) center/cover;box-shadow:0 0 0 2px #fff,0 4px 10px rgba(0,0,0,.2)}
+.nav .nm{font-family:"Aref Ruqaa";font-weight:700;font-size:21px;color:var(--w1)}
+.nav .sp{flex:1}
+.ib{border:0;background:#fff;border-radius:14px;height:40px;min-width:40px;padding:0 12px;font-weight:700;display:flex;align-items:center;gap:6px;box-shadow:0 0 0 1px var(--line)}
+.ib b{background:var(--w1);color:#fff;border-radius:999px;font-size:11px;min-width:18px;height:18px;display:grid;place-items:center;padding:0 5px}
+.ib.bump{animation:bump .5s}@keyframes bump{40%{transform:scale(1.18)}}
+
+/* البطل: لوح خشب يُحفر بالليزر ثم تُقصّ القطعة */
+.stage{height:270vh;position:relative}
+.stk{position:sticky;top:0;height:100svh;overflow:hidden;background:radial-gradient(90% 60% at 50% 45%,#3a2a1d,#1b130c 75%)}
+.stk::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(255,255,255,.025) 0 2px,transparent 2px 44px);pointer-events:none}
+.caps{position:absolute;top:74px;left:0;right:0;text-align:center;height:100px;z-index:5;color:#f6e7d2}
+.cap{position:absolute;left:18px;right:18px;top:0;opacity:0;transform:translateY(12px);transition:opacity .6s,transform .7s}
+.cap.on{opacity:1;transform:none}
+.cap h1,.cap h2{font-family:"El Messiri";margin:0;line-height:1.2}
+.cap h1{font-size:clamp(32px,9.5vw,54px)}.cap h2{font-size:clamp(26px,7.6vw,42px)}
+.cap h1 em,.cap h2 em{font-style:normal;color:var(--w3)}
+.cap p{margin:6px 0 0;color:#cdb79c;font-size:14px}
+.board{position:absolute;left:50%;top:56%;width:min(80vw,340px,46svh);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:10px;
+ background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(0,0,0,.12)),repeating-linear-gradient(97deg,#a7773f 0 3px,#9a6b37 3px 7px,#b0824a 7px 9px,#966632 9px 15px),#a1743f;
+ box-shadow:0 0 0 1px #6e4528,0 30px 50px -20px #000,inset 0 0 40px rgba(60,30,10,.35);transition:filter .4s}
+.board::after{content:"";position:absolute;inset:0;border-radius:10px;background:radial-gradient(60% 40% at 30% 20%,rgba(255,240,210,.18),transparent 70%);pointer-events:none}
+.board svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.lz{position:absolute;top:0;left:0;width:0;height:0;z-index:4;pointer-events:none}
+.lz .hd{position:absolute;left:-15px;top:-46px;width:30px;height:24px;border-radius:5px;background:linear-gradient(#3b3f46,#1d2025);box-shadow:0 4px 8px rgba(0,0,0,.5)}
+.lz .bm{position:absolute;left:-1px;top:-22px;width:2px;height:22px;background:linear-gradient(#ff7a5a,#ff2a1a);box-shadow:0 0 8px 2px rgba(255,60,30,.8)}
+.lz .dt{position:absolute;left:-5px;top:-5px;width:10px;height:10px;border-radius:50%;background:#fff3c4;box-shadow:0 0 10px 5px rgba(255,120,40,.9),0 0 26px 10px rgba(255,60,20,.45)}
+.lz.off{opacity:0;transition:opacity .4s}
+.spk{position:absolute;width:3px;height:3px;border-radius:50%;background:#ffd27a;box-shadow:0 0 6px #ff8a3a;pointer-events:none;z-index:4;animation:spk .55s ease-out forwards}
+@keyframes spk{to{transform:translate(var(--dx),var(--dy));opacity:0}}
+.smk{position:absolute;width:14px;height:14px;border-radius:50%;background:rgba(220,210,200,.35);filter:blur(4px);pointer-events:none;z-index:4;animation:smk 1.4s ease-out forwards}
+@keyframes smk{to{transform:translate(var(--dx),-60px) scale(3);opacity:0}}
+.piece{position:absolute;inset:0;pointer-events:none;transform-origin:50% 50%;transition:filter .3s}
+.hint{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);z-index:6;display:flex;align-items:center;gap:10px;background:#fbf3e7;border:0;border-radius:18px;padding:8px 14px 8px 12px;box-shadow:0 0 0 3px var(--w3),0 12px 24px -10px #000;width:max-content;max-width:92vw;transition:opacity .4s;text-align:start;color:var(--ink)}
+.hint .gs{position:relative;width:30px;height:46px;flex:none}
+.hint .ar{position:absolute;left:50%;top:0;width:4px;height:30px;margin-left:-2px;border-radius:2px;background:linear-gradient(var(--w1),transparent);animation:ar 1.6s ease-in-out infinite}
+.hint .ar::before{content:"";position:absolute;top:-4px;left:50%;width:12px;height:12px;margin-left:-6px;border-top:4px solid var(--w1);border-left:4px solid var(--w1);transform:rotate(45deg);border-radius:2px}
+.hint .fg{position:absolute;left:50%;bottom:0;font-size:22px;margin-left:-11px;animation:fg 1.6s ease-in-out infinite}
+@keyframes ar{0%{opacity:0;transform:translateY(14px)}40%{opacity:1}100%{opacity:0;transform:translateY(-6px)}}
+@keyframes fg{0%{transform:translateY(6px)}60%{transform:translateY(-12px)}100%{transform:translateY(6px)}}
+.hint .tx{font-size:12px;line-height:1.5}.hint .tx b{display:block;font-family:"El Messiri";font-size:16px;color:var(--w1)}.hint .tx small{color:var(--gold);font-weight:700}
+.hud{position:absolute;right:14px;bottom:86px;z-index:5;font:700 11px/1.5 ui-monospace,Menlo,monospace;color:#e9c99a;background:rgba(0,0,0,.35);border:1px solid rgba(233,201,154,.3);border-radius:10px;padding:6px 10px;direction:ltr;text-align:left}
+
+/* معلومات */
+.info{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:18px 18px 0;max-width:960px;margin:0 auto}
+.info::-webkit-scrollbar{display:none}
+.info span{flex:none;background:#fff;border-radius:999px;padding:8px 14px;font-size:13px;display:flex;align-items:center;gap:6px;box-shadow:0 0 0 1px var(--line)}
+.info i{width:8px;height:8px;border-radius:50%;background:#3d9b5b;box-shadow:0 0 0 3px rgba(61,155,91,.2)}
+
+/* بطاقة المنتج */
+.cd{background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 0 0 1px var(--line),0 12px 22px -16px rgba(43,29,18,.5);display:flex;flex-direction:column;position:relative}
+.cd .im{aspect-ratio:1;background:var(--cr2) center/cover;position:relative;cursor:pointer}
+.cd .im em{position:absolute;top:8px;right:8px;font-style:normal;font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--w1);color:#fbeedd}
+.cd .im em.nm{background:#fff;color:var(--w1);box-shadow:0 0 0 1px var(--line)}
+.cd .bd{padding:10px 10px 12px;display:flex;flex-direction:column;flex:1}
+.cd .n{font-size:13.5px;font-weight:700;line-height:1.55;cursor:pointer}
+.cd .rw{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:auto;padding-top:8px}
+.pr{font-family:"El Messiri";font-weight:700;font-size:17px;color:var(--w1);white-space:nowrap}.pr small{font-family:"IBM Plex Sans Arabic";font-size:11px;color:var(--mut);font-weight:500}
+.add{border:0;width:36px;height:36px;border-radius:12px;background:var(--w1);color:#fff;font-size:20px;flex:none;box-shadow:0 3px 0 #3e2412}
+.add:active{transform:translateY(2px);box-shadow:0 1px 0 #3e2412}
+.rk{position:absolute;top:8px;left:8px;z-index:2;width:28px;height:28px;border-radius:50%;background:var(--gold);color:#fff;font-family:"El Messiri";font-weight:700;display:grid;place-items:center;box-shadow:0 0 0 3px #fff}
+.row{display:flex;gap:12px;overflow-x:auto;scrollbar-width:none;padding:4px 18px 12px;scroll-snap-type:x mandatory;max-width:960px;margin:0 auto}
+.row::-webkit-scrollbar{display:none}
+.row .cd{flex:none;width:168px;scroll-snap-align:start}
+
+/* أداة: اكتب الاسم ونحفره */
+.mk{background:linear-gradient(#f6efe6,#efe3d3)}
+.mkbox{display:grid;gap:16px}
+@media(min-width:760px){.mkbox{grid-template-columns:1.1fr 1fr;align-items:start}}
+.pv{position:relative;border-radius:22px;background:radial-gradient(80% 70% at 50% 40%,#fff8ee,#e9dccb);aspect-ratio:1/.9;display:grid;place-items:center;overflow:hidden;box-shadow:inset 0 0 0 1px var(--line)}
+.pv svg{width:82%;height:82%;overflow:visible;filter:drop-shadow(0 18px 18px rgba(43,29,18,.35))}
+.pv .lzm{position:absolute;width:10px;height:10px;border-radius:50%;background:#fff3c4;box-shadow:0 0 10px 5px rgba(255,120,40,.9);opacity:0;pointer-events:none}
+.pv .lzm.on{opacity:1}
+.ctl{display:grid;gap:12px}
+.fld label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}
+.fld input,.fld select,.fld textarea{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;font:inherit;font-size:16px;background:#fff;color:var(--ink)}
+.fld input:focus,.fld textarea:focus{outline:none;border-color:var(--w2)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:0;border-radius:999px;padding:8px 14px;font-size:13px;font-weight:700;background:#fff;box-shadow:0 0 0 1.5px var(--line);display:flex;align-items:center;gap:7px}
+.chip[aria-pressed="true"]{background:var(--w1);color:#fbeedd;box-shadow:0 0 0 1.5px var(--w1)}
+.chip i{width:14px;height:14px;border-radius:50%;display:inline-block;box-shadow:0 0 0 1.5px rgba(255,255,255,.7)}
+.sum{display:flex;align-items:center;justify-content:space-between;background:#fff;border-radius:16px;padding:12px 14px;box-shadow:0 0 0 1px var(--line)}
+.sum b{font-family:"El Messiri";font-size:22px;color:var(--w1)}
+
+/* عبارات المدخل */
+.wall{background:#22201d;color:#f3ead9}
+.wall .lead{color:#bfb2a0}
+.wl{position:relative;border-radius:22px;overflow:hidden;aspect-ratio:1/1.05;max-width:520px;margin:0 auto;transition:background .5s}
+.wl .tex{position:absolute;inset:0;background:radial-gradient(rgba(0,0,0,.12) 1px,transparent 1.5px) 0 0/5px 5px,radial-gradient(rgba(255,255,255,.18) 1px,transparent 1.5px) 2px 3px/7px 7px}
+.wl .lamp{position:absolute;top:0;left:50%;width:26px;height:16px;margin-left:-13px;background:#1b1b1b;border-radius:0 0 6px 6px;z-index:2}
+.wl .beam{position:absolute;top:10px;left:50%;width:150%;height:110%;transform:translateX(-50%);background:radial-gradient(40% 55% at 50% 0,rgba(255,226,160,.55),transparent 70%);mix-blend-mode:soft-light;z-index:1;animation:lampon 1.2s ease}
+@keyframes lampon{0%{opacity:0}30%{opacity:1}40%{opacity:.4}55%,100%{opacity:1}}
+.wl .ph{position:absolute;inset:16% 10% 10%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center;font-family:"Aref Ruqaa";font-weight:700;line-height:1.35;z-index:2;
+ text-shadow:3px 5px 4px rgba(0,0,0,.35)}
+.wl .ph span{display:block;opacity:0;transform:translateY(-8px);animation:drop .6s forwards}
+@keyframes drop{to{opacity:1;transform:none}}
+.wlo{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:14px 0}
+.wall .chip{background:#33302b;color:#f3ead9;box-shadow:0 0 0 1.5px #4a453d}
+.wall .chip[aria-pressed="true"]{background:var(--w3);color:#22201d;box-shadow:0 0 0 1.5px var(--w3)}
+
+/* توزيعات الأعراس */
+.wed .tiers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:14px 0}
+.tier{border:0;background:#fff;border-radius:18px;padding:14px 8px;text-align:center;box-shadow:0 0 0 1.5px var(--line);position:relative}
+.tier b{display:block;font-family:"El Messiri";font-size:22px;color:var(--w1)}
+.tier small{display:block;color:var(--mut);font-size:12px}
+.tier span{display:block;margin-top:6px;font-weight:700;font-size:13px}
+.tier[aria-pressed="true"]{background:var(--w1);color:#fbeedd;box-shadow:0 0 0 1.5px var(--w1)}
+.tier[aria-pressed="true"] b,.tier[aria-pressed="true"] small{color:#fbeedd}
+.tier .bg{position:absolute;top:-9px;left:50%;transform:translateX(-50%);background:var(--gold);color:#fff;font-size:10.5px;font-weight:700;padding:2px 9px;border-radius:999px;white-space:nowrap}
+.tray{display:grid;grid-template-columns:repeat(8,1fr);gap:5px;background:linear-gradient(#e8d9c3,#dccab0);border-radius:18px;padding:12px;min-height:120px}
+.tray i{aspect-ratio:1;border-radius:50%;background:repeating-linear-gradient(97deg,#a7773f 0 2px,#956530 2px 5px);box-shadow:inset 0 0 0 1.5px #6e4528,0 2px 3px rgba(0,0,0,.25);display:grid;place-items:center;font-style:normal;font-family:"Aref Ruqaa";font-size:8px;color:var(--burn);animation:pop .35s both;overflow:hidden}
+@keyframes pop{from{transform:scale(0)}}
+
+/* القائمة الكاملة */
+.tools{display:flex;gap:8px;align-items:center;margin:12px 0}
+.srch{flex:1;display:flex;align-items:center;gap:8px;background:#fff;border-radius:14px;padding:0 12px;box-shadow:0 0 0 1.5px var(--line)}
+.srch input{flex:1;border:0;outline:0;padding:12px 0;font:inherit;font-size:16px;background:none;min-width:0}
+.sort{border:0;background:#fff;border-radius:14px;padding:12px;box-shadow:0 0 0 1.5px var(--line);font:inherit;font-size:14px;color:var(--ink)}
+.cats{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px 0 10px}.cats::-webkit-scrollbar{display:none}
+.cats .chip{flex:none}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media(min-width:700px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(min-width:960px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.more{display:block;margin:16px auto 0}
+.cnt{font-size:12.5px;color:var(--mut)}
+.empty{text-align:center;color:var(--mut);padding:30px 0}
+
+/* آراء */
+.rvs{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;padding:4px 18px 10px;max-width:960px;margin:0 auto}
+.rvs::-webkit-scrollbar{display:none}
+.rvw{flex:none;width:250px;background:#fff;border-radius:18px;padding:14px;box-shadow:0 0 0 1px var(--line);font-size:13.5px;line-height:1.7}
+.rvw b{display:block;color:var(--gold);letter-spacing:2px}
+.rvw small{display:block;color:var(--mut);margin-top:6px}
+
+footer{background:#1d140c;color:#d9c6ad;padding:30px 0 120px;text-align:center;font-size:13px}
+footer b{font-family:"Aref Ruqaa";font-size:28px;color:#f3e3cb;display:block}
+footer .lk{display:flex;gap:8px;justify-content:center;margin-top:12px}
+footer .lk span{background:#2d2116;border-radius:999px;padding:8px 14px}
+
+/* النوافذ */
+.ov{position:fixed;inset:0;z-index:80;background:rgba(20,12,6,.55);opacity:0;pointer-events:none;transition:opacity .3s}
+.ov.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:90;background:var(--cr);border-radius:24px 24px 0 0;max-height:88svh;overflow:auto;transform:translateY(105%);transition:transform .38s cubic-bezier(.2,.8,.2,1);padding:0 18px 24px;max-width:640px;margin:0 auto}
+.sheet.on{transform:none}
+.sheet .gr{width:44px;height:5px;border-radius:3px;background:#d8c7b0;margin:10px auto 12px}
+.sheet h3{font-family:"El Messiri";margin:0 0 4px;font-size:22px}
+.qimg{aspect-ratio:1.2;border-radius:18px;background:var(--cr2) center/cover;margin-bottom:12px}
+.qty{display:flex;align-items:center;gap:10px}
+.qty button{width:38px;height:38px;border-radius:12px;border:0;background:#fff;box-shadow:0 0 0 1.5px var(--line);font-size:18px}
+.qty span{min-width:22px;text-align:center;font-weight:700}
+.cl{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px dashed var(--line)}
+.cl .t{width:54px;height:54px;border-radius:12px;background:var(--cr2) center/cover;flex:none}
+.cl .x{flex:1;min-width:0;font-size:13.5px}.cl .x small{display:block;color:var(--mut)}
+.tot{display:grid;gap:6px;margin:12px 0;font-size:14px}.tot div{display:flex;justify-content:space-between}.tot .g{font-weight:700;font-size:16px}
+.free{height:8px;border-radius:4px;background:#e6d7c2;overflow:hidden;margin:8px 0 4px}.free i{display:block;height:100%;background:linear-gradient(90deg,var(--w2),var(--gold));transition:width .4s}
+.done{text-align:center;padding:10px 0}
+.done svg{width:150px;height:150px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,140%);z-index:99;background:var(--ink);color:#fbeedd;border-radius:14px;padding:12px 18px;font-size:14px;transition:transform .35s;max-width:90vw;text-align:center}
+.toast.show{transform:translate(-50%,0)}
+.fab{position:fixed;left:16px;bottom:18px;z-index:55;width:54px;height:54px;border-radius:50%;background:#25d366;color:#fff;display:grid;place-items:center;font-size:26px;box-shadow:0 10px 20px -6px rgba(0,0,0,.4);border:0}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<nav class="nav" id="nav"><span class="lg"></span><span class="nm">أروفا</span><span class="sp"></span>
+ <button class="ib" onclick="go('menu');setTimeout(()=>q.focus(),500)" aria-label="بحث">🔍</button>
+ <button class="ib" id="cartB" onclick="openCart()" aria-label="السلة">🛍️ <b id="cn">0</b></button></nav>
+
+<section class="stage" id="stage" style="padding:0"><div class="stk" id="stk">
+ <div class="caps">
+  <div class="cap on"><h1>متجر <em>أروفا</em></h1><p>ديكور خشب وأكريليك… منقوش بالليزر</p></div>
+  <div class="cap"><h2>نحفر <em>الاسم</em> سطرًا سطرًا</h2><p>بدقة الليزر وحرارة الحب</p></div>
+  <div class="cap"><h2>قطعة تُصنع <em>لك وحدك</em></h2><p>اكتب الاسم الذي تريد… والباقي علينا</p></div>
+ </div>
+ <div class="board" id="board">
+  <svg viewBox="0 0 300 300" aria-hidden="true">
+   <defs>
+    <clipPath id="rev"><rect id="revR" x="0" y="0" width="300" height="0"/></clipPath>
+    <filter id="eng" x="-10%" y="-10%" width="120%" height="120%"><feOffset dx="0" dy="1.2" in="SourceAlpha" result="o"/><feComposite in="SourceAlpha" in2="o" operator="out" result="e"/><feFlood flood-color="#e7c28f" flood-opacity=".55"/><feComposite in2="e" operator="in" result="hl"/><feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="hl"/></feMerge></filter>
+   </defs>
+   <g id="pc" class="piece">
+    <circle cx="150" cy="150" r="118" fill="none" stroke="#3a2213" stroke-width="2.2" id="cut" stroke-dasharray="742" stroke-dashoffset="742"/>
+    <g clip-path="url(#rev)" filter="url(#eng)">
+     <g fill="none" stroke="#3a2213" stroke-width="2" opacity=".85" id="leaf"></g>
+     <text x="150" y="160" text-anchor="middle" font-family="Aref Ruqaa" font-weight="700" font-size="74" fill="#3a2213">أروفا</text>
+     <text x="150" y="206" text-anchor="middle" font-family="El Messiri" font-size="17" fill="#3a2213" letter-spacing="1">ديكور · ليزر · هدايا</text>
+    </g>
+   </g>
+  </svg>
+  <div class="lz" id="lz"><span class="hd"></span><span class="bm"></span><span class="dt"></span></div>
+ </div>
+ <div class="hud" id="hud">LASER 40W<br>ENGRAVE 0%</div>
+ <button class="hint" id="hint" onclick="autoPlay()"><span class="gs"><span class="ar"></span><span class="fg">👆</span></span><span class="tx"><b>اسحب بإصبعك للأعلى</b>لتشاهد الليزر يحفر أمامك<br><small>أو اضغط هنا لتشغيله تلقائيًا ▶</small></span></button>
+</div></section>
+
+<div class="info" id="info"></div>
+
+<section style="padding-bottom:10px"><div class="wrap"><h2 class="sh rv"><small>يطلبها الجميع</small>الأكثر طلبًا</h2></div><div class="row" id="tops"></div></section>
+
+<section class="mk" id="mk"><div class="wrap">
+ <h2 class="sh rv"><small>✍️ مخصص باسمك</small>اكتب الاسم… ونحفره لك</h2>
+ <p class="lead rv">اختر الشكل والخامة، واكتب الاسم أو العبارة، وشاهد القطعة قبل أن تطلبها.</p>
+ <div class="mkbox">
+  <div class="pv" id="pv"><svg viewBox="0 0 300 300" id="pvs"></svg><span class="lzm" id="lzm"></span></div>
+  <div class="ctl">
+   <div class="fld"><label for="nmI">الاسم أو العبارة</label><input id="nmI" maxlength="22" value="لتين" autocomplete="off"></div>
+   <div class="fld"><label>الشكل</label><div class="chips" id="shp"></div></div>
+   <div class="fld"><label>الخامة</label><div class="chips" id="mat"></div></div>
+   <div class="fld"><label>المقاس</label><div class="chips" id="siz"></div></div>
+   <div class="sum"><span>السعر</span><b id="mkP">—</b></div>
+   <button class="btn p" onclick="addCustom()">أضف القطعة إلى السلة</button>
+  </div>
+ </div>
+</div></section>
+
+<section class="wall" id="wall"><div class="wrap">
+ <h2 class="sh rv" style="color:#f3ead9"><small>✨ أكريليك للمداخل</small>عبارات تعطي جمالًا للمدخل</h2>
+ <p class="lead rv">اختر العبارة ولون الجدار، وشاهد كيف ستبدو تحت الإضاءة.</p>
+ <div class="wl" id="wl"><div class="tex"></div><span class="lamp"></span><div class="beam" id="beam"></div><div class="ph" id="wph"></div></div>
+ <div class="wlo" id="wtx"></div><div class="wlo" id="wcol"></div>
+ <div style="text-align:center"><button class="btn p" onclick="addWall()">أضف العبارة · <span id="wP"></span></button></div>
+</div></section>
+
+<section class="wed" id="wed"><div class="wrap">
+ <h2 class="sh rv"><small>💍 للأعراس والمناسبات</small>توزيعات خشبية باسم العروسين</h2>
+ <p class="lead rv">كلما زادت الكمية قلّ سعر القطعة. نحفر الاسم أو التاريخ على كل قطعة.</p>
+ <div class="tiers" id="tiers"></div>
+ <div class="tray" id="tray"></div>
+ <div class="sum" style="margin-top:12px"><span id="wdT">—</span><b id="wdP">—</b></div>
+ <button class="btn p" style="width:100%;margin-top:10px" onclick="addWed()">أضف التوزيعات إلى السلة</button>
+</div></section>
+
+<section id="menu"><div class="wrap">
+ <h2 class="sh"><small>كل القطع</small>المتجر</h2>
+ <div class="tools"><label class="srch">🔍<input id="q" placeholder="ابحث عن قطعة…" autocomplete="off"></label>
+  <select class="sort" id="sort" aria-label="الترتيب"><option value="pop">الأكثر طلبًا</option><option value="lo">الأقل سعرًا</option><option value="hi">الأعلى سعرًا</option></select></div>
+ <div class="cats" id="cats"></div>
+ <div class="cnt" id="cnt"></div>
+ <div class="grid" id="grid" style="margin-top:8px"></div>
+ <button class="btn l more" id="more" onclick="lim+=8;renderGrid()">عرض المزيد</button>
+</div></section>
+
+<section style="padding-top:0"><div class="wrap"><h2 class="sh rv"><small>من عملائنا</small>قالوا عن أروفا</h2></div><div class="rvs" id="rvs"></div></section>
+
+<footer><b>أروفا</b>ديكور خشب وأكريليك منقوش بالليزر · التوصيل لكل ولايات السلطنة<div class="lk"><span>📷 arova.decor</span><span>💬 واتساب</span></div></footer>
+
+<button class="fab" aria-label="واتساب" onclick="toast('في المتجر الحقيقي يفتح هذا محادثة واتساب مع المتجر')">✆</button>
+<div class="ov" id="ov" onclick="closeAll()"></div>
+<div class="sheet" id="qs"></div>
+<div class="sheet" id="cs"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+const fmt=n=>(+n).toFixed(3)+' <small>ر.ع</small>';
+const ss=(a,b,x)=>{const t=Math.min(1,Math.max(0,(x-a)/(b-a)));return t*t*(3-2*t)};
+function toast(t){const e=$('toast');e.textContent=t;e.classList.add('show');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('show'),2600)}
+function go(id){const e=$(id);if(e)scrollTo({top:e.offsetTop-60,behavior:'smooth'})}
+const SHIP=2,FREE=25;
+
+/* المنتجات: صور حقيقية من حساب المتجر، والباقي رسم خشبي */
+const P=[
+ {id:'w1',n:'عبارة أكريليك للمدخل «اللهم أسعد أهل هذا البيت»',c:'عبارات الجدران',p:12,img:'arv/p0.jpg',pop:9,tg:'الأكثر طلبًا'},
+ {id:'w2',n:'آية «ربّ أنزلني منزلًا مباركًا» أكريليك أسود',c:'عبارات الجدران',p:15,img:'arv/p1.jpg',pop:8},
+ {id:'g1',n:'ستاند عطر خشبي «ألف مبروك للعروسين»',c:'الأعراس والتوزيعات',p:3.5,img:'arv/p2.jpg',pop:10,nm:1,tg:'هدية عرس'},
+ {id:'b1',n:'علبة دائرية بالاسم · أكريليك أسود',c:'العلب والهدايا',p:6,img:'arv/p3.jpg',pop:7,nm:1},
+ {id:'b2',n:'علبة خشبية منقوشة بالاسم وورق الزخرفة',c:'العلب والهدايا',p:4.5,img:'arv/p4.jpg',pop:8,nm:1},
+ {id:'g2',n:'توزيعات خشبية دائرية بالاسم (للقطعة)',c:'الأعراس والتوزيعات',p:.35,img:'arv/p5.jpg',pop:9,nm:1,tg:'بالجملة'},
+ {id:'k1',n:'ميدالية خشبية بالاسم',c:'العلب والهدايا',p:1,art:['ميدالية','key'],pop:6,nm:1},
+ {id:'k2',n:'لوحة اسم لغرفة الطفل',c:'الأطفال',p:5,art:['ريم','kid'],pop:6,nm:1},
+ {id:'k3',n:'لوحة مواليد بالاسم والتاريخ',c:'الأطفال',p:7,art:['سالم','kid'],pop:5,nm:1},
+ {id:'m1',n:'مبخرة خشبية منقوشة',c:'المباخر والعطور',p:8,art:['بخور','oud'],pop:6},
+ {id:'m2',n:'حامل عطور بثلاث فتحات',c:'المباخر والعطور',p:5.5,art:['عطور','oud'],pop:4},
+ {id:'w3',n:'لوحة «ما شاء الله تبارك الله» أكريليك ذهبي',c:'عبارات الجدران',p:10,art:['ما شاء الله','gold'],pop:7},
+ {id:'w4',n:'اسم العائلة لواجهة المنزل',c:'عبارات الجدران',p:18,art:['آل سالم','blk'],pop:5,nm:1},
+ {id:'g3',n:'بطاقة شكر خشبية للضيوف',c:'الأعراس والتوزيعات',p:.6,art:['شكرًا','card'],pop:6,nm:1},
+ {id:'g4',n:'لوحة ترحيب للحفل بالأسماء',c:'الأعراس والتوزيعات',p:14,art:['أهلًا','gold'],pop:5,nm:1},
+ {id:'b3',n:'حامل مصحف خشبي منقوش',c:'العلب والهدايا',p:7.5,art:['مصحف','oud'],pop:5},
+ {id:'b4',n:'صينية تقديم خشبية بالاسم',c:'العلب والهدايا',p:9,art:['ضيافة','card'],pop:4,nm:1},
+ {id:'k4',n:'حروف خشبية لتعليم الأطفال',c:'الأطفال',p:3,art:['أ ب ت','kid'],pop:4}];
+const CATS=['الكل',...new Set(P.map(x=>x.c))];
+
+/* رسم خشبي للقطع التي لا صورة لها */
+function art(t,k){const bg={key:['#a7773f','#935f2c'],kid:['#e9c9a0','#d9b083'],oud:['#4b2f1b','#3a2414'],gold:['#2a241d','#1d1813'],blk:['#e8e2d8','#d9d1c4'],card:['#c99b62','#b5844c']}[k]||['#a7773f','#935f2c'];
+ const ink={gold:'#d9ad55',oud:'#e1b878',blk:'#1d1a17'}[k]||'#3a2213';
+ const shape=k==='key'?'<circle cx="100" cy="112" r="56" fill="url(#g)"/><circle cx="100" cy="48" r="9" fill="none" stroke="#7a5a3a" stroke-width="4"/>':k==='card'?'<rect x="34" y="56" width="132" height="92" rx="10" fill="url(#g)"/>':k==='kid'?'<path d="M40 150V80a60 60 0 0 1 120 0v70z" fill="url(#g)"/>':'<rect x="28" y="50" width="144" height="104" rx="14" fill="url(#g)"/>';
+ const fs=Math.max(16,Math.min(40,170/Math.max(2,t.length)));
+ const s=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><pattern id="w" width="10" height="200" patternUnits="userSpaceOnUse" patternTransform="rotate(8)"><rect width="10" height="200" fill="${bg[0]}"/><rect width="3" height="200" fill="${bg[1]}" opacity=".55"/></pattern><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${bg[0]}"/><stop offset="1" stop-color="${bg[1]}"/></linearGradient></defs><rect width="200" height="200" fill="#efe3d3"/><ellipse cx="100" cy="172" rx="70" ry="8" fill="#000" opacity=".12"/>${shape}<text x="100" y="${112+fs*.32}" text-anchor="middle" font-family="Aref Ruqaa" font-weight="700" font-size="${fs}" fill="${ink}">${t}</text></svg>`;
+ return 'data:image/svg+xml,'+encodeURIComponent(s)}
+P.forEach(x=>{if(!x.img)x.img=art(x.art[0],x.art[1])});
+const bgOf=x=>`background-image:url("${x.img}")`;
+
+let cart=JSON.parse(sessionStorage.getItem('arv_cart')||'[]');
+function save(){try{sessionStorage.setItem('arv_cart',JSON.stringify(cart))}catch(e){}$('cn').textContent=cart.reduce((a,b)=>a+b.q,0)}
+function addItem(it){const k=it.id+'|'+(it.note||'');const f=cart.find(c=>c.k===k);if(f)f.q+=it.q;else cart.push(Object.assign({k},it));save();const b=$('cartB');b.classList.remove('bump');void b.offsetWidth;b.classList.add('bump');toast('أُضيف إلى السلة ✓')}
+
+/* البطل: حفر بالليزر سطرًا سطرًا، ثم قصّ الدائرة، ثم ترتفع القطعة */
+{const L=$('leaf');let d='';for(let i=0;i<14;i++){const a=i/14*Math.PI*2,x=150+Math.cos(a)*96,y=150+Math.sin(a)*96;d+=`<path d="M${x.toFixed(1)} ${y.toFixed(1)} q ${(Math.cos(a+1.2)*14).toFixed(1)} ${(Math.sin(a+1.2)*14).toFixed(1)} ${(Math.cos(a)*18).toFixed(1)} ${(Math.sin(a)*18).toFixed(1)} q ${(Math.cos(a-1.2)*-6).toFixed(1)} ${(Math.sin(a-1.2)*-6).toFixed(1)} ${(-Math.cos(a)*18).toFixed(1)} ${(-Math.sin(a)*18).toFixed(1)}z"/>`}
+ L.innerHTML=d+'<circle cx="150" cy="150" r="82" stroke-dasharray="2 6"/>'}
+const caps=[...document.querySelectorAll('.cap')];let capI=0,P0=0;
+function hero(){const st=$('stage'),r=st.getBoundingClientRect(),H=innerHeight,p=Math.min(1,Math.max(0,-r.top/(r.height-H)));P0=p;
+ const e1=ss(.04,.52,p),e2=ss(.54,.74,p),e3=ss(.76,.96,p);
+ $('revR').setAttribute('y',30);$('revR').setAttribute('height',(e1*250).toFixed(1));
+ $('cut').setAttribute('stroke-dashoffset',(742*(1-e2)).toFixed(1));
+ const pc=$('pc');pc.style.transform=`translateY(${-e3*18}px) scale(${1+e3*.08}) rotate(${e3*-4}deg)`;pc.style.filter=e3?`drop-shadow(0 ${e3*18}px ${e3*14}px rgba(0,0,0,.55))`:'';
+ $('board').style.filter=`brightness(${1-e3*.25})`;
+ $('hud').innerHTML='LASER 40W<br>'+(e2>0?(e2<1?'CUT '+Math.round(e2*100)+'%':'DONE ✓'):'ENGRAVE '+Math.round(e1*100)+'%');
+ $('lz').classList.toggle('off',!(e1>0&&e1<1)&&!(e2>0&&e2<1));
+ const h=$('hint');h.style.opacity=1-ss(.01,.07,p);h.style.pointerEvents=p>.05?'none':'';
+ const i=p<.05?0:p<.62?1:2;if(i!==capI){caps[capI].classList.remove('on');caps[i].classList.add('on');capI=i}}
+/* رأس الليزر يتحرك ذهابًا وإيابًا عند خط الحفر، أو يدور مع القص */
+let tt=0;function loop(t){requestAnimationFrame(loop);const p=P0,e1=ss(.04,.52,p),e2=ss(.54,.74,p),b=$('board'),w=b.offsetWidth,lz=$('lz');
+ let x,y,on=false;
+ if(e1>0&&e1<1){const k=(Math.sin(t/90)+1)/2;x=(.18+k*.64)*w;y=(30+e1*250)/300*w;on=true}
+ else if(e2>0&&e2<1){const a=-Math.PI/2+e2*Math.PI*2;x=(150+Math.cos(a)*118)/300*w;y=(150+Math.sin(a)*118)/300*w;on=true}
+ if(!on)return;lz.style.transform=`translate(${x}px,${y}px)`;
+ if(t-tt>40){tt=t;for(let k=0;k<2;k++){const s=document.createElement('span');s.className='spk';s.style.left=x+'px';s.style.top=y+'px';s.style.setProperty('--dx',(Math.random()*40-20)+'px');s.style.setProperty('--dy',(Math.random()*-30+6)+'px');b.appendChild(s);setTimeout(()=>s.remove(),560)}
+  if(Math.random()<.3){const m=document.createElement('span');m.className='smk';m.style.left=(x-7)+'px';m.style.top=(y-7)+'px';m.style.setProperty('--dx',(Math.random()*20-10)+'px');b.appendChild(m);setTimeout(()=>m.remove(),1400)}}}
+requestAnimationFrame(loop);
+function autoPlay(){const st=$('stage'),end=st.offsetTop+st.offsetHeight-innerHeight,y0=scrollY,T=5200,t0=performance.now();let stop=false;const k=()=>stop=true;addEventListener('touchstart',k,{once:true});addEventListener('wheel',k,{once:true});
+ (function s(t){if(stop)return;const e=Math.min(1,(t-t0)/T),q=e<.5?2*e*e:1-Math.pow(-2*e+2,2)/2;scrollTo(0,y0+(end-y0)*q);if(e<1)requestAnimationFrame(s)})(t0)}
+addEventListener('scroll',()=>{$('nav').classList.toggle('solid',scrollY>40);hero()},{passive:true});addEventListener('resize',hero);hero();
+
+$('info').innerHTML='<span><i></i>نستقبل الطلبات الآن</span><span>🚚 التوصيل لكل ولايات السلطنة</span><span>✍️ بالاسم الذي تريد</span><span>⏱️ التجهيز من 3 إلى 5 أيام</span><span>🎁 توصيل مجاني فوق '+FREE+' ر.ع</span>';
+
+/* بطاقة المنتج */
+function card(x,i){return `<div class="cd">${i!=null?`<span class="rk">${i+1}</span>`:''}<div class="im" style='${bgOf(x)}' onclick="openQ('${x.id}')">${x.tg?`<em>${x.tg}</em>`:x.nm?'<em class="nm">✍️ بالاسم</em>':''}</div><div class="bd"><div class="n" onclick="openQ('${x.id}')">${x.n}</div><div class="rw"><span class="pr">${fmt(x.p)}</span><button class="add" aria-label="أضف" onclick="quick('${x.id}')">+</button></div></div></div>`}
+$('tops').innerHTML=[...P].sort((a,b)=>b.pop-a.pop).slice(0,6).map(card).join('');
+function quick(id){const x=P.find(p=>p.id===id);if(x.nm)return openQ(id);addItem({id,n:x.n,p:x.p,q:1,img:x.img})}
+
+/* الأداة: اكتب الاسم */
+const SHP=[['c','دائري'],['r','مستطيل'],['a','قوس']],MAT=[['wal','خشب جوز','#6e4528','#e8c48f'],['oak','خشب فاتح','#d7b27e','#4a2c15'],['blk','أكريليك أسود','#1d1a17','#e9e2d6'],['gld','أكريليك ذهبي','#c99a3d','#2b1d12']],SIZ=[['s','صغير 10 سم',2.5],['m','متوسط 20 سم',4.5],['l','كبير 30 سم',7.5]];
+const MK={s:'c',m:'wal',z:'m'};
+function chipsHTML(L,k,cur){return L.map(o=>`<button class="chip" data-k="${k}" data-v="${o[0]}" aria-pressed="${o[0]===cur}">${o[2]&&k==='m'?`<i style="background:${o[2]}"></i>`:''}${o[1]}</button>`).join('')}
+function mkCtl(){$('shp').innerHTML=chipsHTML(SHP,'s',MK.s);$('mat').innerHTML=chipsHTML(MAT,'m',MK.m);$('siz').innerHTML=chipsHTML(SIZ,'z',MK.z)}
+document.addEventListener('click',e=>{const c=e.target.closest('.chip[data-k]');if(!c)return;MK[c.dataset.k]=c.dataset.v;mkCtl();mkDraw(true)});
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function mkPrice(){const z=SIZ.find(x=>x[0]===MK.z)[2],m=MK.m==='gld'?1.5:MK.m==='blk'?1:0;return z+m}
+function mkDraw(anim){const m=MAT.find(x=>x[0]===MK.m),t=esc($('nmI').value.trim()||'اسمك هنا'),acr=MK.m==='blk'||MK.m==='gld';
+ const fill=acr?`url(#mg)`:`url(#mw)`;const shape=MK.s==='c'?'<circle cx="150" cy="150" r="118" fill="'+fill+'"/>':MK.s==='r'?'<rect x="28" y="60" width="244" height="180" rx="16" fill="'+fill+'"/>':'<path d="M48 250V140a102 102 0 0 1 204 0v110z" fill="'+fill+'"/>';
+ const fs=Math.max(22,Math.min(76,300/Math.max(2,t.length*.9)));
+ $('pvs').innerHTML=`<defs><pattern id="mwp" width="12" height="300" patternUnits="userSpaceOnUse" patternTransform="rotate(8)"><rect width="12" height="300" fill="${m[2]}"/><rect width="4" height="300" fill="#000" opacity=".12"/><rect x="7" width="1.5" height="300" fill="#fff" opacity=".1"/></pattern>
+  <linearGradient id="mw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${m[2]}"/><stop offset="1" stop-color="${m[2]}"/></linearGradient>
+  <linearGradient id="mg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${m[2]}"/><stop offset=".5" stop-color="${MK.m==='gld'?'#f3d48a':'#3a3631'}"/><stop offset="1" stop-color="${m[2]}"/></linearGradient>
+  <clipPath id="mkc"><rect id="mkR" x="0" y="0" width="300" height="${anim?0:300}"/></clipPath></defs>
+  ${shape}${acr?'':`<g opacity=".5">${shape.replace(fill,'url(#mwp)')}</g>`}
+  <g clip-path="url(#mkc)"><text x="150" y="${158+fs*.3}" text-anchor="middle" font-family="Aref Ruqaa" font-weight="700" font-size="${fs}" fill="${m[3]}" ${acr?'':'opacity=".92"'}>${t}</text></g>`;
+ $('mkP').innerHTML=fmt(mkPrice());
+ if(anim){const R=$('mkR'),z=$('lzm'),pv=$('pv'),t0=performance.now(),D=900;z.classList.add('on');
+  (function a(tm){const e=Math.min(1,(tm-t0)/D);R.setAttribute('height',300*e);const W=pv.offsetWidth,Hh=pv.offsetHeight,s=Math.min(W,Hh)*.82,ox=(W-s)/2,oy=(Hh-s)/2;
+   z.style.left=(ox+s*(.2+.6*((Math.sin(tm/60)+1)/2))-5)+'px';z.style.top=(oy+s*e-5)+'px';if(e<1)requestAnimationFrame(a);else z.classList.remove('on')})(t0)}}
+let mkT=0;$('nmI').addEventListener('input',()=>{clearTimeout(mkT);mkT=setTimeout(()=>mkDraw(true),350)});
+function addCustom(){const t=$('nmI').value.trim();if(!t){toast('اكتب الاسم أولًا');$('nmI').focus();return}
+ const s=SHP.find(x=>x[0]===MK.s)[1],m=MAT.find(x=>x[0]===MK.m)[1],z=SIZ.find(x=>x[0]===MK.z)[1];
+ addItem({id:'custom',n:`قطعة بالاسم · ${s} · ${m} · ${z}`,note:t,p:mkPrice(),q:1,img:'data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">'+$('pvs').innerHTML+'</svg>')})}
+mkCtl();mkDraw(false);
+
+/* عبارات المدخل */
+const WT=[['اللهم أسعد|أهل هذا البيت|ومن زاره',12],['ربّ أنزلني|منزلًا مباركًا|وأنت خير المنزلين',15],['ما شاء الله|تبارك الله',10],['بسم الله|توكلنا على الله',10]],WC=[['#cfc9c0','رمادي'],['#efe7da','بيج'],['#e9e9e6','أبيض'],['#6f6a62','داكن']];
+let WS=0,WCi=0;
+function wall(){$('wtx').innerHTML=WT.map((w,i)=>`<button class="chip" onclick="WS=${i};wall()" aria-pressed="${i===WS}">${w[0].split('|')[0]}…</button>`).join('');
+ $('wcol').innerHTML=WC.map((c,i)=>`<button class="chip" onclick="WCi=${i};wall()" aria-pressed="${i===WCi}"><i style="background:${c[0]}"></i>${c[1]}</button>`).join('');
+ const dark=WCi===3,L=WT[WS][0].split('|');$('wl').style.background=WC[WCi][0];
+ $('wph').innerHTML=L.map((l,i)=>`<span style="animation-delay:${i*.18}s;font-size:clamp(24px,${L.length>2?7.2:8.6}vw,44px);color:${dark?'#e7c88f':'#141210'}">${l}</span>`).join('');
+ const b=$('beam');b.style.animation='none';void b.offsetWidth;b.style.animation='';$('wP').innerHTML=fmt(WT[WS][1])}
+function addWall(){addItem({id:'wall'+WS,n:'عبارة أكريليك: '+WT[WS][0].replace(/\|/g,' '),note:'لون الجدار: '+WC[WCi][1],p:WT[WS][1],q:1,img:'arv/p0.jpg'})}
+wall();
+
+/* توزيعات الأعراس */
+const TR=[[50,.45,''],[100,.38,'الأكثر اختيارًا'],[200,.32,'أوفر']];let TI=1;
+function wed(){$('tiers').innerHTML=TR.map((t,i)=>`<button class="tier" onclick="TI=${i};wed()" aria-pressed="${i===TI}">${t[2]?`<span class="bg">${t[2]}</span>`:''}<b>${t[0]}</b><small>قطعة</small><span>${t[1].toFixed(3)} للقطعة</span></button>`).join('');
+ const n=Math.min(48,Math.round(TR[TI][0]/200*48));$('tray').innerHTML=Array.from({length:n},(_,i)=>`<i style="animation-delay:${i*12}ms">عمانية</i>`).join('');
+ $('wdT').textContent=TR[TI][0]+' قطعة × '+TR[TI][1].toFixed(3);$('wdP').innerHTML=fmt(TR[TI][0]*TR[TI][1])}
+function addWed(){const t=TR[TI];addItem({id:'wed'+TI,n:`توزيعات خشبية بالاسم · ${t[0]} قطعة`,p:+(t[0]*t[1]).toFixed(3),q:1,img:'arv/p5.jpg'})}
+wed();
+
+/* القائمة الكاملة: أصناف وبحث وترتيب وعرض المزيد */
+let cat='الكل',lim=8;
+function renderCats(){$('cats').innerHTML=CATS.map(c=>`<button class="chip" onclick="cat='${c}';lim=8;renderCats();renderGrid()" aria-pressed="${c===cat}">${c}</button>`).join('')}
+function renderGrid(){const s=$('q').value.trim(),o=$('sort').value;let L=P.filter(x=>(cat==='الكل'||x.c===cat)&&(!s||(x.n+' '+x.c).includes(s)));
+ L.sort((a,b)=>o==='lo'?a.p-b.p:o==='hi'?b.p-a.p:b.pop-a.pop);
+ $('cnt').textContent=L.length+' قطعة';$('grid').innerHTML=L.length?L.slice(0,lim).map(x=>card(x)).join(''):'<p class="empty">لا توجد نتائج، جرّب كلمة أخرى</p>';$('more').style.display=L.length>lim?'':'none'}
+$('q').addEventListener('input',()=>{lim=8;renderGrid()});$('sort').addEventListener('change',renderGrid);renderCats();renderGrid();
+
+$('rvs').innerHTML=[['التوزيعات كانت أجمل من الصور، والاسم محفور بدقة','أم سالم · مسقط'],['عبارة المدخل غيّرت شكل البيت، والتغليف ممتاز','خلود · صحار'],['طلبت ستاند عطر للعروس ووصل قبل الموعد','مريم · نزوى']].map(r=>`<div class="rvw"><b>★★★★★</b>${r[0]}<small>${r[1]}</small></div>`).join('');
+
+/* نافذة المنتج */
+let QX=null,QN=1;
+function openQ(id){QX=P.find(p=>p.id===id);QN=1;const x=QX;$('qs').innerHTML=`<div class="gr"></div><div class="qimg" style='${bgOf(x)}'></div><h3>${x.n}</h3><div class="pr" style="font-size:22px">${fmt(x.p)}</div>
+ <p class="lead" style="margin:6px 0 12px">${x.c} · ${x.nm?'نحفر الاسم أو العبارة التي تكتبها أدناه.':'جاهزة للتوصيل خلال أيام.'}</p>
+ ${x.nm?'<div class="fld" style="margin-bottom:12px"><label for="qn">الاسم المطلوب على القطعة</label><input id="qn" maxlength="30" placeholder="مثال: لتين"></div>':''}
+ <div style="display:flex;gap:10px;align-items:center"><div class="qty"><button onclick="QN=Math.max(1,QN-1);$('qv').textContent=QN">−</button><span id="qv">1</span><button onclick="QN++;$('qv').textContent=QN">+</button></div>
+ <button class="btn p" style="flex:1" onclick="qAdd()">أضف إلى السلة</button></div>`;show('qs')}
+function qAdd(){const x=QX,n=$('qn')?$('qn').value.trim():'';if(x.nm&&!n){toast('اكتب الاسم المطلوب');$('qn').focus();return}addItem({id:x.id,n:x.n,note:n,p:x.p,q:QN,img:x.img});closeAll()}
+function show(id){$('ov').classList.add('on');$(id).classList.add('on')}
+function closeAll(){$('ov').classList.remove('on');document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('on'))}
+
+/* السلة والطلب (معاينة) */
+const GOV=['مسقط','ظفار','مسندم','البريمي','الداخلية','شمال الباطنة','جنوب الباطنة','جنوب الشرقية','شمال الشرقية','الظاهرة','الوسطى'];
+function openCart(){const sub=cart.reduce((a,c)=>a+c.p*c.q,0),sh=!cart.length||sub>=FREE?0:SHIP;
+ $('cs').innerHTML=`<div class="gr"></div><h3>سلتك</h3>`+(cart.length?cart.map((c,i)=>`<div class="cl"><span class="t" style='background-image:url("${c.img}")'></span><div class="x">${c.n}${c.note?`<small>✍️ ${esc(c.note)}</small>`:''}<small>${fmt(c.p)}</small></div><div class="qty"><button onclick="cq(${i},-1)">−</button><span>${c.q}</span><button onclick="cq(${i},1)">+</button></div></div>`).join('')+
+  `<div class="free"><i style="width:${Math.min(100,sub/FREE*100)}%"></i></div><div class="cnt">${sub>=FREE?'🎉 حصلت على توصيل مجاني':'أضف '+(FREE-sub).toFixed(3)+' ر.ع لتحصل على توصيل مجاني'}</div>
+  <div class="tot"><div><span>المجموع</span><span>${fmt(sub)}</span></div><div><span>التوصيل</span><span>${sh?fmt(sh):'مجاني'}</span></div><div class="g"><span>الإجمالي</span><span>${fmt(sub+sh)}</span></div></div>
+  <div class="fld" style="margin-bottom:10px"><label for="cnm">الاسم</label><input id="cnm" autocomplete="name"></div>
+  <div class="fld" style="margin-bottom:10px"><label for="cph">رقم الهاتف</label><input id="cph" inputmode="tel" autocomplete="tel"></div>
+  <div class="fld" style="margin-bottom:14px"><label for="cgv">المحافظة</label><select id="cgv">${GOV.map(g=>`<option>${g}</option>`).join('')}</select></div>
+  <button class="btn p" style="width:100%" onclick="order()">إرسال الطلب</button>`:'<p class="empty">سلتك فارغة. أضف قطعة تحبها ✨</p>');show('cs')}
+function cq(i,d){cart[i].q+=d;if(cart[i].q<1)cart.splice(i,1);save();openCart()}
+function order(){if(!$('cnm').value.trim()||$('cph').value.replace(/\D/g,'').length<8){toast('اكتب الاسم ورقم الهاتف');return}
+ $('cs').innerHTML=`<div class="gr"></div><div class="done"><svg viewBox="0 0 150 150"><circle cx="75" cy="75" r="62" fill="#a1743f"/><circle cx="75" cy="75" r="62" fill="none" stroke="#3a2213" stroke-width="3" stroke-dasharray="390" stroke-dashoffset="390"><animate attributeName="stroke-dashoffset" to="0" dur="1s" fill="freeze"/></circle><path d="M48 77l18 18 36-38" fill="none" stroke="#fbeedd" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="90" stroke-dashoffset="90"><animate attributeName="stroke-dashoffset" to="0" begin=".8s" dur=".5s" fill="freeze"/></path></svg>
+  <h3>وصل طلبك ✨</h3><p class="lead">سنبدأ الحفر فور تأكيد الطلب، ونرسل لك صورة القطعة قبل التوصيل.</p><p class="cnt">هذه معاينة فقط، لم يُرسل أي طلب.</p><button class="btn l" onclick="cart=[];save();closeAll()">تم</button></div>`}
+save();
+const rio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');rio.unobserve(e.target)}}),{threshold:.15});
+document.querySelectorAll('.rv').forEach(e=>rio.observe(e));
+</script>
+</body>
+</html>
