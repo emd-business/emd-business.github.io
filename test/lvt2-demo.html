@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>خليها علينا: عالم الستيكرات</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lalezar&family=Readex+Pro:wght@400;500;700&family=Gaegu:wght@700&display=swap">
+<style>
+:root{--bg:#fbf6ee;--sheet:#fffdf8;--bl:#2a3fbf;--bl2:#1c2c8f;--pk:#ff7aa8;--gr:#8fbf7a;--yl:#ffd23f;--kr:#c9a27a;--kr2:#a57f58;--ink:#26304f;--mut:#7a7f93;--line:#ece3d4}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;overflow-x:clip;overflow-anchor:none}
+body{font-family:"Readex Pro",Tahoma,sans-serif;background:var(--bg);color:var(--ink);background-image:linear-gradient(rgba(42,63,191,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(42,63,191,.05) 1px,transparent 1px);background-size:26px 26px}
+button,input,select,textarea{font-family:inherit;color:inherit}
+button{cursor:pointer}
+.wrap{max-width:900px;margin:0 auto;padding:0 18px}
+.badge{position:fixed;bottom:8px;left:8px;z-index:99;background:#b91c1c;color:#fff;font-size:10.5px;padding:2px 8px;border-radius:6px;transition:bottom .4s}
+body.hc .badge{bottom:84px}
+.rv{opacity:0;transform:translateY(24px) rotate(-1deg);transition:opacity .8s,transform .9s cubic-bezier(.2,.8,.2,1)}
+.rv.in{opacity:1;transform:none}
+section{position:relative}
+/* العنوان كأنه ستيكر مقصوص */
+.sh{display:inline-block;font-family:Lalezar;font-weight:400;font-size:clamp(30px,8.6vw,46px);line-height:1.2;margin:0;color:var(--bl);background:#fff;padding:6px 18px 2px;border-radius:18px;box-shadow:0 0 0 4px #fff,0 6px 0 4px rgba(38,48,79,.08),0 12px 20px -6px rgba(38,48,79,.25);transform:rotate(-2deg)}
+.tape{display:inline-block;font-size:12px;font-weight:700;padding:4px 14px;background:rgba(255,122,168,.75);color:#fff;transform:rotate(2deg);margin-bottom:8px;clip-path:polygon(3% 0,97% 4%,100% 50%,97% 100%,2% 96%,0 50%)}
+.tape.g{background:rgba(143,191,122,.85)}.tape.y{background:rgba(255,210,63,.9);color:#5a4500}.tape.b{background:rgba(42,63,191,.8)}
+.lead{color:var(--mut);font-size:14.5px;line-height:1.85;margin:12px 0 0}
+.btn{border:0;border-radius:16px;padding:13px 20px;font-weight:700;font-size:15px}
+.btn:active{transform:scale(.96)}
+.btn.p{background:var(--bl);color:#fff;box-shadow:0 5px 0 var(--bl2)}
+.btn.p:active{box-shadow:0 1px 0 var(--bl2);transform:translateY(4px)}
+.btn.l{background:#fff;color:var(--bl);box-shadow:0 0 0 2px var(--line)}
+
+/* الشريط العلوي */
+.nav{position:fixed;top:0;left:0;right:0;z-index:60;display:flex;align-items:center;gap:8px;padding:10px 14px;transition:background .4s}
+.nav.solid{background:rgba(251,246,238,.92);backdrop-filter:blur(10px);box-shadow:0 1px 0 var(--line)}
+.nav .lg{width:40px;height:40px;border-radius:50%;background:#fff url(lvt/logo.png) center/cover;box-shadow:0 0 0 3px #fff,0 4px 10px rgba(0,0,0,.15)}
+.nav .nm{font-family:Lalezar;font-size:20px;color:var(--bl);opacity:0;transition:.4s}
+.nav.solid .nm{opacity:1}
+.nav .sp{flex:1}
+.ib{border:0;background:#fff;border-radius:14px;height:40px;min-width:40px;padding:0 12px;font-weight:700;color:var(--bl);box-shadow:0 3px 0 var(--line);display:flex;align-items:center;gap:6px}
+.ib b{background:var(--pk);color:#fff;border-radius:999px;font-size:11px;min-width:18px;height:18px;display:grid;place-items:center;padding:0 5px}
+.ib.bump{animation:bump .5s}
+@keyframes bump{40%{transform:scale(1.2) rotate(-6deg)}}
+
+/* البطل: ورقة ستيكرات، الشعار يُقشَّر ويلتصق على الكوب */
+.stage{height:240vh}
+.stk{position:sticky;top:0;height:100svh;overflow:hidden}
+.caps{position:absolute;top:70px;left:0;right:0;text-align:center;height:110px;z-index:3}
+.cap{position:absolute;left:18px;right:18px;top:0;opacity:0;transform:translateY(12px) rotate(-2deg);transition:opacity .5s,transform .6s}
+.cap.on{opacity:1;transform:rotate(-2deg)}
+.cap h1,.cap h2{font-family:Lalezar;font-weight:400;margin:0;line-height:1.15;color:var(--bl);text-shadow:3px 3px 0 #fff,-3px 3px 0 #fff,3px -3px 0 #fff,-3px -3px 0 #fff,0 8px 14px rgba(38,48,79,.2)}
+.cap h1{font-size:clamp(46px,13vw,70px)}
+.cap h2{font-size:clamp(34px,9.5vw,50px)}
+.cap p{margin:4px 0 0;color:var(--mut);font-size:14px}
+.sheetH{position:absolute;left:50%;top:52%;width:min(80vw,340px);aspect-ratio:1/1.12;transform:translate(-50%,-50%) rotate(-3deg);background:var(--sheet);border-radius:14px;box-shadow:0 2px 0 #e8dfcf,0 24px 40px -18px rgba(38,48,79,.35);background-image:linear-gradient(rgba(201,162,122,.18) 1px,transparent 1px),linear-gradient(90deg,rgba(201,162,122,.18) 1px,transparent 1px);background-size:20px 20px}
+.sheetH .lbl{position:absolute;bottom:10px;right:14px;font-size:11px;color:var(--mut);font-family:Gaegu;letter-spacing:1px}
+.mini{position:absolute;font-size:34px;filter:drop-shadow(0 0 0 #fff) drop-shadow(2px 0 0 #fff) drop-shadow(-2px 0 0 #fff) drop-shadow(0 2px 0 #fff) drop-shadow(0 -2px 0 #fff) drop-shadow(0 4px 4px rgba(0,0,0,.18))}
+.hole{position:absolute;left:50%;top:44%;width:56%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;border:2.5px dashed #d8cbb7;background:repeating-linear-gradient(45deg,#f6efe2 0 6px,#fbf6ec 6px 12px)}
+.stkr{position:absolute;left:50%;top:0;width:min(45vw,190px);aspect-ratio:1;z-index:4;will-change:transform}
+.stkr .face{position:absolute;inset:0;border-radius:50%;background:#fff url(lvt/logo.png) center/94%;box-shadow:0 0 0 7px #fff,0 var(--sy,3px) var(--sb,4px) 7px rgba(38,48,79,var(--so,.15))}
+.stkr .curl{position:absolute;left:4%;bottom:4%;width:var(--cw,0px);height:var(--cw,0px);border-radius:0 100% 0 0;background:linear-gradient(45deg,transparent 48%,#e7e0d2 50%,#fff 62%,#f1ece2 100%);box-shadow:4px -4px 8px rgba(0,0,0,.18);transform-origin:left bottom}
+.cup{position:absolute;left:50%;bottom:-6%;width:min(62vw,250px);height:46%;transform:translate(-50%,110%);z-index:2}
+.cup .bd{position:absolute;left:8%;right:8%;top:14%;bottom:0;background:linear-gradient(90deg,#e9e2d6,#fff 30%,#fff 55%,#e2dacd);clip-path:polygon(0 0,100% 0,90% 100%,10% 100%);border-radius:4px}
+.cup .lid{position:absolute;left:3%;right:3%;top:4%;height:13%;border-radius:10px 10px 4px 4px;background:linear-gradient(#5d6cd8,var(--bl))}
+.cup .lid::before{content:"";position:absolute;left:30%;right:30%;top:-30%;height:40%;border-radius:8px 8px 0 0;background:var(--bl2)}
+.cup .slv{position:absolute;left:12%;right:12%;top:42%;height:26%;background:var(--kr);clip-path:polygon(0 0,100% 0,97% 100%,3% 100%)}
+.hint{position:absolute;left:50%;bottom:calc(5% + 6px);transform:translateX(-50%);z-index:5;display:flex;align-items:center;gap:12px;background:#fff;border-radius:20px;padding:10px 14px 10px 16px;box-shadow:0 0 0 3px var(--yl),0 12px 24px -10px rgba(38,48,79,.4);transition:opacity .4s;width:max-content;max-width:92vw;cursor:pointer}
+.hint .gs{position:relative;width:40px;height:60px;flex:none}
+.hint .ar{position:absolute;left:50%;top:0;width:4px;height:40px;margin-left:-2px;border-radius:2px;background:linear-gradient(var(--pk),transparent);animation:ar 1.6s ease-in-out infinite}
+.hint .ar::before{content:"";position:absolute;top:-4px;left:50%;width:13px;height:13px;margin-left:-6.5px;border-top:4px solid var(--pk);border-left:4px solid var(--pk);transform:rotate(45deg);border-radius:2px}
+.hint .fg{position:absolute;left:50%;bottom:0;font-size:28px;margin-left:-14px;animation:fg 1.6s ease-in-out infinite}
+@keyframes ar{0%{opacity:0;transform:translateY(18px)}40%{opacity:1}100%{opacity:0;transform:translateY(-6px)}}
+@keyframes fg{0%{transform:translateY(8px)}60%{transform:translateY(-16px)}100%{transform:translateY(8px)}}
+.hint .tx{font-size:13px;line-height:1.6}
+.hint .tx b{display:block;font-family:Lalezar;font-weight:400;font-size:19px;color:var(--bl)}
+.hint .tx small{color:var(--pk);font-weight:700;font-size:12px}
+
+/* المعلومات */
+.info{display:flex;gap:8px;overflow:auto;padding:16px 18px 4px;scrollbar-width:none;max-width:900px;margin:0 auto}
+.info::-webkit-scrollbar{display:none}
+.info span{flex:none;background:#fff;border-radius:999px;padding:8px 14px;font-size:13px;display:flex;align-items:center;gap:6px;box-shadow:0 3px 0 var(--line)}
+.info i{width:8px;height:8px;border-radius:50%;background:#3cb371}
+
+/* بطاقة المنتج = ستيكر مقصوص */
+.st{background:#fff;border-radius:22px;padding:8px;box-shadow:0 0 0 1px #f0e9dc,0 10px 18px -12px rgba(38,48,79,.45);position:relative;transition:transform .35s;display:flex;flex-direction:column}
+.st:nth-child(3n+1){transform:rotate(-1.4deg)}.st:nth-child(3n+2){transform:rotate(1.2deg)}
+.st .im{aspect-ratio:1/1;border-radius:16px;background:#f2ece1 center/cover;position:relative;cursor:pointer;display:grid;place-items:center;font-size:60px;overflow:hidden}
+.st .im::after{content:"";position:absolute;left:0;bottom:0;width:0;height:0;border-radius:0 100% 0 0;background:linear-gradient(45deg,transparent 48%,#e7e0d2 50%,#fff 64%);box-shadow:3px -3px 6px rgba(0,0,0,.15);transition:.35s}
+.st:hover .im::after{width:34px;height:34px}
+.st.peel{animation:peel .55s ease}
+@keyframes peel{40%{transform:rotate(-6deg) translateY(-10px) scale(1.04)}}
+.st .im em{position:absolute;top:8px;right:8px;font-style:normal;font-size:11px;font-weight:700;padding:3px 10px;background:var(--yl);color:#5a4500;transform:rotate(4deg);clip-path:polygon(3% 0,97% 4%,100% 50%,97% 100%,2% 96%,0 50%)}
+.st .im em.cu{background:var(--pk);color:#fff}
+.st .bd{padding:8px 4px 2px;display:flex;flex-direction:column;flex:1}
+.st .n{font-size:13px;font-weight:700;line-height:1.55;cursor:pointer}
+.st .d{font-size:11.5px;color:var(--mut);margin-top:2px;line-height:1.5}
+.rw{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.st .rw{margin-top:auto;padding-top:8px;flex-wrap:wrap}
+.pr{font-family:Lalezar;font-size:19px;color:var(--bl);white-space:nowrap;line-height:1}
+.pr small{font-family:"Readex Pro";font-size:10.5px;color:var(--mut)}
+.ctl{display:inline-flex;align-items:center;gap:6px}
+.ctl b{min-width:18px;text-align:center;font-size:14px}
+.ad2,.qb2{width:33px;height:33px;border-radius:12px;border:0;font-size:19px;line-height:1;display:grid;place-items:center;flex:none}
+.ad2{background:var(--bl);color:#fff;box-shadow:0 3px 0 var(--bl2)}
+.qb2{background:#eef0fb;color:var(--bl)}
+.dsn{border:0;border-radius:12px;background:var(--pk);color:#fff;font-weight:700;font-size:12.5px;padding:8px 10px;white-space:nowrap;box-shadow:0 3px 0 #d9568a}
+.ph0{background:radial-gradient(circle at 50% 40%,#fff3d1,#f6e3ff)!important}
+
+/* الأكثر طلبًا */
+.top{padding:26px 0 6px}
+.tops{display:flex;gap:14px;overflow:auto;padding:18px 18px 14px;scroll-snap-type:x mandatory;scrollbar-width:none}
+.tops::-webkit-scrollbar{display:none}
+.tops .st{flex:none;width:160px;scroll-snap-align:start}
+.rk{position:absolute;top:-8px;left:-6px;z-index:2;width:34px;height:34px;border-radius:50%;background:var(--pk);color:#fff;font-family:Lalezar;font-size:18px;display:grid;place-items:center;box-shadow:0 0 0 3px #fff,0 4px 8px rgba(0,0,0,.15)}
+
+/* سلّمها لنا */
+.hand{padding:42px 0 30px}
+.hgrid{display:grid;gap:18px;margin-top:18px}
+@media (min-width:760px){.hgrid{grid-template-columns:1fr 1fr;align-items:center}}
+.note{position:relative;background:#fff6a8;padding:18px 16px 14px;transform:rotate(-1.5deg);box-shadow:0 18px 22px -14px rgba(90,70,0,.45);transition:transform .8s cubic-bezier(.5,0,.6,1),opacity .6s;z-index:2}
+.note::before{content:"";position:absolute;top:-12px;left:50%;width:90px;height:24px;margin-left:-45px;background:rgba(255,122,168,.6);transform:rotate(3deg)}
+.note textarea{width:100%;border:0;background:repeating-linear-gradient(transparent 0 29px,rgba(90,70,0,.18) 29px 30px);font-family:"Readex Pro";font-size:15px;line-height:30px;min-height:120px;resize:none;outline:none;color:#4a3b00}
+.note .sg{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.note .sg button{border:0;background:rgba(255,255,255,.7);border-radius:999px;padding:6px 11px;font-size:12px;color:#5a4500}
+.note .row{display:flex;gap:8px;align-items:center;margin-top:10px}
+.note .up{flex:1;font-size:12px;color:#6b5a10;display:flex;align-items:center;gap:6px;cursor:pointer}
+.note .up input{display:none}
+.note.drop{transform:translateY(190px) rotate(8deg) scale(.4);opacity:0}
+.box{position:relative;height:200px;max-width:340px;margin:0 auto;width:100%}
+.box .bk{position:absolute;left:10%;right:10%;bottom:0;height:120px;background:linear-gradient(var(--kr),var(--kr2));border-radius:6px;box-shadow:0 20px 26px -16px rgba(80,50,20,.6)}
+.box .bk::after{content:"خليها علينا";position:absolute;left:50%;top:44%;transform:translate(-50%,-50%) rotate(-4deg);font-family:Lalezar;font-size:28px;color:#fff;background:var(--bl);padding:2px 16px;border-radius:8px;white-space:nowrap}
+.box .fl{position:absolute;bottom:120px;height:52px;width:40%;background:linear-gradient(#d8b48d,var(--kr));transition:transform .6s cubic-bezier(.3,1.5,.5,1)}
+.box .fl.r{right:10%;transform-origin:right bottom;transform:rotate(-38deg)}
+.box .fl.l{left:10%;transform-origin:left bottom;transform:rotate(38deg)}
+.box.shut .fl.r{transform:rotate(-180deg) translateX(-2px)}
+.box.shut .fl.l{transform:rotate(180deg)}
+.box .stamp{position:absolute;left:50%;bottom:36px;transform:translateX(-50%) rotate(-10deg) scale(2.2);opacity:0;border:3px solid #d12d4a;color:#d12d4a;font-weight:700;border-radius:10px;padding:4px 12px;font-size:15px;background:rgba(255,255,255,.85);transition:.45s cubic-bezier(.3,1.6,.5,1);white-space:nowrap}
+.box.shut .stamp{opacity:1;transform:translateX(-50%) rotate(-10deg) scale(1);transition-delay:.55s}
+
+/* صانع ورقة الستيكرات */
+.mk{padding:42px 0 30px}
+.mgrid{display:grid;gap:16px;margin-top:16px}
+.mgrid>*{min-width:0}
+@media (min-width:760px){.mgrid{grid-template-columns:1fr 1fr;align-items:start}}
+.pvs{background:var(--sheet);border-radius:16px;padding:16px 14px 26px;transform:rotate(1.5deg);box-shadow:0 2px 0 #e8dfcf,0 22px 34px -18px rgba(38,48,79,.4);position:relative;background-image:linear-gradient(rgba(201,162,122,.16) 1px,transparent 1px),linear-gradient(90deg,rgba(201,162,122,.16) 1px,transparent 1px);background-size:18px 18px}
+.pvs .lbl{position:absolute;bottom:6px;right:12px;font-family:Gaegu;font-size:12px;color:var(--mut)}
+.sg4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.s1{aspect-ratio:1;display:grid;place-items:center;align-content:center;background:var(--sc,#e9f4e3);box-shadow:0 0 0 4px #fff,0 4px 6px rgba(0,0,0,.12);text-align:center;transition:.3s;animation:pop .4s both}
+.s1 i{font-style:normal;font-size:24px;line-height:1}
+.s1 span{font-size:9.5px;font-weight:700;color:var(--st,#2f5a24);max-width:100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding:0 3px}
+.sh0 .s1{border-radius:50%}.sh1 .s1{border-radius:12px}.sh2 .s1{border-radius:50% 50% 14px 50%}
+@keyframes pop{from{transform:scale(.6);opacity:0}}
+.form{display:grid;gap:12px}
+.fl2 label{display:block;font-size:12.5px;font-weight:700;color:var(--bl);margin-bottom:6px}
+.fl2 input[type=text]{width:100%;border:0;border-radius:14px;padding:12px;font-size:15px;background:#fff;box-shadow:0 0 0 2px var(--line);outline:none}
+.fl2 input:focus{box-shadow:0 0 0 2.5px var(--bl)}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{border:0;background:#fff;border-radius:999px;padding:8px 13px;font-weight:700;font-size:13px;color:var(--bl);box-shadow:0 0 0 2px var(--line)}
+.seg button.on{background:var(--bl);color:#fff;box-shadow:0 3px 0 var(--bl2)}
+.packs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.packs button{border:0;background:#fff;border-radius:14px;padding:10px 4px;box-shadow:0 0 0 2px var(--line);font-size:11.5px;color:var(--mut)}
+.packs button b{display:block;font-family:Lalezar;font-weight:400;font-size:20px;color:var(--ink)}
+.packs button.on{box-shadow:0 0 0 2.5px var(--pk);background:#fff0f6;color:#b0306a}
+.mkt{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--bl);color:#fff;border-radius:18px;padding:12px 12px 12px 14px;box-shadow:0 5px 0 var(--bl2)}
+.mkt small{display:block;font-size:11.5px;opacity:.8}
+.mkt b{font-family:Lalezar;font-weight:400;font-size:24px}
+.mkt button{border:0;border-radius:12px;background:#fff;color:var(--bl);font-weight:700;padding:11px 14px;font-size:14px}
+.ex{font-size:11px;color:var(--mut);text-align:center}
+
+/* هام + المعلمات */
+.imp{padding:16px 0}
+.impg{display:grid;gap:14px}
+@media (min-width:760px){.impg{grid-template-columns:1.3fr 1fr}}
+.card{background:#fff;border-radius:22px;padding:16px;box-shadow:0 0 0 1px #f0e9dc,0 12px 20px -14px rgba(38,48,79,.45)}
+.card h3{margin:0 0 6px;font-family:Lalezar;font-weight:400;font-size:22px;color:#d12d4a}
+.card ol{margin:0;padding:0 20px 0 0;font-size:13.5px;line-height:2}
+.tch{background:var(--pk);color:#fff;border-radius:22px;padding:16px;position:relative;transform:rotate(1.5deg);box-shadow:0 0 0 5px #fff,0 14px 22px -12px rgba(200,40,100,.5)}
+.tch b{display:block;font-family:Lalezar;font-weight:400;font-size:24px}
+.tch p{margin:2px 0 10px;font-size:13px}
+.tch button{border:0;border-radius:12px;background:#fff;color:#c21d6b;font-weight:700;padding:9px 14px}
+.tch .e{position:absolute;left:14px;top:12px;font-size:40px;transform:rotate(-12deg)}
+
+/* المتجر */
+.menu{padding:42px 0 30px}
+.tb{position:sticky;top:60px;z-index:30;background:rgba(251,246,238,.95);backdrop-filter:blur(8px);padding:10px 0 8px;margin-top:12px}
+.sr{display:flex;gap:8px}
+.sr input{flex:1;min-width:0;border:0;border-radius:14px;padding:11px 12px;font-size:14.5px;background:#fff;box-shadow:0 0 0 2px var(--line);outline:none}
+.sr select{border:0;border-radius:14px;padding:0 8px;background:#fff;box-shadow:0 0 0 2px var(--line);font-size:13px;max-width:130px}
+.chips{display:flex;gap:6px;overflow:auto;margin-top:10px;scrollbar-width:none;padding:2px}
+.chips::-webkit-scrollbar{display:none}
+.chips button{flex:none;border:0;padding:7px 14px;font-weight:700;font-size:12.5px;background:rgba(201,162,122,.25);color:#6b4d2c;clip-path:polygon(3% 0,97% 4%,100% 50%,97% 100%,2% 96%,0 50%)}
+.chips button.on{background:var(--pk);color:#fff}
+.cnt{font-size:12px;color:var(--mut);margin:8px 2px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px 12px}
+@media (min-width:700px){.grid{grid-template-columns:repeat(3,1fr)}}
+.more{display:block;margin:18px auto 0}
+.empty{text-align:center;color:var(--mut);padding:30px 0;grid-column:1/-1}
+
+/* تصويركم */
+.ugc{padding:30px 0 20px}
+.pol{display:flex;gap:14px;overflow:auto;padding:16px 18px 10px;scrollbar-width:none}
+.pol::-webkit-scrollbar{display:none}
+.pol div{flex:none;width:140px;background:#fff;padding:8px 8px 30px;box-shadow:0 12px 18px -12px rgba(0,0,0,.4);position:relative}
+.pol div:nth-child(odd){transform:rotate(-3deg)}.pol div:nth-child(even){transform:rotate(2.5deg)}
+.pol i{display:block;height:150px;background:#ddd center/cover}
+.pol span{position:absolute;bottom:6px;right:8px;left:8px;font-family:Gaegu;font-size:14px;color:var(--ink);text-align:center}
+.revs{display:flex;gap:12px;overflow:auto;padding:16px 18px 8px;scrollbar-width:none}
+.revs::-webkit-scrollbar{display:none}
+.rc{flex:none;width:230px;padding:14px;font-size:13.5px;line-height:1.75;background:#fff;border-radius:18px;box-shadow:0 0 0 1px #f0e9dc,0 10px 16px -12px rgba(0,0,0,.35)}
+.rc:nth-child(odd){background:#eef7e9}.rc:nth-child(even){background:#fff0f6}
+.rc .s{color:#f0a500;letter-spacing:2px}
+.rc small{display:block;color:var(--mut);margin-top:6px}
+.wa{display:flex;align-items:center;justify-content:center;gap:8px;margin:18px auto 0;max-width:340px;background:#25d366;border-radius:16px;padding:12px;font-weight:700;color:#fff;text-decoration:none;box-shadow:0 4px 0 #1aa34f}
+.foot{text-align:center;color:var(--mut);font-size:12px;padding:20px 0 96px}
+.foot img{width:56px;height:56px;border-radius:50%;display:block;margin:0 auto 6px;box-shadow:0 0 0 4px #fff,0 4px 10px rgba(0,0,0,.15)}
+
+/* السلة: طرد كرتوني */
+.cbar{position:fixed;left:12px;right:12px;bottom:12px;z-index:58;display:flex;align-items:center;gap:10px;background:var(--bl);color:#fff;border-radius:18px;padding:10px 12px 10px 10px;box-shadow:0 5px 0 var(--bl2),0 16px 26px -10px rgba(28,44,143,.6);transform:translateY(160%);transition:transform .45s cubic-bezier(.2,.8,.2,1);max-width:540px;margin:0 auto}
+.cbar.on{transform:none}
+.cbar .n{width:32px;height:32px;border-radius:10px;background:var(--kr);display:grid;place-items:center;font-weight:700;font-size:13px}
+.cbar .t{flex:1;font-family:Lalezar;font-size:20px}
+.cbar button{border:0;border-radius:12px;background:#fff;color:var(--bl);font-weight:700;padding:9px 16px}
+.drawer{position:fixed;inset:0;z-index:90;background:rgba(38,48,79,.45);opacity:0;pointer-events:none;transition:opacity .35s}
+.drawer.show{opacity:1;pointer-events:auto}
+.drawer .pn{position:absolute;left:0;right:0;bottom:0;max-height:92svh;background:linear-gradient(#e8d2b6,#dcc09f);border-radius:20px 20px 0 0;padding:16px 18px 18px;transform:translateY(100%);transition:transform .45s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;max-width:560px;margin:0 auto}
+.drawer .pn::before{content:"";position:absolute;top:0;left:50%;width:90px;height:100%;margin-left:-45px;background:rgba(42,63,191,.08);pointer-events:none}
+.drawer.show .pn{transform:none}
+.hd{display:flex;align-items:center;justify-content:space-between;position:relative}
+.drawer h3{font-family:Lalezar;font-weight:400;font-size:26px;margin:0;color:#5a3d20}
+.x{border:0;background:#fff;width:34px;height:34px;border-radius:50%;font-size:15px;color:var(--bl)}
+.ls{overflow:auto;flex:1;margin:8px 0;min-height:130px;background:#fff;border-radius:16px;padding:0 12px;position:relative}
+.ln{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px dashed var(--line)}
+.ln:last-child{border-bottom:0}
+.ln i{width:46px;height:46px;border-radius:12px;background:#f2ece1 center/cover;flex:none;display:grid;place-items:center;font-style:normal;font-size:22px;box-shadow:0 0 0 3px #fff,0 2px 6px rgba(0,0,0,.15)}
+.ln .nm{flex:1;font-size:13px;line-height:1.5;min-width:0}.ln small{color:var(--mut)}
+.ln .qb{width:30px;height:30px;border-radius:9px;border:0;background:#eef0fb;color:var(--bl)}
+.em{text-align:center;color:var(--mut);padding:30px 0}
+.zl{font-size:12.5px;color:#5a3d20;font-weight:700;margin:4px 0}
+.zone{width:100%;border:0;border-radius:12px;padding:10px;font-size:14px;background:#fff;margin-bottom:8px}
+.tck{display:flex;align-items:center;gap:8px;font-size:13px;margin-bottom:8px;background:#fff0f6;border-radius:12px;padding:9px 12px;color:#9c2a5d}
+.tck input{accent-color:var(--pk);width:18px;height:18px}
+.nt{width:100%;border:0;border-radius:12px;padding:10px 12px;font-size:13.5px;background:#fff6a8;resize:none;outline:none}
+.eta{font-size:12px;color:#5a3d20;margin:6px 0 2px}
+.sum div{display:flex;justify-content:space-between;font-size:13px;color:#6b5136;padding:2px 0}
+.sum .dsc{color:#1e8a4c;font-weight:700}
+.tot{display:flex;justify-content:space-between;font-family:Lalezar;font-size:22px;color:#3c2814;padding:8px 0}
+.goB{width:100%;border:0;border-radius:14px;background:var(--bl);color:#fff;padding:14px;font-weight:700;font-size:15px;box-shadow:0 5px 0 var(--bl2)}
+.fly{position:fixed;z-index:85;width:54px;height:54px;border-radius:50%;background:#f2ece1 center/cover;pointer-events:none;transition:transform .75s cubic-bezier(.5,-0.4,.5,1),opacity .75s;box-shadow:0 0 0 4px #fff,0 8px 16px rgba(0,0,0,.25);display:grid;place-items:center;font-size:24px}
+.qv{position:fixed;inset:0;z-index:88;background:rgba(38,48,79,.45);display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .3s}
+.qv.show{opacity:1;pointer-events:auto}
+.qv .pn{background:var(--bg);width:100%;max-width:560px;margin:0 auto;border-radius:24px 24px 0 0;padding-bottom:18px;transform:translateY(100%);transition:transform .4s cubic-bezier(.2,.8,.2,1);max-height:92svh;overflow:auto}
+.qv.show .pn{transform:none}
+.qv .big{height:300px;background:#f2ece1 center/cover;border-radius:24px 24px 0 0;position:relative;display:grid;place-items:center;font-size:90px}
+.qv .big .x{position:absolute;top:12px;left:12px}
+.qv .in2{padding:16px 18px 0}
+.qv h3{font-family:Lalezar;font-weight:400;font-size:26px;margin:0;color:var(--bl);line-height:1.3}
+.qv .ds{color:var(--mut);font-size:14px;line-height:1.8;margin-top:4px}
+.qv .ft{display:flex;align-items:center;gap:12px;margin-top:16px}
+.qt{display:flex;align-items:center;gap:10px;background:#fff;border-radius:14px;padding:3px;box-shadow:0 0 0 2px var(--line)}
+.qt button{width:34px;height:34px;border-radius:10px;border:0;background:#eef0fb;font-size:18px;color:var(--bl)}
+.qv .ok{flex:1;border:0;border-radius:14px;background:var(--bl);color:#fff;padding:13px;font-weight:700;font-size:15px;box-shadow:0 4px 0 var(--bl2)}
+.toast{position:fixed;left:50%;bottom:96px;z-index:97;transform:translate(-50%,30px);opacity:0;background:var(--ink);color:#fff;border-radius:14px;padding:10px 16px;font-size:13px;transition:.35s;pointer-events:none;width:max-content;max-width:88vw;text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* الشكر: طرد يُغلق بشريط «خليها علينا» */
+.ty{position:fixed;inset:0;z-index:95;display:none;place-items:center;background:var(--bg);text-align:center;padding:20px}
+.ty.show{display:grid}
+.pk{position:relative;width:200px;height:150px;margin:0 auto 10px;background:linear-gradient(var(--kr),var(--kr2));border-radius:8px;box-shadow:0 26px 30px -18px rgba(80,50,20,.6);animation:drop .7s cubic-bezier(.3,1.4,.5,1) both}
+@keyframes drop{from{transform:translateY(-120px) rotate(-8deg);opacity:0}}
+.pk .tp{position:absolute;top:50%;left:-6%;right:-6%;height:34px;margin-top:-17px;background:var(--bl);color:#fff;font-family:Lalezar;font-size:20px;display:grid;place-items:center;transform:scaleX(0);transform-origin:right;animation:tp .6s .6s ease-out forwards}
+@keyframes tp{to{transform:scaleX(1)}}
+.pk .lb{position:absolute;top:10px;right:12px;width:56px;height:40px;background:#fff;border-radius:4px;font-size:9px;color:var(--mut);display:grid;place-items:center;line-height:1.3}
+.ty h3{font-family:Lalezar;font-weight:400;font-size:30px;margin:14px 0 4px;color:var(--bl)}
+.ty p{margin:2px 0;color:var(--mut);font-size:13.5px;line-height:1.7}
+.ty .no{font-family:Lalezar;font-size:26px;color:var(--pk);letter-spacing:2px;margin:6px 0}
+.tyb{display:flex;gap:8px;justify-content:center;margin-top:14px}
+.tyb button{border:0;border-radius:12px;padding:10px 14px;font-weight:700;font-size:13px;background:var(--bl);color:#fff}
+.tyb button.o{background:#fff;color:var(--bl);box-shadow:0 0 0 2px var(--line)}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div class="badge">معاينة تجريبية</div>
+<nav class="nav" id="nav"><div class="lg"></div><div class="nm">خليها علينا</div><span class="sp"></span><button class="ib" id="srb" aria-label="بحث">🔍</button><button class="ib" id="cartb">📦<b id="cn">0</b></button></nav>
+
+<section class="stage" id="stage"><div class="stk">
+  <div class="caps">
+    <div class="cap on"><h1>خليها علينا</h1><p>توزيعات وبطاقات وستيكرات ومجسّمات</p></div>
+    <div class="cap"><h2>قشّرها…</h2><p>كل ستيكر نطبعه بحبّ وقصّ دقيق</p></div>
+    <div class="cap"><h2>والصقها حيث تحب!</h2><p>على كوبك، دفترك، أو توزيعات حفلتك</p></div>
+  </div>
+  <div class="sheetH" id="sheetH">
+    <div class="hole"></div>
+    <span class="mini" style="top:8%;right:8%;transform:rotate(12deg)">☕</span>
+    <span class="mini" style="top:10%;left:10%;transform:rotate(-10deg)">🎀</span>
+    <span class="mini" style="bottom:14%;right:12%;transform:rotate(-6deg)">🍵</span>
+    <span class="mini" style="bottom:12%;left:12%;transform:rotate(10deg)">❤️</span>
+    <span class="mini" style="top:44%;right:4%;font-size:26px">⭐</span>
+    <span class="mini" style="top:46%;left:4%;font-size:26px">🌸</span>
+    <span class="lbl">Sticker Sheet · 01</span>
+  </div>
+  <div class="cup" id="cup"><div class="lid"></div><div class="bd"></div><div class="slv"></div></div>
+  <div class="stkr" id="stkr"><div class="face"></div><div class="curl"></div></div>
+  <div class="hint" id="hint" onclick="autoPeel()"><div class="gs"><span class="ar"></span><span class="fg">👆</span></div><div class="tx"><b>اسحب بإصبعك للأعلى</b>لتقشير الستيكر ولصقه<br><small>أو اضغط هنا ليُقشَّر تلقائيًا ▶</small></div></div>
+</div></section>
+
+<div class="info" id="info"></div>
+
+<section class="top"><div class="wrap"><span class="tape">الكل يطلبها</span><br><h2 class="sh rv">الأكثر طلبًا</h2></div><div class="tops" id="tops"></div></section>
+
+<section class="hand" id="hand"><div class="wrap">
+  <span class="tape g">لا تتعب نفسك</span><br><h2 class="sh rv">اكتبها… وسلّمها لنا</h2>
+  <p class="lead rv">اكتب فكرتك كما هي، أرفق صورة إن أحببت، ثم أسقطها في الصندوق. نحن نرتّب التفاصيل ونرسل لك التصميم والسعر.</p>
+  <div class="hgrid">
+    <div class="note rv" id="noteC"><textarea id="nTx" placeholder="مثال: أريد 50 ستيكر باسم مقهاي للأكواب، بألوان الشعار…"></textarea>
+      <div class="sg" id="sgs"><button>50 ستيكر باسم مشروعي</button><button>توزيعات حفلة تخرج لـ 30</button><button>ميداليات بأسماء العائلة</button></div>
+      <div class="row"><label class="up">📎 <span id="upT">أرفق صورة الفكرة</span><input type="file" accept="image/*" id="nF"></label><button class="btn p" id="nGo">سلّمها لنا ⬇</button></div></div>
+    <div class="box" id="boxC"><div class="fl l"></div><div class="fl r"></div><div class="bk"></div><div class="stamp">استلمناها ✓</div></div>
+  </div>
+</div></section>
+
+<section class="mk" id="mk"><div class="wrap">
+  <span class="tape y">صمّمها في دقيقة</span><br><h2 class="sh rv">صانع ورقة الستيكرات</h2>
+  <p class="lead rv">اختر الطابع واكتب الاسم، وشاهد ورقتك قبل أن نطبعها.</p>
+  <div class="mgrid">
+    <div class="pvs" id="pvs"><div class="sg4" id="sg4"></div><span class="lbl" id="pvL">Sticker Sheet</span></div>
+    <div class="form">
+      <div class="fl2"><label>الطابع</label><div class="seg" id="thS"></div></div>
+      <div class="fl2"><label>الاسم على الستيكر</label><input type="text" id="mName" maxlength="14" value="Matcha Girlie"></div>
+      <div class="fl2"><label>شكل القصّ</label><div class="seg" id="shS"><button class="on" data-s="0">دائري</button><button data-s="1">مربّع</button><button data-s="2">قطرة</button></div></div>
+      <div class="fl2"><label>عدد الأوراق</label><div class="packs" id="pkS"></div></div>
+      <div class="mkt"><div><small id="mkU"></small><b id="mkT"></b></div><button id="mkAdd">أضف إلى الطرد</button></div>
+      <div class="ex">سعر 50 ورقة حقيقي من حساب المتجر، وبقية الأسعار أمثلة</div>
+    </div>
+  </div>
+</div></section>
+
+<section class="imp"><div class="wrap"><div class="impg">
+  <div class="card rv"><h3>💢 هام جدًا قبل الطلب</h3><ol><li>لا نستقبل الطلبات المستعجلة، فكل قطعة تأخذ وقتها.</li><li>يكون التوصيل عبر مكتب الشحن في ولايتك.</li><li>لا يتوفر الاستلام من موقعنا.</li><li>اكتب تفاصيل طلبك كاملة في الملاحظات.</li></ol></div>
+  <div class="tch rv"><span class="e">🍎</span><b>عرض خاص للمعلمات فقط</b><p>خصم على توزيعات طالباتك وطلابك</p><button onclick="tFlag=true;paint();toast('فُعّل خصم المعلمات 10٪ في طردك')">فعّلي الخصم</button></div>
+</div></div></section>
+
+<section class="menu" id="menu"><div class="wrap">
+  <span class="tape b">كل ما نصنعه</span><br><h2 class="sh rv">المتجر</h2>
+  <div class="tb"><div class="sr"><input id="qIn" type="search" placeholder="ابحث: ستيكر، ميدالية، حبة البن…"><select id="sortS"><option value="0">الأنسب</option><option value="1">الأقل سعرًا</option><option value="2">الأعلى سعرًا</option><option value="3">الأكثر طلبًا</option></select></div><div class="chips" id="chips"></div></div>
+  <div class="cnt" id="cnt"></div>
+  <div class="grid" id="grid"></div>
+  <button class="btn l more" id="moreB">عرض المزيد</button>
+</div></section>
+
+<section class="ugc"><div class="wrap"><span class="tape">تصويركم 📸</span><br><h2 class="sh rv">من عندكم</h2></div>
+  <div class="pol"><div><i style="background-image:url(lvt/stickers.jpg)"></i><span>ستيكرشيت الماتشا</span></div><div><i style="background-image:url(lvt/beansready.jpg)"></i><span>حبات البن جاهزة</span></div><div><i style="background-image:url(lvt/keys.jpg)"></i><span>ميداليات الحفلة</span></div><div><i style="background-image:url(lvt/heart.jpg)"></i><span>الكيوت الصغير</span></div><div><i style="background-image:url(lvt/shelf.jpg)"></i><span>رف البن</span></div></div>
+  <div class="revs" id="revs"></div>
+  <div class="wrap"><a class="wa" href="#" onclick="return false">💬 تواصل معنا عبر واتساب</a></div>
+</section>
+<div class="foot"><img src="lvt/logo.png" alt="">خليها علينا · Leave it for us<br>@leaveit.om · للمجسّمات: 3dkd_3<br>متجر يعمل بنظام EMD Business</div>
+
+<div class="cbar" id="cbar"><span class="n" id="cbn">0</span><span class="t" id="cbt"></span><button onclick="cartb.click()">افتح الطرد</button></div>
+
+<div class="drawer" id="drawer"><div class="pn">
+  <div class="hd"><h3>📦 طردك</h3><button class="x" onclick="drawer.classList.remove('show')">✕</button></div>
+  <div class="ls" id="ls"></div>
+  <div id="chk"><div class="zl">🚚 الشحن إلى مكتب الشحن في ولايتك</div><select class="zone" id="zoneS"></select>
+  <label class="tck"><input type="checkbox" id="tchk"> 🍎 أنا معلمة: خصم المعلمات 10٪ (مثال)</label>
+  <textarea class="nt" id="note" rows="2" placeholder="تفاصيل الطلب كاملة: الأسماء، الألوان، موعد المناسبة…"></textarea>
+  <div class="eta" id="eta"></div>
+  <div class="sum" id="sum"></div><div class="tot"><span>الإجمالي</span><span id="tt"></span></div><button class="goB" id="goBtn">أغلق الطرد وأكّد الطلب</button></div>
+</div></div>
+
+<div class="qv" id="qv"><div class="pn"><div class="big" id="qbig"><button class="x" onclick="qv.classList.remove('show')">✕</button></div><div class="in2"><h3 id="qn"></h3><div class="ds" id="qd"></div><div class="ft"><div class="qt"><button onclick="qq(-1)">−</button><b id="qc">1</b><button onclick="qq(1)">+</button></div><button class="ok" id="qok"></button></div></div></div></div>
+<div class="toast" id="toast"></div>
+
+<div class="ty" id="ty"><div>
+  <div class="pk"><div class="lb">إلى:<br>مكتب الشحن</div><div class="tp">خليها علينا</div></div>
+  <h3>استلمنا طلبك… وخليها علينا!</h3><p>رقم الطلب</p><div class="no" id="ono"></div>
+  <p id="owh"></p><p style="font-size:11px;margin-top:6px">هذه معاينة فقط، لم يُرسل أي طلب</p>
+  <div class="tyb"><button>📍 تتبّع الطلب</button><button class="o" onclick="ty.classList.remove('show')">متابعة التسوق</button></div>
+</div></div>
+
+<script>
+/* المنتجات تأتي من التطبيق. سعر 50 ستيكرشيت حقيقي (6.8 ر.ع)، والباقي أمثلة */
+const CATS=['ستيكرز','بطاقات التوزيعات','ميداليات','مجسّمات ثلاثية الأبعاد','ديكور المنزل','للمشاريع'];
+const P=[
+ {id:'sht',n:'ستيكرشيت: 50 ورقة',d:'صمّمها في صانع الستيكرات',p:6.8,img:'stickers',c:0,pop:10,mk:1},
+ {id:'cup',n:'ستيكرات الأكواب للفعاليات',d:'للمقاهي وفعاليات خريف صلالة',p:.1,e:'🥤',c:0,pop:7,st:50,u:'للستيكر'},
+ {id:'lbl',n:'ستيكر شعار مشروعك',d:'للتغليف والأكياس',p:.08,e:'🏷️',c:5,pop:6,st:50,u:'للستيكر'},
+ {id:'crd',n:'بطاقات توزيعات بالاسم',d:'للحفلات والمواليد والنجاح',p:.2,e:'🎀',c:1,pop:8,st:20,u:'للبطاقة'},
+ {id:'thx',n:'بطاقات شكر للمعلمات',d:'مع ستيكر وشريط',p:.2,e:'💌',c:1,pop:5,st:20,u:'للبطاقة'},
+ {id:'key',n:'ميدالية بالاسم',d:'لون الخيط واسم من اختيارك',p:.8,img:'keys',c:2,pop:9},
+ {id:'kbl',n:'ميداليات بالجملة للحفلات',d:'بالاسم أو الشعار',p:.45,img:'kprint',c:2,pop:7,st:10,u:'للقطعة'},
+ {id:'bn1',n:'مجسّم حبة البن بالفيونكة',d:'شخصية حبة البن الشهيرة',p:2.5,img:'beansready',c:3,pop:10,tg:'الأكثر طلبًا'},
+ {id:'bn2',n:'مجسّم حبة البن الأسود',d:'بأرجل متحركة',p:2.5,img:'beanblk',c:3,pop:8,tg:'جديد'},
+ {id:'hrt',n:'قلب «الكيوت الصغير»',d:'مزخرف بقلوب صغيرة',p:1.2,img:'heart',c:3,pop:8},
+ {id:'car',n:'مجسّم سيارتك للجدار',d:'اكتب نوع سيارتك في الملاحظات',p:7,img:'car',c:3,pop:6},
+ {id:'shf',n:'رف حبوب البن على الآيسكريم',d:'ديكور جداري',p:6.5,img:'shelf',c:4,pop:7},
+ {id:'drp',n:'رف السائل الأحمر',d:'بتأثير السائل المتدفق',p:4.5,img:'drip',c:4,pop:6,tg:'وصل الجديد'},
+ {id:'web',n:'وعاء شبكة العنكبوت',d:'للمفاتيح والإكسسوارات',p:3,img:'web',c:4,pop:5},
+ {id:'vas',n:'مزهرية مموّجة',d:'طبقات ناعمة تشبه الخزف',p:3.5,img:'vase',c:4,pop:5},
+ {id:'lg3',n:'مجسّم شعار مشروعك',d:'للمحل أو المكتب',p:5,img:'brand',c:5,pop:5}
+];
+const fmt=v=>(+v).toFixed(3)+' ر.ع';
+const go=id=>document.getElementById(id).scrollIntoView({behavior:'smooth'});
+const bgOf=x=>x.img?`background-image:url(lvt/${x.img}.jpg)`:'';
+const phOf=x=>x.img?'':x.e||'🎁';
+let cart={},tFlag=false;
+function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('show');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('show'),2600)}
+info.innerHTML=`<span><i></i>نستقبل الطلبات الآن</span><span>🚚 شحن لكل ولايات السلطنة</span><span>✂️ قصّ دقيق لكل ستيكر</span><span>🍎 عروض للمعلمات</span>`;
+
+/* التمرير: الستيكر يُقشَّر ثم يطير ويلتصق على الكوب */
+const ss=(a,b,x)=>{const t=Math.min(1,Math.max(0,(x-a)/(b-a)));return t*t*(3-2*t)};
+const caps=[...document.querySelectorAll('.cap')];let capI=0;
+function onScroll(){nav.classList.toggle('solid',scrollY>40);
+ const r=stage.getBoundingClientRect(),H=innerHeight,p=Math.min(1,Math.max(0,-r.top/(r.height-H)));
+ const peel=ss(.04,.38,p),fly=ss(.42,.86,p),land=ss(.86,.95,p);
+ cup.style.transform=`translate(-50%,${(1-ss(.3,.7,p))*110}%)`;
+ sheetH.style.transform=`translate(-50%,calc(-50% - ${fly*26}vh)) rotate(${-3-fly*6}deg) scale(${1-fly*.25})`;sheetH.style.opacity=1-fly*.55;
+ const sw=stkr.offsetWidth,shH=Math.min(innerWidth*.8,340)*1.12,y0=H*.52+(.44-.5)*shH-sw/2,ty=H*.8-sw/2;
+ const y=y0+(ty-y0)*fly-peel*36*(1-fly);
+ stkr.style.transform=`translate(-50%,${y}px) rotate(${(-3-peel*16)*(1-fly)+fly*-6}deg) scale(${(1+peel*.1)*(1-fly*.42)})`;
+ stkr.style.setProperty('--cw',(peel*(1-fly)*64)+'px');
+ stkr.style.setProperty('--sy',(3+peel*(1-fly)*22)+'px');stkr.style.setProperty('--sb',(4+peel*(1-fly)*24)+'px');stkr.style.setProperty('--so',(.15+peel*(1-fly)*.15).toFixed(2));
+ hint.style.opacity=1-ss(.01,.08,p);hint.style.pointerEvents=p>.06?'none':'';
+ const i=p<.04?0:p<.6?1:2;if(i!==capI){caps[capI].classList.remove('on');caps[i].classList.add('on');capI=i}}
+addEventListener('scroll',onScroll,{passive:true});addEventListener('resize',onScroll);onScroll();
+function autoPeel(){const end=stage.offsetHeight-innerHeight,y0=scrollY,T=3800,t0=performance.now();let stop=false;const k=()=>stop=true;addEventListener('touchstart',k,{once:true});addEventListener('wheel',k,{once:true});
+ (function st(t){if(stop)return;const e=Math.min(1,(t-t0)/T),q=e<.5?2*e*e:1-Math.pow(-2*e+2,2)/2;scrollTo(0,y0+(end-y0)*q);if(e<1)requestAnimationFrame(st)})(t0)}
+
+/* بطاقة المنتج: ستيكر */
+function card(x,i){return `<div class="st" id="c-${x.id}">${i!=null?`<span class="rk">${i+1}</span>`:''}<div class="im ${x.img?'':'ph0'}" style="${bgOf(x)}" onclick="openQ('${x.id}')">${phOf(x)}${x.mk?'<em class="cu">صمّمها</em>':x.tg?`<em>${x.tg}</em>`:''}</div><div class="bd"><div class="n" onclick="openQ('${x.id}')">${x.n}</div><div class="d">${x.d}</div><div class="rw"><span class="pr">${(+x.p).toFixed(3)} <small>${x.u||'ر.ع'}</small></span>${x.mk?`<button class="dsn" onclick="go('mk')">صمّمها</button>`:ctl(x.id)}</div></div></div>`}
+tops.innerHTML=[...P].sort((a,b)=>b.pop-a.pop).slice(0,6).map((x,i)=>card(x,i)).join('');
+
+/* سلّمها لنا */
+sgs.onclick=e=>{const b=e.target.closest('button');if(!b)return;nTx.value=b.textContent+'، ';nTx.focus()};
+nF.onchange=()=>{if(nF.files[0])upT.textContent='📎 '+nF.files[0].name};
+nGo.onclick=()=>{if(!nTx.value.trim()){nTx.focus();toast('اكتب فكرتك أولًا، ولو بكلمتين');return}
+ noteC.classList.add('drop');setTimeout(()=>boxC.classList.add('shut'),650);
+ setTimeout(()=>toast('معاينة فقط: في المتجر الحقيقي تصل فكرتك إلى التاجر ويرد عليك خلال يوم'),1300);
+ setTimeout(()=>{boxC.classList.remove('shut');noteC.classList.remove('drop');nTx.value='';upT.textContent='أرفق صورة الفكرة'},4200)};
+
+/* صانع الستيكرات */
+const TH=[['🍵 ماتشا',['🍵','🌿','🥛','💚','🍃','🧋'],'#e6f3de','#2f5a24'],['☕ قهوة',['☕','🤎','🥐','🫘','🍪','✨'],'#f3e6d8','#5a3a1e'],['🌸 زهور',['🌸','🌷','🌼','💐','🦋','🌺'],'#ffe6ef','#a3245a'],['✏️ مدرسة',['✏️','📚','⭐','🎒','🖍️','📐'],'#e4ecff','#22348f'],['🎉 حفلة',['🎉','🎈','🎂','🎁','🥳','💫'],'#fff3c8','#7a5600']];
+const PKS=[[50,6.8,'حقيقي'],[100,12.9,'مثال'],[200,24,'مثال']];
+let th=0,shp=0,pk=0;
+thS.innerHTML=TH.map((t,i)=>`<button data-i="${i}" class="${i?'':'on'}">${t[0]}</button>`).join('');
+pkS.innerHTML=PKS.map((k,i)=>`<button data-i="${i}" class="${i?'':'on'}"><b>${k[0]}</b>ورقة · ${k[1].toFixed(3)}</button>`).join('');
+function drawMk(){const t=TH[th],nm=mName.value.trim()||'اسمك';sg4.className='sg4 sh'+shp;
+ sg4.innerHTML=Array.from({length:12},(_,i)=>`<div class="s1" style="--sc:${i%3===1?'#fff':t[2]};--st:${t[3]};animation-delay:${i*30}ms;transform:rotate(${(i*37%11)-5}deg)"><i>${t[1][i%6]}</i>${i%2===0?`<span>${nm}</span>`:''}</div>`).join('');
+ pvL.textContent='Sticker Sheet · '+t[0].split(' ')[1];
+ [...thS.children].forEach((b,i)=>b.classList.toggle('on',i===th));[...shS.children].forEach((b,i)=>b.classList.toggle('on',i===shp));[...pkS.children].forEach((b,i)=>b.classList.toggle('on',i===pk));
+ const k=PKS[pk];mkU.textContent=`${k[0]} ورقة · ${(k[1]/k[0]).toFixed(3)} ر.ع للورقة`;mkT.textContent=fmt(k[1])}
+thS.onclick=e=>{const b=e.target.closest('button');if(b){th=+b.dataset.i;drawMk()}};
+shS.onclick=e=>{const b=e.target.closest('button');if(b){shp=+b.dataset.s;drawMk()}};
+pkS.onclick=e=>{const b=e.target.closest('button');if(b){pk=+b.dataset.i;drawMk()}};
+let mT;mName.oninput=()=>{clearTimeout(mT);mT=setTimeout(drawMk,200)};
+mkAdd.onclick=()=>{const k=PKS[pk],key='mk'+Date.now();cart[key]={n:'ستيكرشيت '+k[0]+' ورقة',ds:`${TH[th][0]} · «${mName.value.trim()||'—'}» · ${shS.children[shp].textContent}`,p:k[1],q:1,img:'stickers',cu:1};flyFrom(pvs,{img:'stickers'});paint();toast('أُضيفت ورقتك إلى الطرد 📦')};
+drawMk();
+
+/* المتجر الكامل */
+let cat=-1,shown=8;
+chips.innerHTML=`<button class="on" data-c="-1">الكل</button>`+CATS.map((c,i)=>`<button data-c="${i}">${c}</button>`).join('');
+chips.onclick=e=>{const b=e.target.closest('button');if(!b)return;cat=+b.dataset.c;shown=8;[...chips.children].forEach(x=>x.classList.toggle('on',x===b));drawGrid();const y=menu.getBoundingClientRect().top+scrollY-62;if(scrollY>y)scrollTo({top:y})};
+function list(){const t=qIn.value.trim();let L=P.filter(x=>(cat<0||x.c===cat)&&(!t||(x.n+' '+x.d+' '+CATS[x.c]).includes(t)));const s=+sortS.value;
+ if(s===1)L.sort((a,b)=>a.p-b.p);if(s===2)L.sort((a,b)=>b.p-a.p);if(s===3)L.sort((a,b)=>b.pop-a.pop);return L}
+function ctlIn(id){const q=cart[id]?.q||0;return q?`<button class="qb2" onclick="event.stopPropagation();chg('${id}',-1)">−</button><b>${q}</b><button class="ad2" onclick="event.stopPropagation();add('${id}',this)">+</button>`:`<button class="ad2" onclick="event.stopPropagation();add('${id}',this)">+</button>`}
+function ctl(id){return `<span class="ctl" data-ctl="${id}">${ctlIn(id)}</span>`}
+function drawGrid(){const L=list();cnt.textContent=L.length?`${L.length} منتجًا`:'';
+ grid.innerHTML=L.length?L.slice(0,shown).map(x=>card(x)).join(''):'<div class="empty">لا توجد نتائج. اكتب فكرتك في «سلّمها لنا»… وخليها علينا</div>';
+ moreB.style.display=L.length>shown?'':'none';moreB.textContent=`عرض المزيد (${L.length-shown})`}
+qIn.oninput=()=>{shown=8;drawGrid()};sortS.onchange=drawGrid;moreB.onclick=()=>{shown+=8;drawGrid()};
+srb.onclick=()=>{const y=menu.getBoundingClientRect().top+scrollY-62;scrollTo({top:y,behavior:'smooth'});setTimeout(()=>qIn.focus({preventScroll:true}),500)};
+drawGrid();
+
+const RV=[['الستيكرات طلعت أجمل من التصميم، والقصّ دقيق جدًا','ستيكرشيت'],['كتبت لهم فكرتي بسطرين، وضبطوني بالباقي','توزيعات حفلة'],['حبة البن صارت نجمة المكتب','مجسّم حبة البن'],['التغليف مرتب ووصل مكتب الشحن في الموعد','ميداليات']];
+revs.innerHTML=RV.map(r=>`<div class="rc"><div class="s">★★★★★</div>«${r[0]}»<small>${r[1]} · مثال</small></div>`).join('');
+
+/* نافذة المنتج */
+let QX,QN=1;
+function openQ(id){QX=P.find(x=>x.id===id);if(QX.mk){go('mk');return}QN=QX.st||1;qbig.style.backgroundImage=QX.img?`url(lvt/${QX.img}.jpg)`:'';qbig.className='big'+(QX.img?'':' ph0');[...qbig.childNodes].forEach(n=>{if(n.nodeType===3)n.remove()});if(!QX.img)qbig.append(QX.e);qn.textContent=QX.n;qd.textContent=QX.d+' · '+fmt(QX.p)+' '+(QX.u||'');drawQ();qv.classList.add('show')}
+function drawQ(){qc.textContent=QN;qok.textContent='أضف إلى الطرد · '+fmt(QX.p*QN)}
+function qq(d){QN=Math.max(QX.st||1,QN+d*(QX.st||1));drawQ()}
+qok.onclick=()=>{cart[QX.id]=cart[QX.id]||{n:QX.n,p:QX.p,q:0,img:QX.img,e:QX.e,st:QX.st||1};cart[QX.id].q+=QN;qv.classList.remove('show');flyFrom(qbig,QX);paint()};
+qv.onclick=e=>{if(e.target===qv)qv.classList.remove('show')};
+
+/* الطرد */
+const ZN=[['مسقط',2],['ظفار',2.5],['الباطنة شمال',2],['الباطنة جنوب',2],['الداخلية',2],['الشرقية شمال',2],['الشرقية جنوب',2],['الظاهرة',2],['البريمي',2.5],['الوسطى',2.5],['مسندم',3]];
+zoneS.innerHTML=ZN.map((z,i)=>`<option value="${i}">${z[0]} · ${fmt(z[1])}</option>`).join('');zoneS.onchange=()=>paint();
+tchk.onchange=()=>{tFlag=tchk.checked;paint()};
+function flyFrom(el,x){const r=el.getBoundingClientRect(),c=cartb.getBoundingClientRect(),f=document.createElement('div');f.className='fly';if(x.img)f.style.backgroundImage=`url(lvt/${x.img}.jpg)`;else f.textContent=x.e||'🎁';f.style.left=(r.left+r.width/2-27)+'px';f.style.top=(r.top+r.height/2-27)+'px';document.body.appendChild(f);
+ requestAnimationFrame(()=>{f.style.transform=`translate(${c.left+c.width/2-r.left-r.width/2}px,${c.top+c.height/2-r.top-r.height/2}px) scale(.3) rotate(-30deg)`;f.style.opacity='.4'});
+ setTimeout(()=>{f.remove();cartb.classList.remove('bump');void cartb.offsetWidth;cartb.classList.add('bump')},750)}
+function add(id,btn){const x=P.find(f=>f.id===id),c=btn.closest('.st');if(c){c.classList.remove('peel');void c.offsetWidth;c.classList.add('peel')}
+ cart[id]=cart[id]||{n:x.n,p:x.p,q:0,img:x.img,e:x.e,st:x.st||1};cart[id].q+=cart[id].st;flyFrom(c?c.querySelector('.im'):btn,x);paint()}
+function chg(k,d){const x=cart[k];x.q+=d*(x.st||1);if(x.q<=0)delete cart[k];paint()}
+function paint(){let n=0,sub=0,cu=0;for(const k in cart){const x=cart[k];n+=x.st>1?1:x.q;sub+=x.q*x.p;if(x.cu)cu=1}
+ const dsc=tFlag?sub*.1:0,sh=n?ZN[+zoneS.value][1]:0,t=sub-dsc+sh;cn.textContent=n;tt.textContent=fmt(t);tchk.checked=tFlag;
+ ls.innerHTML=n?Object.entries(cart).map(([k,x])=>`<div class="ln"><i style="${x.img?`background-image:url(lvt/${x.img}.jpg)`:''}">${x.img?'':x.e||''}</i><div class="nm">${x.n}<br><small>${x.ds?x.ds+' · ':''}${fmt(x.p)}${x.st>1?' للقطعة':''}</small></div><button class="qb" onclick="chg('${k}',-1)">−</button><b>${x.q}</b><button class="qb" onclick="chg('${k}',1)">+</button></div>`).join(''):'<div class="em">طردك فارغ… قشّر أول ستيكر 🎀</div>';
+ chk.style.display=n?'':'none';
+ eta.textContent='⏱️ مدة التجهيز المتوقعة: من 3 إلى 5 أيام عمل، فنحن لا نستقبل الطلبات المستعجلة';
+ sum.innerHTML=`<div><span>المجموع</span><span>${fmt(sub)}</span></div>${dsc?`<div class="dsc"><span>خصم المعلمات 10٪</span><span>-${fmt(dsc)}</span></div>`:''}<div><span>الشحن إلى ${ZN[+zoneS.value][0]}</span><span>${fmt(sh)}</span></div>`;
+ cbar.classList.toggle('on',n>0);document.body.classList.toggle('hc',n>0);cbn.textContent=n;cbt.textContent=fmt(t);
+ document.querySelectorAll('[data-ctl]').forEach(e=>e.innerHTML=ctlIn(e.dataset.ctl))}
+cartb.onclick=()=>{paint();drawer.classList.add('show')};
+drawer.onclick=e=>{if(e.target===drawer)drawer.classList.remove('show')};
+goBtn.onclick=()=>{drawer.classList.remove('show');ono.textContent='KA-'+(1000+Math.floor(Math.random()*9000));
+ owh.textContent=`نشحن طردك إلى مكتب الشحن في ${ZN[+zoneS.value][0]}، ونتواصل معك عبر واتساب لتأكيد التفاصيل.`;cart={};note.value='';paint();ty.classList.add('show')};
+paint();
+
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.15});
+document.querySelectorAll('.rv').forEach(e=>io.observe(e));
+</script>
+</body>
+</html>

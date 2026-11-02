@@ -58,9 +58,16 @@ section{position:relative}
 .hud span{background:rgba(16,28,66,.85);border:1px solid var(--line);border-radius:10px;padding:6px 10px;color:var(--cy)}
 .hud b{color:#fff}
 .done .hud span:first-child{color:var(--ok);border-color:rgba(47,211,138,.4)}
-.scr{position:absolute;left:50%;bottom:calc(6% + 50px);transform:translateX(-50%);font-size:12px;color:var(--mut);transition:opacity .4s;text-align:center}
-.scr i{display:block;width:2px;height:20px;margin:4px auto 0;background:linear-gradient(var(--cy),transparent);animation:sc 1.6s infinite}
-@keyframes sc{50%{transform:translateY(6px);opacity:.4}}
+.scr{position:absolute;left:50%;bottom:calc(6% + 46px);transform:translateX(-50%);z-index:5;display:flex;align-items:center;gap:12px;background:rgba(11,21,52,.88);border:1.5px solid rgba(85,212,255,.5);border-radius:20px;padding:10px 14px 10px 16px;box-shadow:0 0 28px -6px rgba(85,212,255,.7);transition:opacity .4s;width:max-content;max-width:92vw;cursor:pointer}
+.scr .gs{position:relative;width:44px;height:64px;flex:none}
+.scr .gs .ar{position:absolute;left:50%;top:0;width:4px;height:44px;margin-left:-2px;border-radius:2px;background:linear-gradient(var(--cy),transparent);animation:ar 1.6s ease-in-out infinite}
+.scr .gs .ar::before{content:"";position:absolute;top:-4px;left:50%;width:14px;height:14px;margin-left:-7px;border-top:4px solid var(--cy);border-left:4px solid var(--cy);transform:rotate(45deg);border-radius:2px;filter:drop-shadow(0 0 6px var(--cy))}
+.scr .gs .fg{position:absolute;left:50%;bottom:0;font-size:30px;margin-left:-15px;animation:fg 1.6s ease-in-out infinite}
+@keyframes ar{0%{opacity:0;transform:translateY(18px)}40%{opacity:1}100%{opacity:0;transform:translateY(-6px)}}
+@keyframes fg{0%{transform:translateY(8px)}60%{transform:translateY(-16px)}100%{transform:translateY(8px)}}
+.scr .tx{font-size:13.5px;line-height:1.6;color:#dff6ff}
+.scr .tx b{display:block;font-family:Changa;font-size:17px;color:#fff}
+.scr .tx small{color:var(--cy);font-size:12px}
 
 /* المعلومات */
 .info{display:flex;gap:8px;overflow:auto;padding:16px 18px 4px;scrollbar-width:none;max-width:900px;margin:0 auto}
@@ -328,7 +335,7 @@ section{position:relative}
       <g id="head"><rect x="-20" y="-24" width="40" height="34" rx="6" fill="#e8ecf7"/><rect x="-14" y="-18" width="28" height="10" rx="3" fill="#0b1534"/><circle cx="0" cy="-13" r="3" fill="#55d4ff"><animate attributeName="opacity" values="1;.3;1" dur="1s" repeatCount="indefinite"/></circle><path d="M-6 10 L6 10 L2 20 L-2 20 Z" fill="#aab3cc"/><circle cx="0" cy="21" r="2.4" fill="#ff8a3b" id="tip"/></g>
     </g>
   </svg></div>
-  <div class="scr" id="scr">مرّر لتبدأ الطباعة<i></i></div>
+  <div class="scr" id="scr" onclick="autoPrint()"><div class="gs"><span class="ar"></span><span class="fg">👆</span></div><div class="tx"><b>اسحب بإصبعك للأعلى</b>لتشغيل الطابعة ومشاهدة الطباعة<br><small>أو اضغط هنا لتشغيلها تلقائيًا ▶</small></div></div>
   <div class="hud"><span id="hS">⏸ في الانتظار</span><span>طبقة <b id="hL">0</b> / 240</span><span>🌡 <b>220°</b></span></div>
 </div></section>
 
@@ -490,9 +497,12 @@ function onScroll(){nav.classList.toggle('solid',scrollY>40);
  rvr.setAttribute('y',y);rvr.setAttribute('height',Y0-y+20);hotL.setAttribute('y',y-1);hotL.style.opacity=PR>0&&PR<1?1:0;
  gan.setAttribute('transform',`translate(0 ${y-30})`);
  hL.textContent=Math.round(PR*240);hS.textContent=PR>=1?'✓ اكتملت':PR>0?'🖨 '+Math.round(PR*100)+'٪':'⏸ في الانتظار';
- stk.classList.toggle('done',PR>=1);scr.style.opacity=1-ss(.02,.1,p);
+ stk.classList.toggle('done',PR>=1);scr.style.opacity=1-ss(.02,.1,p);scr.style.pointerEvents=p>.08?'none':'';
  const i=PR<=0?0:PR<1?1:2;if(i!==capI){caps[capI].classList.remove('on');caps[i].classList.add('on');capI=i}}
 addEventListener('scroll',onScroll,{passive:true});addEventListener('resize',onScroll);onScroll();
+/* تشغيل تلقائي: تمرير هادئ عبر مرحلة الطباعة */
+function autoPrint(){const end=stage.offsetHeight-innerHeight,y0=scrollY,T=4200,t0=performance.now();let stop=false;const k=()=>stop=true;addEventListener('touchstart',k,{once:true});addEventListener('wheel',k,{once:true});
+ (function st(t){if(stop)return;const e=Math.min(1,(t-t0)/T),q=e<.5?2*e*e:1-Math.pow(-2*e+2,2)/2;scrollTo(0,y0+(end-y0)*q);if(e<1)requestAnimationFrame(st)})(t0)}
 (function loop(t){if(inView){const run=PR>0&&PR<1;const x=run?150+96*Math.sin(t/170):(PR>=1?240:150);head.setAttribute('transform',`translate(${x} 0)`)}requestAnimationFrame(loop)})(0);
 
 /* الأكثر طلبًا */
