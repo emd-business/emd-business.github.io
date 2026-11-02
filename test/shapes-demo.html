@@ -407,6 +407,59 @@ body[data-shape="scale"]{--a1:#F59E0B;--a2:#10B981;--bg:#0F1419;--ink:#f1f5f9;--
 .pk .bs button{border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:6px;padding:3px 8px;font-size:11.5px}
 .pk .bs button.ad{background:var(--a1);color:#0F1419;border-color:var(--a1);font-weight:800}
 
+
+body[data-shape="cube"]{--a1:#F59E0B;--a2:#38BDF8;--bg:#0F172A;--ink:#f1f5f9;--muted:#94a3b8;--card:#16213a;--line:rgba(56,189,248,.3)}
+/* ===== مكعبات الأوريغامي ===== */
+#cube{position:relative}
+.c3hero{position:relative;height:360px;overflow:hidden;perspective:700px;touch-action:pan-y}
+.c3floor{position:absolute;left:-50%;right:-50%;bottom:-120px;height:420px;transform:rotateX(76deg);transform-origin:50% 100%;background-image:linear-gradient(rgba(56,189,248,.55) 1px,transparent 1px),linear-gradient(90deg,rgba(56,189,248,.55) 1px,transparent 1px);background-size:44px 44px;animation:grid 2.2s linear infinite;-webkit-mask-image:linear-gradient(transparent,#000 60%);mask-image:linear-gradient(transparent,#000 60%)}
+@keyframes grid{to{background-position:0 44px}}
+.c3sky{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 35%,rgba(56,189,248,.25),transparent 60%)}
+.c3ttl{position:absolute;top:16px;left:0;right:0;text-align:center;z-index:3}
+#cube h1{margin:0;font-size:28px;color:#fff}
+#cube .sub{color:#9cc9e6;font-size:13px}
+.bigc{position:absolute;left:50%;top:150px;width:130px;height:130px;margin-left:-65px;transform-style:preserve-3d;cursor:grab}
+.bigc .fc{position:absolute;inset:0;display:grid;place-items:center;text-align:center;border:1.5px solid #F59E0B;background:linear-gradient(135deg,rgba(30,58,95,.92),rgba(15,23,42,.92));color:#fde68a;font-weight:800;box-shadow:inset 0 0 30px rgba(56,189,248,.35)}
+.bigc .fc.lg{font-family:Amiri,serif;font-size:58px;color:#F59E0B}
+.bigc .fc svg{height:96px;width:auto}
+.bshadow{position:absolute;left:50%;top:330px;width:150px;height:26px;margin-left:-75px;border-radius:50%;background:radial-gradient(rgba(56,189,248,.5),transparent 70%);filter:blur(4px)}
+.cgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:26px 12px;padding-top:10px}
+@media(min-width:640px){.cgrid{grid-template-columns:repeat(3,1fr)}}
+.citem{text-align:center}
+.cst{height:150px;perspective:600px;display:grid;place-items:center}
+.mc{position:relative;width:96px;height:96px;transform-style:preserve-3d;animation:cspin 9s linear infinite;cursor:pointer}
+@keyframes cspin{from{transform:rotateX(-18deg) rotateY(0)}to{transform:rotateX(-18deg) rotateY(-360deg)}}
+.mc .fc{position:absolute;inset:0;display:grid;place-items:center;text-align:center;border:1px solid rgba(245,158,11,.8);background:linear-gradient(135deg,#1e3a5f,#0f172a);color:#fde68a;font-size:12.5px;font-weight:700;padding:6px}
+.mc .fc svg{height:74px;width:auto}
+.mc .fc .big{font-size:19px;color:#F59E0B;font-weight:800}
+.citem .nm{font-weight:700;font-size:14px}.citem .pr{color:var(--a1);font-weight:800}
+.citem .row{display:flex;gap:6px;justify-content:center;margin-top:6px}
+.citem .row button{border:0;border-radius:8px;padding:6px 10px;font-weight:800;font-size:12.5px}
+.citem .op{background:transparent;color:#7dd3fc;border:1px solid #38BDF8 !important}
+.citem .ad{background:#F59E0B;color:#0F172A}
+.ctip{text-align:center;color:var(--muted);font-size:12px;margin:4px 0 14px}
+/* مسرح الفتح */
+.unf{position:fixed;inset:0;z-index:92;display:none;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 45%,rgba(30,58,95,.97),rgba(5,8,18,.98));perspective:900px}
+.unf.show{display:flex}
+.ucube{position:relative;width:110px;height:110px;transform-style:preserve-3d;transition:transform 1s cubic-bezier(.5,0,.2,1)}
+.ucube .fc{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;border:1.5px solid #F59E0B;background:linear-gradient(135deg,#1e3a5f,#0f172a);color:#f1f5f9;font-size:12px;padding:6px;transition:transform 1s cubic-bezier(.5,0,.2,1) .15s,opacity .5s;backface-visibility:hidden}
+.ucube .fc svg{height:84px;width:auto}
+.ucube .fc b{color:#F59E0B;font-size:13px}
+.ucube .fc .vb{margin-top:4px;border:1px solid #38BDF8;background:transparent;color:#7dd3fc;border-radius:6px;padding:3px 10px;font-size:12px}
+.ucube .fc .vb.on{background:#38BDF8;color:#0F172A}
+.ucube .fc .buy{margin-top:4px;border:0;background:#F59E0B;color:#0F172A;border-radius:8px;padding:6px 10px;font-weight:800;font-size:13px}
+.ucube .f0{transform:translateZ(55px)}.ucube .f1{transform:rotateX(90deg) translateZ(55px)}.ucube .f2{transform:rotateX(-90deg) translateZ(55px)}.ucube .f3{transform:rotateY(90deg) translateZ(55px)}.ucube .f4{transform:rotateY(-90deg) translateZ(55px)}.ucube .f5{transform:rotateY(180deg) translateZ(55px)}
+.unf.open .ucube{transform:rotateX(14deg) rotateY(0) !important}
+.unf.open .f0{transform:translateZ(0)}
+.unf.open .f1{transform:translateY(-100%) translateY(-6px)}
+.unf.open .f2{transform:translateY(100%) translateY(6px)}
+.unf.open .f3{transform:translateX(100%) translateX(6px)}
+.unf.open .f4{transform:translateX(-100%) translateX(-6px)}
+.unf.open .f5{opacity:0}
+.unf .x{position:absolute;top:16px;left:16px;width:40px;height:40px;border-radius:50%;border:1px solid #F59E0B;background:transparent;color:#F59E0B;font-size:20px}
+.unf .ut{position:absolute;bottom:40px;left:0;right:0;text-align:center;color:#9cc9e6;font-size:13px}
+.seal3{position:absolute;width:56px;height:56px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fde68a,#b45309);display:grid;place-items:center;font-size:24px;color:#7c2d12;font-weight:800;box-shadow:0 6px 18px rgba(0,0,0,.5);transform:translateZ(80px) scale(0);transition:transform .5s cubic-bezier(.3,1.6,.5,1)}
+.unf.sealed .seal3{transform:translateZ(80px) scale(1)}
 /* ===== عمق ثلاثي الأبعاد لكل التصاميم ===== */
 html{overflow-x:hidden}.shape{overflow-x:clip}
 .sgrid,.ogrid,.hgrid,.pgrid,.shgrid,.dgrid,.lgrid,.agrid,.velvet,.wins,.hlist,.mgrid,.rgrid,.trow,.lgrid2,.pick{perspective:900px}
@@ -446,7 +499,7 @@ body[data-shape="star"] .cartbar{border-radius:0;clip-path:polygon(14px 0,calc(1
 </style>
 </head>
 <body data-shape="star">
-<div class="switch"><span>التصميم:</span><button data-s="star" class="on">الفسيفساء العربية</button><button data-s="orbit">المدار الذهبي</button><button data-s="hive">خلايا العسل</button><button data-s="stage">مسرح الإضاءة</button><button data-s="shoji">الأبواب المنزلقة</button><button data-s="dunes">الكثبان الرملية</button><button data-s="lotus">زهرة اللوتس</button><button data-s="aurora">الشفق القطبي</button><button data-s="scroll">مخطوطة البردي</button><button data-s="cabinet">الخزانة السرية</button><button data-s="rotunda">الأسطوانة الدوّارة</button><button data-s="train">القطار</button><button data-s="hourglass">الساعة الرملية</button><button data-s="museum">رواق المتحف</button><button data-s="ripple">تموجات الماء</button><button data-s="terrace">المدرجات</button><button data-s="lens">عدسة الكاميرا</button><button data-s="scale">ميزان المقارنة</button></div>
+<div class="switch"><span>التصميم:</span><button data-s="cube" style="border-color:#38BDF8">مكعبات ثلاثية الأبعاد ✦</button><button data-s="star" class="on">الفسيفساء العربية</button><button data-s="orbit">المدار الذهبي</button><button data-s="hive">خلايا العسل</button><button data-s="stage">مسرح الإضاءة</button><button data-s="shoji">الأبواب المنزلقة</button><button data-s="dunes">الكثبان الرملية</button><button data-s="lotus">زهرة اللوتس</button><button data-s="aurora">الشفق القطبي</button><button data-s="scroll">مخطوطة البردي</button><button data-s="cabinet">الخزانة السرية</button><button data-s="rotunda">الأسطوانة الدوّارة</button><button data-s="train">القطار</button><button data-s="hourglass">الساعة الرملية</button><button data-s="museum">رواق المتحف</button><button data-s="ripple">تموجات الماء</button><button data-s="terrace">المدرجات</button><button data-s="lens">عدسة الكاميرا</button><button data-s="scale">ميزان المقارنة</button></div>
 <div class="badge">معاينة تجريبية</div>
 
 <!-- الفسيفساء العربية -->
@@ -578,6 +631,15 @@ body[data-shape="star"] .cartbar{border-radius:0;clip-path:polygon(14px 0,calc(1
   </div>
 </section>
 <div class="flash" id="flash"></div>
+
+<!-- مكعبات الأوريغامي -->
+<section id="cube" class="shape">
+  <div class="c3hero" id="c3hero"><div class="c3sky"></div><div class="c3floor"></div>
+    <div class="c3ttl"><h1>عطور نور</h1><div class="sub">اسحب المكعب لتديره</div></div>
+    <div class="bigc" id="bigc"></div><div class="bshadow"></div></div>
+  <div class="wrap"><div class="ctip">اضغط «افتح» ليتفتح المكعب أمامك</div><div class="cgrid" id="cgrid"></div></div>
+</section>
+<div class="unf" id="unf"><button class="x" onclick="closeUnf()" aria-label="إغلاق">✕</button><div class="ucube" id="ucube"></div><div class="ut" id="ut">جارٍ فتح المكعب…</div></div>
 
 <div class="spot" id="spot"></div>
 
@@ -745,6 +807,25 @@ function drawScale(){const sR=pans[0]!=null?score(pans[0]):null,sL=pans[1]!=null
  pick.innerHTML=P.map((x,i)=>`<div class="pk">${bottle(x.c)}<div class="nm">${x.n}</div><div class="pr">${fmt(x.p)} ر.ع</div><div class="bs"><button class="${pans[0]===i?'ad':''}" onclick="pans[0]=${i};drawScale()">الكفة اليمنى</button><button class="${pans[1]===i?'ad':''}" onclick="pans[1]=${i};drawScale()">اليسرى</button></div></div>`).join('')}
 wP.oninput=wL.oninput=drawScale;drawScale();
 
+/* مكعبات الأوريغامي */
+const CF=['translateZ(65px)','rotateY(180deg) translateZ(65px)','rotateY(90deg) translateZ(65px)','rotateY(-90deg) translateZ(65px)','rotateX(90deg) translateZ(65px)','rotateX(-90deg) translateZ(65px)'];
+bigc.innerHTML=[`<div class="fc lg">ن</div>`,`<div class="fc">${bottle(P[0].c)}</div>`,`<div class="fc">عطور<br>نور</div>`,`<div class="fc">${bottle(P[3].c)}</div>`,`<div class="fc lg">✦</div>`,`<div class="fc"></div>`].map((h,k)=>h.replace('class="fc','style="transform:'+CF[k]+'" class="fc')).join('');
+let bx=-20,by=30,vx=0,vy=.25,drag=null;
+c3hero.addEventListener('pointerdown',e=>{drag={x:e.clientX,y:e.clientY};vy=0});
+addEventListener('pointermove',e=>{if(!drag)return;vy=(e.clientX-drag.x)*.5;vx=-(e.clientY-drag.y)*.3;drag={x:e.clientX,y:e.clientY};by+=vy;bx=Math.max(-60,Math.min(60,bx+vx))});
+addEventListener('pointerup',()=>{if(drag){drag=null}});
+(function cl(){if(document.body.dataset.shape==='cube'){if(!drag){vy+=(.25-vy)*.03;by+=vy;bx+=(-20-bx)*.02}bigc.style.transform=`rotateX(${bx}deg) rotateY(${by}deg)`}requestAnimationFrame(cl)})();
+const MF=['translateZ(48px)','rotateY(90deg) translateZ(48px)','rotateY(180deg) translateZ(48px)','rotateY(-90deg) translateZ(48px)','rotateX(90deg) translateZ(48px)','rotateX(-90deg) translateZ(48px)'];
+cgrid.innerHTML=P.map((x,i)=>`<div class="citem"><div class="cst"><div class="mc" style="animation-delay:-${i*1.3}s" onclick="openUnf(${i})">${[bottle(x.c),`<div>${x.n}</div>`,`<div class="big">${fmt(x.p)}<br><small>ر.ع</small></div>`,`<div>قسم ${x.k}</div>`,'<div class="big">ن</div>',''].map((h,k)=>`<div class="fc" style="transform:${MF[k]}">${h}</div>`).join('')}</div></div><div class="nm">${x.n}</div><div class="pr">${fmt(x.p)} ر.ع</div><div class="row"><button class="op" onclick="openUnf(${i})">افتح</button><button class="ad" onclick="add(${i})">أضف</button></div></div>`).join('');
+let ui=0,usz=0;
+function openUnf(i){ui=i;usz=0;const x=P[i];
+ ucube.innerHTML=`<div class="fc f0">${bottle(x.c)}</div><div class="fc f1"><b>${x.n}</b><div>تركيبة فاخرة تدوم طويلًا</div></div><div class="fc f2"><b id="upr">${fmt(x.p)} ر.ع</b><button class="buy" onclick="sealAdd()">أضف إلى السلة</button></div><div class="fc f3"><b>الحجم</b><button class="vb on" onclick="usize(0,this)">50 مل</button><button class="vb" onclick="usize(1,this)">100 مل</button></div><div class="fc f4"><b>القسم</b><div>${x.k}</div><div style="color:#7dd3fc;margin-top:4px">★ 4.9</div></div><div class="fc f5"></div><div class="seal3">ن</div>`;
+ ucube.style.transform='rotateX(-25deg) rotateY(-35deg)';unf.className='unf show';ut.textContent='جارٍ فتح المكعب…';
+ setTimeout(()=>{unf.classList.add('open');ut.textContent='المكعب مفتوح: الاسم في الأعلى، والحجم يمينًا، والشراء في الأسفل'},500)}
+function usize(k,b){usz=k;ucube.querySelectorAll('.vb').forEach(v=>v.classList.toggle('on',v===b));document.getElementById('upr').textContent=fmt(P[ui].p*(k?1.8:1))+' ر.ع'}
+function sealAdd(){add(ui);unf.classList.remove('open');ut.textContent='تم إغلاق المكعب وختمه، وأُضيف إلى السلة';setTimeout(()=>unf.classList.add('sealed'),900);setTimeout(closeUnf,2100)}
+function closeUnf(){unf.className='unf'}
+
 document.querySelectorAll('.switch button').forEach(b=>b.onclick=()=>{if(b.dataset.s==='lotus')rebloom();if(b.dataset.s==='scroll'){parch.style.animation='none';void parch.offsetWidth;parch.style.animation=''}document.body.dataset.shape=b.dataset.s;document.querySelectorAll('.shape').forEach(x=>x.classList.toggle('on',x.id===b.dataset.s));if(b.dataset.s==='shoji'){shoji.classList.remove('open');setTimeout(()=>shoji.classList.add('open'),60)}
  document.querySelectorAll('.switch button').forEach(x=>x.classList.toggle('on',x===b));scrollTo(0,0);sizeRings()});
 /* عمق ثلاثي الأبعاد: دخول البطاقات بزاوية + إمالة مع الإصبع */
@@ -762,6 +843,7 @@ document.querySelectorAll('.switch button').forEach(b=>b.onclick=()=>{if(b.datas
  document.querySelectorAll('.switch button').forEach(b=>b.addEventListener('click',()=>setTimeout(()=>document.querySelectorAll('.shape.on .t3d').forEach(c=>{c.classList.add('pre');io.observe(c)}),20)));
 })();
 
+document.querySelector('.switch button[data-s=cube]').click();
 </script>
 </body>
 </html>
