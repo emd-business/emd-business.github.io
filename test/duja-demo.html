@@ -98,6 +98,23 @@ button{font-family:inherit;cursor:pointer}
 .qty b{min-width:16px;text-align:center}
 .card.has .add{display:none}.card.has .qty{display:flex}
 
+/* الصور الحقيقية */
+.view{display:flex;justify-content:center;gap:8px;margin:-4px 0 14px}
+.view button{border:1px solid var(--sage);background:transparent;color:var(--sage-d);border-radius:999px;padding:5px 14px;font-size:12.5px;font-weight:700}
+.view button.on{background:var(--sage);color:#fff}
+.phw{flex:none;width:132px;height:118px;perspective:600px;display:grid;place-items:center}
+.ph{position:relative;width:128px;border-radius:16px;overflow:hidden;transform:rotateY(-14deg) rotateX(8deg);transform-style:preserve-3d;box-shadow:14px 18px 22px -12px rgba(67,87,62,.55);transition:transform .6s cubic-bezier(.2,.9,.3,1);animation:phf 5s ease-in-out infinite}
+.list .card:nth-child(2n) .ph{animation-delay:-2.5s}
+@keyframes phf{50%{translate:0 -5px}}
+.ph img{display:block;width:100%;height:auto;mix-blend-mode:multiply;transform:scale(1.04)}
+.ph:after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.55) 50%,transparent 65%);transform:translateX(-120%);animation:shine 4.5s ease-in-out infinite}
+.list .card:nth-child(2n) .ph:after{animation-delay:-2s}
+@keyframes shine{0%,60%{transform:translateX(-120%)}85%,100%{transform:translateX(120%)}}
+.card:hover .ph,.card.tap .ph{transform:rotateY(0) rotateX(0) scale(1.06)}
+.card.bounce .ph{animation:phb .5s ease}
+@keyframes phb{40%{transform:rotateY(0) scale(1.12)}}
+.card .ph.closedph{transform:rotateY(-70deg) rotateX(8deg);opacity:0}
+.ph{transition:transform .9s cubic-bezier(.2,.9,.3,1),opacity .6s}
 /* المميزات */
 .feat{display:grid;grid-template-columns:repeat(3,1fr);background:var(--sage-l);border-radius:20px;margin:22px 0 10px;padding:14px 6px;text-align:center}
 .feat div{font-size:12px;color:var(--sage-d);line-height:1.5;padding:0 4px}
@@ -169,7 +186,7 @@ button{font-family:inherit;cursor:pointer}
 <main class="wrap">
   <div class="title"><div><h2>القائمة</h2><small>MENU</small></div></div>
   <div class="sizes" id="sizes"><div class="pill"></div><button class="on" data-z="0">الحجم الكبير · 55 جرامًا</button><button data-z="1">الحجم الصغير · 30 جرامًا</button></div>
-  <div class="sizeinfo" id="sizeinfo"></div>
+  <div class="sizeinfo" id="sizeinfo"></div><div class="view" id="view"><button class="on" data-v="1">📷 صور حقيقية</button><button data-v="0">✏️ رسم</button></div>
   <div class="list" id="list"></div>
   <div class="feat"><div><span class="ic">🍫</span>محشوة بالشوكولاتة البلجيكية</div><div><span class="ic">🍪</span><span id="fw">وزن الحبة 55 جرامًا</span></div><div><span class="ic">⚖️</span>حجم مثالي لذة أكثر</div></div>
   <div class="slogan">SMALL BITES • BIG HAPPINESS</div>
@@ -182,12 +199,12 @@ button{font-family:inherit;cursor:pointer}
 
 <script>
 const M=[
- {w:55,items:[{n:'بوكس ذوق',c:3,p:1.5},{n:'بوكس مزاج',c:6,p:3},{n:'بوكس لذة',c:12,p:5}]},
- {w:30,items:[{n:'بوكس الذواقة',c:4,p:1.2},{n:'بوكس الرفقة',c:10,p:3},{n:'بوكس اللمة',c:15,p:4.2},{n:'بوكس الوفرة',c:36,p:9}]}
+ {w:55,items:[{n:'بوكس ذوق',c:3,p:1.5,im:0},{n:'بوكس مزاج',c:6,p:3,im:1},{n:'بوكس لذة',c:12,p:5,im:2}]},
+ {w:30,items:[{n:'بوكس الذواقة',c:4,p:1.2,im:3},{n:'بوكس الرفقة',c:10,p:3,im:4},{n:'بوكس اللمة',c:15,p:4.2,im:5},{n:'بوكس الوفرة',c:36,p:9,im:6}]}
 ];
 const GR={3:[3,1],4:[2,2],6:[3,2],10:[5,2],12:[4,3],15:[5,3],36:[9,4]};
 const fmt=v=>v.toFixed(3);
-let size=0,cart={};
+let size=0,cart={},photo=1;
 const key=(z,i)=>z+'-'+i;
 
 /* الواجهة */
@@ -203,20 +220,21 @@ function draw(){const m=M[size];sizes.className='sizes'+(size?' s1':'');
  fw.textContent='وزن الحبة '+m.w+' جرامًا';
  list.innerHTML=m.items.map((x,i)=>{const [cl,rw]=GR[x.c],k=key(size,i),q=cart[k]?cart[k].q:0;
   return `<div class="card closed${q?' has':''}" id="c${k}">
-   <div class="mini"><div class="mbox"><div class="in" style="grid-template-columns:repeat(${cl},1fr);grid-template-rows:repeat(${rw},1fr)">${('<div class="ck" style="width:'+Math.floor(Math.min((104-3*(cl-1))/cl,(74-3*(rw-1))/rw))+'px"></div>').repeat(x.c)}</div><div class="front">DUJA</div><div class="lid"><i>دُجا</i></div></div></div>
+   ${photo?`<div class="phw"><div class="ph closedph"><img src="duja/box${x.im}.jpg" alt="${x.n}" loading="lazy"></div></div>`:`<div class="mini"><div class="mbox"><div class="in" style="grid-template-columns:repeat(${cl},1fr);grid-template-rows:repeat(${rw},1fr)">${('<div class="ck" style="width:'+Math.floor(Math.min((104-3*(cl-1))/cl,(74-3*(rw-1))/rw))+'px"></div>').repeat(x.c)}</div><div class="front">DUJA</div><div class="lid"><i>دُجا</i></div></div></div>`}
    <div class="info"><h3>${x.n}</h3><span class="chip">${x.c} ${x.c<=10?'حبات':'حبة'}</span>
     <div class="meta">${m.w} جرامًا للحبة · بالشوكولاتة البلجيكية</div>
     <div class="buy"><div class="price">${fmt(x.p)} <small>ر.ع</small></div>
      <button class="add" onclick="addB(${size},${i},this)">أضف للسلة</button>
      <div class="qty"><button onclick="chg('${k}',1)">+</button><b id="q${k}">${q}</b><button onclick="chg('${k}',-1)">−</button></div></div></div></div>`}).join('');
- const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){const c=e.target;c.classList.add('in');setTimeout(()=>c.classList.remove('closed'),350);io.unobserve(c)}}),{threshold:.3});
+ const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){const c=e.target;c.classList.add('in');setTimeout(()=>{c.classList.remove('closed');const ph=c.querySelector('.ph');ph&&ph.classList.remove('closedph')},350);io.unobserve(c)}}),{threshold:.3});
  list.querySelectorAll('.card').forEach((c,n)=>{c.style.transitionDelay=n*.08+'s';io.observe(c)})}
 sizes.querySelectorAll('button').forEach(b=>b.onclick=()=>{size=+b.dataset.z;draw()});
+view.querySelectorAll('button').forEach(b=>b.onclick=()=>{photo=+b.dataset.v;view.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));draw()});
 
 /* السلة */
 function addB(z,i,btn){const x=M[z].items[i],k=key(z,i);cart[k]=cart[k]||{n:x.n+' ('+M[z].w+' جم)',p:x.p,q:0};
  const card=document.getElementById('c'+k);card.classList.add('bounce');setTimeout(()=>card.classList.remove('bounce'),500);
- const r=card.querySelector('.mini').getBoundingClientRect(),f=document.createElement('div');f.className='ck flyck';f.style.left=(r.left+r.width/2-17)+'px';f.style.top=(r.top+r.height/2-17)+'px';document.body.appendChild(f);
+ const r=card.querySelector('.mini,.phw').getBoundingClientRect(),f=document.createElement('div');f.className='ck flyck';f.style.left=(r.left+r.width/2-17)+'px';f.style.top=(r.top+r.height/2-17)+'px';document.body.appendChild(f);
  cartbar.classList.add('show');const j=cartbar.querySelector('.jar').getBoundingClientRect();
  requestAnimationFrame(()=>{f.style.transform=`translate(${j.left+j.width/2-r.left-r.width/2}px,${j.top+j.height/2-r.top-r.height/2}px) rotate(540deg) scale(.6)`;f.style.opacity='.4'});
  setTimeout(()=>{f.remove();chg(k,1)},700)}
