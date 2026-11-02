@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>متجر كازا كافيه</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@500;600;700&family=Cairo:wght@400;600;700;800&family=Aref+Ruqaa:wght@400;700&family=Playfair+Display:wght@600;700&display=swap">
+<style>
+:root{--w:#6e1424;--wd:#4a0c17;--wl:#8e2236;--cr:#f6ede0;--paper:#fbf6ee;--gold:#c8a165;--ink:#3a1a12;--muted:#8f7766;--it1:#2f8f4e;--it2:#d63a3a}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;overflow-x:clip;overflow-anchor:none}
+body{font-family:Cairo,Tahoma,sans-serif;background:var(--cr);color:var(--ink)}
+button{font-family:inherit;cursor:pointer;color:inherit}
+.wrap{max-width:900px;margin:0 auto;padding:0 18px}
+.badge{position:fixed;bottom:8px;left:8px;z-index:99;background:#b91c1c;color:#fff;font-size:10.5px;padding:2px 8px;border-radius:6px}
+.rv{opacity:0;transform:translateY(26px);transition:opacity 1s,transform 1.1s cubic-bezier(.2,.8,.2,1)}
+.rv.in{opacity:1;transform:none}
+.sh{font-family:"El Messiri";font-size:clamp(28px,8vw,46px);margin:0;line-height:1.25;color:var(--wd)}
+.sh small{display:flex;align-items:center;gap:8px;font-family:Cairo;font-size:12.5px;letter-spacing:2px;color:var(--w);margin-bottom:4px;font-weight:800}
+.sh small:before{content:"";width:26px;height:4px;border-radius:2px;background:linear-gradient(90deg,var(--it2) 33%,#fff 33% 66%,var(--it1) 66%)}
+.lead{color:var(--muted);font-size:14.5px;line-height:1.8;margin:6px 0 0}
+.it{font-family:"Playfair Display",serif;font-style:italic;direction:ltr;display:inline-block}
+.btn{border:0;border-radius:999px;padding:13px 22px;font-weight:800;font-size:15px}
+.btn:active{transform:scale(.96)}
+.btn.w{background:var(--w);color:var(--cr);box-shadow:0 12px 24px -12px rgba(110,20,36,.9)}
+.btn.l{background:var(--paper);color:var(--w);border:1.5px solid var(--w)}
+
+/* الشريط العلوي */
+.nav{position:fixed;top:0;left:0;right:0;z-index:60;display:flex;align-items:center;gap:8px;padding:10px 14px;transition:background .4s}
+.nav.solid{background:rgba(74,12,23,.92);backdrop-filter:blur(12px)}
+.nav .lg{width:40px;height:40px;border-radius:50%;background:url(csa/logo.jpg) center/106%;box-shadow:0 0 0 1.5px var(--gold)}
+.nav .nm{font-family:"Playfair Display",serif;font-weight:700;letter-spacing:2px;color:var(--cr);font-size:17px;direction:ltr}
+.nav .sp{margin-inline-start:auto}
+.nav .ib{border:1px solid rgba(200,161,101,.6);background:rgba(255,255,255,.08);color:var(--cr);border-radius:999px;height:38px;min-width:38px;padding:0 12px;font-weight:700;font-size:13px}
+.nav .ib b{display:inline-grid;place-items:center;min-width:20px;height:20px;border-radius:999px;background:var(--gold);color:var(--wd);font-size:11px;margin-inline-start:6px}
+.bump{animation:bump .45s}@keyframes bump{40%{transform:scale(1.18)}}
+
+/* الواجهة: مظلة إيطالية */
+.hero{position:relative;background:linear-gradient(var(--wd),var(--w) 40%,#7d1a2c);color:var(--cr);padding:70px 0 0;overflow:hidden}
+.awn{position:relative;height:120px;transform-origin:top;animation:unroll 1.4s cubic-bezier(.3,1.3,.5,1) both;filter:drop-shadow(0 14px 12px rgba(0,0,0,.35));z-index:3}
+@keyframes unroll{from{transform:scaleY(0)}}
+.awn .st{position:absolute;inset:0 0 26px;background:repeating-linear-gradient(90deg,#8e2236 0 34px,#f6ede0 34px 68px)}
+.awn .st:after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(0,0,0,.28),transparent 40%,rgba(0,0,0,.12))}
+.awn .sc{position:absolute;left:0;right:0;bottom:0;height:28px;background:radial-gradient(circle at 17px 0,#8e2236 17px,transparent 18px) 0 0/68px 28px repeat-x,radial-gradient(circle at 51px 0,#f6ede0 17px,transparent 18px) 0 0/68px 28px repeat-x}
+.awn .lbl{position:absolute;top:30px;left:50%;transform:translateX(-50%);background:var(--wd);color:var(--cr);font-family:"Playfair Display";font-weight:700;letter-spacing:4px;font-size:18px;padding:6px 18px;border-radius:4px;box-shadow:0 0 0 1.5px var(--gold);white-space:nowrap;direction:ltr}
+.petals{position:absolute;inset:0;pointer-events:none;z-index:4;overflow:hidden}
+.petals i{position:absolute;top:-20px;width:12px;height:10px;border-radius:12px 0 12px 0;background:#c2185b;opacity:.85;animation:fall linear infinite}
+@keyframes fall{to{transform:translate(var(--dx),110svh) rotate(540deg)}}
+.vine{position:absolute;top:96px;width:120px;height:240px;z-index:4;pointer-events:none}
+.vine.r{right:-30px}.vine.l{left:-30px;transform:scaleX(-1)}
+.hin{position:relative;z-index:2;text-align:center;padding:26px 22px 0}
+.hin .ey{font-size:13px;letter-spacing:2px;color:var(--gold)}
+.hin h1{font-family:"El Messiri";font-size:clamp(36px,10.5vw,64px);line-height:1.2;margin:10px 0 6px;font-weight:700}
+.hin h1 .it{font-size:.62em;color:var(--gold);display:block;margin-bottom:-4px}
+.hin p{margin:0 auto;max-width:380px;color:#ecd6cf;font-size:15px;line-height:1.8}
+.hin .ctas{display:flex;gap:10px;justify-content:center;margin-top:20px}
+.hin .btn.w{background:var(--cr);color:var(--w)}
+.hin .btn.l{background:transparent;color:var(--cr);border-color:rgba(246,237,224,.6)}
+.door{position:relative;width:min(88vw,430px);margin:34px auto 0;aspect-ratio:1/1.05;border-radius:999px 999px 0 0;overflow:hidden;border:8px solid #e9dcc8;border-bottom:0;box-shadow:0 0 0 2px var(--gold)}
+.door .im{position:absolute;inset:0;background:url(csa/front.jpg) center/cover;transform:scale(1.15);transition:transform .2s linear}
+.door .lamp{position:absolute;top:22%;width:14px;height:14px;border-radius:50%;background:#ffd58a;box-shadow:0 0 30px 12px rgba(255,200,120,.6);animation:flk 3s infinite}
+@keyframes flk{50%{opacity:.75}}
+.ribbon{height:6px;background:linear-gradient(90deg,var(--it1) 33%,#fff 33% 66%,var(--it2) 66%)}
+
+/* ساعة القهوة الإيطالية */
+.ora{background:var(--paper);padding:64px 0 54px}
+.og{display:grid;gap:22px;margin-top:18px;align-items:center}
+@media(min-width:760px){.og{grid-template-columns:1fr 1fr}}
+.dial{position:relative;width:min(80vw,320px);aspect-ratio:1;margin:0 auto;border-radius:50%;background:radial-gradient(circle,#fff 55%,#f1e5d3 56%);box-shadow:0 30px 50px -30px rgba(74,12,23,.6),inset 0 0 0 10px var(--w),inset 0 0 0 12px var(--gold);touch-action:none;user-select:none}
+.dial .tk{position:absolute;inset:0}
+.dial .tk span{position:absolute;left:50%;top:50%;font:700 12px Cairo;color:var(--w)}
+.dial .hand{position:absolute;left:50%;top:50%;width:4px;height:38%;margin-left:-2px;background:var(--wd);border-radius:4px;transform-origin:50% 0;transform:rotate(180deg)}
+.dial .hand:after{content:"";position:absolute;bottom:-14px;left:-10px;width:24px;height:24px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px #fff,0 4px 10px rgba(0,0,0,.3)}
+.dial .ctr{position:absolute;left:50%;top:50%;width:76px;height:76px;margin:-38px;border-radius:50%;background:url(csa/logo.jpg) center/106%;box-shadow:0 0 0 3px #fff,0 6px 14px rgba(0,0,0,.3)}
+.dial .hint{position:absolute;bottom:-30px;left:0;right:0;text-align:center;font-size:12px;color:var(--muted)}
+.ocard{background:#fff;border-radius:26px;padding:16px;box-shadow:0 24px 40px -30px rgba(74,12,23,.6);display:flex;gap:14px;align-items:center;margin-top:18px}
+.ocard .ph{flex:none;width:110px;height:130px;border-radius:18px;background:center/cover;transition:background-image .4s}
+.ocard .tm{font-family:"El Messiri";font-size:15px;color:var(--w)}
+.ocard h4{font-family:"El Messiri";font-size:22px;margin:0;color:var(--wd)}
+.ocard p{margin:4px 0 8px;font-size:13px;color:var(--muted);line-height:1.7}
+.ocard .btn{padding:9px 16px;font-size:13.5px}
+.fade{animation:fd .5s}@keyframes fd{from{opacity:0;transform:translateY(8px)}}
+
+
+/* لوح اليوم */
+.board{padding:10px 0 60px;background:var(--paper)}
+.chalk{position:relative;background:#2b2b28 radial-gradient(ellipse at 30% 20%,rgba(255,255,255,.07),transparent 60%);border:12px solid #6b4a2b;border-radius:10px;box-shadow:0 30px 40px -24px rgba(0,0,0,.6),inset 0 0 40px rgba(0,0,0,.5);color:#f3efe6;padding:22px 18px;font-family:"Aref Ruqaa",serif}
+.chalk h3{text-align:center;font-size:30px;margin:0 0 4px;font-weight:700}
+.chalk .sub{text-align:center;font-size:16px;opacity:.8}
+.chalk ul{list-style:none;padding:0;margin:16px 0 0}
+.chalk li{display:flex;align-items:baseline;gap:8px;font-size:20px;padding:8px 0;cursor:pointer}
+.chalk li .d{flex:1;border-bottom:2px dotted rgba(255,255,255,.35);transform:translateY(-5px)}
+.chalk li b{font-family:Cairo;font-size:15px}
+.chalk li small{display:block;font-size:13px;opacity:.7;font-family:Cairo}
+.chalk .draw{display:block;margin:6px auto 0;width:120px}
+.chalk .draw path{stroke:#f3efe6;stroke-width:2;fill:none;stroke-dasharray:300;stroke-dashoffset:300;transition:stroke-dashoffset 2s}
+.chalk.in .draw path{stroke-dashoffset:0}
+.chalk .tap{position:absolute;bottom:8px;left:12px;font:600 11px Cairo;opacity:.6}
+
+/* الفطور الإيطالي */
+.col{background:var(--w);color:var(--cr);padding:60px 0;position:relative;overflow:hidden}
+.col .sh{color:var(--cr)}
+.col .sh small{color:var(--gold)}
+.col .lead{color:#e7cfc8}
+.cg{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
+.cpick h4{margin:0 0 8px;font-size:13px;color:var(--gold)}
+.cpick .ops{display:flex;flex-direction:column;gap:8px}
+.cpick button{display:flex;align-items:center;gap:8px;border:1.5px solid rgba(246,237,224,.25);background:rgba(255,255,255,.05);border-radius:16px;padding:6px;text-align:start;font-weight:700;font-size:12.5px;color:var(--cr);transition:.25s}
+.cpick button i{flex:none;width:40px;height:40px;border-radius:12px;background:center/cover}
+.cpick button.on{border-color:var(--gold);background:rgba(200,161,101,.18)}
+.tray{margin-top:18px;background:var(--cr);color:var(--ink);border-radius:24px;padding:14px;display:flex;align-items:center;gap:12px}
+.tray .pl{display:flex}
+.tray .pl i{width:54px;height:54px;border-radius:50%;background:center/cover;border:3px solid #fff;box-shadow:0 6px 12px rgba(0,0,0,.25);margin-inline-start:-14px;animation:pl .5s cubic-bezier(.3,1.5,.5,1)}
+.tray .pl i:first-child{margin:0}
+@keyframes pl{from{transform:scale(.3)}}
+.tray .t{flex:1;font-size:13px}.tray .t b{display:block;font-size:19px;color:var(--w)}.tray .t s{color:var(--muted)}
+
+/* القائمة: بطاقات بريدية */
+.menu{padding:56px 0 60px;background:var(--cr)}
+.mtool{position:sticky;top:60px;z-index:20;background:rgba(246,237,224,.95);backdrop-filter:blur(10px);padding:10px 0 8px;margin-top:12px}
+.srch{display:flex;gap:8px}
+.srch input{flex:1;min-width:0;border:1px solid #e3d2bd;background:#fff;border-radius:999px;padding:11px 16px;font:inherit;font-size:14px;color:var(--ink);outline:none}
+.srch input:focus{border-color:var(--w)}
+.srch select{border:1px solid #e3d2bd;background:#fff;border-radius:999px;padding:10px;font:inherit;font-size:12.5px;color:var(--w);font-weight:700}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:10px 0 2px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chips button{flex:none;border:1px solid #e3d2bd;background:#fff;color:var(--w);border-radius:999px;padding:7px 14px;font-weight:700;font-size:13px}
+.chips button small{opacity:.55;margin-inline-start:4px}
+.chips button.on{background:var(--w);border-color:var(--w);color:var(--cr)}
+.cnt{font-size:12.5px;color:var(--muted);margin-top:6px}
+.pgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px 12px;margin-top:16px}
+@media(min-width:640px){.pgrid{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:900px){.pgrid{grid-template-columns:repeat(4,1fr)}}
+.pc{position:relative;background:#fff;padding:7px 7px 10px;display:flex;flex-direction:column;cursor:pointer;animation:pin .5s both;box-shadow:0 14px 24px -18px rgba(74,12,23,.6);
+ padding:9px 9px 12px;outline:2px dashed #e6d5bf;outline-offset:-5px;border-radius:3px}
+.pc:nth-child(odd){rotate:-.8deg}.pc:nth-child(even){rotate:.8deg}
+@keyframes pin{from{opacity:0;transform:translateY(14px)}}
+.pc .im{aspect-ratio:1;background:#efe3d2 center/cover;position:relative}
+.pc .im.no{display:grid;place-items:center;font-size:42px}
+.pc .im .pm{position:absolute;top:6px;left:6px;width:48px;height:48px;border-radius:50%;border:2px dashed rgba(110,20,36,.55);color:rgba(110,20,36,.8);font:700 8px Cairo;display:grid;place-items:center;text-align:center;line-height:1.1;rotate:-14deg;background:rgba(255,255,255,.55)}
+.pc .im .tg{position:absolute;bottom:6px;right:6px;background:var(--w);color:var(--cr);font-size:10.5px;font-weight:700;padding:2px 8px}
+.pc .im .out{position:absolute;inset:0;background:rgba(251,246,238,.75);display:grid;place-items:center;font-weight:800;color:var(--w)}
+.pc h4{margin:8px 2px 0;font-size:14px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pc .ct{font-size:11.5px;color:var(--muted);margin:2px 2px 0}
+.pc .rw{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding:6px 2px 0}
+.pc .pr{font-weight:800;color:var(--w);font-size:15px}
+.pc .pr s{display:block;color:var(--muted);font-weight:600;font-size:11px}
+.pc .ad{width:34px;height:34px;border-radius:50%;border:0;background:var(--w);color:var(--cr);font-size:19px}
+.pc .ad:disabled{opacity:.3}
+.more{display:block;margin:24px auto 0;border:1.5px solid var(--w);background:none;color:var(--w);border-radius:999px;padding:11px 26px;font-weight:800}
+.emp{grid-column:1/-1;text-align:center;color:var(--muted);padding:40px 0}
+
+/* زيارة */
+.visit{background:var(--paper);padding:50px 0 20px}
+.city{border-radius:26px;overflow:hidden;position:relative;aspect-ratio:1/1;max-width:520px;margin:16px auto 0;background:url(csa/city.jpg) center/cover;box-shadow:0 24px 40px -28px rgba(74,12,23,.7)}
+.igg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:12px auto 0;max-width:520px}
+.igg div{aspect-ratio:1;border-radius:12px;background:center/cover}
+.foot{text-align:center;color:var(--muted);font-size:12px;padding:20px 0 50px;background:var(--paper)}
+
+/* السلة: الحساب */
+.drawer{position:fixed;inset:0;z-index:90;background:rgba(74,12,23,.45);opacity:0;pointer-events:none;transition:opacity .35s}
+.drawer.show{opacity:1;pointer-events:auto}
+.drawer .pn{position:absolute;left:0;right:0;bottom:0;max-height:90svh;background:var(--paper);border-radius:26px 26px 0 0;padding:14px 18px 18px;transform:translateY(100%);transition:transform .45s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;max-width:560px;margin:0 auto;border-top:6px solid;border-image:linear-gradient(90deg,var(--it1) 33%,#fff 33% 66%,var(--it2) 66%) 1}
+.drawer.show .pn{transform:none}
+.hd{display:flex;align-items:center;justify-content:space-between}
+.drawer h3{font-family:"El Messiri";font-size:24px;margin:0;color:var(--wd)}
+.x{border:0;background:#efe3d2;width:34px;height:34px;border-radius:50%;font-size:15px}
+.ls{overflow:auto;flex:1;margin:8px 0}
+.ln{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px dashed #e3d2bd}
+.ln i{width:46px;height:46px;border-radius:10px;background:#efe3d2 center/cover;flex:none;display:grid;place-items:center;font-style:normal}
+.ln .nm{flex:1;font-size:13.5px}.ln small{color:var(--muted)}
+.ln .qb{width:30px;height:30px;border-radius:50%;border:1px solid #e3d2bd;background:#fff}
+.em{text-align:center;color:var(--muted);padding:40px 0}
+.tot{display:flex;justify-content:space-between;font-weight:800;font-size:17px;color:var(--w);padding:8px 0}
+.go{width:100%;border:0;border-radius:999px;background:var(--w);color:var(--cr);padding:14px;font-weight:800;font-size:15px}
+.fly{position:fixed;z-index:85;width:54px;height:54px;border-radius:50%;background:#efe3d2 center/cover;pointer-events:none;transition:transform .75s cubic-bezier(.5,-0.4,.5,1),opacity .75s;box-shadow:0 8px 16px rgba(0,0,0,.35);border:2px solid var(--gold)}
+
+/* نافذة المنتج */
+.qv{position:fixed;inset:0;z-index:88;background:rgba(74,12,23,.45);display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .3s}
+.qv.show{opacity:1;pointer-events:auto}
+.qv .pn{background:var(--paper);width:100%;max-width:560px;margin:0 auto;border-radius:26px 26px 0 0;padding-bottom:18px;transform:translateY(100%);transition:transform .4s cubic-bezier(.2,.8,.2,1);max-height:92svh;overflow:auto}
+.qv.show .pn{transform:none}
+.qv .big{height:300px;background:#efe3d2 center/cover;border-radius:26px 26px 0 0;position:relative;display:grid;place-items:center;font-size:70px}
+.qv .big .x{position:absolute;top:12px;left:12px;background:rgba(255,255,255,.85)}
+.qv .in2{padding:16px 18px 0}
+.qv h3{font-family:"El Messiri";font-size:24px;margin:0;color:var(--wd)}
+.qv .ds{color:var(--muted);font-size:14px;line-height:1.8;margin-top:4px}
+.qv .sz{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.qv .sz button{border:1px solid #e3d2bd;background:#fff;border-radius:999px;padding:7px 14px;font-weight:700;color:var(--w)}
+.qv .sz button.on{background:var(--w);color:var(--cr);border-color:var(--w)}
+.qv .ft{display:flex;align-items:center;gap:12px;margin-top:16px}
+.qt{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #e3d2bd;border-radius:999px;padding:4px}
+.qt button{width:34px;height:34px;border-radius:50%;border:0;background:#efe3d2;font-size:18px;color:var(--w)}
+.qv .ok{flex:1;border:0;border-radius:999px;background:var(--w);color:var(--cr);padding:13px;font-weight:800;font-size:15px}
+
+/* الشكر: بطاقة بريدية تنقلب */
+.ty{position:fixed;inset:0;z-index:95;display:none;place-items:center;background:rgba(74,12,23,.92);perspective:900px}
+.ty.show{display:grid}
+.pcard{width:300px;aspect-ratio:3/2;position:relative;transform-style:preserve-3d;animation:flip 1.6s cubic-bezier(.3,1.2,.4,1) both}
+@keyframes flip{from{transform:rotateY(180deg) translateY(60px) scale(.6)}}
+.pcard>div{position:absolute;inset:0;backface-visibility:hidden;border-radius:8px;box-shadow:0 30px 50px rgba(0,0,0,.5)}
+.pcard .bk{background:url(csa/logowall.jpg) center/cover;transform:rotateY(180deg)}
+.pcard .fr{background:#fffaf2;display:grid;grid-template-columns:1.3fr 1fr;padding:14px;gap:10px;color:var(--ink)}
+.pcard .fr .msg{font-family:"Aref Ruqaa";font-size:17px;line-height:1.5;border-left:1px solid #d9c6ad;padding-left:8px}
+.pcard .fr .msg small{display:block;font-family:Cairo;font-size:10.5px;color:var(--muted);margin-top:6px}
+.pcard .stp{justify-self:end;width:56px;height:66px;background:url(csa/espresso.jpg) center/cover;outline:3px dashed #fff;outline-offset:-3px;box-shadow:0 0 0 2px #e5d6c2}
+.pcard .pmk{position:absolute;top:22px;left:66px;width:70px;height:70px;border-radius:50%;border:2px solid rgba(110,20,36,.55);display:grid;place-items:center;font:800 9px Cairo;color:rgba(110,20,36,.75);rotate:-18deg;text-align:center;line-height:1.2}
+.pcard .lines{align-self:end;font-size:11px;color:var(--muted);border-top:1px solid #d9c6ad;padding-top:4px}
+
+/* جولة 1 */
+.nav .nm{transition:opacity .4s}.nav:not(.solid) .nm{opacity:0}
+.best{background:var(--cr);padding:26px 0 8px}
+.best h3{font-family:"El Messiri";font-size:20px;margin:0 18px 10px;color:var(--wd)}
+.brow{display:flex;gap:12px;overflow-x:auto;padding:4px 18px 14px;scrollbar-width:none}
+.brow::-webkit-scrollbar{display:none}
+.bi{flex:none;width:150px;background:#fff;border-radius:18px;padding:8px;box-shadow:0 12px 22px -16px rgba(74,12,23,.6);cursor:pointer}
+.bi .ph{height:120px;border-radius:12px;background:#efe3d2 center/cover}
+.bi b{display:block;font-size:13.5px;margin:6px 2px 0}
+.bi .rw{display:flex;justify-content:space-between;align-items:center;margin:4px 2px 0;font-weight:800;color:var(--w);font-size:13.5px}
+.bi .ad{width:30px;height:30px;border-radius:50%;border:0;background:var(--w);color:var(--cr);font-size:17px}
+.cbar{position:fixed;left:12px;right:12px;bottom:12px;z-index:58;display:flex;align-items:center;gap:10px;background:var(--wd);color:var(--cr);border-radius:18px;padding:10px 12px 10px 10px;box-shadow:0 18px 30px -12px rgba(0,0,0,.5);transform:translateY(140%);transition:transform .45s cubic-bezier(.2,.8,.2,1);max-width:540px;margin:0 auto}
+.cbar.on{transform:none}
+.cbar .n{width:30px;height:30px;border-radius:50%;background:var(--gold);color:var(--wd);display:grid;place-items:center;font-weight:800}
+.cbar .t{flex:1;font-weight:800}
+.cbar button{border:0;border-radius:999px;background:var(--cr);color:var(--w);font-weight:800;padding:9px 16px}
+.dial{width:min(62vw,250px)}
+.og>.rv:first-child{order:2}.ocard{margin-top:0}
+.vbtn{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.vbtn a{display:block;text-align:center;background:#fff;border:1px solid #e3d2bd;border-radius:16px;padding:12px 4px;color:var(--w);font-weight:800;font-size:13px;text-decoration:none}
+.vbtn a span{display:block;font-size:20px;margin-bottom:2px}
+.tray .t{white-space:nowrap}
+
+/* جولة 2 */
+.badge{transition:bottom .4s}body.hc .badge{bottom:84px}
+.pcard{width:min(88vw,340px)}.pcard .fr .msg{font-size:18px}
+.info{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin-top:16px}
+.info span{background:rgba(255,255,255,.1);border:1px solid rgba(246,237,224,.25);border-radius:999px;padding:5px 11px;font-size:12px;color:var(--cr)}
+.info i{display:inline-block;width:7px;height:7px;border-radius:50%;background:#5fd07a;margin-inline-end:5px;box-shadow:0 0 0 3px rgba(95,208,122,.25)}
+.ctl{display:inline-flex;align-items:center;gap:6px}
+.ctl .qb2{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--w);background:#fff;color:var(--w);font-size:17px;line-height:1;padding:0}
+.ctl b{min-width:14px;text-align:center;color:var(--w)}
+.ctl .ad2{width:30px;height:30px;border-radius:50%;border:0;background:var(--w);color:var(--cr);font-size:17px;padding:0}
+.pc .ctl .ad2,.pc .ctl .qb2{width:34px;height:34px}
+.dial .tk span{cursor:pointer;padding:6px}
+@media (prefers-reduced-motion:reduce){.petals,.door .lamp{display:none}.awn{animation:none}*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+/* جولة 3 */
+.pc .pr{white-space:nowrap}.pc .rw{flex-wrap:wrap;gap:6px}
+.how{display:flex;background:#efe3d2;border-radius:999px;padding:4px;margin:6px 0 8px}
+.how button{flex:1;border:0;background:none;border-radius:999px;padding:9px;font-weight:800;color:var(--w);font-size:13px}
+.how button.on{background:var(--w);color:var(--cr)}
+.note{width:100%;border:1px solid #e3d2bd;border-radius:14px;padding:10px 12px;font:inherit;font-size:13.5px;background:#fff;resize:none;outline:none}
+.note:focus{border-color:var(--w)}
+.sub2{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);padding:2px 0}
+.tyb{display:flex;gap:8px;justify-content:center;margin-top:18px}
+.tyb button{border:0;border-radius:999px;padding:10px 16px;font-weight:800;font-size:13px;background:var(--cr);color:var(--w)}
+.tyb button.o{background:transparent;color:var(--cr);border:1px solid rgba(246,237,224,.5)}
+</style>
+</head>
+<body>
+<div class="badge">معاينة تجريبية</div>
+<nav class="nav" id="nav"><div class="lg"></div><div class="nm">CASA CAFÉ</div><span class="sp"></span><button class="ib" id="srb" aria-label="بحث">🔍</button><button class="ib" id="cartb">الحساب<b id="cn">0</b></button></nav>
+
+<header class="hero" id="hero">
+  <div class="awn"><div class="st"></div><div class="sc"></div><div class="lbl">CASA CAFÉ</div></div>
+  <svg class="vine r" viewBox="0 0 120 240" id="vr"></svg><svg class="vine l" viewBox="0 0 120 240" id="vl"></svg>
+  <div class="petals" id="petals"></div>
+  <div class="hin">
+    <div class="ey">مسقط · منذ 2024</div>
+    <h1><span class="it">Benvenuti</span>أجواء إيطالية<br>في قلب عُمان</h1>
+    <p>قهوة مختصة بطابع إيطالي أصيل، ومخبوزات وحلويات طازجة كل يوم.</p>
+    <div class="info" id="info"></div>
+    <div class="ctas"><button class="btn w" onclick="go('menu')">اطلب الآن</button><button class="btn l" onclick="go('col')">الفطور الإيطالي</button></div>
+  </div>
+  <div class="door" id="door"><div class="im" id="dim"></div><span class="lamp" style="right:9%"></span></div>
+</header>
+<div class="ribbon"></div>
+<section class="best"><h3>الأكثر طلبًا اليوم</h3><div class="brow" id="brow"></div></section>
+
+<section class="ora" id="ora"><div class="wrap">
+  <h2 class="sh rv"><small>عادة إيطالية</small>لكل ساعة قهوتها</h2>
+  <p class="lead rv">في إيطاليا لكل وقت مشروبه: الكابتشينو صباحًا فقط، والإسبريسو طوال اليوم. أدر العقرب واكتشف ماذا يطلب الإيطاليون الآن.</p>
+  <div class="og">
+    <div class="rv" style="padding-bottom:30px"><div class="dial" id="dial"><div class="tk" id="tk"></div><div class="hand" id="hand"></div><div class="ctr"></div><div class="hint">اسحب العقرب ↻</div></div></div>
+    <div class="ocard rv" id="ocard"></div>
+  </div>
+</div></section>
+
+<section class="board"><div class="wrap">
+  <div class="chalk rv" id="chalk"><h3>لوح اليوم</h3><div class="sub">اختيارات الشيف لهذا اليوم</div><svg class="draw" viewBox="0 0 120 20"><path d="M2 12C30 2 50 18 70 8S110 6 118 12"/></svg><ul id="spec"></ul><span class="tap">اضغط على أي صنف لطلبه</span></div>
+</div></section>
+
+<section class="col" id="col"><div class="wrap">
+  <h2 class="sh rv"><small>Colazione</small>الفطور الإيطالي</h2>
+  <p class="lead rv">اختر مشروبًا ومخبوزًا، واحصل عليهما معًا بسعر واحد أقل.</p>
+  <div class="cg rv"><div class="cpick"><h4>المشروب</h4><div class="ops" id="cD"></div></div><div class="cpick"><h4>المخبوز</h4><div class="ops" id="cP"></div></div></div>
+  <div class="tray rv"><div class="pl" id="cpl"></div><div class="t"><b id="cpr"></b><span id="csv"></span></div><button class="btn w" id="cadd">أضف</button></div>
+</div></section>
+
+<section class="menu" id="menu"><div class="wrap">
+  <h2 class="sh rv"><small>Il Menù</small>القائمة</h2>
+  <div class="mtool"><div class="srch"><input id="q" type="search" placeholder="ابحث عن مشروب أو حلوى…"><select id="sort"><option value="0">الترتيب الافتراضي</option><option value="1">الأقل سعرًا</option><option value="2">الأعلى سعرًا</option><option value="3">الأحدث</option></select></div><div class="chips" id="chips"></div></div>
+  <div class="cnt" id="cnt"></div>
+  <div class="pgrid" id="pgrid"></div>
+  <button class="more" id="more"></button>
+</div></section>
+
+<section class="visit"><div class="wrap">
+  <h2 class="sh rv"><small>Vieni a trovarci</small>زورونا في مسقط</h2>
+  <p class="lead rv">جلسات داخلية دافئة وجلسات خارجية بين الورود، يوميًا من 7 صباحًا حتى منتصف الليل.</p>
+  <div class="city rv" style="background-image:url(csa/interior.jpg);aspect-ratio:4/3"></div><div class="vbtn rv"><a href="#" onclick="return false"><span>📍</span>الموقع</a><a href="#" onclick="return false"><span>💬</span>واتساب</a><a href="#" onclick="return false"><span>📞</span>اتصال</a></div>
+  <div class="igg rv"><div style="background-image:url(csa/city.jpg)"></div><div style="background-image:url(csa/bag.jpg)"></div><div style="background-image:url(csa/book.jpg)"></div></div>
+</div></section>
+<div class="cbar" id="cbar"><span class="n" id="cbn">0</span><span class="t" id="cbt"></span><button onclick="cartb.click()">عرض الحساب</button></div>
+<div class="foot" style="padding-bottom:90px">@casa.cafe · متجر يعمل بنظام EMD Business</div>
+
+<div class="drawer" id="drawer"><div class="pn">
+  <div class="hd"><h3>الحساب <span class="it" style="font-size:15px;color:var(--muted)">il conto</span></h3><button class="x" onclick="drawer.classList.remove('show')">✕</button></div>
+  <div class="ls" id="ls"></div>
+  <div id="chk"><div class="how" id="howSel"><button class="on" data-h="0">🏪 استلام من الفرع</button><button data-h="1">🛵 توصيل</button></div><textarea class="note" id="note" rows="2" placeholder="ملاحظات للباريستا: بدون سكر، حليب قليل الدسم…"></textarea><div class="sub2" id="shipL"></div><div class="tot"><span>الإجمالي</span><span id="tt"></span></div><button class="go" id="goBtn">تأكيد الطلب</button></div>
+</div></div>
+
+<div class="qv" id="qv"><div class="pn"><div class="big" id="qbig"><button class="x" onclick="qv.classList.remove('show')">✕</button><span id="qe"></span></div><div class="in2"><h3 id="qn"></h3><div class="ds" id="qd"></div><div class="sz" id="qsz"></div><div class="ft"><div class="qt"><button onclick="qq(-1)">−</button><b id="qc">1</b><button onclick="qq(1)">+</button></div><button class="ok" id="qok"></button></div></div></div></div>
+
+<div class="ty" id="ty"><div><div class="pcard"><div class="bk"></div><div class="fr"><div class="msg">شكرًا لك، طلبك في الطريق إلى قلبك قبل بابك.<small id="ono"></small><small>هذه معاينة فقط، لم يُرسل أي طلب</small></div><div style="display:flex;flex-direction:column"><div class="stp"></div><div class="lines" style="margin-top:auto">إلى: عميلنا العزيز<br>مسقط، عُمان</div></div><div class="pmk">CASA<br>CAFÉ<br>MUSCAT</div></div></div><div class="tyb"><button onclick="event.stopPropagation()">📍 تتبّع الطلب</button><button class="o" onclick="ty.classList.remove('show')">متابعة التسوق</button></div></div></div>
+
+<script>
+/* المنتجات: تأتي من التطبيق. هنا بيانات تجريبية */
+const CATS=['قهوة إيطالية','مشروبات باردة','مخبوزات','حلويات','بيتزا ووجبات','البن للمنزل'];
+const P=[
+ {id:'esp',n:'إسبريسو',nt:'كما يُشرب في روما: سريع ومركّز',p:.9,img:'espresso',c:0},
+ {id:'mac',n:'ماكياتو',nt:'إسبريسو بلمسة رغوة',p:1.1,img:'espresso',c:0},
+ {id:'cap',n:'كابتشينو',nt:'رغوة مخملية ورسم لاتيه',p:1.6,img:'art',c:0,tg:'الأكثر طلبًا',sz:[['وسط',1.6],['كبير',1.9]]},
+ {id:'lat',n:'كافيه لاتيه',nt:'حليب أكثر ونعومة أكبر',p:1.7,img:'art',c:0},
+ {id:'moc',n:'موكاتشينو',nt:'شوكولاتة إيطالية وكريمة',p:1.9,img:'mocha',c:0},
+ {id:'tgo',n:'قهوة سفري',nt:'خلطة البيت في كوب للطريق',p:1.0,img:'togo',c:0},
+ {id:'shk',n:'شكيراتو',nt:'إسبريسو مخفوق بالثلج',p:1.6,img:'',c:1,nw:1},
+ {id:'icl',n:'آيس لاتيه',nt:'طبقات منعشة',p:1.9,img:'iced',c:1,sz:[['وسط',1.9],['كبير',2.3]]},
+ {id:'cro',n:'كورنيتو باللوز',nt:'الكرواسون الإيطالي، مخبوز صباحًا',p:1.1,img:'croiss',c:2,o:1.3},
+ {id:'brs',n:'بريوش بالكريمة',nt:'هش ومحشو',p:1.0,img:'',c:2},
+ {id:'tir',n:'تيراميسو',nt:'وصفة تقليدية بالماسكاربوني',p:2.2,img:'tiramisu',c:3,tg:'توقيع البيت'},
+ {id:'chs',n:'تشيز كيك التوت',nt:'صوص توت أحمر',p:2.0,img:'cheese',c:3},
+ {id:'pnc',n:'بانا كوتا',nt:'بالفانيلا وصوص الكراميل',p:1.8,img:'',c:3,st:0},
+ {id:'pza',n:'بيتزا مارغريتا',nt:'عجينة نابولي وريحان طازج',p:3.5,img:'pizza',c:4,nw:1,sz:[['صغيرة',3.5],['وسط',4.8]]},
+ {id:'pan',n:'بانيني بالموزاريلا',nt:'طماطم وريحان وزيت زيتون',p:2.4,img:'',c:4},
+ {id:'bag',n:'بن خلطة البيت',nt:'100% أرابيكا، تحميص إيطالي',p:5.5,img:'bag',c:5,sz:[['250 غ',5.5],['1 كغ',19]]}
+];
+const fmt=v=>(+v).toFixed(3)+' ر.ع';
+const go=id=>document.getElementById(id).scrollIntoView({behavior:'smooth'});
+let cart={};
+
+/* بتلات الجهنمية والكرمة */
+for(let k=0;k<18;k++){const i=document.createElement('i');i.style.cssText=`left:${Math.random()*100}%;--dx:${(Math.random()-.5)*120}px;animation-duration:${8+Math.random()*8}s;animation-delay:${-Math.random()*14}s;background:${['#c2185b','#d81b60','#ad1457','#e91e63'][k%4]};scale:${.6+Math.random()*.8}`;petals.appendChild(i)}
+function vine(){let o='<path d="M110 0C80 40 100 80 70 120S60 200 30 240" stroke="#4a6b2a" stroke-width="2.5" fill="none"/>';for(let k=0;k<22;k++){const t=k/22,x=110-80*t+Math.sin(t*9)*14,y=t*240;o+=k%3?`<circle cx="${x+(k%2?10:-10)}" cy="${y}" r="${5+k%4}" fill="${['#c2185b','#d81b60','#ad1457'][k%3]}"/>`:`<path transform="translate(${x} ${y}) rotate(${k*40})" d="M0 0C6 -6 14 -6 18 0 14 6 6 6 0 0Z" fill="#5d8a35"/>`}return o}
+vr.innerHTML=vine();vl.innerHTML=vine();
+addEventListener('scroll',()=>{nav.classList.toggle('solid',scrollY>30);if(scrollY<innerHeight*1.4)dim.style.transform=`scale(${1.15-Math.min(.15,scrollY/4000)}) translateY(${scrollY*.06}px)`},{passive:true});
+const rio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');rio.unobserve(e.target)}}),{threshold:.15});
+document.querySelectorAll('.rv').forEach(e=>rio.observe(e));
+
+/* ساعة القهوة الإيطالية */
+const ORA=[[7,'cap','colazione · الفطور','الكابتشينو مع الكورنيتو، بداية كل صباح إيطالي.'],[11,'esp','pausa · استراحة الضحى','بعد الحادية عشرة يكتفي الإيطاليون بالإسبريسو الواقف على البار.'],[13,'pza','pranzo · الغداء','بيتزا نابولي خفيفة، يتبعها إسبريسو سريع.'],[16,'tir','merenda · وقت الحلو','قطعة تيراميسو مع ماكياتو لاستراحة العصر.'],[20,'icl','sera · المساء','أمسية منعشة بمشروب بارد في جلساتنا الخارجية.'],[22,'chs','dopo cena · بعد العشاء','حلوى خفيفة تختم يومك.']];
+tk.innerHTML=Array.from({length:12},(_,i)=>{const a=i/12*Math.PI*2,r=44;return `<span style="transform:translate(-50%,-50%) translate(${Math.sin(a)*r*3.2}px,${-Math.cos(a)*r*3.2}px)">${i||12}</span>`}).join('');
+function fitTicks(){const R=dial.clientWidth*.40;[...tk.children].forEach((s,i)=>{const a=i/12*Math.PI*2;s.style.transform=`translate(-50%,-50%) translate(${Math.sin(a)*R}px,${-Math.cos(a)*R}px)`})}
+let hourV=new Date().getHours();
+function setHour(h){hourV=h;const a=(h%12)/12*360;hand.style.transform=`rotate(${a+180}deg)`;let pick=ORA[0];ORA.forEach(o=>{if(h>=o[0])pick=o});if(h<7)pick=ORA[ORA.length-1];
+ if(ocard.dataset.k===pick[1])return;ocard.dataset.k=pick[1];const x=P.find(p=>p.id===pick[1]);
+ ocard.innerHTML=`<div class="ph fade" style="background-image:url(csa/${x.img}.jpg)"></div><div class="fade"><div class="tm"><span class="it">${pick[2].split(' · ')[0]}</span> · ${pick[2].split(' · ')[1]}</div><h4>${x.n}</h4><p>${pick[3]}</p><button class="btn w" onclick="${x.sz?`openQ('${x.id}')`:`add('${x.id}',this)`}">أضف · ${fmt(x.p)}</button></div>`}
+let dragging=false,lastA=null,pm=hourV>=12;
+function ang(e){const r=dial.getBoundingClientRect(),x=(e.touches?e.touches[0]:e).clientX-r.left-r.width/2,y=(e.touches?e.touches[0]:e).clientY-r.top-r.height/2;return (Math.atan2(x,-y)*180/Math.PI+360)%360}
+function mv(e){if(!dragging)return;e.preventDefault();const a=ang(e);if(lastA!==null){if(lastA>300&&a<60)pm=!pm;if(lastA<60&&a>300)pm=!pm}lastA=a;let h=Math.floor(a/30)+(pm?12:0);setHour(h)}
+dial.addEventListener('pointerdown',e=>{dragging=true;lastA=null;dial.setPointerCapture(e.pointerId);mv(e)});
+dial.addEventListener('pointermove',mv);dial.addEventListener('pointerup',()=>dragging=false);
+[...tk.children].forEach((sp,i)=>sp.addEventListener('pointerdown',e=>{e.stopPropagation();const h=(i||12)%12;setHour(h+(hourV>=12?12:0))}));fitTicks();addEventListener('resize',fitTicks);setHour(hourV);
+
+/* جولة 3: استلام أو توصيل + ملاحظات */
+let how=0;const SHIP=.5;
+howSel.onclick=e=>{const b=e.target.closest('button');if(!b)return;how=+b.dataset.h;[...howSel.children].forEach(x=>x.classList.toggle('on',x===b));paint()};
+/* جولة 2: عدّاد على البطاقة + معلومات المحل */
+function ctlIn(id){const x=P.find(p=>p.id===id);if(x.st===0)return '<button class="ad2" disabled style="opacity:.3">+</button>';
+ if(x.sz)return `<button class="ad2" onclick="event.stopPropagation();openQ('${id}')">+</button>`;
+ const q=cart[id]?.q||0;return q?`<button class="qb2" onclick="event.stopPropagation();chg('${id}',-1)">−</button><b>${q}</b><button class="ad2" onclick="event.stopPropagation();add('${id}',this)">+</button>`:`<button class="ad2" onclick="event.stopPropagation();add('${id}',this)">+</button>`}
+function ctl(id){return `<span class="ctl" data-ctl="${id}">${ctlIn(id)}</span>`}
+{const h=new Date().getHours(),op=h>=7;info.innerHTML=`<span><i style="${op?'':'background:#e0a04a;box-shadow:none'}"></i>${op?'مفتوح الآن':'نفتح 7 صباحًا'}</span><span>🛵 توصيل 30–45 دقيقة</span><span>🏪 استلام خلال 10 دقائق</span>`}
+/* جولة 1: الأكثر طلبًا + شريط الحساب */
+const BEST=['cap','tir','cro','pza','icl'];
+brow.innerHTML=BEST.map(id=>{const x=P.find(p=>p.id===id);return `<div class="bi" onclick="openQ('${x.id}')"><div class="ph" style="background-image:url(csa/${x.img}.jpg)"></div><b>${x.n}</b><div class="rw"><span>${fmt(x.p)}</span>${ctl(x.id)}</div></div>`}).join('');
+/* لوح اليوم */
+const SP=['tir','pza','moc','cro'];
+spec.innerHTML=SP.map(id=>{const x=P.find(p=>p.id===id);return `<li onclick="${x.sz?`openQ('${x.id}')`:`add('${x.id}',this)`}"><span>${x.n}<small>${x.nt}</small></span><span class="d"></span><b>${fmt(x.p)}</b></li>`}).join('');
+
+/* الفطور الإيطالي */
+const CD=['cap','lat','esp','moc'],CP=['cro','brs'],CB=.4;let cd=0,cp=0;
+function drawCol(){const d=P.find(x=>x.id===CD[cd]),p=P.find(x=>x.id===CP[cp]);
+ cD.innerHTML=CD.map((id,i)=>{const x=P.find(p=>p.id===id);return `<button class="${i===cd?'on':''}" onclick="cd=${i};drawCol()"><i style="background-image:url(csa/${x.img}.jpg)"></i>${x.n}</button>`}).join('');
+ cP.innerHTML=CP.map((id,i)=>{const x=P.find(p=>p.id===id);return `<button class="${i===cp?'on':''}" onclick="cp=${i};drawCol()"><i style="${x.img?`background-image:url(csa/${x.img}.jpg)`:'background:#e8d8bf;display:grid;place-items:center'}">${x.img?'':'🥐'}</i>${x.n}</button>`}).join('');
+ cpl.innerHTML=`<i style="background-image:url(csa/${d.img}.jpg)"></i><i style="${p.img?`background-image:url(csa/${p.img}.jpg)`:'background:#e8d8bf;display:grid;place-items:center;font-size:24px;font-style:normal'}">${p.img?'':'🥐'}</i>`;
+ const full=d.p+p.p;cpr.textContent=fmt(full-CB);csv.innerHTML=`<s>${fmt(full)}</s> · وفّرت ${fmt(CB)}`}
+cadd.onclick=()=>{const d=P.find(x=>x.id===CD[cd]),p=P.find(x=>x.id===CP[cp]),k='col'+cd+cp;cart[k]=cart[k]||{n:`فطور إيطالي: ${d.n} + ${p.n}`,p:d.p+p.p-CB,q:0,img:d.img};cart[k].q++;flyFrom(cpl,d.img)};
+drawCol();
+
+/* القائمة */
+let cat=-1,shown=8;const PG=8;
+function drawChips(){chips.innerHTML=[`<button class="${cat<0?'on':''}" data-c="-1">الكل<small>${P.length}</small></button>`,...CATS.map((c,k)=>{const n=P.filter(x=>x.c===k).length;return n?`<button class="${cat===k?'on':''}" data-c="${k}">${c}<small>${n}</small></button>`:''})].join('')}
+chips.onclick=e=>{const b=e.target.closest('button');if(!b)return;cat=+b.dataset.c;shown=PG;drawChips();drawGrid();
+ const tb=60+menu.querySelector('.mtool').offsetHeight,gy=pgrid.getBoundingClientRect().top;if(gy<tb)window.scrollTo(0,scrollY+gy-tb-10);
+ const nb=chips.querySelector('.on');chips.scrollLeft=nb.offsetLeft-chips.clientWidth/2+nb.offsetWidth/2};
+function list(){const t=q.value.trim();let L=P.filter(x=>(cat<0||x.c===cat)&&(!t||(x.n+' '+x.nt+' '+CATS[x.c]).includes(t)));
+ const so=+sort.value;if(so===1)L.sort((a,b)=>a.p-b.p);if(so===2)L.sort((a,b)=>b.p-a.p);if(so===3)L.sort((a,b)=>(b.nw||0)-(a.nw||0));return L}
+function drawGrid(){const L=list();cnt.textContent=L.length?`${L.length} منتج`:'';
+ pgrid.innerHTML=L.length?L.slice(0,shown).map(x=>{const out=x.st===0;return `<div class="pc" onclick="openQ('${x.id}')"><div class="im ${x.img?'':'no'}" ${x.img?`style="background-image:url(csa/${x.img}.jpg)"`:''}>${x.img?'':'☕'}${x.o?`<span class="pm">خصم<br>${Math.round((1-x.p/x.o)*100)}٪</span>`:x.nw?'<span class="pm">جديد<br>NUOVO</span>':''}${x.tg?`<span class="tg">${x.tg}</span>`:''}${out?'<span class="out">نفدت الكمية</span>':''}</div><h4>${x.n}</h4><div class="ct">${CATS[x.c]}${x.sz?' · '+x.sz.length+' أحجام':''}</div><div class="rw"><span class="pr">${x.sz?'من ':''}${fmt(x.p)}${x.o?`<s>${fmt(x.o)}</s>`:''}</span>${ctl(x.id)}</div></div>`}).join(''):'<div class="emp">لا توجد نتائج مطابقة، جرّب كلمة أخرى</div>';
+ more.style.display=L.length>shown?'':'none';more.textContent=`عرض المزيد (${L.length-shown})`}
+more.onclick=()=>{shown+=PG;drawGrid()};
+let qt0;q.oninput=()=>{clearTimeout(qt0);qt0=setTimeout(()=>{shown=PG;drawGrid()},150)};
+sort.onchange=()=>{shown=PG;drawGrid()};
+srb.onclick=()=>{go('menu');setTimeout(()=>q.focus({preventScroll:true}),700)};
+drawChips();drawGrid();
+
+/* نافذة المنتج */
+let QX,QS=0,QN=1;
+function openQ(id){QX=P.find(x=>x.id===id);if(QX.st===0)return;QS=0;QN=1;
+ qbig.style.backgroundImage=QX.img?`url(csa/${QX.img}.jpg)`:'';qe.textContent=QX.img?'':'☕';qn.textContent=QX.n;qd.textContent=QX.nt;drawQ();qv.classList.add('show')}
+function drawQ(){qsz.innerHTML=QX.sz?QX.sz.map((s,k)=>`<button class="${k===QS?'on':''}" onclick="QS=${k};drawQ()">${s[0]}</button>`).join(''):'';qc.textContent=QN;
+ qok.textContent='أضف للحساب · '+fmt((QX.sz?QX.sz[QS][1]:QX.p)*QN)}
+function qq(d){QN=Math.max(1,QN+d);drawQ()}
+qok.onclick=()=>{const s=QX.sz?QX.sz[QS]:null,k=QX.id+(s?'|'+QS:'');cart[k]=cart[k]||{n:QX.n+(s?' - '+s[0]:''),p:s?s[1]:QX.p,q:0,img:QX.img};cart[k].q+=QN;qv.classList.remove('show');flyFrom(qbig,QX.img)};
+qv.onclick=e=>{if(e.target===qv)qv.classList.remove('show')};
+
+/* الحساب */
+function flyFrom(el,img){const r=el.getBoundingClientRect(),c=cartb.getBoundingClientRect(),f=document.createElement('div');f.className='fly';if(img)f.style.backgroundImage=`url(csa/${img}.jpg)`;f.style.left=(r.left+r.width/2-27)+'px';f.style.top=(r.top+r.height/2-27)+'px';document.body.appendChild(f);
+ requestAnimationFrame(()=>{f.style.transform=`translate(${c.left+c.width/2-r.left-r.width/2}px,${c.top+c.height/2-r.top-r.height/2}px) scale(.3) rotate(360deg)`;f.style.opacity='.4'});
+ setTimeout(()=>{f.remove();paint();cartb.classList.remove('bump');void cartb.offsetWidth;cartb.classList.add('bump')},750)}
+function add(id,btn){const x=P.find(f=>f.id===id);const o=btn.closest('.pc')?.querySelector('.im')||btn.closest('.bi')?.querySelector('.ph')||btn;cart[id]=cart[id]||{n:x.n,p:x.p,q:0,img:x.img};cart[id].q++;flyFrom(o,x.img);document.querySelectorAll('[data-ctl]').forEach(e=>e.innerHTML=ctlIn(e.dataset.ctl))}
+function chg(k,d){cart[k].q+=d;if(cart[k].q<=0)delete cart[k];paint()}
+function paint(){let n=0,t=0;for(const k in cart){n+=cart[k].q;t+=cart[k].q*cart[k].p}cn.textContent=n;tt.textContent=fmt(t);if(how&&n)t+=SHIP;shipL.innerHTML=how?`<span>رسوم التوصيل</span><span>${fmt(SHIP)}</span>`:'<span>جاهز للاستلام خلال 10 دقائق تقريبًا</span><span></span>';tt.textContent=fmt(t);cbar.classList.toggle('on',n>0);document.body.classList.toggle('hc',n>0);document.querySelectorAll('[data-ctl]').forEach(e=>e.innerHTML=ctlIn(e.dataset.ctl));cbn.textContent=n;cbt.textContent=fmt(t);
+ ls.innerHTML=n?Object.entries(cart).map(([k,x])=>`<div class="ln"><i style="${x.img?`background-image:url(csa/${x.img}.jpg)`:''}">${x.img?'':'☕'}</i><div class="nm">${x.n}<br><small>${fmt(x.p)}</small></div><button class="qb" onclick="chg('${k}',-1)">−</button><b>${x.q}</b><button class="qb" onclick="chg('${k}',1)">+</button></div>`).join(''):'<div class="em">الحساب فارغ ☕</div>';chk.style.display=n?'':'none'}
+cartb.onclick=()=>{paint();drawer.classList.add('show')};
+drawer.onclick=e=>{if(e.target===drawer)drawer.classList.remove('show')};
+goBtn.onclick=()=>{drawer.classList.remove('show');ono.textContent='رقم الطلب: C-'+(100+Math.floor(Math.random()*900));const pc=ty.querySelector('.pcard');pc.style.animation='none';void pc.offsetWidth;pc.style.animation='';ty.classList.add('show');cart={};note.value='';paint()};
+ty.onclick=()=>ty.classList.remove('show');
+paint();
+</script>
+</body>
+</html>
