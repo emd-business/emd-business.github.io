@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>دجا كوكيز تجريبي</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;700;800&family=Cairo:wght@400;600;700&display=swap">
+<style>
+:root{--sage:#5d7356;--sage-d:#43573e;--sage-l:#dfe5d6;--cream:#f3efe4;--paper:#faf8f2;--ink:#2f3a2b;--muted:#7b8574;--choc:#4a2c1a;--dough:#d9a35b}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;overflow-x:hidden}
+body{font-family:"Cairo",Tahoma,sans-serif;background:var(--cream);color:var(--ink);padding-bottom:96px}
+button{font-family:inherit;cursor:pointer}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px}
+.badge{position:fixed;top:8px;left:8px;z-index:70;background:#b91c1c;color:#fff;font-size:11px;padding:2px 8px;border-radius:6px}
+
+/* الواجهة */
+.hero{position:relative;text-align:center;padding:28px 0 10px;overflow:hidden}
+.crumb{position:absolute;top:-20px;width:10px;height:10px;border-radius:50%;background:var(--dough);opacity:.55;animation:fall linear infinite}
+@keyframes fall{to{transform:translateY(560px) rotate(360deg)}}
+.logo{position:relative;width:150px;height:150px;margin:0 auto}
+.logo svg{width:100%;height:100%}
+.logo .ring{stroke-dasharray:440;stroke-dashoffset:440;animation:draw 1.8s ease forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.logo .txt{opacity:0;animation:fadeup .8s ease 1s forwards}
+@keyframes fadeup{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.hat{transform-origin:75px 40px;animation:hat 3.5s ease-in-out 2s infinite}
+@keyframes hat{0%,100%{transform:rotate(0)}50%{transform:rotate(-8deg) translateY(-2px)}}
+.hero h1{font-family:"Baloo Bhaijaan 2",Cairo,sans-serif;font-size:30px;margin:10px 0 0;color:var(--sage-d);opacity:0;animation:fadeup .8s ease 1.3s forwards}
+.hero .tag{color:var(--muted);font-size:14px;opacity:0;animation:fadeup .8s ease 1.5s forwards}
+
+/* صندوق ثلاثي الأبعاد في الواجهة */
+.stage{height:230px;perspective:900px;display:grid;place-items:center;margin-top:6px}
+.box3{position:relative;width:200px;height:130px;transform-style:preserve-3d;transform:rotateX(55deg) rotateZ(-18deg);animation:sway 7s ease-in-out infinite}
+@keyframes sway{50%{transform:rotateX(52deg) rotateZ(-8deg)}}
+.box3 .base{position:absolute;inset:0;background:#efe9da;border-radius:6px;box-shadow:0 30px 40px rgba(67,87,62,.35);display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:8px;padding:12px}
+.box3 .wall{position:absolute;background:#e6dfcc;border:1px solid #d8cfb8}
+.box3 .w1{left:0;right:0;bottom:0;height:34px;transform-origin:bottom;transform:rotateX(-90deg)}
+.box3 .w2{left:0;right:0;top:0;height:34px;transform-origin:top;transform:rotateX(90deg)}
+.box3 .w3{top:0;bottom:0;left:0;width:34px;transform-origin:left;transform:rotateY(90deg)}
+.box3 .w4{top:0;bottom:0;right:0;width:34px;transform-origin:right;transform:rotateY(-90deg)}
+.box3 .lid{position:absolute;inset:-4px;transform-origin:top;transform:translateZ(34px) rotateX(0);background:#f6f2e8;border:1px solid #d8cfb8;border-radius:6px;display:grid;place-items:center;transition:transform 1.4s cubic-bezier(.5,0,.2,1);backface-visibility:hidden}
+.box3 .lid span{width:62px;height:62px;border-radius:50%;border:2px solid var(--sage);display:grid;place-items:center;color:var(--sage);font-family:"Baloo Bhaijaan 2";font-weight:800;font-size:22px}
+.box3.open .lid{transform:translateZ(34px) rotateX(-115deg)}
+.box3 .ck{transform:translateZ(6px)}
+
+/* الكوكيز */
+.ck{position:relative;border-radius:50%;aspect-ratio:1;background:
+ radial-gradient(circle at 30% 30%,var(--choc) 0 7%,transparent 8%),
+ radial-gradient(circle at 65% 40%,var(--choc) 0 6%,transparent 7%),
+ radial-gradient(circle at 45% 70%,var(--choc) 0 8%,transparent 9%),
+ radial-gradient(circle at 72% 72%,#3a2214 0 5%,transparent 6%),
+ radial-gradient(circle at 40% 35%,#ecc07c,#d39a4f 60%,#b47a35);
+ box-shadow:inset -3px -4px 6px rgba(120,70,20,.35),0 3px 5px rgba(60,40,20,.25)}
+
+/* اختيار الحجم */
+.sizes{position:relative;display:flex;background:var(--sage-l);border-radius:999px;padding:4px;margin:18px auto 8px;max-width:360px}
+.sizes button{position:relative;z-index:2;flex:1;border:0;background:none;padding:10px 6px;border-radius:999px;font-weight:700;font-size:14px;color:var(--sage-d);transition:color .3s}
+.sizes button.on{color:#fff}
+.sizes .pill{position:absolute;z-index:1;top:4px;bottom:4px;right:4px;width:calc(50% - 4px);border-radius:999px;background:var(--sage);transition:transform .45s cubic-bezier(.4,1.4,.5,1);box-shadow:0 4px 10px rgba(67,87,62,.35)}
+.sizes.s1 .pill{transform:translateX(-100%)}
+.sizeinfo{text-align:center;color:var(--muted);font-size:13px;margin-bottom:14px}
+
+.title{display:flex;align-items:center;gap:12px;margin:8px 0 14px}
+.title:before,.title:after{content:"";flex:1;height:1px;background:var(--sage);opacity:.5}
+.title h2{margin:0;font-family:"Baloo Bhaijaan 2";font-size:26px;color:var(--sage-d);line-height:1}
+.title small{display:block;font-family:Cairo;letter-spacing:5px;font-size:11px;color:var(--muted);text-align:center}
+
+/* بطاقات البوكسات */
+.list{display:grid;gap:16px}
+@media(min-width:640px){.list{grid-template-columns:1fr 1fr}}
+.card{display:flex;gap:14px;align-items:center;background:var(--paper);border:1px solid #e3ddcc;border-radius:22px;padding:14px;box-shadow:0 10px 24px -14px rgba(67,87,62,.45);opacity:0;transform:translateY(30px);transition:opacity .6s,transform .6s cubic-bezier(.2,.9,.3,1)}
+.card.in{opacity:1;transform:none}
+.mini{flex:none;width:130px;height:110px;perspective:500px;display:grid;place-items:center}
+.mbox{position:relative;width:118px;height:88px;transform:rotateX(38deg) rotateZ(-10deg);transform-style:preserve-3d;transition:transform .5s}
+.card:hover .mbox,.card.tap .mbox{transform:rotateX(28deg) rotateZ(-4deg) translateY(-4px)}
+.mbox .in{position:absolute;inset:0;background:#efe9da;border:1px solid #d8cfb8;border-radius:5px;display:grid;gap:3px;padding:6px;box-shadow:0 14px 16px -6px rgba(67,87,62,.4)}
+.mbox .front{position:absolute;left:0;right:0;bottom:-16px;height:16px;background:#e6dfcc;border:1px solid #d8cfb8;transform-origin:top;transform:rotateX(-90deg) translateY(0);display:grid;place-items:center;font-size:7px;letter-spacing:2px;color:var(--sage)}
+.mbox .lid{position:absolute;inset:-2px;transform-origin:top;background:#f6f2e8;border:1px solid #d8cfb8;border-radius:5px;transform:translateZ(16px) rotateX(-120deg);transition:transform .9s cubic-bezier(.5,0,.2,1);display:grid;place-items:center;backface-visibility:hidden}
+.mbox .lid i{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--sage);font-style:normal;color:var(--sage);font-weight:800;font-size:11px;display:grid;place-items:center}
+.card.closed .mbox .lid{transform:translateZ(16px) rotateX(0)}
+.mbox .ck{transform:translateZ(3px);transition:transform .3s;place-self:center;height:auto}
+.mbox .in{place-items:center}
+.card.bounce .mbox .ck{animation:hop .5s ease}
+@keyframes hop{40%{transform:translateZ(14px) translateY(-4px)}}
+.info{flex:1;min-width:0}
+.info h3{margin:0;font-family:"Baloo Bhaijaan 2";font-size:21px;color:var(--ink)}
+.chip{display:inline-block;background:var(--sage-l);color:var(--sage-d);border-radius:999px;padding:1px 12px;font-weight:700;font-size:13px;margin:2px 0 4px}
+.meta{font-size:12px;color:var(--muted);line-height:1.7}
+.buy{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:6px}
+.price{font-weight:800;font-size:20px;color:var(--sage-d);font-family:"Baloo Bhaijaan 2"}
+.price small{font-size:12px;color:var(--muted);font-family:Cairo}
+.add{border:0;background:var(--sage);color:#fff;border-radius:999px;padding:8px 14px;font-weight:700;font-size:13px;box-shadow:0 4px 0 var(--sage-d);transition:transform .1s,box-shadow .1s}
+.add:active{transform:translateY(3px);box-shadow:0 1px 0 var(--sage-d)}
+.qty{display:none;align-items:center;gap:8px;background:var(--sage-l);border-radius:999px;padding:3px}
+.qty button{width:30px;height:30px;border-radius:50%;border:0;background:var(--sage);color:#fff;font-size:17px}
+.qty b{min-width:16px;text-align:center}
+.card.has .add{display:none}.card.has .qty{display:flex}
+
+/* المميزات */
+.feat{display:grid;grid-template-columns:repeat(3,1fr);background:var(--sage-l);border-radius:20px;margin:22px 0 10px;padding:14px 6px;text-align:center}
+.feat div{font-size:12px;color:var(--sage-d);line-height:1.5;padding:0 4px}
+.feat div+div{border-right:1px solid rgba(67,87,62,.25)}
+.feat .ic{font-size:22px;display:block;margin-bottom:2px;animation:bob 3s ease-in-out infinite}
+.feat div:nth-child(2) .ic{animation-delay:-1s}.feat div:nth-child(3) .ic{animation-delay:-2s}
+@keyframes bob{50%{transform:translateY(-4px)}}
+.slogan{text-align:center;letter-spacing:4px;font-size:11px;color:var(--muted);margin:16px 0 6px;direction:ltr}
+.foot{text-align:center;color:var(--muted);font-size:12px;padding:10px 0 20px}
+
+/* السلة */
+.flyck{position:fixed;z-index:80;width:34px;pointer-events:none;transition:transform .7s cubic-bezier(.5,-0.4,.5,1),opacity .7s}
+.cartbar{position:fixed;left:12px;right:12px;bottom:12px;z-index:60;max-width:560px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px 10px 10px;border-radius:999px;background:var(--sage-d);color:#fff;box-shadow:0 12px 30px rgba(47,58,43,.4);transform:translateY(130%);transition:transform .45s cubic-bezier(.3,1.4,.5,1)}
+.cartbar.show{transform:none}
+.cartbar .jar{position:relative;width:40px;height:40px;border-radius:50%;background:var(--cream);display:grid;place-items:center}
+.cartbar .jar .ck{width:26px}
+.cartbar .jar b{position:absolute;top:-4px;left:-4px;background:#e8b04b;color:var(--ink);border-radius:999px;font-size:11px;min-width:18px;height:18px;display:grid;place-items:center}
+.cartbar.pop .jar{animation:pop .4s}
+@keyframes pop{50%{transform:scale(1.25)}}
+.cartbar .sum{flex:1;font-size:14px}
+.cartbar .sum b{font-family:"Baloo Bhaijaan 2";font-size:18px}
+.cartbar .go{border:0;background:var(--cream);color:var(--sage-d);font-weight:800;border-radius:999px;padding:9px 18px;font-size:14px}
+.sheet{position:fixed;inset:0;z-index:90;background:rgba(47,58,43,.45);display:none;align-items:flex-end;justify-content:center}
+.sheet.show{display:flex}
+.sheet .bx{width:100%;max-width:560px;background:var(--paper);border-radius:26px 26px 0 0;padding:18px 16px 26px;max-height:82vh;overflow:auto;animation:up .35s ease}
+@keyframes up{from{transform:translateY(40%)}}
+.sheet h3{margin:0 0 10px;font-family:"Baloo Bhaijaan 2";font-size:22px;color:var(--sage-d)}
+.ln{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px dashed #d8cfb8;font-size:14px}
+.ln small{color:var(--muted)}
+.tot{display:flex;justify-content:space-between;font-weight:800;font-size:17px;margin:14px 0}
+.ok{width:100%;border:0;background:var(--sage);color:#fff;font-weight:800;font-size:16px;padding:13px;border-radius:14px}
+.done{position:fixed;inset:0;z-index:95;display:none;place-items:center;background:rgba(243,239,228,.96);text-align:center}
+.done.show{display:grid}
+.done .bigck{width:120px;margin:0 auto;animation:spinin 1s cubic-bezier(.3,1.4,.5,1)}
+@keyframes spinin{from{transform:scale(0) rotate(-200deg)}}
+.done .bite{position:absolute;top:-8px;left:-6px;width:46px;height:46px;border-radius:50%;background:rgba(243,239,228,1);transform:scale(0);animation:bite .3s ease 1.1s forwards}
+@keyframes bite{to{transform:scale(1)}}
+.done p{font-family:"Baloo Bhaijaan 2";font-size:24px;color:var(--sage-d);margin:16px 0 4px}
+.done small{color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="badge">معاينة تجريبية</div>
+
+<header class="hero" id="hero">
+  <div class="logo">
+    <svg viewBox="0 0 150 150">
+      <circle class="ring" cx="75" cy="75" r="70" fill="none" stroke="#5d7356" stroke-width="2.5"/>
+      <g class="hat" fill="none" stroke="#5d7356" stroke-width="2.5" stroke-linecap="round">
+        <path d="M63 46q-9-2-8-10 2-7 10-5 3-8 10-8t10 8q8-2 10 5 1 8-8 10z" fill="#faf8f2"/>
+        <path d="M64 46v6h22v-6"/>
+      </g>
+      <g class="txt">
+        <text x="75" y="92" text-anchor="middle" font-family="Baloo Bhaijaan 2" font-weight="800" font-size="36" fill="#5d7356">دُجا</text>
+        <text x="75" y="110" text-anchor="middle" font-family="Cairo" font-weight="700" font-size="9" letter-spacing="3" fill="#5d7356">DUJA</text>
+        <text x="75" y="121" text-anchor="middle" font-family="Cairo" font-size="6" letter-spacing="2" fill="#5d7356">— COOKIES —</text>
+      </g>
+    </svg>
+  </div>
+  <h1>دُجا كوكيز</h1>
+  <div class="tag">لقمة سعادة، وكل كوكي فيها حب وطعم فاخر</div>
+  <div class="stage"><div class="box3" id="box3">
+    <div class="base" id="heroCk"></div>
+    <div class="wall w1"></div><div class="wall w2"></div><div class="wall w3"></div><div class="wall w4"></div>
+    <div class="lid"><span>دُجا</span></div>
+  </div></div>
+</header>
+
+<main class="wrap">
+  <div class="title"><div><h2>القائمة</h2><small>MENU</small></div></div>
+  <div class="sizes" id="sizes"><div class="pill"></div><button class="on" data-z="0">الحجم الكبير · 55 جرامًا</button><button data-z="1">الحجم الصغير · 30 جرامًا</button></div>
+  <div class="sizeinfo" id="sizeinfo"></div>
+  <div class="list" id="list"></div>
+  <div class="feat"><div><span class="ic">🍫</span>محشوة بالشوكولاتة البلجيكية</div><div><span class="ic">🍪</span><span id="fw">وزن الحبة 55 جرامًا</span></div><div><span class="ic">⚖️</span>حجم مثالي لذة أكثر</div></div>
+  <div class="slogan">SMALL BITES • BIG HAPPINESS</div>
+  <div class="foot">متجر يعمل بنظام EMD Business</div>
+</main>
+
+<div class="cartbar" id="cartbar"><div class="jar"><div class="ck"></div><b id="cc">0</b></div><div class="sum">سلتك: <b id="ct">0</b> ر.ع</div><button class="go" id="openCart">إتمام الطلب</button></div>
+<div class="sheet" id="sheet"><div class="bx"><h3>سلتك</h3><div id="lines"></div><div class="tot"><span>الإجمالي</span><span id="st"></span></div><button class="ok" id="okBtn">تأكيد الطلب</button></div></div>
+<div class="done" id="done"><div><div style="position:relative;width:120px;margin:0 auto"><div class="ck bigck"></div><div class="bite"></div></div><p>تم استلام طلبك، بالهناء!</p><small>هذه معاينة فقط، لم يُرسل أي طلب</small></div></div>
+
+<script>
+const M=[
+ {w:55,items:[{n:'بوكس ذوق',c:3,p:1.5},{n:'بوكس مزاج',c:6,p:3},{n:'بوكس لذة',c:12,p:5}]},
+ {w:30,items:[{n:'بوكس الذواقة',c:4,p:1.2},{n:'بوكس الرفقة',c:10,p:3},{n:'بوكس اللمة',c:15,p:4.2},{n:'بوكس الوفرة',c:36,p:9}]}
+];
+const GR={3:[3,1],4:[2,2],6:[3,2],10:[5,2],12:[4,3],15:[5,3],36:[9,4]};
+const fmt=v=>v.toFixed(3);
+let size=0,cart={};
+const key=(z,i)=>z+'-'+i;
+
+/* الواجهة */
+for(let k=0;k<14;k++){const c=document.createElement('div');c.className='crumb';c.style.left=Math.random()*100+'%';c.style.width=c.style.height=(5+Math.random()*8)+'px';c.style.animationDuration=(7+Math.random()*8)+'s';c.style.animationDelay=(-Math.random()*12)+'s';hero.appendChild(c)}
+heroCk.innerHTML='<div class="ck"></div>'.repeat(6);
+setTimeout(()=>box3.classList.add('open'),1700);
+setInterval(()=>{box3.classList.remove('open');setTimeout(()=>box3.classList.add('open'),1500)},9000);
+
+/* القائمة */
+function draw(){const m=M[size];sizes.className='sizes'+(size?' s1':'');
+ sizes.querySelectorAll('button').forEach(b=>b.classList.toggle('on',+b.dataset.z===size));
+ sizeinfo.textContent=size?'حبات أصغر بوزن 30 جرامًا، مثالية للضيافة والمشاركة':'حبات كبيرة بوزن 55 جرامًا، لمن يحب اللقمة الغنية';
+ fw.textContent='وزن الحبة '+m.w+' جرامًا';
+ list.innerHTML=m.items.map((x,i)=>{const [cl,rw]=GR[x.c],k=key(size,i),q=cart[k]?cart[k].q:0;
+  return `<div class="card closed${q?' has':''}" id="c${k}">
+   <div class="mini"><div class="mbox"><div class="in" style="grid-template-columns:repeat(${cl},1fr);grid-template-rows:repeat(${rw},1fr)">${('<div class="ck" style="width:'+Math.floor(Math.min((104-3*(cl-1))/cl,(74-3*(rw-1))/rw))+'px"></div>').repeat(x.c)}</div><div class="front">DUJA</div><div class="lid"><i>دُجا</i></div></div></div>
+   <div class="info"><h3>${x.n}</h3><span class="chip">${x.c} ${x.c<=10?'حبات':'حبة'}</span>
+    <div class="meta">${m.w} جرامًا للحبة · بالشوكولاتة البلجيكية</div>
+    <div class="buy"><div class="price">${fmt(x.p)} <small>ر.ع</small></div>
+     <button class="add" onclick="addB(${size},${i},this)">أضف للسلة</button>
+     <div class="qty"><button onclick="chg('${k}',1)">+</button><b id="q${k}">${q}</b><button onclick="chg('${k}',-1)">−</button></div></div></div></div>`}).join('');
+ const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){const c=e.target;c.classList.add('in');setTimeout(()=>c.classList.remove('closed'),350);io.unobserve(c)}}),{threshold:.3});
+ list.querySelectorAll('.card').forEach((c,n)=>{c.style.transitionDelay=n*.08+'s';io.observe(c)})}
+sizes.querySelectorAll('button').forEach(b=>b.onclick=()=>{size=+b.dataset.z;draw()});
+
+/* السلة */
+function addB(z,i,btn){const x=M[z].items[i],k=key(z,i);cart[k]=cart[k]||{n:x.n+' ('+M[z].w+' جم)',p:x.p,q:0};
+ const card=document.getElementById('c'+k);card.classList.add('bounce');setTimeout(()=>card.classList.remove('bounce'),500);
+ const r=card.querySelector('.mini').getBoundingClientRect(),f=document.createElement('div');f.className='ck flyck';f.style.left=(r.left+r.width/2-17)+'px';f.style.top=(r.top+r.height/2-17)+'px';document.body.appendChild(f);
+ cartbar.classList.add('show');const j=cartbar.querySelector('.jar').getBoundingClientRect();
+ requestAnimationFrame(()=>{f.style.transform=`translate(${j.left+j.width/2-r.left-r.width/2}px,${j.top+j.height/2-r.top-r.height/2}px) rotate(540deg) scale(.6)`;f.style.opacity='.4'});
+ setTimeout(()=>{f.remove();chg(k,1)},700)}
+function chg(k,d){if(!cart[k])return;cart[k].q+=d;if(cart[k].q<=0)delete cart[k];paint();
+ const c=document.getElementById('c'+k);if(c){c.classList.toggle('has',!!cart[k]);const qb=document.getElementById('q'+k);if(qb)qb.textContent=cart[k]?cart[k].q:0}}
+function paint(){let n=0,t=0;for(const k in cart){n+=cart[k].q;t+=cart[k].q*cart[k].p}
+ cc.textContent=n;ct.textContent=fmt(t);cartbar.classList.toggle('show',n>0);cartbar.classList.remove('pop');void cartbar.offsetWidth;cartbar.classList.add('pop');
+ lines.innerHTML=Object.values(cart).map(x=>`<div class="ln"><span>${x.n}<br><small>${x.q} × ${fmt(x.p)} ر.ع</small></span><b>${fmt(x.q*x.p)} ر.ع</b></div>`).join('');st.textContent=fmt(t)+' ر.ع'}
+openCart.onclick=()=>sheet.classList.add('show');
+sheet.onclick=e=>{if(e.target===sheet)sheet.classList.remove('show')};
+okBtn.onclick=()=>{sheet.classList.remove('show');done.classList.add('show');setTimeout(()=>{done.classList.remove('show');cart={};paint();draw()},2800)};
+draw();
+</script>
+</body>
+</html>
