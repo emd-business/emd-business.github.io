@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>متجر الكوكيز الفاخر</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@500;600;700&family=Cairo:wght@400;600;700;800&family=Courgette&display=swap">
+<style>
+:root{--g:#183a2b;--gd:#0f2a1e;--gl:#2a5340;--gold:#c9a45c;--gold2:#e6c98a;--cream:#f4ecdf;--paper:#fbf7f0;--ink:#20302a;--muted:#7d8a83;--sec:#183a2b}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;overflow-x:clip}
+body{font-family:Cairo,Tahoma,sans-serif;background:var(--cream);color:var(--ink)}
+button{font-family:inherit;cursor:pointer}
+.wrap{max-width:900px;margin:0 auto;padding:0 18px}
+.badge{position:fixed;bottom:8px;left:8px;z-index:70;background:#b91c1c;color:#fff;font-size:10.5px;padding:2px 8px;border-radius:6px}
+.disp{font-family:"El Messiri",Cairo,serif}
+.rv{opacity:0;transform:translateY(34px);transition:opacity .9s,transform 1s cubic-bezier(.2,.8,.2,1)}
+.rv.in{opacity:1;transform:none}
+
+/* الشريط العلوي */
+.nav{position:fixed;top:0;left:0;right:0;z-index:60;display:flex;align-items:center;gap:10px;padding:10px 16px;transition:background .4s,box-shadow .4s}
+.nav.solid{background:rgba(15,42,30,.82);backdrop-filter:blur(14px);box-shadow:0 6px 20px rgba(0,0,0,.2)}
+.nav .lg{width:38px;height:38px;border-radius:50%;background:url(cbw/logo.jpg) center/118%;border:1.5px solid var(--gold)}
+.nav .nm{font-family:Courgette,cursive;color:var(--cream);font-size:18px;direction:ltr}
+.nav .cartb{margin-inline-start:auto;position:relative;border:1px solid rgba(201,164,92,.6);background:rgba(255,255,255,.06);color:var(--cream);border-radius:999px;padding:7px 14px;font-weight:700;font-size:13px}
+.nav .cartb b{display:inline-grid;place-items:center;min-width:20px;height:20px;border-radius:999px;background:var(--gold);color:var(--gd);font-size:11px;margin-inline-start:6px}
+.nav .cartb.bump{animation:bump .45s}
+@keyframes bump{40%{transform:scale(1.15)}}
+
+/* الواجهة */
+.hero{position:relative;min-height:100svh;background:radial-gradient(ellipse at 50% 30%,#2a5340 0,#183a2b 45%,#0f2a1e 100%);color:var(--cream);overflow:hidden;display:flex;align-items:center}
+.hero .in{position:relative;z-index:2;width:100%;max-width:900px;margin:0 auto;padding:90px 22px 60px}
+.loc{color:var(--gold2);font-size:12.5px;letter-spacing:2px;display:flex;align-items:center;gap:8px}
+.loc:before{content:"";width:28px;height:1px;background:var(--gold)}
+.hero h1{font-family:"El Messiri",serif;font-weight:700;font-size:clamp(44px,13vw,86px);line-height:1.08;margin:14px 0 10px}
+.hero h1 span{display:block;overflow:hidden}
+.hero h1 span i{display:block;font-style:normal;transform:translateY(105%);animation:lineup 1s cubic-bezier(.2,.8,.2,1) forwards}
+.hero h1 span:nth-child(2) i{animation-delay:.15s}.hero h1 span:nth-child(3) i{animation-delay:.3s;color:var(--gold2)}
+@keyframes lineup{to{transform:none}}
+.hero p{max-width:420px;color:#d6dfd8;font-size:15.5px;line-height:1.8;opacity:0;animation:fade 1s .7s forwards}
+@keyframes fade{to{opacity:1}}
+.ctas{display:flex;gap:10px;margin-top:20px;opacity:0;animation:fade 1s .9s forwards}
+.btn{border:0;border-radius:999px;padding:13px 22px;font-weight:800;font-size:15px}
+.btn.gold{background:linear-gradient(135deg,var(--gold2),var(--gold));color:var(--gd);box-shadow:0 10px 24px -8px rgba(201,164,92,.7)}
+.btn.line{background:transparent;color:var(--cream);border:1px solid rgba(244,236,223,.4)}
+.orb{position:absolute;z-index:1;left:-12vw;bottom:6vh;width:min(78vw,430px);aspect-ratio:1;will-change:transform}
+.orb .ph{position:absolute;inset:9%;border-radius:50%;background:url(cbw/hand.jpg) center/cover;box-shadow:0 40px 80px rgba(0,0,0,.5);animation:float 6s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-14px) rotate(-3deg)}}
+.orb svg{position:absolute;inset:0;animation:rot 40s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+.dust{position:absolute;bottom:-10px;width:4px;height:4px;border-radius:50%;background:var(--gold2);box-shadow:0 0 8px var(--gold);animation:rise linear infinite;opacity:.8}
+@keyframes rise{to{transform:translateY(-110vh) translateX(var(--dx));opacity:0}}
+.scrollcue{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);z-index:2;width:22px;height:36px;border:1.5px solid rgba(244,236,223,.5);border-radius:12px}
+.scrollcue:after{content:"";position:absolute;top:7px;left:50%;width:3px;height:7px;margin-left:-1.5px;border-radius:2px;background:var(--gold2);animation:cue 1.6s infinite}
+@keyframes cue{to{transform:translateY(12px);opacity:0}}
+
+/* الشريط المتحرك */
+.marq{background:var(--gold);color:var(--gd);overflow:hidden;white-space:nowrap;padding:12px 0;font-weight:800;font-size:15px}
+.marq div{display:inline-block;animation:marq 22s linear infinite}
+.marq span{margin:0 18px}
+@keyframes marq{to{transform:translateX(50%)}}
+
+/* لحظة الكسر */
+.brk{position:relative;height:320vh;background:var(--gd)}
+.brk .stk{position:sticky;top:0;height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;color:var(--cream)}
+.brk .stk:before{content:"";position:absolute;width:120vmin;height:120vmin;border-radius:50%;background:radial-gradient(circle,rgba(201,164,92,.22),transparent 60%)}
+.brk svg{position:relative;width:min(82vw,420px);overflow:visible}
+.brk .cap{position:relative;height:110px;margin-top:10px;text-align:center;width:100%}
+.brk .cap div{position:absolute;inset:0;opacity:0;transform:translateY(16px);transition:opacity .5s,transform .5s}
+.brk .cap div.on{opacity:1;transform:none}
+.brk .cap b{display:block;font-family:"El Messiri";font-size:clamp(30px,9vw,48px)}
+.brk .cap small{color:#b7c6bd;font-size:14px}
+.brk .kick{position:absolute;top:80px;color:var(--gold2);letter-spacing:3px;font-size:12px}
+
+/* النكهات */
+.flav{padding:70px 0 50px;transition:background-color .8s;background:var(--sec);color:var(--cream)}
+.sh{font-family:"El Messiri";font-size:clamp(32px,9vw,52px);margin:0;line-height:1.15}
+.sh small{display:block;font-family:Cairo;font-size:13px;letter-spacing:3px;color:var(--gold2);margin-bottom:6px}
+.carousel{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:26px 18px 10px;scrollbar-width:none}
+.carousel::-webkit-scrollbar{display:none}
+.fc{flex:none;width:72vw;max-width:300px;scroll-snap-align:center;transition:transform .5s,opacity .5s;transform:scale(.9);opacity:.6}
+.fc.cur{transform:none;opacity:1}
+.fc .ph{aspect-ratio:4/5;border-radius:26px;background:center/cover;box-shadow:0 30px 50px -20px rgba(0,0,0,.6);position:relative;overflow:hidden}
+.fc .ph:after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 55%,rgba(0,0,0,.55))}
+.fc .ph .tg{position:absolute;top:12px;right:12px;z-index:2;background:rgba(255,255,255,.18);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:11.5px;border-radius:999px;padding:3px 10px}
+.fc h3{font-family:"El Messiri";font-size:24px;margin:14px 0 2px}
+.fc .nt{font-size:13px;opacity:.8}
+.fc .rw{display:flex;align-items:center;justify-content:space-between;margin-top:10px}
+.fc .pr{font-weight:800;font-size:20px;color:var(--gold2)}
+.fc .ad{border:0;border-radius:999px;background:var(--cream);color:var(--gd);font-weight:800;padding:9px 16px;font-size:13.5px}
+.fc .ad:active{transform:scale(.94)}
+.dots{display:flex;gap:6px;justify-content:center;margin-top:16px}
+.dots i{width:7px;height:7px;border-radius:9px;background:rgba(255,255,255,.35);transition:width .4s,background .4s}
+.dots i.on{width:22px;background:var(--gold2)}
+
+/* اصنع علبتك */
+.build{padding:70px 0;background:var(--paper)}
+.build .sh{color:var(--g)}
+.tabs{display:inline-flex;background:#ece3d3;border-radius:999px;padding:4px;margin:18px 0}
+.tabs button{border:0;background:none;border-radius:999px;padding:8px 18px;font-weight:800;color:var(--g)}
+.tabs button.on{background:var(--g);color:var(--cream)}
+.tabs button small{font-weight:600;color:var(--gold);margin-inline-start:4px}
+.bx3{perspective:900px;margin:8px auto 0;max-width:440px}
+.gbox{position:relative;background:linear-gradient(145deg,#1f4634,#132f22);border-radius:16px;padding:16px;transform:rotateX(24deg);transform-origin:50% 100%;box-shadow:0 40px 50px -24px rgba(15,42,30,.7),inset 0 0 0 2px rgba(201,164,92,.5)}
+.grid{display:grid;gap:10px}
+.sl{aspect-ratio:1;border-radius:50%;background:#0d2419;box-shadow:inset 0 4px 8px rgba(0,0,0,.5);background-size:cover;background-position:center}
+.sl.f{box-shadow:0 6px 10px rgba(0,0,0,.45);animation:drop .5s cubic-bezier(.3,1.6,.5,1)}
+@keyframes drop{from{transform:translateY(-60px) scale(.4)}}
+.rib{position:absolute;background:linear-gradient(90deg,#b98f45,#f2dca6,#b98f45);opacity:0;transition:transform .8s cubic-bezier(.5,0,.2,1),opacity .3s}
+.rib.h{left:0;right:0;top:50%;height:14px;margin-top:-7px;transform:scaleX(0)}
+.rib.v{top:0;bottom:0;left:50%;width:14px;margin-left:-7px;transform:scaleY(0);background:linear-gradient(#b98f45,#f2dca6,#b98f45)}
+.gbox.full .rib{opacity:1;transform:none}
+.bow{position:absolute;left:50%;top:50%;font-size:48px;transform:translate(-50%,-50%) scale(0);transition:transform .5s cubic-bezier(.3,1.6,.5,1) .7s;filter:drop-shadow(0 4px 6px rgba(0,0,0,.4))}
+.gbox.full .bow{transform:translate(-50%,-50%) scale(1)}
+.picks{display:flex;gap:10px;overflow-x:auto;padding:22px 2px 6px;scrollbar-width:none}
+.picks button{flex:none;width:84px;border:0;background:none;text-align:center;font-size:12px;font-weight:700;color:var(--g)}
+.picks button i{display:block;width:64px;height:64px;margin:0 auto 4px;border-radius:50%;background:center/cover;box-shadow:0 8px 16px -8px rgba(0,0,0,.5);border:2px solid #fff}
+.picks button:active i{transform:scale(.9)}
+.bsum{display:flex;align-items:center;gap:10px;margin-top:14px}
+.bsum .t{flex:1}
+.bsum .t b{font-size:22px;color:var(--g)}
+.bsum .t small{display:block;color:var(--muted)}
+.bsum .btn{background:var(--g);color:var(--cream)}
+.bsum .btn:disabled{opacity:.4}
+.bsum .clr{border:1px solid #d9cfbd;background:#fff;color:var(--muted);border-radius:999px;padding:10px 14px;font-weight:700}
+
+/* التوصيل */
+.dlv{padding:70px 0;background:var(--cream);overflow:hidden}
+.dlv .sh{color:var(--g)}
+.road{position:relative;margin-top:20px}
+.road svg{width:100%;height:auto;overflow:visible}
+.scoot{position:absolute;top:0;left:0;font-size:34px;transform:translate(-50%,-70%);will-change:transform}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:6px;text-align:center}
+.steps div{font-size:13px;color:var(--muted)}
+.steps b{display:block;font-family:"El Messiri";font-size:18px;color:var(--g)}
+
+/* الآراء والإنستغرام */
+.rev{background:var(--g);color:var(--cream);padding:60px 0;overflow:hidden}
+.rtrack{display:flex;gap:14px;width:max-content;animation:marq 40s linear infinite;padding:20px 0}
+.rc{width:250px;background:rgba(255,255,255,.06);border:1px solid rgba(201,164,92,.3);border-radius:18px;padding:16px;font-size:14px;line-height:1.7}
+.rc .st{color:var(--gold2);letter-spacing:2px}
+.rc small{display:block;color:#a9b9b0;margin-top:6px}
+.ig{padding:60px 0 120px;background:var(--paper)}
+.ig .sh{color:var(--g)}
+.igg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:18px}
+.igg div{aspect-ratio:1;background:center/cover;border-radius:10px;transition:transform .4s}
+.igg div:hover{transform:scale(1.04)}
+.foot{text-align:center;color:var(--muted);font-size:12px;margin-top:24px}
+
+/* السلة */
+.drawer{position:fixed;inset:0;z-index:90;background:rgba(15,42,30,.5);opacity:0;pointer-events:none;transition:opacity .35s}
+.drawer.show{opacity:1;pointer-events:auto}
+.drawer .pn{position:absolute;top:0;bottom:0;left:0;width:min(88vw,400px);background:var(--paper);padding:20px 18px;transform:translateX(-100%);transition:transform .45s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column}
+.drawer.show .pn{transform:none}
+.pn h3{font-family:"El Messiri";font-size:26px;margin:0 0 6px;color:var(--g);display:flex;justify-content:space-between}
+.pn .ls{flex:1;overflow:auto}
+.ln{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #eee3d2}
+.ln i{width:46px;height:46px;border-radius:12px;background:center/cover;flex:none}
+.ln .nm{flex:1;font-size:14px}.ln small{color:var(--muted)}
+.qb{border:1px solid #d9cfbd;background:#fff;border-radius:8px;width:28px;height:28px;font-weight:800;color:var(--g)}
+.pn .tt{display:flex;justify-content:space-between;font-weight:800;font-size:18px;margin:12px 0;color:var(--g)}
+.pn .go{border:0;border-radius:14px;padding:14px;background:var(--g);color:var(--cream);font-weight:800;font-size:16px}
+.em{text-align:center;color:var(--muted);padding:40px 0}
+.fly{position:fixed;z-index:85;width:54px;height:54px;border-radius:50%;background:center/cover;pointer-events:none;transition:transform .75s cubic-bezier(.5,-0.4,.5,1),opacity .75s;box-shadow:0 8px 16px rgba(0,0,0,.4);border:2px solid var(--gold)}
+.ty{position:fixed;inset:0;z-index:95;display:none;place-items:center;background:rgba(15,42,30,.9)}
+.ty.show{display:grid}
+.ty .cd{width:270px;aspect-ratio:200/290;background:url(cbw/thanks.jpg) center/cover;border-radius:14px;box-shadow:0 40px 70px rgba(0,0,0,.6);animation:tyin 1s cubic-bezier(.2,.9,.3,1.1) both}
+@keyframes tyin{from{transform:translateY(80vh) rotate(-14deg)}to{transform:rotate(-3deg)}}
+.ty p{color:var(--cream);text-align:center;margin:18px 0 0;font-size:14px}
+.conf{position:absolute;top:-20px;width:8px;height:14px;background:var(--gold2);animation:conf linear forwards}
+@keyframes conf{to{transform:translateY(110vh) rotate(720deg)}}
+@media(max-width:700px){.hero{flex-direction:column;justify-content:flex-start}.hero .in{padding-bottom:0}.orb{position:relative;order:2;left:auto;bottom:auto;width:74vw;margin:4px auto 50px}}
+</style>
+</head>
+<body>
+<div class="badge">معاينة تجريبية</div>
+<nav class="nav" id="nav"><div class="lg"></div><div class="nm">Cookie Bite</div><button class="cartb" id="cartb">السلة<b id="cn">0</b></button></nav>
+
+<header class="hero" id="hero">
+  <div class="orb" id="orb"><div class="ph"></div><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="none" stroke="#c9a45c" stroke-width=".4" stroke-dasharray="1 2.2"/><circle cx="50" cy="2" r="1.4" fill="#e6c98a"/></svg></div>
+  <div class="in">
+    <div class="loc">مسقط · سلطنة عُمان</div>
+    <h1><span><i>قضمة واحدة</i></span><span><i>تكفي لتقع</i></span><span><i>في الحب.</i></span></h1>
+    <p>كوكيز منزلي بجودة عالية ونكهات مميزة، طازج وطري ومليء بالسعادة.</p>
+    <div class="ctas"><button class="btn gold" onclick="go('flav')">اطلب الآن</button><button class="btn line" onclick="go('build')">اصنع علبتك</button></div>
+  </div>
+  <div class="scrollcue"></div>
+</header>
+
+<div class="marq"><div id="mq"></div></div>
+
+<section class="brk" id="brk"><div class="stk">
+  <div class="kick">لحظة الكسر</div>
+  <svg viewBox="-60 -40 320 280" id="ck">
+    <defs>
+      <radialGradient id="dough" cx="40%" cy="35%"><stop offset="0" stop-color="#e8b36a"/><stop offset=".7" stop-color="#c98b45"/><stop offset="1" stop-color="#9b6428"/></radialGradient>
+      <radialGradient id="inner" cx="50%" cy="50%"><stop offset="0" stop-color="#f1d29a"/><stop offset="1" stop-color="#d9a35e"/></radialGradient>
+      <clipPath id="cR"><path d="M100 -10 L110 20 L94 45 L108 75 L92 105 L106 135 L95 165 L104 210 L230 210 L230 -10Z"/></clipPath>
+      <clipPath id="cL"><path d="M100 -10 L110 20 L94 45 L108 75 L92 105 L106 135 L95 165 L104 210 L-30 210 L-30 -10Z"/></clipPath>
+      <g id="ckb"><circle cx="100" cy="100" r="96" fill="url(#dough)"/><g fill="#4a2a17"><ellipse cx="60" cy="60" rx="13" ry="10"/><ellipse cx="128" cy="52" rx="11" ry="9"/><ellipse cx="146" cy="110" rx="14" ry="11"/><ellipse cx="80" cy="120" rx="12" ry="10"/><ellipse cx="112" cy="156" rx="13" ry="10"/><ellipse cx="44" cy="140" rx="9" ry="8"/><ellipse cx="100" cy="88" rx="9" ry="7"/></g><circle cx="100" cy="100" r="96" fill="none" stroke="#8a5622" stroke-width="2" opacity=".5"/></g>
+    </defs>
+    <g id="goo" opacity="0">
+      <path id="s1" d="M100 60 C120 62 80 70 100 72" stroke="#5a2f14" stroke-width="10" fill="none" stroke-linecap="round"/>
+      <path id="s2" d="M100 100 C120 102 80 110 100 112" stroke="#6b3a1a" stroke-width="14" fill="none" stroke-linecap="round"/>
+      <path id="s3" d="M100 140 C120 142 80 150 100 152" stroke="#5a2f14" stroke-width="9" fill="none" stroke-linecap="round"/>
+      <ellipse id="pool" cx="100" cy="205" rx="0" ry="6" fill="#4a2a17"/>
+    </g>
+    <g id="hL"><g clip-path="url(#cL)"><use href="#ckb"/><path d="M100 -10 L110 20 L94 45 L108 75 L92 105 L106 135 L95 165 L104 210" stroke="url(#inner)" stroke-width="10" fill="none"/></g></g>
+    <g id="hR"><g clip-path="url(#cR)"><use href="#ckb"/><path d="M100 -10 L110 20 L94 45 L108 75 L92 105 L106 135 L95 165 L104 210" stroke="url(#inner)" stroke-width="10" fill="none"/></g></g>
+  </svg>
+  <div class="cap" id="cap"><div class="on"><b>مقرمش من الخارج</b><small>حواف ذهبية تُخبز بعناية</small></div><div><b>طريّ من الداخل</b><small>قلب ذائب في كل حبة</small></div><div><b>محشو بسخاء</b><small>شوكولاتة بلجيكية تسيل مع كل قضمة</small></div></div>
+</div></section>
+
+<section class="flav" id="flav">
+  <div class="wrap rv"><h2 class="sh"><small>قائمتنا المميزة</small>اختر نكهتك</h2></div>
+  <div class="carousel" id="car"></div>
+  <div class="dots" id="dots"></div>
+</section>
+
+<section class="build" id="build"><div class="wrap">
+  <h2 class="sh rv"><small>هدية أو لنفسك</small>اصنع علبتك</h2>
+  <div class="tabs" id="tabs"></div>
+  <div class="bx3"><div class="gbox" id="gbox"><div class="grid" id="grid"></div><div class="rib h"></div><div class="rib v"></div><div class="bow">🎀</div></div></div>
+  <div class="picks" id="picks"></div>
+  <div class="bsum"><div class="t"><b id="bp">0.000 ر.ع</b><small id="bs"></small></div><button class="clr" id="bclr">تفريغ</button><button class="btn" id="badd" disabled>أضف العلبة</button></div>
+</div></section>
+
+<section class="dlv" id="dlv"><div class="wrap">
+  <h2 class="sh rv"><small>من مطبخنا إليك</small>توصيل سريع لباب منزلك</h2>
+  <div class="road"><svg viewBox="0 0 360 120"><path id="rp" d="M10 90 C70 20 130 110 190 60 S300 20 350 70" fill="none" stroke="#183a2b" stroke-width="2.5" stroke-dasharray="6 7"/><circle cx="10" cy="90" r="6" fill="#c9a45c"/><text x="350" y="100" font-size="20" text-anchor="middle">🏠</text></svg><div class="scoot" id="scoot">🛵</div></div>
+  <div class="steps"><div><b>اطلب</b>من المتجر في دقيقة</div><div><b>نخبز طازجًا</b>حسب طلبك</div><div><b>يصلك</b>في أنحاء مسقط</div></div>
+</div></section>
+
+<section class="rev"><div class="wrap"><h2 class="sh rv"><small>آراء العملاء</small>قالوا عنّا</h2></div><div class="rtrack" id="rt"></div></section>
+
+<section class="ig"><div class="wrap">
+  <h2 class="sh rv"><small>@cookie.bite.om</small>من إنستغرام</h2>
+  <div class="igg"><div style="background-image:url(cbw/assort.jpg)"></div><div style="background-image:url(cbw/latte.jpg)"></div><div style="background-image:url(cbw/gift.jpg)"></div><div style="background-image:url(cbw/rack.jpg)"></div><div style="background-image:url(cbw/openbox.jpg)"></div><div style="background-image:url(cbw/redpist.jpg)"></div></div>
+  <div class="foot">متجر يعمل بنظام EMD Business</div>
+</div></section>
+
+<div class="drawer" id="drawer"><div class="pn"><h3><span>سلتك</span><button onclick="drawer.classList.remove('show')" style="border:0;background:none;font-size:22px;color:inherit">✕</button></h3><div class="ls" id="ls"></div><div class="tt"><span>الإجمالي</span><span id="tt"></span></div><button class="go" id="goBtn">تأكيد الطلب</button></div></div>
+<div class="ty" id="ty"><div><div class="cd"></div><p>تم استلام طلبك، شكرًا لك<br><small style="opacity:.7">هذه معاينة فقط، لم يُرسل أي طلب</small></p></div></div>
+
+<script>
+const F=[
+ {id:'cls',n:'كوكيز الشوكولاتة الكلاسيكي',nt:'شوكولاتة بلجيكية ذائبة',p:.8,img:'chocstack',bg:'#3b2418',tg:'الأكثر طلبًا'},
+ {id:'lot',n:'كوكيز اللوتس',nt:'كراميل وبسكويت لوتس',p:.9,img:'lotus',bg:'#7a4e22',tg:'محشو'},
+ {id:'red',n:'ريد فيلفت بالكريمة',nt:'قلب كريمي أبيض',p:.9,img:'red',bg:'#5e1019',tg:'جديد'},
+ {id:'pis',n:'كوكيز الفستق',nt:'فستق بقلب كراميل',p:1,img:'pist',bg:'#3f5a22',tg:'فاخر'},
+ {id:'dbl',n:'دبل شوكولاتة',nt:'للعاشقين الحقيقيين',p:1,img:'classic',bg:'#24140d',tg:'مكثف'},
+ {id:'mol',n:'الكوكيز الذائب',nt:'ثلاث طبقات من الشوكولاتة',p:1.1,img:'molten',bg:'#2f1d10',tg:'نكهة الموسم'}
+];
+const fmt=v=>(+v).toFixed(3)+' ر.ع';
+let cart={};
+const go=id=>document.getElementById(id).scrollIntoView({behavior:'smooth'});
+
+/* واجهة */
+for(let k=0;k<22;k++){const d=document.createElement('i');d.className='dust';d.style.cssText=`left:${Math.random()*100}%;animation-duration:${7+Math.random()*9}s;animation-delay:${-Math.random()*12}s;--dx:${(Math.random()-.5)*80}px;transform:scale(${.5+Math.random()})`;hero.appendChild(d)}
+const MQ=['طازج يوميًا','توصيل سريع في مسقط','شوكولاتة بلجيكية','نكهات موسمية','تغليف هدايا فاخر'];
+mq.innerHTML=[...MQ,...MQ,...MQ,...MQ].map(t=>`<span>✦ ${t}</span>`).join('');
+
+/* التمرير */
+const sL=document.getElementById('hL'),sR=document.getElementById('hR'),goo=document.getElementById('goo'),caps=[...cap.children];
+const road=document.getElementById('rp'),RL=road.getTotalLength();
+function onScroll(){const y=scrollY,H=innerHeight;nav.classList.toggle('solid',y>40);
+ if(y<H)orb.style.transform=`translateY(${y*.25}px) rotate(${y*.05}deg)`;
+ const b=brk.getBoundingClientRect(),p=Math.min(1,Math.max(0,-b.top/(b.height-H)));
+ const s=Math.min(1,p*1.6),gap=s*70;
+ sL.setAttribute('transform',`translate(${-gap} ${s*6}) rotate(${-s*10} 100 200)`);sR.setAttribute('transform',`translate(${gap} ${-s*4}) rotate(${s*8} 100 200)`);
+ goo.setAttribute('opacity',Math.min(1,s*3));
+ [['s1',60,10],['s2',100,14],['s3',140,9]].forEach(([id,y0,w],k)=>{const e=document.getElementById(id),sg=gap*(1-k*.12),dr=Math.sin(s*Math.PI)*16;e.setAttribute('d',`M${100-sg} ${y0} C${100-sg/3} ${y0+dr} ${100+sg/3} ${y0+dr} ${100+sg} ${y0+2}`);e.setAttribute('stroke-width',Math.max(2,w*(1-s*.55)))});
+ document.getElementById('pool').setAttribute('rx',s*40);
+ const st=p<.33?0:p<.66?1:2;caps.forEach((c,k)=>c.classList.toggle('on',k===st));
+ const d=dlv.getBoundingClientRect(),q=Math.min(1,Math.max(0,(H-d.top)/(H+d.height*.4))),pt=road.getPointAtLength(q*RL),sv=road.ownerSVGElement.getBoundingClientRect(),k2=sv.width/360;
+ scoot.style.transform=`translate(${pt.x*k2}px,${pt.y*k2}px) translate(-50%,-70%) scaleX(-1)`}
+addEventListener('scroll',onScroll,{passive:true});addEventListener('resize',onScroll);onScroll();
+const rio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');rio.unobserve(e.target)}}),{threshold:.2});
+document.querySelectorAll('.rv').forEach(e=>rio.observe(e));
+
+/* النكهات */
+car.innerHTML=F.map((x,k)=>`<div class="fc" data-k="${k}"><div class="ph" style="background-image:url(cbw/${x.img}.jpg)"><span class="tg">${x.tg}</span></div><h3>${x.n}</h3><div class="nt">${x.nt}</div><div class="rw"><span class="pr">${fmt(x.p)}</span><button class="ad" onclick="add('${x.id}',this)">أضف</button></div></div>`).join('');
+dots.innerHTML=F.map(()=>'<i></i>').join('');
+const fio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){const k=+e.target.dataset.k;car.querySelectorAll('.fc').forEach((c,j)=>c.classList.toggle('cur',j===k));dots.querySelectorAll('i').forEach((d,j)=>d.classList.toggle('on',j===k));flav.style.backgroundColor=F[k].bg}}),{root:car,threshold:.7});
+car.querySelectorAll('.fc').forEach(c=>fio.observe(c));
+
+/* اصنع علبتك */
+const SZ=[{n:4,d:0},{n:6,d:.05},{n:12,d:.1}];let sz=1,box=[];
+function drawBox(){tabs.innerHTML=SZ.map((s,k)=>`<button class="${k===sz?'on':''}" onclick="sz=${k};box=box.slice(0,${s.n});drawBox()">${s.n} حبات${s.d?`<small>-${s.d*100}٪</small>`:''}</button>`).join('');
+ const n=SZ[sz].n,cols=n===12?4:n===6?3:2;grid.style.gridTemplateColumns=`repeat(${cols},1fr)`;
+ grid.innerHTML=Array.from({length:n},(_,k)=>{const x=box[k]&&F.find(f=>f.id===box[k]);return `<div class="sl ${x?'f':''}" style="${x?`background-image:url(cbw/${x.img}.jpg)`:''}"></div>`}).join('');
+ grid.querySelectorAll('.sl.f').forEach((e,k)=>{if(k!==box.length-1)e.style.animation='none'});
+ const full=box.length===n;gbox.classList.toggle('full',full);
+ const sum=box.reduce((a,id)=>a+F.find(f=>f.id===id).p,0)*(1-SZ[sz].d);bp.textContent=fmt(sum);
+ bs.textContent=full?'العلبة جاهزة ومغلّفة بالشريط الذهبي':`اختر ${n-box.length} من ${n}`;badd.disabled=!full}
+picks.innerHTML=F.map(x=>`<button onclick="pickB('${x.id}')"><i style="background-image:url(cbw/${x.img}.jpg)"></i>${x.n.replace('كوكيز ','')}</button>`).join('');
+function pickB(id){if(box.length>=SZ[sz].n)return;box.push(id);drawBox()}
+bclr.onclick=()=>{box=[];drawBox()};
+badd.onclick=()=>{const n=SZ[sz].n,sum=box.reduce((a,id)=>a+F.find(f=>f.id===id).p,0)*(1-SZ[sz].d),k='box'+Date.now();cart[k]={n:`علبة ${n} حبات مشكلة`,p:sum,q:1,img:'gift'};flyFrom(gbox,'gift');box=[];setTimeout(drawBox,200)};
+drawBox();
+
+/* الآراء */
+const RV=[['ألذ كوكيز تذوقته في مسقط، اللوتس خيالي','زبونة دائمة'],['التغليف فاخر ويصلح هدية','طلب هدية'],['وصل الطلب طازجًا ودافئًا','حي الخوير'],['الريد فيلفت بالكريمة لا يُقاوم','طلب ثالث'],['خدمة سريعة وتعامل راقٍ','مناسبة عائلية']];
+rt.innerHTML=[...RV,...RV].map(r=>`<div class="rc"><div class="st">★★★★★</div>«${r[0]}»<small>${r[1]}</small></div>`).join('');
+
+/* السلة */
+function flyFrom(el,img){const r=el.getBoundingClientRect(),c=cartb.getBoundingClientRect(),f=document.createElement('div');f.className='fly';f.style.backgroundImage=`url(cbw/${img}.jpg)`;f.style.left=(r.left+r.width/2-27)+'px';f.style.top=(r.top+r.height/2-27)+'px';document.body.appendChild(f);
+ requestAnimationFrame(()=>{f.style.transform=`translate(${c.left+c.width/2-r.left-r.width/2}px,${c.top+c.height/2-r.top-r.height/2}px) scale(.3) rotate(360deg)`;f.style.opacity='.5'});
+ setTimeout(()=>{f.remove();paint();cartb.classList.remove('bump');void cartb.offsetWidth;cartb.classList.add('bump')},750)}
+function add(id,btn){const x=F.find(f=>f.id===id);cart[id]=cart[id]||{n:x.n,p:x.p,q:0,img:x.img};cart[id].q++;flyFrom(btn.closest('.fc').querySelector('.ph'),x.img)}
+function chg(k,d){cart[k].q+=d;if(cart[k].q<=0)delete cart[k];paint()}
+function paint(){let n=0,t=0;for(const k in cart){n+=cart[k].q;t+=cart[k].q*cart[k].p}cn.textContent=n;tt.textContent=fmt(t);
+ ls.innerHTML=n?Object.entries(cart).map(([k,x])=>`<div class="ln"><i style="background-image:url(cbw/${x.img}.jpg)"></i><div class="nm">${x.n}<br><small>${fmt(x.p)}</small></div><button class="qb" onclick="chg('${k}',-1)">−</button><b>${x.q}</b><button class="qb" onclick="chg('${k}',1)">+</button></div>`).join(''):'<div class="em">سلتك فارغة 🍪</div>';goBtn.style.display=n?'':'none'}
+cartb.onclick=()=>{paint();drawer.classList.add('show')};
+drawer.onclick=e=>{if(e.target===drawer)drawer.classList.remove('show')};
+goBtn.onclick=()=>{drawer.classList.remove('show');ty.querySelectorAll('.conf').forEach(c=>c.remove());for(let k=0;k<40;k++){const c=document.createElement('i');c.className='conf';c.style.cssText=`left:${Math.random()*100}%;animation-duration:${1.8+Math.random()*1.8}s;animation-delay:${Math.random()*.6}s;background:${k%2?'#e6c98a':'#f4ecdf'}`;ty.appendChild(c)}
+ ty.classList.remove('show');void ty.offsetWidth;ty.classList.add('show');setTimeout(()=>{ty.classList.remove('show');cart={};paint()},3600)};
+paint();
+</script>
+</body>
+</html>
