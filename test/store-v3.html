@@ -637,7 +637,7 @@ html[data-lx="cmyk"]{--bg:#fbfcfe;--surface:#ffffff;--ink:#1d2742;--muted:#6b759
 .bm-cap h1,.bm-cap h2{font-family:var(--display);margin:0;line-height:1.2;color:var(--accent)}
 .bm-cap h1{font-size:clamp(36px,10.5vw,58px)}.bm-cap h2{font-size:clamp(26px,7.4vw,38px)}
 .bm-cap p{margin:6px 0 0;color:var(--muted);font-size:14px}
-.bm-fp{position:absolute;left:50%;top:50%;width:min(72vw,320px);aspect-ratio:1;transform:translate(-50%,-50%)}
+.bm-fp{position:absolute;left:50%;top:52%;width:min(70vw,330px);aspect-ratio:200/220;transform:translate(-50%,-50%)}
 .bm-fp svg{width:100%;height:100%;overflow:visible;display:block}
 .bm-sep{mix-blend-mode:multiply}
 .bm-sheet{position:absolute;left:50%;bottom:-2%;width:min(76vw,330px);transform:translate(-50%,110%);background:#fff;border-radius:6px 6px 0 0;padding:12px 12px 16px;box-shadow:0 -20px 50px -20px rgba(23,48,107,.45)}
@@ -1294,6 +1294,12 @@ function bmLayer(id,col){var l=safeUrl(B.logo),n=esc(B.name||(LANG==='en'?'My st
   var fs=Math.max(18,Math.min(44,260/Math.max(1,(B.name||'متجري').length)));
   return '<circle cx="100" cy="100" r="78" fill="none" stroke="'+col+'" stroke-width="7"/><text x="100" y="'+(100+fs*.35)+'" text-anchor="middle" font-family="Reem Kufi,Lalezar" font-size="'+fs+'" fill="'+col+'">'+n+'</text>'}
 function bmInk(id,c){return '<filter id="bmf'+id+'" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -0.2126 -0.7152 -0.0722 0 1" result="a"/><feComposite in="a" in2="SourceAlpha" operator="in" result="b"/><feFlood flood-color="'+c+'"/><feComposite in2="b" operator="in"/></filter>'}
+function bmRidges(){var sd=7;function R(a,b){sd=(sd*9301+49297)%233280;return a+sd/233280*(b-a)}var h='';
+  for(var i=0;i<19;i++){var r=6+i*5.1,ph=R(0,6),d='';for(var k=0;k<=96;k++){var t2=k/96*Math.PI*2,w=1+.05*Math.sin(3*t2+ph)+.03*Math.sin(5*t2+i),up=Math.sin(t2)>0;
+    d+=(k?'L':'M')+(100+r*Math.cos(t2)*w).toFixed(1)+' '+(104+r*(up?1.32:1.12)*Math.sin(t2)*w+(up?i*.55:0)).toFixed(1)}
+    var Lg=2*Math.PI*r*1.25;h+='<path d="'+d+'" stroke-dasharray="'+(Lg*R(.35,.6)).toFixed(0)+' '+R(4,9).toFixed(0)+' '+(Lg*R(.2,.35)).toFixed(0)+' '+R(3,7).toFixed(0)+'" stroke-dashoffset="'+R(0,Lg).toFixed(0)+'"/>'}
+  for(var j=0;j<7;j++){var y=196+j*6;h+='<path d="M'+(10+j*6)+' '+y+' Q100 '+(y-26+j*2)+' '+(190-j*6)+' '+y+'"/>'}
+  return '<clipPath id="bmfc"><ellipse cx="100" cy="112" rx="88" ry="104"/></clipPath><g id="bmfpg" fill="none" stroke-width="2.7" stroke-linecap="round"><g clip-path="url(#bmfc)">'+h+'</g></g>'}
 R.cmyk=function(G){var L=lfilter(G),fr=ST.free_over,pk=G.filter(function(g){return g.in}).slice(0,6),l=safeUrl(B.logo);
   function card(g){return '<button type="button" class="lxbtn lxc bm-c" data-g="'+G.indexOf(g)+'">'+lpic(g.img,'',soldOut(g))+'<b>'+esc(g.base)+'</b><span class="bm-pr"><i>'+gprice(g)+'</i><em>+</em></span></button>'}
   function hd(s,big){return '<div class="bm-hd"><h2><small>'+esc(s)+'</small>'+esc(big)+'</h2><div class="bm-cb"><i></i><i></i><i></i><i></i></div></div>'}
@@ -1301,9 +1307,8 @@ R.cmyk=function(G){var L=lfilter(G),fr=ST.free_over,pk=G.filter(function(g){retu
   return '<section class="bm-stage" id="bmS"><div class="bm-stk" id="bmSk">'+
    '<span class="bm-reg a"></span><span class="bm-reg b"></span><span class="bm-reg c"></span><span class="bm-reg d"></span>'+
    '<div class="bm-caps"><div class="bm-cap on"><h1>'+esc(B.name||(LANG==='en'?'My store':'متجري'))+'</h1>'+(bio()?'<p>'+esc(bio().split('\n')[0])+'</p>':'')+'</div><div class="bm-cap"><h2>'+esc(t('bmL2'))+'</h2><p>'+esc(t('bmL2s'))+'</p></div><div class="bm-cap"><h2>'+esc(t('bmL3'))+'</h2><p>'+esc(bio().split('\n')[1]||'')+'</p></div></div>'+
-   '<div class="bm-fp" id="bmFp"><svg viewBox="0 0 200 200" aria-hidden="true"><defs><clipPath id="bmcc"><circle cx="100" cy="100" r="78"/></clipPath>'+INK.map(function(x){return bmInk(x[0],x[1])}).join('')+'</defs>'+
-    '<g id="bmB">'+(l?'<image href="'+esc(l)+'" x="22" y="22" width="156" height="156" clip-path="url(#bmcc)" preserveAspectRatio="xMidYMid slice"/>':bmLayer('K','var(--accent)'))+'</g>'+
-    INK.map(function(x){return '<g class="bm-sep" id="bm'+x[0]+'" opacity="0">'+bmLayer(x[0],x[1])+'</g>'}).join('')+'</svg></div>'+
+   '<div class="bm-fp" id="bmFp"><svg viewBox="0 0 200 220" aria-hidden="true"><defs><linearGradient id="bmgb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8cc0ef"/><stop offset=".55" stop-color="#3d7bd6"/><stop offset="1" stop-color="var(--accent)"/></linearGradient>'+bmRidges()+'</defs>'+
+    '<use href="#bmfpg" id="bmB" stroke="url(#bmgb)"/>'+INK.map(function(x){return '<use href="#bmfpg" class="bm-sep" id="bm'+x[0]+'" stroke="'+x[1]+'" opacity="0"/>'}).join('')+'</svg></div>'+
    '<div class="bm-sheet" id="bmSh"><div class="slot"></div><div class="pimg" id="bmPi">'+(l?'<img alt="" src="'+esc(l)+'">':'<b>'+esc(B.name||(LANG==='en'?'My store':'متجري'))+'</b>')+'</div><div class="head" id="bmHe"></div><div class="cap2"><b>'+esc(B.name||(LANG==='en'?'My store':'متجري'))+'</b><span id="bmPc">'+esc(t('bmPrint'))+'</span></div></div>'+
    '<button type="button" class="p3-hint bm-hint" id="bmH"><span class="gs"><span class="ar"></span><span class="fg">👆</span></span><span class="tx"><b>'+esc(t('p3Hi'))+'</b>'+esc(LANG==='en'?'to see your print being made':'لتشاهد مطبوعتك تُصنع أمامك')+'<small>'+esc(t('p3Auto'))+'</small></span></button>'+
    '</div></section>'+
@@ -1316,7 +1321,7 @@ R.cmyk=function(G){var L=lfilter(G),fr=ST.free_over,pk=G.filter(function(g){retu
   function ss(a,b,x){var k=Math.min(1,Math.max(0,(x-a)/(b-a)));return k*k*(3-2*k)}
   function on(){var S=$('bmS');if(!S||B.layout!=='cmyk')return;var r=S.getBoundingClientRect(),H=innerHeight,p=Math.min(1,Math.max(0,-r.top/Math.max(1,r.height-H)));
     var sep=ss(.08,.36,p)-ss(.48,.64,p),sc=1-sep*.5,op=Math.min(1,sep*3);
-    [['C',1,-1],['M',-1,-1],['Y',1,1],['K',-1,1]].forEach(function(x){var g=$('bm'+x[0]);if(!g)return;g.setAttribute('transform','translate('+(100+x[1]*sep*48)+' '+(100+x[2]*sep*48)+') scale('+sc+') translate(-100 -100)');g.setAttribute('opacity',op.toFixed(3))});
+    [['C',1,-1],['M',-1,-1],['Y',1,1],['K',-1,1]].forEach(function(x){var g=$('bm'+x[0]);if(!g)return;g.setAttribute('transform','translate('+(100+x[1]*sep*50)+' '+(112+x[2]*sep*58)+') scale('+sc+') translate(-100 -112)');g.setAttribute('opacity',op.toFixed(3))});
     $('bmB').setAttribute('opacity',(1-op).toFixed(3));
     var qq=ss(.55,.85,p),pr=ss(.68,.98,p),fp=$('bmFp'),sh=$('bmSh'),pi=$('bmPi'),he=$('bmHe');
     fp.style.transform='translate(-50%,calc(-50% - '+(qq*24)+'vh)) scale('+(1-qq*.42)+') rotate('+(p*30)+'deg)';
