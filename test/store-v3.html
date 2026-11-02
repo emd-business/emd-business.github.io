@@ -621,6 +621,52 @@ html[data-lx="print3d"] main#lx{overflow:visible}
 .p3-pr em{font-style:normal;width:30px;height:30px;border-radius:10px;background:var(--accent);color:#fff;display:grid;place-items:center;font-size:18px;box-shadow:0 0 12px color-mix(in srgb,var(--accent) 70%,transparent)}
 html[data-lx="print3d"] .lxchip[aria-pressed="true"]{box-shadow:0 0 12px color-mix(in srgb,var(--accent) 60%,transparent)}
 @media (prefers-reduced-motion:reduce){.p3-hint .ar,.p3-hint .fg{animation:none}}
+
+/* ===== V164: بصمة الطباعة ===== */
+html[data-lx="cmyk"]{--bg:#fbfcfe;--surface:#ffffff;--ink:#1d2742;--muted:#6b7590;--line:#dde6f3;--accent:#17306b;--accent-ink:#fff;
+  --foil:linear-gradient(100deg,#17306b,#3d7bd6 50%,#17306b);--tile:#eef3fa;--frame:12px;--btn-r:12px;--card-r:16px;--display:"Reem Kufi","Lalezar",sans-serif;--display-w:700;--track:0;--body:"IBM Plex Sans Arabic",Tahoma,sans-serif;color-scheme:light;
+  --pattern:radial-gradient(rgba(23,48,107,.07) 1px,transparent 1.3px) 0 0/14px 14px}
+.bm-stage{height:280vh;position:relative}
+.bm-stk{position:sticky;top:0;height:100svh;overflow:hidden;background:radial-gradient(120% 70% at 50% 40%,#fff 0%,#eef5fd 60%,#dce9f8 100%)}
+.bm-reg{position:absolute;width:24px;height:24px;opacity:.35;background:linear-gradient(var(--accent),var(--accent)) center/1px 100% no-repeat,linear-gradient(var(--accent),var(--accent)) center/100% 1px no-repeat}
+.bm-reg::after{content:"";position:absolute;inset:6px;border:1px solid var(--accent);border-radius:50%}
+.bm-reg.a{top:76px;right:14px}.bm-reg.b{top:76px;left:14px}.bm-reg.c{bottom:18px;right:14px}.bm-reg.d{bottom:18px;left:14px}
+.bm-caps{position:absolute;top:84px;left:0;right:0;height:110px;text-align:center}
+.bm-cap{position:absolute;left:20px;right:20px;top:0;opacity:0;transform:translateY(12px);transition:opacity .6s,transform .7s}
+.bm-cap.on{opacity:1;transform:none}
+.bm-cap h1,.bm-cap h2{font-family:var(--display);margin:0;line-height:1.2;color:var(--accent)}
+.bm-cap h1{font-size:clamp(36px,10.5vw,58px)}.bm-cap h2{font-size:clamp(26px,7.4vw,38px)}
+.bm-cap p{margin:6px 0 0;color:var(--muted);font-size:14px}
+.bm-fp{position:absolute;left:50%;top:50%;width:min(72vw,320px);aspect-ratio:1;transform:translate(-50%,-50%)}
+.bm-fp svg{width:100%;height:100%;overflow:visible;display:block}
+.bm-sep{mix-blend-mode:multiply}
+.bm-sheet{position:absolute;left:50%;bottom:-2%;width:min(76vw,330px);transform:translate(-50%,110%);background:#fff;border-radius:6px 6px 0 0;padding:12px 12px 16px;box-shadow:0 -20px 50px -20px rgba(23,48,107,.45)}
+.bm-sheet .slot{position:absolute;top:-16px;left:-6%;right:-6%;height:20px;border-radius:10px;background:linear-gradient(#2a3d73,#0f2150);box-shadow:0 6px 14px rgba(0,0,0,.25)}
+.bm-sheet .pimg{aspect-ratio:1;border-radius:4px;clip-path:inset(0 0 100% 0);display:grid;place-items:center;background:#f6f9fd;overflow:hidden}
+.bm-sheet .pimg img{width:86%;height:86%;object-fit:contain;border-radius:50%}
+.bm-sheet .pimg b{font-family:var(--display);font-size:40px;color:var(--accent);text-align:center}
+.bm-sheet .head{position:absolute;left:12px;right:12px;top:12px;height:3px;border-radius:2px;background:linear-gradient(90deg,#00a3e0,#e5007d,#ffd200);box-shadow:0 0 12px #e5007d}
+.bm-sheet .cap2{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:12px;color:var(--muted);gap:8px}
+.bm-sheet .cap2 b{font-family:var(--display);color:var(--accent);font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bm-hint{background:#fff!important;border-color:#ffd200!important;box-shadow:0 0 0 3px rgba(255,210,0,.35),0 12px 24px -10px rgba(23,48,107,.4)!important;color:var(--ink)!important}
+.bm-hint .tx b{color:var(--accent)!important}.bm-hint .tx small{color:#e5007d!important}
+.bm-hint .ar{background:linear-gradient(#e5007d,transparent)!important}.bm-hint .ar::before{border-color:#e5007d!important}
+.bm-info span{background:#fff}
+.p3-row .bm-c{flex:none;width:156px;scroll-snap-align:start}
+.bm-hd{margin:26px 0 12px}
+.bm-hd h2{position:relative;display:inline-block;margin:0;padding:8px 14px 6px;font-family:var(--display);font-size:clamp(24px,7vw,36px);line-height:1.3;color:var(--accent)}
+.bm-hd h2 small{display:block;font-family:var(--body);font-size:12px;color:#3d7bd6;font-weight:700;letter-spacing:1px}
+.bm-hd h2::before,.bm-hd h2::after{content:"";position:absolute;width:13px;height:13px;border:1.5px solid var(--accent);opacity:.45}
+.bm-hd h2::before{top:0;right:0;border-left:0;border-bottom:0}.bm-hd h2::after{bottom:0;left:0;border-right:0;border-top:0}
+.bm-cb{display:flex;gap:3px;margin:6px 14px 0;height:6px;width:92px}
+.bm-cb i{flex:1;border-radius:2px}.bm-cb i:nth-child(1){background:#00a3e0}.bm-cb i:nth-child(2){background:#e5007d}.bm-cb i:nth-child(3){background:#ffd200}.bm-cb i:nth-child(4){background:var(--accent)}
+.bm-c{background:#fff;border:1px solid var(--line);border-radius:16px;padding:0 0 10px;overflow:hidden;color:var(--ink);text-align:start;position:relative}
+.bm-c .lxpic{aspect-ratio:1}
+.bm-c b{display:block;font-size:13.5px;font-weight:700;line-height:1.5;margin:8px 10px 0;font-family:var(--body)}
+.bm-pr{display:flex;align-items:center;justify-content:space-between;margin:6px 10px 0}
+.bm-pr i{font-style:normal;font-weight:700;color:var(--accent);white-space:nowrap}
+.bm-pr em{font-style:normal;width:30px;height:30px;border-radius:10px;background:var(--accent);color:#fff;display:grid;place-items:center;font-size:18px}
+.bm-rk{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;font-family:var(--display);display:grid;place-items:center;font-size:14px;z-index:2}
 </style>
 </head>
 <body>
@@ -1187,16 +1233,16 @@ var _boot157=boot;boot=function(){_boot157();if(TKN)track()};
 Object.assign(T.ar,{p3Hi:'اسحب بإصبعك للأعلى',p3HiS:'لتشغيل الطابعة ومشاهدة الطباعة',p3Auto:'أو اضغط هنا لتشغيلها تلقائيًا ▶',p3L2:'طبقة… فوق طبقة',p3L2s:'نصنع طلبك بدقة وإتقان',p3L3:'جاهزة للتسليم!',p3Wait:'⏸ في الانتظار',p3Done:'✓ اكتملت',p3Layer:'طبقة',p3Pick:'مختارات',p3All:'كل المنتجات',p3Ship:'🚚 التوصيل',p3Free:'توصيل مجاني فوق %s'});
 Object.assign(T.en,{p3Hi:'Swipe up',p3HiS:'to start the printer',p3Auto:'or tap here to auto-play ▶',p3L2:'Layer by layer…',p3L2s:'Made with precision',p3L3:'Ready to ship!',p3Wait:'⏸ Waiting',p3Done:'✓ Done',p3Layer:'Layer',p3Pick:'Picks',p3All:'All products',p3Ship:'🚚 Delivery',p3Free:'Free delivery over %s'});
 LX.print3d=1;
-function p3Obj(){var l=safeUrl(B.logo),n=esc(B.name||''),h='';
+function p3Obj(){var l=safeUrl(B.logo),n=esc(B.name||(LANG==='en'?'My store':'متجري')),h='';
   if(l){for(var i=8;i>=1;i--)h+='<image href="'+esc(l)+'" x="60" y="'+(60+i*1.3)+'" width="180" height="180" clip-path="url(#p3cc)" style="filter:brightness(.28) saturate(1.4)" preserveAspectRatio="xMidYMid slice"/>';
     return h+'<image href="'+esc(l)+'" x="60" y="60" width="180" height="180" clip-path="url(#p3cc)" preserveAspectRatio="xMidYMid slice"/><circle cx="150" cy="150" r="90" fill="none" stroke="var(--accent)" stroke-width="3" opacity=".8"/>'}
-  var fs=Math.max(28,Math.min(64,420/Math.max(1,(B.name||'').length)));
+  var fs=Math.max(28,Math.min(64,420/Math.max(1,(B.name||'متجري').length)));
   for(var j=8;j>=1;j--)h+='<text x="150" y="'+(168+j*1.3)+'" text-anchor="middle" font-family="Lalezar" font-size="'+fs+'" fill="#0d1a55">'+n+'</text>';
   return '<circle cx="150" cy="150" r="96" fill="none" stroke="var(--accent)" stroke-width="10" stroke-dasharray="120 14 40 14 170 14 60 14 105 14"/>'+h+'<text x="150" y="168" text-anchor="middle" font-family="Lalezar" font-size="'+fs+'" fill="url(#p3g)">'+n+'</text>'}
 R.print3d=function(G){var L=lfilter(G),fr=ST.free_over,pk=G.filter(function(g){return g.in}).slice(0,6);
   function card(g){return '<button type="button" class="lxbtn lxc p3-c" data-g="'+G.indexOf(g)+'">'+lpic(g.img,'',soldOut(g))+'<b>'+esc(g.base)+'</b><span class="p3-pr"><i>'+gprice(g)+'</i><em>+</em></span></button>'}
   return '<section class="p3-stage" id="p3S"><div class="p3-stk" id="p3K">'+
-   '<div class="p3-caps"><div class="p3-cap on"><h1>'+esc(B.name||'')+'</h1>'+(bio()?'<p>'+esc(bio().split('\n')[0])+'</p>':'')+'</div><div class="p3-cap"><h2>'+esc(t('p3L2'))+'</h2><p>'+esc(t('p3L2s'))+'</p></div><div class="p3-cap"><h2>'+esc(t('p3L3'))+'</h2><p>'+esc(bio().split('\n')[1]||'')+'</p></div></div>'+
+   '<div class="p3-caps"><div class="p3-cap on"><h1>'+esc(B.name||(LANG==='en'?'My store':'متجري'))+'</h1>'+(bio()?'<p>'+esc(bio().split('\n')[0])+'</p>':'')+'</div><div class="p3-cap"><h2>'+esc(t('p3L2'))+'</h2><p>'+esc(t('p3L2s'))+'</p></div><div class="p3-cap"><h2>'+esc(t('p3L3'))+'</h2><p>'+esc(bio().split('\n')[1]||'')+'</p></div></div>'+
    '<div class="p3-prn"><svg viewBox="0 0 300 330" aria-hidden="true"><defs><linearGradient id="p3g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".5" stop-color="var(--accent)"/><stop offset="1" stop-color="#2442c9"/></linearGradient>'+
     '<linearGradient id="p3r" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#5d6a8f"/><stop offset=".5" stop-color="#c9d2ea"/><stop offset="1" stop-color="#5d6a8f"/></linearGradient>'+
     '<pattern id="p3l" width="6" height="2.4" patternUnits="userSpaceOnUse"><rect width="6" height="1" fill="#fff" opacity=".13"/></pattern>'+
@@ -1237,6 +1283,59 @@ if(DEMO&&typeof D!=='undefined'){
   var sw164=document.querySelector('.demo-sw');if(sw164){var b164=document.createElement('button');b164.type='button';b164.textContent='طابعة ثلاثية الأبعاد';b164.setAttribute('aria-pressed',cur==='print3d');
     b164.onclick=function(){cur='print3d';lxCat='';cart={};[].forEach.call(sw164.children,function(y){y.setAttribute('aria-pressed',y===b164)});try{history.replaceState(null,'','#demo-print3d')}catch(e){}boot();scrollTo(0,0)};sw164.appendChild(b164)}
   if(/^#demo-print3d/.test(location.hash)){cur='print3d'}
+}
+
+/* ===== V164: تصميم «بصمة الطباعة»: شعار التاجر ينفصل إلى ألوان الطباعة الأربعة ثم يُطبع على ورقة ===== */
+Object.assign(T.ar,{bmL2:'كل تصميم… أربعة ألوان',bmL2s:'نفصل الألوان بدقة قبل أن تلمس الورق',bmL3:'ثم نطبعها لك بإتقان',bmPrint:'جارٍ الطباعة…',bmReady:'جاهزة للتوصيل ✓',bmTop:'الأكثر طلبًا',bmAll:'كل المطبوعات'});
+Object.assign(T.en,{bmL2:'Every design… four inks',bmL2s:'Colors separated with precision',bmL3:'Then printed with care',bmPrint:'Printing…',bmReady:'Ready ✓',bmTop:'Popular',bmAll:'All products'});
+LX.cmyk=1;
+function bmLayer(id,col){var l=safeUrl(B.logo),n=esc(B.name||(LANG==='en'?'My store':'متجري'));
+  if(l)return '<image href="'+esc(l)+'" x="22" y="22" width="156" height="156" clip-path="url(#bmcc)" filter="url(#bmf'+id+')" preserveAspectRatio="xMidYMid slice"/>';
+  var fs=Math.max(18,Math.min(44,260/Math.max(1,(B.name||'متجري').length)));
+  return '<circle cx="100" cy="100" r="78" fill="none" stroke="'+col+'" stroke-width="7"/><text x="100" y="'+(100+fs*.35)+'" text-anchor="middle" font-family="Reem Kufi,Lalezar" font-size="'+fs+'" fill="'+col+'">'+n+'</text>'}
+function bmInk(id,c){return '<filter id="bmf'+id+'" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -0.2126 -0.7152 -0.0722 0 1" result="a"/><feComposite in="a" in2="SourceAlpha" operator="in" result="b"/><feFlood flood-color="'+c+'"/><feComposite in2="b" operator="in"/></filter>'}
+R.cmyk=function(G){var L=lfilter(G),fr=ST.free_over,pk=G.filter(function(g){return g.in}).slice(0,6),l=safeUrl(B.logo);
+  function card(g){return '<button type="button" class="lxbtn lxc bm-c" data-g="'+G.indexOf(g)+'">'+lpic(g.img,'',soldOut(g))+'<b>'+esc(g.base)+'</b><span class="bm-pr"><i>'+gprice(g)+'</i><em>+</em></span></button>'}
+  function hd(s,big){return '<div class="bm-hd"><h2><small>'+esc(s)+'</small>'+esc(big)+'</h2><div class="bm-cb"><i></i><i></i><i></i><i></i></div></div>'}
+  var INK=[['C','#00a3e0'],['M','#e5007d'],['Y','#f5c400'],['K','#17306b']];
+  return '<section class="bm-stage" id="bmS"><div class="bm-stk" id="bmSk">'+
+   '<span class="bm-reg a"></span><span class="bm-reg b"></span><span class="bm-reg c"></span><span class="bm-reg d"></span>'+
+   '<div class="bm-caps"><div class="bm-cap on"><h1>'+esc(B.name||(LANG==='en'?'My store':'متجري'))+'</h1>'+(bio()?'<p>'+esc(bio().split('\n')[0])+'</p>':'')+'</div><div class="bm-cap"><h2>'+esc(t('bmL2'))+'</h2><p>'+esc(t('bmL2s'))+'</p></div><div class="bm-cap"><h2>'+esc(t('bmL3'))+'</h2><p>'+esc(bio().split('\n')[1]||'')+'</p></div></div>'+
+   '<div class="bm-fp" id="bmFp"><svg viewBox="0 0 200 200" aria-hidden="true"><defs><clipPath id="bmcc"><circle cx="100" cy="100" r="78"/></clipPath>'+INK.map(function(x){return bmInk(x[0],x[1])}).join('')+'</defs>'+
+    '<g id="bmB">'+(l?'<image href="'+esc(l)+'" x="22" y="22" width="156" height="156" clip-path="url(#bmcc)" preserveAspectRatio="xMidYMid slice"/>':bmLayer('K','var(--accent)'))+'</g>'+
+    INK.map(function(x){return '<g class="bm-sep" id="bm'+x[0]+'" opacity="0">'+bmLayer(x[0],x[1])+'</g>'}).join('')+'</svg></div>'+
+   '<div class="bm-sheet" id="bmSh"><div class="slot"></div><div class="pimg" id="bmPi">'+(l?'<img alt="" src="'+esc(l)+'">':'<b>'+esc(B.name||(LANG==='en'?'My store':'متجري'))+'</b>')+'</div><div class="head" id="bmHe"></div><div class="cap2"><b>'+esc(B.name||(LANG==='en'?'My store':'متجري'))+'</b><span id="bmPc">'+esc(t('bmPrint'))+'</span></div></div>'+
+   '<button type="button" class="p3-hint bm-hint" id="bmH"><span class="gs"><span class="ar"></span><span class="fg">👆</span></span><span class="tx"><b>'+esc(t('p3Hi'))+'</b>'+esc(LANG==='en'?'to see your print being made':'لتشاهد مطبوعتك تُصنع أمامك')+'<small>'+esc(t('p3Auto'))+'</small></span></button>'+
+   '</div></section>'+
+   '<div class="lxw"><div class="p3-info bm-info"><span><i></i>'+esc(t('p3Ship'))+': '+money(+ST.ship||0)+'</span>'+(fr?'<span>🎁 '+esc(t('p3Free',money(fr)))+'</span>':'')+'<span>🖨️ '+G.length+' '+esc(t('lxProducts'))+'</span></div>'+
+   (pk.length>2&&!lxCat&&!q?hd(LANG==='en'?'Everyone orders':'يطلبها الجميع',t('bmTop'))+'<div class="p3-row bm-row">'+pk.map(function(g,i){return card(g).replace('<b>','<span class="bm-rk">'+(i+1)+'</span><b>')}).join('')+'</div>':'')+
+   '<div id="lxShop">'+hd(LANG==='en'?'Everything we print':'كل ما نطبعه',lxCat||t('bmAll'))+'</div>'+catChips(G)+infoBtns()+
+   (L.length?'<div class="p3-g lxgrid">'+L.map(card).join('')+'</div>':'<p class="lxempty">'+esc(t(P.length?'none':'noItems'))+'</p>')+
+   reviews()+'</div>'};
+(function(){
+  function ss(a,b,x){var k=Math.min(1,Math.max(0,(x-a)/(b-a)));return k*k*(3-2*k)}
+  function on(){var S=$('bmS');if(!S||B.layout!=='cmyk')return;var r=S.getBoundingClientRect(),H=innerHeight,p=Math.min(1,Math.max(0,-r.top/Math.max(1,r.height-H)));
+    var sep=ss(.08,.36,p)-ss(.48,.64,p),sc=1-sep*.5,op=Math.min(1,sep*3);
+    [['C',1,-1],['M',-1,-1],['Y',1,1],['K',-1,1]].forEach(function(x){var g=$('bm'+x[0]);if(!g)return;g.setAttribute('transform','translate('+(100+x[1]*sep*48)+' '+(100+x[2]*sep*48)+') scale('+sc+') translate(-100 -100)');g.setAttribute('opacity',op.toFixed(3))});
+    $('bmB').setAttribute('opacity',(1-op).toFixed(3));
+    var qq=ss(.55,.85,p),pr=ss(.68,.98,p),fp=$('bmFp'),sh=$('bmSh'),pi=$('bmPi'),he=$('bmHe');
+    fp.style.transform='translate(-50%,calc(-50% - '+(qq*24)+'vh)) scale('+(1-qq*.42)+') rotate('+(p*30)+'deg)';
+    sh.style.transform='translate(-50%,'+((1-qq)*110)+'%)';pi.style.clipPath='inset(0 0 '+((1-pr)*100)+'% 0)';he.style.top=(12+pi.offsetHeight*pr)+'px';he.style.opacity=pr>=1?0:1;
+    $('bmPc').textContent=pr>=1?t('bmReady'):t('bmPrint')+' '+Math.round(pr*100)+'%';
+    var h=$('bmH');h.style.opacity=1-ss(.01,.08,p);h.style.pointerEvents=p>.06?'none':'';
+    var C=S.querySelectorAll('.bm-cap'),i=p<.08?0:p<.56?1:2;if(C[i]&&!C[i].classList.contains('on')){[].forEach.call(C,function(c){c.classList.remove('on')});C[i].classList.add('on')}}
+  addEventListener('scroll',on,{passive:true});addEventListener('resize',on);
+  var _lxR164b=lxRender;lxRender=function(){_lxR164b();if(B.layout==='cmyk')setTimeout(on,0)};
+  $('lx').addEventListener('click',function(e){if(!e.target.closest('#bmH'))return;var S=$('bmS'),y0=scrollY,end=S.offsetTop+S.offsetHeight-innerHeight,T=4200,t0=performance.now(),stop=false;
+    function k(){stop=true}addEventListener('touchstart',k,{once:true});addEventListener('wheel',k,{once:true});
+    (function st(tm){if(stop)return;var e2=Math.min(1,(tm-t0)/T),qv=e2<.5?2*e2*e2:1-Math.pow(-2*e2+2,2)/2;scrollTo(0,y0+(end-y0)*qv);if(e2<1)requestAnimationFrame(st)})(t0)});
+})();
+if(DEMO&&typeof D!=='undefined'){
+  D.cmyk={brand:{name:'بصمة فن',logo:'https://rawcdn.githack.com/emd-business/emd-business.github.io/72f320a5e9b41e20b13af544371437ec217a735f/test/bsm/logo.png',desc:'نصنع كل شيء بحب وإتقان\nوتصل إلى باب بيتك في أي مكان في السلطنة',wa:'99242472',layout:'cmyk',info:[{t:'نموذج قبل الطباعة',b:'نرسل لك نموذج التصميم عبر واتساب لتوافق عليه قبل الطباعة.'},{t:'طلبات المدارس',b:'أسعار خاصة للكميات، تواصل معنا.'}]},
+   p:[['كتاب رحلتي مع الفاتحة وجزء عم',2.2,'كتب الأطفال','📗','#e6f3de','#9cc98a'],['كتاب رحلتي مع جزء تبارك',1.9,'كتب الأطفال','📘','#e4ecff','#97aee8'],['وشاح تخرج - عنابي',3.5,'التخرج','🎓','#f3dde2','#a8455e'],['وشاح تخرج - كحلي',3.5,'التخرج','🎓','#dfe4f3','#3a4c8a'],['بطاقة تفعيل حرف',0.25,'بطاقات التعليم','🧸','#fff1d6','#f0b860'],['تاج يوم الشجرة',0.3,'مناسبات المدارس','🌳','#e3f4dc','#7cbf6a'],['بطاقة مواليد الشهر',0.6,'الإهداءات','🎂','#fde6ee','#e59ab3'],['توزيعات يوم المرأة',0.4,'الإهداءات','🌷','#fbe3ec','#d98aa6']]};
+  var sw164b=document.querySelector('.demo-sw');if(sw164b){var b2=document.createElement('button');b2.type='button';b2.textContent='بصمة الطباعة';b2.setAttribute('aria-pressed','false');
+    b2.onclick=function(){cur='cmyk';lxCat='';cart={};[].forEach.call(sw164b.children,function(y){y.setAttribute('aria-pressed',y===b2)});try{history.replaceState(null,'','#demo-cmyk')}catch(e){}boot();scrollTo(0,0)};sw164b.appendChild(b2)}
+  if(/^#demo-cmyk/.test(location.hash)){cur='cmyk'}
 }
 
 boot();
