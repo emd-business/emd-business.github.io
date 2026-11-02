@@ -115,6 +115,23 @@ button{font-family:inherit;cursor:pointer}
 @keyframes phb{40%{transform:rotateY(0) scale(1.12)}}
 .card .ph.closedph{transform:rotateY(-70deg) rotateX(8deg);opacity:0}
 .ph{transition:transform .9s cubic-bezier(.2,.9,.3,1),opacity .6s}
+
+/* لوحة إعدادات التاجر التجريبية */
+.cfgbtn{position:fixed;top:8px;right:8px;z-index:70;border:0;background:var(--sage-d);color:#fff;border-radius:999px;padding:6px 12px;font-size:12px;font-weight:700;box-shadow:0 4px 10px rgba(0,0,0,.2)}
+#cfg .bx h3{display:flex;justify-content:space-between}
+.fld{margin:10px 0}
+.fld label{display:block;font-size:13px;font-weight:700;margin-bottom:4px;color:var(--sage-d)}
+.fld input[type=text]{width:100%;padding:9px 10px;border:1px solid #d8cfb8;border-radius:10px;font-family:inherit;font-size:14px;background:#fff}
+.sw{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.sw button{width:34px;height:34px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1px #d8cfb8}
+.sw button.on{box-shadow:0 0 0 2px var(--ink)}
+.sw input{width:40px;height:34px;border:0;background:none;padding:0}
+.pbtn{border:1px solid var(--sage);background:#fff;color:var(--sage-d);border-radius:8px;padding:6px 10px;font-size:12.5px;font-weight:700}
+.prow{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px dashed #d8cfb8;font-size:13px}
+.prow .th{width:52px;height:44px;border-radius:8px;background:#efe9da center/cover no-repeat;flex:none;display:grid;place-items:center;font-size:10px;color:var(--muted)}
+.prow .nm{flex:1}
+.logo img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:3px solid var(--sage);animation:fadeup .6s ease}
+.ph:has(img[src^="data:"]) img{mix-blend-mode:normal}
 /* المميزات */
 .feat{display:grid;grid-template-columns:repeat(3,1fr);background:var(--sage-l);border-radius:20px;margin:22px 0 10px;padding:14px 6px;text-align:center}
 .feat div{font-size:12px;color:var(--sage-d);line-height:1.5;padding:0 4px}
@@ -160,26 +177,26 @@ button{font-family:inherit;cursor:pointer}
 <div class="badge">معاينة تجريبية</div>
 
 <header class="hero" id="hero">
-  <div class="logo">
+  <div class="logo" id="logoBox">
     <svg viewBox="0 0 150 150">
-      <circle class="ring" cx="75" cy="75" r="70" fill="none" stroke="#5d7356" stroke-width="2.5"/>
-      <g class="hat" fill="none" stroke="#5d7356" stroke-width="2.5" stroke-linecap="round">
+      <circle class="ring" cx="75" cy="75" r="70" fill="none" style="stroke:var(--sage)" stroke-width="2.5"/>
+      <g class="hat" fill="none" style="stroke:var(--sage)" stroke-width="2.5" stroke-linecap="round">
         <path d="M63 46q-9-2-8-10 2-7 10-5 3-8 10-8t10 8q8-2 10 5 1 8-8 10z" fill="#faf8f2"/>
         <path d="M64 46v6h22v-6"/>
       </g>
       <g class="txt">
-        <text x="75" y="92" text-anchor="middle" font-family="Baloo Bhaijaan 2" font-weight="800" font-size="36" fill="#5d7356">دُجا</text>
-        <text x="75" y="110" text-anchor="middle" font-family="Cairo" font-weight="700" font-size="9" letter-spacing="3" fill="#5d7356">DUJA</text>
-        <text x="75" y="121" text-anchor="middle" font-family="Cairo" font-size="6" letter-spacing="2" fill="#5d7356">— COOKIES —</text>
+        <text x="75" y="92" text-anchor="middle" font-family="Baloo Bhaijaan 2" font-weight="800" font-size="36" style="fill:var(--sage)" id="lgAr">دُجا</text>
+        <text x="75" y="110" text-anchor="middle" font-family="Cairo" font-weight="700" font-size="9" letter-spacing="3" style="fill:var(--sage)" id="lgEn">DUJA</text>
+        <text x="75" y="121" text-anchor="middle" font-family="Cairo" font-size="6" letter-spacing="2" style="fill:var(--sage)" id="lgSub">— COOKIES —</text>
       </g>
     </svg>
   </div>
-  <h1>دُجا كوكيز</h1>
-  <div class="tag">لقمة سعادة، وكل كوكي فيها حب وطعم فاخر</div>
+  <h1 id="bName">دُجا كوكيز</h1>
+  <div class="tag" id="bTag">لقمة سعادة، وكل كوكي فيها حب وطعم فاخر</div>
   <div class="stage"><div class="box3" id="box3">
     <div class="base" id="heroCk"></div>
     <div class="wall w1"></div><div class="wall w2"></div><div class="wall w3"></div><div class="wall w4"></div>
-    <div class="lid"><span>دُجا</span></div>
+    <div class="lid"><span id="lidName">دُجا</span></div>
   </div></div>
 </header>
 
@@ -197,6 +214,19 @@ button{font-family:inherit;cursor:pointer}
 <div class="sheet" id="sheet"><div class="bx"><h3>سلتك</h3><div id="lines"></div><div class="tot"><span>الإجمالي</span><span id="st"></span></div><button class="ok" id="okBtn">تأكيد الطلب</button></div></div>
 <div class="done" id="done"><div><div style="position:relative;width:120px;margin:0 auto"><div class="ck bigck"></div><div class="bite"></div></div><p>تم استلام طلبك، بالهناء!</p><small>هذه معاينة فقط، لم يُرسل أي طلب</small></div></div>
 
+<button class="cfgbtn" id="cfgBtn">⚙️ جرّب كتاجر</button>
+<div class="sheet" id="cfg"><div class="bx"><h3><span>إعدادات المتجر (تجربة)</span><button onclick="cfg.classList.remove('show')" style="border:0;background:none;font-size:20px">✕</button></h3>
+<div style="font-size:12.5px;color:var(--muted)">هكذا يتحكم كل تاجر بمتجره. التغييرات هنا على جهازك فقط للتجربة.</div>
+<div class="fld"><label>اسم المتجر</label><input type="text" id="iName"></div>
+<div class="fld"><label>الاسم داخل الشعار والعلبة</label><input type="text" id="iShort"></div>
+<div class="fld"><label>الاسم بالإنجليزية</label><input type="text" id="iLatin"></div>
+<div class="fld"><label>العبارة تحت الاسم</label><input type="text" id="iTag"></div>
+<div class="fld"><label>لون المتجر</label><div class="sw" id="iSw"></div></div>
+<div class="fld"><label>الشعار</label><button class="pbtn" onclick="pick(f=>{B.logo=f;applyB()})">📷 رفع شعار</button> <button class="pbtn" onclick="B.logo=null;applyB()">الشعار المرسوم</button></div>
+<div class="fld"><label>صور المنتجات</label><div id="iProd"></div></div>
+<button class="ok" onclick="cfg.classList.remove('show')">تم</button></div></div>
+<input type="file" id="fileIn" accept="image/*" hidden>
+
 <script>
 const M=[
  {w:55,items:[{n:'بوكس ذوق',c:3,p:1.5,im:0},{n:'بوكس مزاج',c:6,p:3,im:1},{n:'بوكس لذة',c:12,p:5,im:2}]},
@@ -205,6 +235,7 @@ const M=[
 const GR={3:[3,1],4:[2,2],6:[3,2],10:[5,2],12:[4,3],15:[5,3],36:[9,4]};
 const fmt=v=>v.toFixed(3);
 let size=0,cart={},photo=1;
+const B={name:'دُجا كوكيز',short:'دُجا',latin:'DUJA',sub:'COOKIES',tag:'لقمة سعادة، وكل كوكي فيها حب وطعم فاخر',color:'#5d7356',logo:null};
 const key=(z,i)=>z+'-'+i;
 
 /* الواجهة */
@@ -220,7 +251,7 @@ function draw(){const m=M[size];sizes.className='sizes'+(size?' s1':'');
  fw.textContent='وزن الحبة '+m.w+' جرامًا';
  list.innerHTML=m.items.map((x,i)=>{const [cl,rw]=GR[x.c],k=key(size,i),q=cart[k]?cart[k].q:0;
   return `<div class="card closed${q?' has':''}" id="c${k}">
-   ${photo?`<div class="phw"><div class="ph closedph"><img src="duja/box${x.im}.jpg" alt="${x.n}" loading="lazy"></div></div>`:`<div class="mini"><div class="mbox"><div class="in" style="grid-template-columns:repeat(${cl},1fr);grid-template-rows:repeat(${rw},1fr)">${('<div class="ck" style="width:'+Math.floor(Math.min((104-3*(cl-1))/cl,(74-3*(rw-1))/rw))+'px"></div>').repeat(x.c)}</div><div class="front">DUJA</div><div class="lid"><i>دُجا</i></div></div></div>`}
+   ${photo&&x.src!=='none'?`<div class="phw"><div class="ph closedph"><img src="${x.src||'duja/box'+x.im+'.jpg'}" alt="${x.n}" loading="lazy"></div></div>`:`<div class="mini"><div class="mbox"><div class="in" style="grid-template-columns:repeat(${cl},1fr);grid-template-rows:repeat(${rw},1fr)">${('<div class="ck" style="width:'+Math.floor(Math.min((104-3*(cl-1))/cl,(74-3*(rw-1))/rw))+'px"></div>').repeat(x.c)}</div><div class="front">${B.latin}</div><div class="lid"><i>${B.short}</i></div></div></div>`}
    <div class="info"><h3>${x.n}</h3><span class="chip">${x.c} ${x.c<=10?'حبات':'حبة'}</span>
     <div class="meta">${m.w} جرامًا للحبة · بالشوكولاتة البلجيكية</div>
     <div class="buy"><div class="price">${fmt(x.p)} <small>ر.ع</small></div>
@@ -246,6 +277,23 @@ function paint(){let n=0,t=0;for(const k in cart){n+=cart[k].q;t+=cart[k].q*cart
 openCart.onclick=()=>sheet.classList.add('show');
 sheet.onclick=e=>{if(e.target===sheet)sheet.classList.remove('show')};
 okBtn.onclick=()=>{sheet.classList.remove('show');done.classList.add('show');setTimeout(()=>{done.classList.remove('show');cart={};paint();draw()},2800)};
+
+/* إعدادات التاجر */
+function shade(h,a){let n=parseInt(h.slice(1),16),r=n>>16,g=n>>8&255,b=n&255;const f=v=>Math.max(0,Math.min(255,Math.round(a<0?v*(1+a):v+(255-v)*a)));return'#'+((1<<24)|(f(r)<<16)|(f(g)<<8)|f(b)).toString(16).slice(1)}
+let pickCb=null;fileIn.onchange=()=>{const f=fileIn.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{pickCb&&pickCb(r.result);fileIn.value=''};r.readAsDataURL(f)};
+function pick(cb){pickCb=cb;fileIn.click()}
+function applyB(){const R=document.documentElement.style;R.setProperty('--sage',B.color);R.setProperty('--sage-d',shade(B.color,-.25));R.setProperty('--sage-l',shade(B.color,.78));
+ bName.textContent=B.name;bTag.textContent=B.tag;lidName.textContent=B.short;document.title=B.name;
+ if(B.logo){logoBox.innerHTML=`<img src="${B.logo}" alt="${B.name}">`}else if(!logoBox.querySelector('svg')){logoBox.innerHTML=LOGO}
+ const a=document.getElementById('lgAr'),e=document.getElementById('lgEn');if(a){a.textContent=B.short;e.textContent=B.latin}
+ draw();drawCfg()}
+const LOGO=logoBox.innerHTML;
+const SW=['#5d7356','#1E293B','#9d4b6e','#b7791f','#2f6f8f','#5b3a29'];
+function drawCfg(){iSw.innerHTML=SW.map(c=>`<button style="background:${c}" class="${c===B.color?'on':''}" onclick="B.color='${c}';applyB()"></button>`).join('')+`<input type="color" value="${B.color}" oninput="B.color=this.value;applyB()">`;
+ iProd.innerHTML=M.map((m,z)=>m.items.map((x,i)=>{const src=x.src==='none'?'':(x.src||'duja/box'+x.im+'.jpg');return `<div class="prow"><div class="th" style="${src?`background-image:url('${src}')`:''}">${src?'':'بلا صورة'}</div><div class="nm">${x.n} <small style="color:var(--muted)">(${m.w} جم)</small></div><button class="pbtn" onclick="pick(f=>{M[${z}].items[${i}].src=f;applyB()})">تغيير</button><button class="pbtn" onclick="M[${z}].items[${i}].src='none';applyB()">بلا</button></div>`}).join('')).join('')}
+cfgBtn.onclick=()=>{iName.value=B.name;iShort.value=B.short;iLatin.value=B.latin;iTag.value=B.tag;drawCfg();cfg.classList.add('show')};
+iName.oninput=()=>{B.name=iName.value;applyB()};iShort.oninput=()=>{B.short=iShort.value;applyB()};iLatin.oninput=()=>{B.latin=iLatin.value;applyB()};iTag.oninput=()=>{B.tag=iTag.value;applyB()};
+cfg.onclick=e=>{if(e.target===cfg)cfg.classList.remove('show')};
 draw();
 </script>
 </body>
