@@ -32384,14 +32384,14 @@ setInterval(wrap,3000);
 <script id="EMD-V173-quick">
 (function(){'use strict';
 if(window.__EMD_V173__)return;window.__EMD_V173__=true;
-var URL0='https://raw.githack.com/emd-business/emd-business.github.io/test-v414/test/store-v175.html?s=',KEY='emd173_quick',PK='استلام من المحل';
+var URL0='https://raw.githack.com/emd-business/emd-business.github.io/test-v414/test/store-v175.html?s=',KEY='emd173_quick',PK='استلام من المحل',ZF='توصيل برسوم يحددها المحل';
 function $(i){return document.getElementById(i)}
 function esc(t){return String(t==null?'':t).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function num(v){v=parseFloat(String(v==null?'':v).replace(/[^\d.\-]/g,''));return isFinite(v)?v:0}
 function omr(v){return num(v).toFixed(3)+' ر.ع'}
 function toast(t){var e=$('e173Toast');if(!e){e=document.createElement('div');e.id='e173Toast';document.body.appendChild(e)}e.textContent=t;e.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(function(){e.classList.remove('show')},2400)}
 function Q(){var o={};try{o=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){}
-  return Object.assign({only:false,off:false,pk:false,x:false,exp:'0',max:20,msg:'',recent:[],pubSig:''},o)}
+  return Object.assign({fee:true,cod:null,bank:null,zf:false,only:false,off:false,pk:false,x:false,exp:'0',max:20,msg:'',recent:[],pubSig:''},o)}
 function setQ(o){try{localStorage.setItem(KEY,JSON.stringify(o))}catch(e){}}
 function ST(){return window.EMDStoreV411?window.EMDStoreV411.state():null}
 function C(){var c=window.EMDCloudV93;return c&&c.api}
@@ -32404,12 +32404,14 @@ function products(){var d=db(),L=Array.isArray(d.products)?d.products:[];return 
   return {k:String(p.id||p.sku||p.name||('p'+i)),name:String(p.name||p.productName||'منتج بدون اسم'),price:num(p.salePrice!=null?p.salePrice:p.unitPrice!=null?p.unitPrice:p.price),
     stock:(window.EMDCoV430?window.EMDCoV430.storeQty(p):num(p.stock!=null?p.stock:p.qty)),cat:catOf(p.category||p.cat||''),img:p.image?String(p.image):''}}).filter(function(p){return p.name.trim()})}
 function pubd(k){var S=ST();return !!(S&&S.pubAt&&S.snap&&S.snap[k])}
-function flags(q){return JSON.stringify([!!q.only,!!q.off,!!q.pk])}
+function flags(q){return JSON.stringify([!!q.only,!!q.off,!!q.pk,!!q.zf])}
+function pays(q){var S=ST()||{};return {c:q.cod==null?S.cod!==false:!!q.cod,b:q.bank==null?!!S.bank:!!q.bank}}
 
 /* يضيف إعدادات الروابط إلى بيانات المتجر عند كل نشر (بعد طبقة V156 حتى لا تُستبدل المناطق) */
 function hook(){var X=window.EMD150;if(!X||X.__q173)return;var ex=X.extra;
   X.extra=function(S,c){var e=ex(S,c)||{},q=Q();if(q.only)e.qonly=1;if(q.off)e.qoff=1;
     if(q.pk){var z=Array.isArray(e.zones)?e.zones.slice():[];if(!z.some(function(x){return x&&String(x.n).trim()===PK}))z.push({n:PK,f:0});e.zones=z}
+    if(q.zf){var z2=Array.isArray(e.zones)?e.zones.slice():[];if(!z2.some(function(x){return x&&String(x.n).trim()===ZF}))z2.push({n:ZF,f:0});e.zones=z2}
     return e};X.__q173=1}
 hook();document.addEventListener('DOMContentLoaded',hook);
 
@@ -32454,7 +32456,11 @@ function viewMake(){var S=ST(),q=Q(),L=products(),h='';
       '<span class="nm"><b>'+esc(p.name)+'</b><small'+(out?' class="r"':pubd(p.k)?'':' class="n"')+'>'+omr(p.price)+(out?' · نفدت الكمية':pubd(p.k)?'':' · يُرفع عند الإنشاء')+'</small></span>'+
       (on&&V.mode==='ready'?'<span class="qty"><button type="button" data-a="qd" data-k="'+esc(p.k)+'">−</button><span>'+qn+'</span><button type="button" data-a="qu" data-k="'+esc(p.k)+'">+</button></span>':'')+'</div>'}).join(''):'<p style="text-align:center;color:#6b7280">لا يوجد منتج بهذا الاسم.</p>')+'</div>')+'</div>';
   h+='<div class="bx"><h3>٣. اسم الرابط (اختياري)</h3><input class="in" data-v="label" maxlength="30" placeholder="مثال: عرض العيد، عميل إنستغرام" value="'+esc(V.label)+'"><p style="margin:6px 0 0;color:#6b7280;font-size:12.5px">يظهر لك في ملاحظة الطلب لتعرف من أي رابط جاء.</p></div>';
-  h+='<details'+(V.optOpen?' open':'')+'><summary>⚙️ خيارات أخرى</summary>'+
+  var py=pays(q);
+  h+='<details'+(V.optOpen?' open':'')+'><summary>⚙️ الخصائص: ما يظهر للعميل<small style="display:block;color:#6b7280;font-weight:400;font-size:12.5px;margin-top:2px">التوصيل: '+(q.fee?'يظهر':'مخفي')+' · الدفع: '+[py.c?'عند الاستلام':'',py.b?'تحويل بنكي':''].filter(Boolean).join(' و')+'</small></summary>'+
+   '<label class="op"><span>🚚 رسوم التوصيل<small>'+(q.fee?'تظهر للعميل وتُحسب في الطلب حسب منطقته.':'مطفأة: لا تُحسب رسوم في الطلب، وتحددها أنت للعميل عند التواصل.')+'</small></span><input type="checkbox" data-o="fee"'+(q.fee?' checked':'')+'></label>'+
+   '<label class="op"><span>💵 الدفع عند الاستلام</span><input type="checkbox" data-o="cod"'+(py.c?' checked':'')+'></label>'+
+   '<label class="op"><span>🏦 التحويل البنكي'+(py.b&&!String(S.bankInfo||'').trim()?'<small style="color:#b45309">لم تكتب بيانات التحويل في «متجري ← التوصيل والدفع»، فسيرى العميل أنك سترسلها له.</small>':'')+'</span><input type="checkbox" data-o="bank"'+(py.b?' checked':'')+'></label>'+
    '<label class="op"><span>السماح للعميل بإضافة منتجات أخرى<small>يظهر له زر للبحث في بقية منتجاتك.</small></span><input type="checkbox" data-o="x"'+(q.x?' checked':'')+'></label>'+
    '<label class="op"><span>الاستلام من المحل<small>يظهر للعميل خيار «استلام من المحل» بلا رسوم توصيل.</small></span><input type="checkbox" data-o="pk"'+(q.pk?' checked':'')+'></label>'+
    '<label class="op"><span>صلاحية الرابط</span><select data-o="exp"><option value="0"'+(q.exp==='0'?' selected':'')+'>دائم</option><option value="1"'+(q.exp==='1'?' selected':'')+'>يوم واحد</option><option value="7"'+(q.exp==='7'?' selected':'')+'>أسبوع</option><option value="30"'+(q.exp==='30'?' selected':'')+'>شهر</option></select></label>'+
@@ -32517,11 +32523,12 @@ function onChange(e){var v=e.target.getAttribute('data-v'),o=e.target.getAttribu
   if(v==='full'){V.full=e.target.checked;return}
   if(v==='slug'){paint();return}
   if(o){var q=Q();V.optOpen=true;
-    if(o==='x'||o==='pk')q[o]=e.target.checked;
+    if(o==='x'||o==='pk'||o==='fee')q[o]=e.target.checked;
+    else if(o==='cod'||o==='bank'){var py=pays(q);py[o==='cod'?'c':'b']=e.target.checked;if(!py.c&&!py.b){e.target.checked=true;toast('يجب إبقاء طريقة دفع واحدة على الأقل');return}q.cod=py.c;q.bank=py.b}
     else if(o==='exp')q.exp=e.target.value;
     else if(o==='full'){q.only=!e.target.checked;setQ(q);applyFlags('✓ تم تحديث إعداد المتجر العام');return}
     else if(o==='off'){q.off=e.target.checked;setQ(q);applyFlags(q.off?'⏸️ أُوقفت كل الروابط السريعة':'▶️ عادت الروابط السريعة للعمل');return}
-    setQ(q);if(o==='pk'){paint();return}}}
+    setQ(q);paint();return}}
 
 /* النشر: يستعمل زر النشر الموجود في «متجري» وينتظر نتيجته */
 function publishWait(){var S=ST(),before=S.pubRows;return new Promise(function(ok,no){
@@ -32533,10 +32540,11 @@ function make(){if(V.busy)return;var S=ST(),q=Q(),L=products(),K=selKeys(),catMo
   if(!S.pubAt){if(!slugOk(V.slug)){V.err='اكتب اسم رابط صحيحًا لمحلك أولًا.';paint();return}S.slug=V.slug;q.only=!V.full;setQ(q)}
   var need=catMode?L.filter(function(p){return p.cat===V.cat}).map(function(p){return p.k}):K;
   if(!need.length){V.err='لا توجد منتجات في هذا القسم.';paint();return}
-  var miss=need.filter(function(k){return !pubd(k)}),flg=flags(q)!==q.pubSig&&(q.pk||q.only||q.off||q.pubSig);
+  if(!q.fee&&!q.zf){q.zf=true;setQ(q)}
+  var miss=need.filter(function(k){return !pubd(k)}),flg=flags(q)!==q.pubSig&&(q.pk||q.only||q.off||q.zf||q.pubSig);
   var go=function(){var u={},l=V.label.trim();
     if(catMode)u.c=V.cat;else{u.k=K;if(V.mode==='ready')u.r=K.map(function(k){return V.qty[k]||1})}
-    if(q.x)u.x=1;if(q.pk)u.p=1;if(+q.exp>0)u.e=today()+(+q.exp);if(+q.max&&+q.max!==20)u.m=+q.max;if(l)u.l=l;
+    if(q.x)u.x=1;if(q.pk)u.p=1;if(!q.fee)u.d=0;var py=pays(q),S0=ST()||{};if(py.c!==(S0.cod!==false)||py.b!==!!S0.bank)u.y=(py.c?'c':'')+(py.b?'b':'');if(+q.exp>0)u.e=today()+(+q.exp);if(+q.max&&+q.max!==20)u.m=+q.max;if(l)u.l=l;
     var url=URL0+encodeURIComponent(S.pubSlug||S.slug)+'&q='+b64u(u),cnt=catMode?need.length:K.length;
     var sum=(V.mode==='ready'?'طلب جاهز':'اختيار حر')+' · '+(catMode?'القسم «'+V.cat+'»':cnt+' منتج')+(+q.exp>0?' · صالح '+({1:'يومًا',7:'أسبوعًا',30:'شهرًا'})[q.exp]:'');
     V.res={url:url,sum:sum,l:l};V.step='res';V.busy=false;
