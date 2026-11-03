@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V172</title>
+<title>EMD Business — Standalone V174</title>
 <!-- EMD V158: شاشة افتتاح تغطي التطبيق حتى تكتمل الواجهة الأخيرة، فلا تظهر الأشكال والأزرار القديمة أثناء التحميل -->
 <style id="EMD-V158-boot">
 html.emd-boot{background:#0f172a!important}
@@ -19212,7 +19212,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V172</div>
+<div id="emdStandaloneV2Badge">EMD Business • V174</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -27585,7 +27585,7 @@ function cover(){var W=innerWidth,H=innerHeight,on=false,k=document.body.childre
   document.body.classList.toggle('emd411-covered',on);
   /* رقم النسخة أسفل قائمة «المزيد» (شارة النسخة مخفية على الجوال) */
   var sh=document.getElementById('emd410Sheet');if(sh&&sh.classList.contains('show')){var bx=sh.querySelector('.box');if(bx&&!bx.querySelector('.e141v')){var v=document.createElement('div');v.className='e141v';v.textContent=VER;bx.appendChild(v)}}}
-var VER='EMD Business • V172';
+var VER='EMD Business • V174';
 function boot(){cover();setInterval(cover,500)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
@@ -30748,7 +30748,7 @@ function saveDb(){try{window.save&&window.save()}catch(e){}}
 /* أ) في شاشة الطلب الجديد: صف فوق زر الحفظ */
 var pend='';
 function saveBtns(){return [].filter.call(document.querySelectorAll('button'),function(b){return b.offsetParent&&/حفظ الطلب/.test(b.textContent)&&!b.closest('#emd418')})}
-function addOrderRow(){saveBtns().forEach(function(b){var box=b.closest('.actions')||b.parentElement;if(!box||!box.parentNode)return;var prev=box.previousElementSibling;if(prev&&prev.hasAttribute&&prev.hasAttribute('data-e137fee'))return;pend='';var d=document.createElement('div');d.innerHTML=feeRow('','new');box.parentNode.insertBefore(d.firstChild,box)})}
+function addOrderRow(){saveBtns().forEach(function(b){var box=b.closest('.actions')||b.parentElement;if(!box||!box.parentNode)return;var par=box.parentNode;/* V174: صف واحد فقط في النموذج — إن وُجد يُنقل فوق زر الحفظ بحالته بدل إضافة صف جديد */var rows=[].filter.call(par.querySelectorAll('[data-e137fee="new"]'),function(r){return r.parentNode===par});if(rows.length){var keep=rows.filter(function(r){return r.querySelector('button.on')}).pop()||rows[rows.length-1];rows.forEach(function(r){if(r!==keep)r.remove()});if(box.previousElementSibling!==keep)par.insertBefore(keep,box);return}pend='';var d=document.createElement('div');d.innerHTML=feeRow('','new');par.insertBefore(d.firstChild,box)})}
 /* ج) داخل «📋 تفاصيل الطلب»: نفس الصف في أعلى التفاصيل */
 function detailOrder(){var t=(document.getElementById('emdOrderIdV26')||{}).textContent||'',id=t.split(' · ')[0].trim();if(!id)return null;var o=orders().find(function(x){return String(x.id)===id});if(o)return o;try{o=window.EMDLabelV418&&EMDLabelV418._h.orderOf(id)}catch(e){}if(o)return o;var d=id.replace(/\D/g,'').replace(/^0+/,'');return d?orders().find(function(x){return String(x.id).replace(/\D/g,'').replace(/^0+/,'')===d})||null:null}
 function addDetailRow(){var m=document.getElementById('emdOrderModalV26'),b=document.getElementById('emdOrderBodyV26');if(!m||!b||m.style.display==='none'||!b.firstElementChild)return;var o=detailOrder();if(!o)return;
