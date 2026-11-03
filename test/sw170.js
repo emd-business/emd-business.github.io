@@ -1,4 +1,4 @@
-/* EMD V166 تجريبية: عامل خدمة للتجربة فقط (بدون تخزين) */
+/* EMD V170 تجريبية: عامل خدمة للتجربة فقط (بدون تخزين) */
 self.addEventListener('install',function(){self.skipWaiting()});
 self.addEventListener('activate',function(e){e.waitUntil(self.clients.claim())});
 /* V161: إشعارات الجوال — استقبال الإشعار وعرضه، وفتح التطبيق على ما يخصه عند الضغط */
