@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V176</title>
+<title>EMD Business — Standalone V177</title>
 <!-- EMD V158: شاشة افتتاح تغطي التطبيق حتى تكتمل الواجهة الأخيرة، فلا تظهر الأشكال والأزرار القديمة أثناء التحميل -->
 <style id="EMD-V158-boot">
 html.emd-boot{background:#0f172a!important}
@@ -19212,7 +19212,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V176</div>
+<div id="emdStandaloneV2Badge">EMD Business • V177</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -27585,7 +27585,7 @@ function cover(){var W=innerWidth,H=innerHeight,on=false,k=document.body.childre
   document.body.classList.toggle('emd411-covered',on);
   /* رقم النسخة أسفل قائمة «المزيد» (شارة النسخة مخفية على الجوال) */
   var sh=document.getElementById('emd410Sheet');if(sh&&sh.classList.contains('show')){var bx=sh.querySelector('.box');if(bx&&!bx.querySelector('.e141v')){var v=document.createElement('div');v.className='e141v';v.textContent=VER;bx.appendChild(v)}}}
-var VER='EMD Business • V176';
+var VER='EMD Business • V177';
 function boot(){cover();setInterval(cover,500)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
@@ -32313,6 +32313,262 @@ window.addEventListener('load',function(){setTimeout(wrap,0);setTimeout(wrap,180
 setInterval(wrap,3000);
 })();
 </script>
+
+
+<!-- ===== EMD V173: رابط طلب سريع يرسله التاجر للعميل ===== -->
+<style id="EMD-V173-quick-css">
+#e173Btn{display:inline-flex;align-items:center;gap:6px;border:0;border-radius:14px;padding:10px 14px;background:#0f1f3d;color:#f3d98b;font:inherit;font-weight:800;cursor:pointer;box-shadow:0 4px 12px rgba(15,31,61,.18)}
+.e173-card{display:flex;align-items:center;gap:12px;width:100%;margin:12px 0;padding:14px;border:0;border-radius:16px;background:linear-gradient(135deg,#0f1f3d,#1b3263);color:#fff;font:inherit;text-align:right;cursor:pointer}
+.e173-card i{font-style:normal;font-size:26px}.e173-card b{display:block;font-size:16px;color:#f3d98b}.e173-card small{color:#d6dbe7}
+#e173{position:fixed;inset:0;z-index:2147483000;display:none;background:rgba(10,16,30,.55);direction:rtl;text-align:right}
+#e173.show{display:flex;align-items:flex-end;justify-content:center}
+#e173 *{box-sizing:border-box}
+#e173 .w{width:100%;max-width:560px;max-height:94vh;display:flex;flex-direction:column;background:#f6f4ef;border-radius:24px 24px 0 0;overflow:hidden;color:#1c2333;font-size:15px}
+#e173 .hd{display:flex;align-items:center;gap:10px;padding:14px 16px;background:#0f1f3d;color:#fff}
+#e173 .hd h2{margin:0;font-size:18px;flex:1;color:#f3d98b}#e173 .hd small{display:block;color:#c9d0de;font-size:12px;font-weight:400}
+#e173 .hd button{border:0;background:rgba(255,255,255,.12);color:#fff;border-radius:12px;padding:8px 12px;font:inherit;cursor:pointer}
+#e173 .bd{overflow:auto;padding:14px 14px 18px;flex:1;-webkit-overflow-scrolling:touch}
+#e173 .ft{padding:12px 14px calc(12px + env(safe-area-inset-bottom));background:#fff;box-shadow:0 -6px 20px rgba(15,31,61,.08)}
+#e173 .bx{background:#fff;border-radius:18px;padding:14px;margin:0 0 12px;box-shadow:0 2px 8px rgba(15,31,61,.05)}
+#e173 .bx h3{margin:0 0 10px;font-size:16px;color:#0f1f3d}
+#e173 .typ{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#e173 .typ button{border:2px solid #e2e5ec;background:#fff;border-radius:16px;padding:12px;text-align:right;font:inherit;cursor:pointer;color:#1c2333}
+#e173 .typ button b{display:block;font-size:15px}#e173 .typ button small{color:#6b7280;font-size:12.5px;line-height:1.5;display:block;margin-top:2px}
+#e173 .typ button[aria-pressed="true"]{border-color:#c9a24a;background:#fffaf0;box-shadow:0 0 0 3px rgba(201,162,74,.18)}
+#e173 .in{width:100%;font:inherit;font-size:16px;padding:11px 12px;border-radius:12px;border:1.5px solid #d9dde5;background:#fbfbfd;color:#1c2333}
+#e173 .chips{display:flex;gap:6px;overflow-x:auto;padding:8px 0 4px;scrollbar-width:none}
+#e173 .chips button{flex:none;border:1.5px solid #d9dde5;background:#fff;border-radius:999px;padding:6px 12px;font:inherit;font-size:13.5px;font-weight:700;cursor:pointer;color:#1c2333}
+#e173 .chips button[aria-pressed="true"]{background:#0f1f3d;border-color:#0f1f3d;color:#fff}
+#e173 .cnt{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13.5px;color:#5b6475;margin:6px 0}
+#e173 .cnt button{border:0;background:none;color:#8a6410;font:inherit;font-weight:800;cursor:pointer;padding:4px}
+#e173 .catm{display:flex;gap:8px;align-items:flex-start;background:#fffaf0;border:1px solid #f0dca8;border-radius:12px;padding:10px;margin:6px 0;font-size:14px}
+#e173 .lst{max-height:46vh;overflow:auto;border-top:1px solid #eef0f4}
+#e173 .pr{display:flex;align-items:center;gap:10px;padding:9px 2px;border-bottom:1px solid #eef0f4;cursor:pointer}
+#e173 .pr.off{opacity:.5}
+#e173 .pr .ck{width:26px;height:26px;flex:none;border-radius:8px;border:2px solid #cfd4dd;display:grid;place-items:center;color:#fff;font-weight:900}
+#e173 .pr.sel .ck{background:#0f1f3d;border-color:#0f1f3d}
+#e173 .pr .im{width:42px;height:42px;flex:none;border-radius:10px;background:#f1efe9 center/cover;display:grid;place-items:center;font-size:18px}
+#e173 .pr .nm{flex:1;min-width:0}#e173 .pr .nm b{display:block;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#e173 .pr .nm small{color:#6b7280;font-size:12.5px}#e173 .pr .nm small.r{color:#b91c1c}#e173 .pr .nm small.n{color:#8a6410}
+#e173 .qty{display:flex;align-items:center;gap:4px;flex:none}
+#e173 .qty button{width:34px;height:34px;border-radius:10px;border:0;background:#eef0f4;color:#0f1f3d;font-size:20px;font-weight:800;cursor:pointer}
+#e173 .qty span{min-width:22px;text-align:center;font-weight:800}
+#e173 details{background:#fff;border-radius:18px;padding:12px 14px;margin:0 0 12px}
+#e173 summary{font-weight:800;color:#0f1f3d;cursor:pointer}
+#e173 .op{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid #eef0f4;font-size:14.5px}
+#e173 .op:first-of-type{border-top:0}
+#e173 .op select,#e173 .op input[type=number]{font:inherit;padding:6px 8px;border-radius:10px;border:1.5px solid #d9dde5;background:#fff;max-width:45%}
+#e173 .op input[type=checkbox]{width:22px;height:22px;accent-color:#0f1f3d;flex:none}
+#e173 .op small{display:block;color:#6b7280;font-size:12.5px}
+#e173 .go{display:block;width:100%;border:0;border-radius:16px;padding:15px;background:#c9a24a;color:#111;font:inherit;font-size:17px;font-weight:800;cursor:pointer;text-align:center}
+#e173 .go:disabled{opacity:.5}
+#e173 .go2{display:block;width:100%;margin-top:8px;border:1.5px solid #d9dde5;border-radius:14px;padding:12px;background:#fff;color:#0f1f3d;font:inherit;font-weight:800;cursor:pointer;text-align:center}
+#e173 .note{background:#eef3ff;border-radius:12px;padding:10px 12px;font-size:14px;color:#1e3a8a;margin:0 0 10px}
+#e173 .bad{background:#fdecec;color:#991b1b;border-radius:12px;padding:10px 12px;font-size:14px;margin:0 0 10px}
+#e173 .url{direction:ltr;text-align:left;word-break:break-all;background:#f4f6fa;border-radius:12px;padding:10px;font-size:12.5px;color:#334155;margin:0 0 10px;max-height:84px;overflow:auto}
+#e173 .sh{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#e173 .sh button,#e173 .sh a{border:0;border-radius:14px;padding:13px 8px;font:inherit;font-weight:800;cursor:pointer;text-align:center;text-decoration:none;background:#0f1f3d;color:#fff;font-size:14.5px}
+#e173 .sh .wa{background:#1f9d55;grid-column:1/-1;font-size:16px}
+#e173 .okk{text-align:center;margin:4px 0 12px}#e173 .okk div{font-size:40px}#e173 .okk b{display:block;font-size:18px;color:#0f1f3d}
+#e173 .qr{text-align:center}#e173 .qr img{width:220px;max-width:80%;image-rendering:pixelated;border-radius:12px;background:#fff;padding:6px}
+#e173 .cu{display:flex;justify-content:space-between;width:100%;border:0;border-bottom:1px solid #eef0f4;background:none;padding:10px 4px;font:inherit;cursor:pointer;color:#1c2333;text-align:right}
+#e173 .rc{display:flex;align-items:center;gap:8px;padding:9px 0;border-top:1px solid #eef0f4;font-size:14px}
+#e173 .rc:first-of-type{border-top:0}#e173 .rc span{flex:1;min-width:0}#e173 .rc small{display:block;color:#6b7280;font-size:12px}
+#e173 .rc button{border:1.5px solid #d9dde5;background:#fff;border-radius:10px;padding:6px 10px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+#e173 .kill{display:flex;align-items:center;gap:10px;background:#fff;border-radius:16px;padding:12px 14px;margin:0 0 12px;font-size:14.5px}
+#e173 .kill.on{background:#fdecec;color:#991b1b}
+#e173 .kill input{width:22px;height:22px;accent-color:#b91c1c}
+#e173Toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);z-index:2147483001;background:#0f1f3d;color:#fff;padding:10px 16px;border-radius:12px;font-weight:700;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw;text-align:center}
+#e173Toast.show{opacity:1}
+</style>
+<script id="EMD-V173-quick">
+(function(){'use strict';
+if(window.__EMD_V173__)return;window.__EMD_V173__=true;
+var URL0='https://emd-business.github.io/store/?s=',KEY='emd173_quick',PK='استلام من المحل',ZF='توصيل برسوم يحددها المحل';
+function $(i){return document.getElementById(i)}
+function esc(t){return String(t==null?'':t).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function num(v){v=parseFloat(String(v==null?'':v).replace(/[^\d.\-]/g,''));return isFinite(v)?v:0}
+function omr(v){return num(v).toFixed(3)+' ر.ع'}
+function toast(t){var e=$('e173Toast');if(!e){e=document.createElement('div');e.id='e173Toast';document.body.appendChild(e)}e.textContent=t;e.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(function(){e.classList.remove('show')},2400)}
+function Q(){var o={};try{o=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){}
+  return Object.assign({fee:true,cod:null,bank:null,zf:false,only:false,off:false,pk:false,x:false,exp:'0',max:20,msg:'',recent:[],pubSig:''},o)}
+function setQ(o){try{localStorage.setItem(KEY,JSON.stringify(o))}catch(e){}}
+function ST(){return window.EMDStoreV411?window.EMDStoreV411.state():null}
+function C(){var c=window.EMDCloudV93;return c&&c.api}
+function logged(){var c=C();try{return !!(c&&c.uid())}catch(e){return false}}
+function slugOk(s){return /^[a-z0-9][a-z0-9-]{1,28}[a-z0-9]$/.test(s||'')}
+function db(){try{return window.db||JSON.parse(localStorage.getItem('emd_business_v1')||'{}')}catch(e){return {}}}
+function bizName(){var S=ST()||{},d=db(),c=d.settings||d.cfg||{};return S.name||c.storeName||c.businessName||c.name||d.storeName||d.businessName||''}
+function catOf(c){c=String(c||'');return (window.EMD150?window.EMD150.cat(c):c)||''}
+function products(){var d=db(),L=Array.isArray(d.products)?d.products:[];return L.map(function(p,i){
+  return {k:String(p.id||p.sku||p.name||('p'+i)),name:String(p.name||p.productName||'منتج بدون اسم'),price:num(p.salePrice!=null?p.salePrice:p.unitPrice!=null?p.unitPrice:p.price),
+    stock:(window.EMDCoV430?window.EMDCoV430.storeQty(p):num(p.stock!=null?p.stock:p.qty)),cat:catOf(p.category||p.cat||''),img:p.image?String(p.image):''}}).filter(function(p){return p.name.trim()})}
+function pubd(k){var S=ST();return !!(S&&S.pubAt&&S.snap&&S.snap[k])}
+function flags(q){return JSON.stringify([!!q.only,!!q.off,!!q.pk,!!q.zf])}
+function pays(q){var S=ST()||{};return {c:q.cod==null?S.cod!==false:!!q.cod,b:q.bank==null?!!S.bank:!!q.bank}}
+
+/* يضيف إعدادات الروابط إلى بيانات المتجر عند كل نشر (بعد طبقة V156 حتى لا تُستبدل المناطق) */
+function hook(){var X=window.EMD150;if(!X||X.__q173)return;var ex=X.extra;
+  X.extra=function(S,c){var e=ex(S,c)||{},q=Q();if(q.only)e.qonly=1;if(q.off)e.qoff=1;
+    if(q.pk){var z=Array.isArray(e.zones)?e.zones.slice():[];if(!z.some(function(x){return x&&String(x.n).trim()===PK}))z.push({n:PK,f:0});e.zones=z}
+    if(q.zf){var z2=Array.isArray(e.zones)?e.zones.slice():[];if(!z2.some(function(x){return x&&String(x.n).trim()===ZF}))z2.push({n:ZF,f:0});e.zones=z2}
+    return e};X.__q173=1}
+hook();document.addEventListener('DOMContentLoaded',hook);
+
+/* الحالة */
+var V={mode:'free',sel:{},qty:{},q:'',cat:'',catLink:false,label:'',res:null,busy:false,err:'',cq:'',showQr:false,slug:'',full:false,step:'make'};
+function qh173(s){s=String(s);var h=2166136261;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return ('0000'+(h>>>0).toString(36)).slice(-5)}
+function b64u(o){return btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
+function today(){return Math.floor(Date.now()/864e5)}
+
+function build(){if($('e173'))return;var w=document.createElement('div');w.id='e173';
+  w.innerHTML='<div class="w" role="dialog" aria-modal="true" aria-labelledby="e173T"><div class="hd"><div style="flex:1"><h2 id="e173T">⚡ رابط طلب سريع</h2><small>رابط ترسله للعميل، فيختار ويؤكد، ويصلك الطلب هنا.</small></div><button type="button" data-a="close">إغلاق ✕</button></div><div class="bd"></div><div class="ft"></div></div>';
+  w.addEventListener('click',onClick);w.addEventListener('input',onInput);w.addEventListener('change',onChange);
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&w.classList.contains('show'))close()});
+  document.body.appendChild(w)}
+function open(){hook();build();V.step='make';V.res=null;V.err='';V.showQr=false;$('e173').classList.add('show');document.documentElement.style.overflow='hidden';paint()}
+function close(){var w=$('e173');if(w)w.classList.remove('show');document.documentElement.style.overflow=''}
+window.EMDQuickV173={open:open,close:close};
+
+function cats(L){var m={},A=[];L.forEach(function(p){if(p.cat&&!m[p.cat]){m[p.cat]=1;A.push(p.cat)}});return A}
+function shown(L){var s=V.q.trim().toLowerCase();return L.filter(function(p){return (!V.cat||p.cat===V.cat)&&(!s||p.name.toLowerCase().indexOf(s)>-1)})}
+function selKeys(){return Object.keys(V.sel).filter(function(k){return V.sel[k]})}
+
+function viewMake(){var S=ST(),q=Q(),L=products(),h='';
+  if(!S)return '<div class="bad">تعذّر تحميل إعدادات المتجر. حدّث الصفحة ثم حاول مرة أخرى.</div>';
+  if(!logged())return '<div class="note">🔐 تحتاج الروابط إلى حسابك السحابي حتى تصلك الطلبات. سجّل الدخول أولًا من «🛍️ متجري ← الرابط».</div><button type="button" class="go" data-a="login">فتح «متجري» لتسجيل الدخول</button>';
+  if(!L.length)return '<div class="note">أضف منتجاتك في التطبيق أولًا، ثم أنشئ الرابط.</div>';
+  if(q.off)h+='<label class="kill on"><input type="checkbox" data-o="off" checked><span><b>الروابط السريعة متوقفة الآن.</b> أزل العلامة لإعادة تشغيلها.</span></label>';
+  if(!S.pubAt){V.slug=V.slug||(slugOk(S.slug)?S.slug:'shop-'+Math.random().toString(36).slice(2,7));
+    h+='<div class="bx"><h3>تجهيز لمرة واحدة</h3><p style="margin:0 0 8px;color:#4b5563;font-size:14px">لتعمل الروابط نرفع المنتجات التي تختارها وأسعارها إلى السحابة. ولا يُرفع أبدًا: التكلفة وطلباتك وعملاؤك.</p>'+
+     '<label style="font-weight:700;font-size:14px">اسم رابط محلك (حروف إنجليزية صغيرة وأرقام و -)<input class="in" data-v="slug" dir="ltr" maxlength="30" value="'+esc(V.slug)+'" style="margin-top:6px"></label>'+
+     (slugOk(V.slug)?'':'<p style="color:#b91c1c;font-size:13px;margin:6px 0 0">من 3 إلى 30 حرفًا: a-z و 0-9 و - فقط.</p>')+
+     '<label class="op" style="border:0;padding-bottom:0"><span>عرض المتجر الكامل أيضًا<small>إن لم تفعّله، من يفتح رابط محلك العام يرى رسالة تطلب منه التواصل معك.</small></span><input type="checkbox" data-v="full"'+(V.full?' checked':'')+'></label></div>'}
+  h+='<div class="bx"><h3>١. نوع الرابط</h3><div class="typ">'+
+   '<button type="button" data-a="mode" data-m="free" aria-pressed="'+(V.mode==='free')+'"><b>🛒 اختيار حر</b><small>تختار المنتجات، والعميل يحدد الكمية.</small></button>'+
+   '<button type="button" data-a="mode" data-m="ready" aria-pressed="'+(V.mode==='ready')+'"><b>✅ طلب جاهز للتأكيد</b><small>تحدد المنتجات والكميات، والعميل يكمل بياناته ويؤكد.</small></button></div></div>';
+  var C2=cats(L),R=shown(L),n=selKeys().length;
+  h+='<div class="bx"><h3>٢. المنتجات</h3><input class="in" type="search" data-v="q" placeholder="🔎 ابحث باسم المنتج" value="'+esc(V.q)+'">'+
+   (C2.length?'<div class="chips"><button type="button" data-a="cat" data-c="" aria-pressed="'+(!V.cat)+'">الكل</button>'+C2.map(function(c){return '<button type="button" data-a="cat" data-c="'+esc(c)+'" aria-pressed="'+(V.cat===c)+'">'+esc(c)+'</button>'}).join('')+'</div>':'')+
+   (V.cat&&V.mode==='free'?'<label class="catm"><input type="checkbox" data-v="catLink"'+(V.catLink?' checked':'')+'><span><b>رابط للقسم «'+esc(V.cat)+'» كله</b><br>أي منتج تضيفه لهذا القسم لاحقًا يظهر في الرابط تلقائيًا.</span></label>':'')+
+   (V.catLink&&V.cat&&V.mode==='free'?'':'<div class="cnt"><span>المحدد: <b>'+n+'</b>'+(n>30?' · الحد الأقصى 30':'')+'</span><span><button type="button" data-a="all">تحديد الظاهر</button><button type="button" data-a="none">إلغاء</button></span></div>'+
+   '<div class="lst">'+(R.length?R.map(function(p){var on=!!V.sel[p.k],out=p.stock<=0,qn=V.qty[p.k]||1;
+     return '<div class="pr'+(on?' sel':'')+(out?' off':'')+'" data-a="pick" data-k="'+esc(p.k)+'"><span class="ck">'+(on?'✓':'')+'</span><span class="im"'+(p.img?' style="background-image:url(\''+esc(p.img).replace(/'/g,'%27')+'\')"':'')+'>'+(p.img?'':'📦')+'</span>'+
+      '<span class="nm"><b>'+esc(p.name)+'</b><small'+(out?' class="r"':pubd(p.k)?'':' class="n"')+'>'+omr(p.price)+(out?' · نفدت الكمية':pubd(p.k)?'':' · يُرفع عند الإنشاء')+'</small></span>'+
+      (on&&V.mode==='ready'?'<span class="qty"><button type="button" data-a="qd" data-k="'+esc(p.k)+'">−</button><span>'+qn+'</span><button type="button" data-a="qu" data-k="'+esc(p.k)+'">+</button></span>':'')+'</div>'}).join(''):'<p style="text-align:center;color:#6b7280">لا يوجد منتج بهذا الاسم.</p>')+'</div>')+'</div>';
+  h+='<div class="bx"><h3>٣. اسم الرابط (اختياري)</h3><input class="in" data-v="label" maxlength="30" placeholder="مثال: عرض العيد، عميل إنستغرام" value="'+esc(V.label)+'"><p style="margin:6px 0 0;color:#6b7280;font-size:12.5px">يظهر لك في ملاحظة الطلب لتعرف من أي رابط جاء.</p></div>';
+  var py=pays(q);
+  h+='<details'+(V.optOpen?' open':'')+'><summary>⚙️ الخصائص: ما يظهر للعميل<small style="display:block;color:#6b7280;font-weight:400;font-size:12.5px;margin-top:2px">التوصيل: '+(q.fee?'يظهر':'مخفي')+' · الدفع: '+[py.c?'عند الاستلام':'',py.b?'تحويل بنكي':''].filter(Boolean).join(' و')+'</small></summary>'+
+   '<label class="op"><span>🚚 رسوم التوصيل<small>'+(q.fee?'تظهر للعميل وتُحسب في الطلب حسب منطقته.':'مطفأة: لا تُحسب رسوم في الطلب، وتحددها أنت للعميل عند التواصل.')+'</small></span><input type="checkbox" data-o="fee"'+(q.fee?' checked':'')+'></label>'+
+   '<label class="op"><span>💵 الدفع عند الاستلام</span><input type="checkbox" data-o="cod"'+(py.c?' checked':'')+'></label>'+
+   '<label class="op"><span>🏦 التحويل البنكي'+(py.b&&!String(S.bankInfo||'').trim()?'<small style="color:#b45309">لم تكتب بيانات التحويل في «متجري ← التوصيل والدفع»، فسيرى العميل أنك سترسلها له.</small>':'')+'</span><input type="checkbox" data-o="bank"'+(py.b?' checked':'')+'></label>'+
+   '<label class="op"><span>السماح للعميل بإضافة منتجات أخرى<small>يظهر له زر للبحث في بقية منتجاتك.</small></span><input type="checkbox" data-o="x"'+(q.x?' checked':'')+'></label>'+
+   '<label class="op"><span>الاستلام من المحل<small>يظهر للعميل خيار «استلام من المحل» بلا رسوم توصيل.</small></span><input type="checkbox" data-o="pk"'+(q.pk?' checked':'')+'></label>'+
+   '<label class="op"><span>صلاحية الرابط</span><select data-o="exp"><option value="0"'+(q.exp==='0'?' selected':'')+'>دائم</option><option value="1"'+(q.exp==='1'?' selected':'')+'>يوم واحد</option><option value="7"'+(q.exp==='7'?' selected':'')+'>أسبوع</option><option value="30"'+(q.exp==='30'?' selected':'')+'>شهر</option></select></label>'+
+   '<label class="op"><span>أقصى كمية لكل منتج</span><input type="number" min="1" max="50" data-o="max" value="'+(+q.max||20)+'"></label>'+
+   '<label class="op" style="display:block"><span>رسالة الواتساب</span><textarea class="in" data-o="msg" rows="2" style="margin-top:6px">'+esc(q.msg||defMsg())+'</textarea></label>'+
+   (S.pubAt&&!q.off?'<label class="op"><span>إيقاف كل الروابط السريعة<small>للطوارئ: تتوقف كل الروابط التي أرسلتها حتى تعيد تشغيلها.</small></span><input type="checkbox" data-o="off"></label>':'')+
+   (S.pubAt?'<label class="op"><span>عرض المتجر الكامل لمن يفتح رابط محلك العام</span><input type="checkbox" data-o="full"'+(q.only?'':' checked')+'></label>':'')+'</details>';
+  h+=recent();
+  if(V.err)h='<div class="bad">'+esc(V.err)+'</div>'+h;
+  return h}
+function defMsg(){return 'أهلًا بك، يمكنك طلب ما تريد من «'+(bizName()||'محلنا')+'» بسهولة عبر هذا الرابط:'}
+function recent(){var R=Q().recent||[];if(!R.length)return '';
+  return '<div class="bx"><h3>🕘 روابطي الأخيرة</h3>'+R.map(function(r,i){return '<div class="rc"><span><b>'+esc(r.l||(r.n+' منتج'))+'</b><small>'+esc(r.at)+(r.l?' · '+esc(r.n)+' منتج':'')+'</small></span><button type="button" data-a="rwa" data-i="'+i+'">واتساب</button><button type="button" data-a="rcp" data-i="'+i+'">نسخ</button></div>'}).join('')+'</div>'}
+function footMake(){var n=selKeys().length,ok=(V.catLink&&V.cat&&V.mode==='free')||(n>0&&n<=30);
+  return '<button type="button" class="go" data-a="make"'+(ok&&!V.busy?'':' disabled')+'>'+(V.busy?'⏳ '+esc(V.busy):'⚡ إنشاء الرابط')+'</button>'}
+function viewRes(){var r=V.res,q=Q(),h='<div class="okk"><div>✅</div><b>رابطك جاهز</b><small style="color:#6b7280">'+esc(r.sum)+'</small></div><div class="url">'+esc(r.url)+'</div>'+
+  '<div class="sh"><a class="wa" target="_blank" rel="noopener" href="https://wa.me/?text='+encodeURIComponent((q.msg||defMsg())+'\n'+r.url)+'">💬 إرسال عبر واتساب</a>'+
+  '<button type="button" data-a="copy">📋 نسخ الرابط</button><button type="button" data-a="qr">🔳 رمز QR</button><button type="button" data-a="prev" style="grid-column:1/-1;background:#fff;color:#0f1f3d;border:1.5px solid #d9dde5">👁️ معاينة ما سيراه العميل</button></div>';
+  if(V.showQr)h+='<div class="bx qr" style="margin-top:12px">'+qrImg(r.url)+'</div>';
+  var cs=custs();if(cs.length){h+='<div class="bx" style="margin-top:12px"><h3>📤 إرسال مباشر لعميل</h3><input class="in" type="search" data-v="cq" placeholder="🔎 اسم العميل أو رقمه" value="'+esc(V.cq)+'"><div id="e173C">'+custList()+'</div></div>'}
+  return h}
+function custs(){var d=db();return (Array.isArray(d.customers)?d.customers:[]).filter(function(c){return c&&String(c.phone||'').replace(/\D/g,'').length>=8})}
+function custList(){var s=V.cq.trim().toLowerCase(),L=custs().filter(function(c){return !s||String(c.name||'').toLowerCase().indexOf(s)>-1||String(c.phone||'').indexOf(s)>-1}).slice(0,6);
+  return L.map(function(c){return '<button type="button" class="cu" data-a="cwa" data-p="'+esc(String(c.phone).replace(/\D/g,''))+'"><span>'+esc(c.name||'عميل')+'</span><span dir="ltr" style="color:#6b7280">'+esc(c.phone)+'</span></button>'}).join('')||'<p style="color:#6b7280;margin:8px 0 0">لا يوجد عميل بهذا الاسم.</p>'}
+function waNum(s){s=String(s||'').replace(/\D/g,'');return s.length===8?'968'+s:s}
+function qrImg(u){try{var g=window.qrcode(0,'L');g.addData(u);g.make();var d=g.createDataURL(5,3);return '<img alt="رمز QR للرابط" src="'+d+'"><p style="margin:8px 0 0"><a href="'+d+'" download="'+esc((V.res.l||'quick-order').replace(/\s+/g,'-'))+'-qr.gif" style="color:#0f1f3d;font-weight:800">⬇️ حفظ الصورة</a></p><p style="color:#6b7280;font-size:12.5px;margin:4px 0 0">اطبعه على الفاتورة أو ضعه في المحل.</p>'}catch(e){return '<p>تعذّر إنشاء الرمز لطول الرابط. استخدم رابط القسم بدل تحديد منتجات كثيرة.</p>'}}
+function paint(){var w=$('e173');if(!w)return;var b=w.querySelector('.bd'),f=w.querySelector('.ft'),y=b.scrollTop,ls=b.querySelector('.lst'),ly=ls?ls.scrollTop:0;
+  if(V.step==='res'){b.innerHTML=viewRes();f.innerHTML='<button type="button" class="go2" data-a="new" style="margin:0">＋ إنشاء رابط آخر</button>'}
+  else{b.innerHTML=viewMake();f.innerHTML=logged()&&products().length&&ST()?footMake():''}
+  b.scrollTop=y;ls=b.querySelector('.lst');if(ls)ls.scrollTop=ly}
+function soft(){var w=$('e173');if(!w)return;var f=w.querySelector('.ft');if(V.step==='make'&&f.innerHTML)f.innerHTML=footMake()}
+
+function onClick(e){var t=e.target.closest('[data-a]');if(!t)return;var a=t.getAttribute('data-a'),k=t.getAttribute('data-k');
+  if(a==='close'){close();return}
+  if(a==='login'){close();if(window.EMDStoreV411)window.EMDStoreV411.open('pub');return}
+  if(a==='mode'){V.mode=t.getAttribute('data-m');if(V.mode==='ready')V.catLink=false;paint();return}
+  if(a==='cat'){V.cat=t.getAttribute('data-c');if(!V.cat)V.catLink=false;paint();return}
+  if(a==='pick'){if(e.target.closest('.qty'))return;var p=products().filter(function(x){return x.k===k})[0];if(p&&p.stock<=0&&!V.sel[k]){toast('هذا المنتج نفدت كميته');return}V.sel[k]=!V.sel[k];paint();return}
+  if(a==='qu'){V.qty[k]=Math.min(50,(V.qty[k]||1)+1);paint();return}
+  if(a==='qd'){V.qty[k]=Math.max(1,(V.qty[k]||1)-1);paint();return}
+  if(a==='all'){shown(products()).forEach(function(p){if(p.stock>0)V.sel[p.k]=true});paint();return}
+  if(a==='none'){V.sel={};paint();return}
+  if(a==='make'){make();return}
+  if(a==='new'){V.step='make';V.res=null;V.showQr=false;V.sel={};V.qty={};V.label='';V.catLink=false;paint();$('e173').querySelector('.bd').scrollTop=0;return}
+  if(a==='copy'){copy(V.res.url);return}
+  if(a==='qr'){V.showQr=!V.showQr;paint();return}
+  if(a==='prev'){window.open(V.res.url,'_blank');return}
+  if(a==='cwa'){window.open('https://wa.me/'+waNum(t.getAttribute('data-p'))+'?text='+encodeURIComponent((Q().msg||defMsg())+'\n'+V.res.url),'_blank');return}
+  if(a==='rwa'||a==='rcp'){var r=(Q().recent||[])[+t.getAttribute('data-i')];if(!r)return;if(a==='rcp')copy(r.u);else window.open('https://wa.me/?text='+encodeURIComponent((Q().msg||defMsg())+'\n'+r.u),'_blank');return}}
+function copy(u){try{navigator.clipboard.writeText(u).then(function(){toast('✓ تم نسخ الرابط')},function(){prompt('انسخ الرابط:',u)})}catch(x){prompt('انسخ الرابط:',u)}}
+function onInput(e){var v=e.target.getAttribute('data-v'),o=e.target.getAttribute('data-o');
+  if(v==='q'){V.q=e.target.value;var s=e.target.selectionStart;paint();var f=$('e173').querySelector('[data-v="q"]');if(f){f.focus();try{f.setSelectionRange(s,s)}catch(x){}}return}
+  if(v==='label'){V.label=e.target.value;return}
+  if(v==='slug'){V.slug=e.target.value.toLowerCase().replace(/\s+/g,'-');soft();return}
+  if(v==='cq'){V.cq=e.target.value;var c=$('e173C');if(c)c.innerHTML=custList();return}
+  if(o==='msg'){var q=Q();q.msg=e.target.value;setQ(q);return}
+  if(o==='max'){var q2=Q();q2.max=Math.max(1,Math.min(50,Math.floor(num(e.target.value))||20));setQ(q2);return}}
+function onChange(e){var v=e.target.getAttribute('data-v'),o=e.target.getAttribute('data-o');
+  if(v==='catLink'){V.catLink=e.target.checked;paint();return}
+  if(v==='full'){V.full=e.target.checked;return}
+  if(v==='slug'){paint();return}
+  if(o){var q=Q();V.optOpen=true;
+    if(o==='x'||o==='pk'||o==='fee')q[o]=e.target.checked;
+    else if(o==='cod'||o==='bank'){var py=pays(q);py[o==='cod'?'c':'b']=e.target.checked;if(!py.c&&!py.b){e.target.checked=true;toast('يجب إبقاء طريقة دفع واحدة على الأقل');return}q.cod=py.c;q.bank=py.b}
+    else if(o==='exp')q.exp=e.target.value;
+    else if(o==='full'){q.only=!e.target.checked;setQ(q);applyFlags('✓ تم تحديث إعداد المتجر العام');return}
+    else if(o==='off'){q.off=e.target.checked;setQ(q);applyFlags(q.off?'⏸️ أُوقفت كل الروابط السريعة':'▶️ عادت الروابط السريعة للعمل');return}
+    setQ(q);paint();return}}
+
+/* النشر: يستعمل زر النشر الموجود في «متجري» وينتظر نتيجته */
+function publishWait(){var S=ST(),before=S.pubRows;return new Promise(function(ok,no){
+  S.pubErr='';window.EMDStoreV411.publish();var n=0,iv=setInterval(function(){n++;
+    if(S.pubRows&&S.pubRows!==before){clearInterval(iv);ok()}else if(S.pubErr){clearInterval(iv);no(new Error(S.pubErr))}else if(n>300){clearInterval(iv);no(new Error('استغرق النشر وقتًا طويلًا. تحقق من الاتصال وأعد المحاولة.'))}},400)})}
+function applyFlags(msg){var S=ST();if(!S||!S.pubAt||!logged()){paint();return}
+  V.busy='جارٍ التحديث…';paint();publishWait().then(function(){var q=Q();q.pubSig=flags(q);setQ(q);V.busy=false;paint();toast(msg)},function(e){V.busy=false;V.err=e.message;paint()})}
+function make(){if(V.busy)return;var S=ST(),q=Q(),L=products(),K=selKeys(),catMode=V.catLink&&V.cat&&V.mode==='free';V.err='';
+  if(!S.pubAt){if(!slugOk(V.slug)){V.err='اكتب اسم رابط صحيحًا لمحلك أولًا.';paint();return}S.slug=V.slug;q.only=!V.full;setQ(q)}
+  var need=catMode?L.filter(function(p){return p.cat===V.cat}).map(function(p){return p.k}):K;
+  if(!need.length){V.err='لا توجد منتجات في هذا القسم.';paint();return}
+  if(!q.fee&&!q.zf){q.zf=true;setQ(q)}
+  var miss=need.filter(function(k){return !pubd(k)}),flg=flags(q)!==q.pubSig&&(q.pk||q.only||q.off||q.zf||q.pubSig);
+  var go=function(){var u={},l=V.label.trim();
+    if(catMode)u.c=V.cat;else{u.k=K;if(V.mode==='ready')u.r=K.map(function(k){return V.qty[k]||1})}
+    if(q.x)u.x=1;if(q.pk)u.p=1;if(!q.fee)u.d=0;var py=pays(q),S0=ST()||{};if(py.c!==(S0.cod!==false)||py.b!==!!S0.bank)u.y=(py.c?'c':'')+(py.b?'b':'');if(+q.exp>0)u.e=today()+(+q.exp);if(+q.max&&+q.max!==20)u.m=+q.max;if(l)u.l=l;
+    var hs=L.map(function(p){return qh173(p.k)}),uniq=hs.every(function(h,i){return hs.indexOf(h)===i}),qs;
+    if(uniq){qs=(catMode?'~'+qh173(V.cat):K.map(function(k,i){var r=u.r&&u.r[i];return qh173(k)+(r?'*'+r:'')}).join('.'));
+      var f=[];if(u.x)f.push('x');if(u.p)f.push('p');if(u.d===0)f.push('d0');if(u.y)f.push('y'+u.y);if(u.e)f.push('e'+u.e);if(u.m)f.push('m'+u.m);if(f.length)qs+='!'+f.join('.');
+      qs=qs+(l?'&l='+l.replace(/[&#%?+=\/]/g,'').trim().replace(/\s+/g,'_'):'')}else qs=b64u(u);
+    var url=URL0+encodeURIComponent(S.pubSlug||S.slug)+'&q='+qs,cnt=catMode?need.length:K.length;
+    var sum=(V.mode==='ready'?'طلب جاهز':'اختيار حر')+' · '+(catMode?'القسم «'+V.cat+'»':cnt+' منتج')+(+q.exp>0?' · صالح '+({1:'يومًا',7:'أسبوعًا',30:'شهرًا'})[q.exp]:'');
+    V.res={url:url,sum:sum,l:l};V.step='res';V.busy=false;
+    var R=q.recent||[];var d=new Date();R.unshift({u:url,l:l,n:cnt,at:d.getDate()+'/'+(d.getMonth()+1)+' · '+(V.mode==='ready'?'طلب جاهز':'اختيار حر')});q.recent=R.slice(0,10);setQ(q);paint();$('e173').querySelector('.bd').scrollTop=0};
+  if(!miss.length&&!flg&&S.pubAt){go();return}
+  miss.forEach(function(k){var o=S.prod[k]||(S.prod[k]={on:false,desc:'',old:''});o.on=true});window.EMDStoreV411.save();
+  V.busy=miss.length?'جارٍ رفع '+miss.length+' منتج إلى السحابة…':'جارٍ تجهيز الرابط…';paint();
+  publishWait().then(function(){var q2=Q();q2.pubSig=flags(q2);setQ(q2);q=q2;go()},function(e){V.busy=false;V.err=e.message;paint()})}
+
+/* الأزرار: في شاشة الطلبات، وفي «متجري ← الرابط» */
+function inject(){var h=document.querySelector('#orders .emd-v36-orders-head');
+  if(h&&!$('e173Btn')){var b=document.createElement('button');b.type='button';b.id='e173Btn';b.innerHTML='⚡ رابط طلب سريع';b.onclick=open;var s=h.querySelector('#filter');h.insertBefore(b,s||null)}
+  var w=$('emd411Store'),p=w&&w.classList.contains('show')&&w.querySelector('.emd413-pub');
+  if(p&&!w.querySelector('.e173-card')){var c=document.createElement('button');c.type='button';c.className='e173-card';c.innerHTML='<i>⚡</i><span><b>رابط طلب سريع</b><small>أرسل للعميل منتجات محددة، فيطلب بثلاث لمسات.</small></span>';
+    c.onclick=function(){if(window.EMDStoreV411)window.EMDStoreV411.close();open()};p.parentNode.insertBefore(c,p)}}
+setInterval(inject,1200);document.addEventListener('DOMContentLoaded',inject);inject();
+})();
+</script>
+<!-- ===== نهاية EMD V173 ===== -->
 
 </body>
 </html>
