@@ -1402,6 +1402,23 @@ html[data-lx="awning"]{--bg:#fbf6ee;--surface:#ffffff;--ink:#3a1a12;--muted:#8f7
 .t7-toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:#1f1f1f;color:#fff;padding:11px 16px;border-radius:12px;font-size:14px;z-index:99999;max-width:86vw;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.25);animation:t7pop .25s ease both}
 @media (prefers-reduced-motion:reduce){.t7-tb .tbl i,.t7-toast{animation:none}}
 </style>
+<style id="emd176">/* ===== V176: إصلاحات صفحة المتجر ===== */
+/* 1) شريط الأقسام لا يوسّع الصفحة (كان يسبب اهتزازًا جانبيًا في عود وبخور وبوتيك وصور أولًا) */
+.lxchips{min-width:0;max-width:100%;box-sizing:border-box}
+/* 2) زر «تأكيد» ظاهر دائمًا أسفل نموذج الطلب، وهو الأول */
+#coForm>.two:last-child{position:sticky;bottom:0;z-index:3;grid-template-columns:1.5fr 1fr!important;background:var(--surface,#fff);padding:10px 0 calc(10px + env(safe-area-inset-bottom,0px));margin-top:6px;box-shadow:0 -10px 14px -12px rgba(0,0,0,.35)}
+#coForm>.two:last-child #coGo{order:-1}
+/* 3) زر «تصفّح المنتجات» فوق الواجهات التفاعلية */
+.v176skip{position:fixed;left:12px;top:calc(env(safe-area-inset-top,0px) + 74px);z-index:40;border:0;border-radius:999px;padding:8px 14px;font:inherit;font-weight:700;font-size:13px;cursor:pointer;
+  background:rgba(17,17,17,.78);color:#fff;box-shadow:0 4px 14px rgba(0,0,0,.25);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);transition:opacity .25s,transform .25s;white-space:nowrap}
+html[dir=ltr] .v176skip{left:auto;right:12px}
+.v176skip[hidden]{display:block!important;opacity:0;pointer-events:none;transform:translateY(-10px)}
+/* 4) «عرض المزيد» عند كثرة المنتجات */
+.v176h{display:none!important}
+.v176more{display:block;width:100%;max-width:360px;margin:18px auto 8px;padding:13px 16px;border-radius:var(--btn-r,12px);border:1px solid var(--line,#ddd);background:var(--surface,#fff);color:var(--ink,#111);font:inherit;font-weight:700;font-size:15px;cursor:pointer}
+.v176more small{display:block;font-weight:400;font-size:12px;color:var(--muted,#777);margin-top:2px}
+.bankinfo.v176bi{font-size:13px}
+</style>
 </head>
 <body>
 
@@ -1501,7 +1518,7 @@ var T={
   promGift:'Gift wrap',promGiftS:'On request',promShip:'Delivery',promFreeS:'Free over %s',promShipS:'%s per order',promPay:'Payment',promWa:'WhatsApp',promWaS:'Quick replies',
   errClosed:'The store just paused orders. Try later.',errGone:'An item in your bag was removed. We refreshed the page.',errOut:'An item in your bag sold out. We refreshed the page.',errStock:'That quantity is more than what\'s available.',errMany:'Too many orders from this number. Wait 10 minutes.',errDay:'The store reached today\'s order limit. Contact them on WhatsApp.',errNet:'We couldn\'t send your order. Check your connection and try again.',errBad:'Some details are missing.'}
 };
-function pickLang(){try{var s=localStorage.getItem('emdStoreLang');if(s)return s}catch(e){}var q=new URLSearchParams(location.search).get('lang');if(q==='en'||q==='ar')return q;return /^ar/i.test(navigator.language||'ar')?'ar':'en'}
+function pickLang(){try{var s=localStorage.getItem('emdStoreLang');if(s)return s}catch(e){}var q=new URLSearchParams(location.search).get('lang');if(q==='en'||q==='ar')return q;return 'ar'}
 var LANG=pickLang();
 function t(k,a){var s=(T[LANG]&&T[LANG][k])||T.ar[k]||k;return a==null?s:s.replace('%s',a)}
 function $(i){return document.getElementById(i)}
@@ -1606,7 +1623,7 @@ function form(){var cod=B.cod!==false,bank=!!B.bank;
    '<label>'+esc(t('note'))+'<input id="fNote" maxlength="300"></label>'+
    (B.gift?'<label class="inl"><input type="checkbox" id="fGift"> '+esc(t('gift'))+'</label>':'')+
    ((cod&&bank)?'<div class="pay"><label><input type="radio" name="pay" value="cod" checked> '+esc(t('cod'))+'</label><label><input type="radio" name="pay" value="bank"> '+esc(t('bank'))+'</label></div>':'')+
-   (bank&&B.bankInfo?'<div class="bankinfo" id="bankInfo"'+(cod?' hidden':'')+'>'+esc(B.bankInfo)+'</div>':'')+
+   (bank&&B.bankInfo?'<div class="bankinfo" id="bankInfo"'+(cod?' hidden':'')+'>'+esc(B.bankInfo)+'</div>':bank?'<div class="bankinfo v176bi" id="bankInfo"'+(cod?' hidden':'')+'>'+esc(t('v176Bank'))+'</div>':'')+
    '<div class="err" id="err" role="alert"></div><div class="two"><button class="btn ghost" type="button" id="coBack">'+esc(t('back'))+'</button><button class="go" type="submit" id="coGo" style="margin:0">'+esc(t('confirm'))+'</button></div></form>'}
 $('checkout').onclick=function(){drawer(false);$('coBox').innerHTML=form();$('sheet').classList.add('show');setTimeout(function(){var f=$('fName');if(f&&!f.value)f.focus()},50)};
 $('sheet').addEventListener('change',function(e){if(e.target.name==='pay'){var bi=$('bankInfo');if(bi)bi.hidden=e.target.value!=='bank'}});
@@ -1991,7 +2008,7 @@ R.print3d=function(G){var L=lfilter(G),fr=ST.free_over,pk=G.filter(function(g){r
    '<button type="button" class="p3-hint" id="p3H"><span class="gs"><span class="ar"></span><span class="fg">👆</span></span><span class="tx"><b>'+esc(t('p3Hi'))+'</b>'+esc(t('p3HiS'))+'<small>'+esc(t('p3Auto'))+'</small></span></button>'+
    '<div class="p3-hud"><span id="p3st">'+esc(t('p3Wait'))+'</span><span>'+esc(t('p3Layer'))+' <b id="p3ly">0</b> / 240</span></div>'+
    '</div></section>'+
-   '<div class="lxw"><div class="p3-info"><span><i></i>'+esc(t('p3Ship'))+': '+money(+ST.ship||0)+'</span>'+(fr?'<span>🎁 '+esc(t('p3Free',money(fr)))+'</span>':'')+'<span>📦 '+G.length+' '+esc(t('lxProducts'))+'</span></div>'+
+   '<div class="lxw"><div class="p3-info"><span><i></i>'+v176ship()+'</span>'+(fr?'<span>🎁 '+esc(t('p3Free',money(fr)))+'</span>':'')+'<span>📦 '+G.length+' '+esc(t('lxProducts'))+'</span></div>'+
    (pk.length>2&&!lxCat&&!q?'<div class="lxhd"><h2>'+esc(t('p3Pick'))+'</h2></div><div class="p3-row">'+pk.map(card).join('')+'</div>':'')+
    '<div class="lxhd" id="lxShop"><h2>'+esc(lxCat||t('p3All'))+'</h2><span>'+L.length+t('pieces')+'</span></div>'+catChips(G)+infoBtns()+
    (L.length?'<div class="p3-g lxgrid">'+L.map(card).join('')+'</div>':'<p class="lxempty">'+esc(t(P.length?'none':'noItems'))+'</p>')+
@@ -2048,7 +2065,7 @@ R.cmyk=function(G){var L=lfilter(G),fr=ST.free_over,pk=G.filter(function(g){retu
    '<div class="bm-sheet" id="bmSh"><div class="slot"></div><div class="pimg" id="bmPi">'+(l?'<img alt="" src="'+esc(l)+'">':'<b>'+esc(B.name||(LANG==='en'?'My store':'متجري'))+'</b>')+'</div><div class="head" id="bmHe"></div><div class="cap2"><b>'+esc(B.name||(LANG==='en'?'My store':'متجري'))+'</b><span id="bmPc">'+esc(t('bmPrint'))+'</span></div></div>'+
    '<button type="button" class="p3-hint bm-hint" id="bmH"><span class="gs"><span class="ar"></span><span class="fg">👆</span></span><span class="tx"><b>'+esc(t('p3Hi'))+'</b>'+esc(LANG==='en'?'to see your print being made':'لتشاهد مطبوعتك تُصنع أمامك')+'<small>'+esc(t('p3Auto'))+'</small></span></button>'+
    '</div></section>'+
-   '<div class="lxw"><div class="p3-info bm-info"><span><i></i>'+esc(t('p3Ship'))+': '+money(+ST.ship||0)+'</span>'+(fr?'<span>🎁 '+esc(t('p3Free',money(fr)))+'</span>':'')+'<span>🖨️ '+G.length+' '+esc(t('lxProducts'))+'</span></div>'+
+   '<div class="lxw"><div class="p3-info bm-info"><span><i></i>'+v176ship()+'</span>'+(fr?'<span>🎁 '+esc(t('p3Free',money(fr)))+'</span>':'')+'<span>🖨️ '+G.length+' '+esc(t('lxProducts'))+'</span></div>'+
    (pk.length>2&&!lxCat&&!q?hd(LANG==='en'?'Everyone orders':'يطلبها الجميع',t('bmTop'))+'<div class="p3-row bm-row">'+pk.map(function(g,i){return card(g).replace('<b>','<span class="bm-rk">'+(i+1)+'</span><b>')}).join('')+'</div>':'')+
    '<div id="lxShop">'+hd(LANG==='en'?'Everything we print':'كل ما نطبعه',lxCat||t('bmAll'))+'</div>'+catChips(G)+infoBtns()+
    (L.length?'<div class="p3-g lxgrid">'+L.map(card).join('')+'</div>':'<p class="lxempty">'+esc(t(P.length?'none':'noItems'))+'</p>')+
@@ -2098,7 +2115,7 @@ Object.assign(T.en,{skL2:'Peel it…',skL2s:'Every piece made with love and a pr
 LX.sticker=1;LX.moon=1;LX.calm=1;
 function v166nm(){return B.name||(LANG==='en'?'My store':'متجري')}
 function v166hint(id,b,sm){return '<button type="button" class="p3-hint v166-hint" id="'+id+'"><span class="gs"><span class="ar"></span><span class="fg">👆</span></span><span class="tx"><b>'+esc(t('p3Hi'))+'</b>'+esc(b)+'<small>'+esc(sm||t('p3Auto'))+'</small></span></button>'}
-function v166info(extra){var fr=ST.free_over;return '<div class="p3-info v166-info">'+(extra||'')+'<span>'+esc(t('p3Ship'))+': '+money(+ST.ship||0)+'</span>'+(fr?'<span>🎁 '+esc(t('p3Free',money(fr)))+'</span>':'')+'</div>'}
+function v166info(extra){var fr=ST.free_over;return '<div class="p3-info v166-info">'+(extra||'')+'<span>'+v176ship()+'</span>'+(fr?'<span>🎁 '+esc(t('p3Free',money(fr)))+'</span>':'')+'</div>'}
 function v166auto(sid,T0){var S=$(sid);if(!S)return;var y0=scrollY,end=S.offsetTop+S.offsetHeight-innerHeight,t0=performance.now(),stop=false;
   function k(){stop=true}addEventListener('touchstart',k,{once:true});addEventListener('wheel',k,{once:true});
   (function st(tm){if(stop)return;var e2=Math.min(1,(tm-t0)/T0),qv=e2<.5?2*e2*e2:1-Math.pow(-2*e2+2,2)/2;scrollTo(0,y0+(end-y0)*qv);if(e2<1)requestAnimationFrame(st)})(t0)}
@@ -2627,6 +2644,50 @@ if(DEMO&&typeof D!=='undefined'){
   if(D.laser)Object.assign(D.laser.brand,{mods:{studio:1},studio:{l:'اكتب الاسم الذي نحفره لك'}});
   if(D.arch)Object.assign(D.arch.brand,{mods:{table:1}});
 }
+
+/* ===== V176: إصلاحات صفحة المتجر ===== */
+Object.assign(T.ar,{v176Free:'🚚 توصيل مجاني',v176Zone:'🚚 التوصيل حسب المنطقة',v176Skip:'تصفّح المنتجات ↓',v176More:'عرض المزيد',v176Left:'باقي %s منتج',v176Bank:'سيرسل لك المتجر بيانات التحويل عبر واتساب بعد تأكيد الطلب.'});
+Object.assign(T.en,{v176Free:'🚚 Free delivery',v176Zone:'🚚 Delivery by area',v176Skip:'Browse products ↓',v176More:'Show more',v176Left:'%s more products',v176Bank:'The store will send you the transfer details on WhatsApp after you confirm.'});
+function v176ship(){if(Array.isArray(B.zones)&&B.zones.length)return esc(t('v176Zone'));var s=+ST.ship||0;return s>0?esc(t('p3Ship'))+': '+money(s):esc(t('v176Free'))}
+(function(){
+  /* «عرض المزيد»: أول 24 منتجًا، ثم 24 مع كل ضغطة. الحالة تبقى عند إعادة الرسم (مثل الإضافة للحقيبة) وتعود إلى 24 عند تغيير القسم أو البحث */
+  var STEP=24,LIM=STEP,SIG='';
+  function sig(){return (B.layout||'')+'|'+(typeof lxCat!=='undefined'?lxCat:'')+'|'+(typeof q!=='undefined'?q:'')}
+  function items(C){return [].filter.call(C.children,function(c){return c.matches('[data-g],article')||c.querySelector('[data-g]')})}
+  function lists(root){var L=[];
+    [].forEach.call(root.querySelectorAll('[data-g],article'),function(e){var c=e.parentElement,d=0;
+      while(c&&d<5&&root.contains(c)){if(L.indexOf(c)>-1)return;if(items(c).length>STEP+4){L.push(c);return}c=c.parentElement;d++}});
+    return L}
+  function apply(){var roots=[];var M=$('lx'),Gd=$('grid');if(M&&!M.hidden)roots.push(M);else if(Gd)roots.push(Gd);
+    roots.forEach(function(root){
+      [].forEach.call(document.querySelectorAll('.v176more'),function(b){b.remove()});
+      lists(root).forEach(function(p){var ks=items(p);
+        ks.forEach(function(c,i){c.classList.toggle('v176h',i>=LIM)});
+        var left=ks.length-Math.min(LIM,ks.length);if(left<=0)return;
+        var b=document.createElement('button');b.type='button';b.className='v176more';if(p.id==='grid')b.style.gridColumn='1/-1';
+        b.innerHTML=esc(t('v176More'))+'<small>'+esc(t('v176Left',left))+'</small>';
+        b.onclick=function(){LIM+=STEP;apply()};
+        p.insertAdjacentElement('afterend',b)})})}
+  var _r=lxRender;lxRender=function(){var s=sig();if(s!==SIG){SIG=s;LIM=STEP}_r();try{apply()}catch(e){}try{skipSetup()}catch(e){}};
+  var _gd=grid;grid=function(){if(LX[B.layout]){_gd();return}var s='classic|'+(typeof col!=='undefined'?col:'')+'|'+(typeof q!=='undefined'?q:'');if(s!==SIG){SIG=s;LIM=STEP}_gd();try{apply()}catch(e){}};
+
+  /* زر «تصفّح المنتجات» للواجهات التفاعلية الطويلة */
+  var btn=null,stage=null;
+  function skipSetup(){var M=$('lx');stage=null;
+    if(M&&!M.hidden){var c=M.querySelectorAll('[class*="-stage"]');for(var i=0;i<c.length;i++){if(/(^|\s)[a-z0-9]+-stage(\s|$)/.test(c[i].className)&&c[i].offsetHeight>innerHeight*1.4){stage=c[i];break}}}
+    if(!btn){btn=document.createElement('button');btn.type='button';btn.className='v176skip';btn.hidden=true;document.body.appendChild(btn);
+      btn.onclick=function(){if(!stage)return;var hh=(document.querySelector('.top')||{offsetHeight:60}).offsetHeight||60;
+        var y=stage.getBoundingClientRect().bottom+scrollY-hh;scrollTo({top:y,behavior:'smooth'})};
+      addEventListener('scroll',vis,{passive:true});addEventListener('resize',vis)}
+    btn.textContent=t('v176Skip');vis()}
+  function vis(){if(!btn)return;var on=false;
+    if(stage&&document.body.contains(stage)&&!document.documentElement.classList.contains('trk-on')){var r=stage.getBoundingClientRect();on=r.bottom>innerHeight*1.15&&r.top<innerHeight}
+    var sh=$('sheet'),ps=$('psheet'),dr=$('drawer');
+    if((sh&&sh.classList.contains('show'))||(ps&&ps.classList.contains('show'))||(dr&&dr.classList.contains('show')))on=false;
+    if(on){var hd=document.querySelector('.top');var tb=hd?Math.max(0,hd.getBoundingClientRect().bottom):60;btn.style.top=Math.round(tb+10)+'px'}
+    btn.hidden=!on}
+  setInterval(vis,1200);
+})();
 
 boot();
 })();
