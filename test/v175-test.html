@@ -32417,6 +32417,7 @@ hook();document.addEventListener('DOMContentLoaded',hook);
 
 /* الحالة */
 var V={mode:'free',sel:{},qty:{},q:'',cat:'',catLink:false,label:'',res:null,busy:false,err:'',cq:'',showQr:false,slug:'',full:false,step:'make'};
+function qh173(s){s=String(s);var h=2166136261;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return ('0000'+(h>>>0).toString(36)).slice(-5)}
 function b64u(o){return btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
 function today(){return Math.floor(Date.now()/864e5)}
 
@@ -32545,7 +32546,11 @@ function make(){if(V.busy)return;var S=ST(),q=Q(),L=products(),K=selKeys(),catMo
   var go=function(){var u={},l=V.label.trim();
     if(catMode)u.c=V.cat;else{u.k=K;if(V.mode==='ready')u.r=K.map(function(k){return V.qty[k]||1})}
     if(q.x)u.x=1;if(q.pk)u.p=1;if(!q.fee)u.d=0;var py=pays(q),S0=ST()||{};if(py.c!==(S0.cod!==false)||py.b!==!!S0.bank)u.y=(py.c?'c':'')+(py.b?'b':'');if(+q.exp>0)u.e=today()+(+q.exp);if(+q.max&&+q.max!==20)u.m=+q.max;if(l)u.l=l;
-    var url=URL0+encodeURIComponent(S.pubSlug||S.slug)+'&q='+b64u(u),cnt=catMode?need.length:K.length;
+    var hs=L.map(function(p){return qh173(p.k)}),uniq=hs.every(function(h,i){return hs.indexOf(h)===i}),qs;
+    if(uniq){qs=(catMode?'~'+qh173(V.cat):K.map(function(k,i){var r=u.r&&u.r[i];return qh173(k)+(r?'*'+r:'')}).join('.'));
+      var f=[];if(u.x)f.push('x');if(u.p)f.push('p');if(u.d===0)f.push('d0');if(u.y)f.push('y'+u.y);if(u.e)f.push('e'+u.e);if(u.m)f.push('m'+u.m);if(f.length)qs+='!'+f.join('.');
+      qs=qs+(l?'&l='+l.replace(/[&#%?+=\/]/g,'').trim().replace(/\s+/g,'_'):'')}else qs=b64u(u);
+    var url=URL0+encodeURIComponent(S.pubSlug||S.slug)+'&q='+qs,cnt=catMode?need.length:K.length;
     var sum=(V.mode==='ready'?'طلب جاهز':'اختيار حر')+' · '+(catMode?'القسم «'+V.cat+'»':cnt+' منتج')+(+q.exp>0?' · صالح '+({1:'يومًا',7:'أسبوعًا',30:'شهرًا'})[q.exp]:'');
     V.res={url:url,sum:sum,l:l};V.step='res';V.busy=false;
     var R=q.recent||[];var d=new Date();R.unshift({u:url,l:l,n:cnt,at:d.getDate()+'/'+(d.getMonth()+1)+' · '+(V.mode==='ready'?'طلب جاهز':'اختيار حر')});q.recent=R.slice(0,10);setQ(q);paint();$('e173').querySelector('.bd').scrollTop=0};
