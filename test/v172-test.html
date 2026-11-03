@@ -32148,11 +32148,13 @@ var LABELS=[
  ['الرقم',/^(?:رقم الواتساب|رقم الواتس|رقم الجوال|رقم الهاتف|رقم التواصل|رقم العميل|رقمي|الرقم|الهاتف|الجوال|الموبايل|التلفون|واتساب|واتس|phone|mobile|whatsapp|tel)(?=[\s:：\/\-=–—]|$)/i,/^(?:رقم|number)/i],
  ['المكان',/^(?:عنوان التوصيل|مكان التوصيل|موقع التوصيل|العنوان|عنواني|الولايه|الولاية|المنطقه|المنطقة|المدينه|المدينة|المكان|الموقع|location|address|city|area|wilayat)(?=[\s:：\/\-=–—]|$)/i,/^(?:الحي|المحافظه|المحافظة)/i],
  ['طريقة الدفع',/^(?:طريقه الدفع|طريقة الدفع|الدفع|payment(?: method)?)(?=[\s:：\/\-=–—]|$)/i,null],
+ ['المنتج',/^(?:item|product)(?=[\s:：\/\-=–—]|$)/i,null],
+ ['العدد',/^(?:qty|quantity)(?=[\s:：\/\-=–—]|$)/i,null],
  ['ملاحظات',/^(?:note|notes)(?=[\s:：\/\-=–—]|$)/i,null]];
 var SEP=/^\s*[:：\/\-=–—]+\s*/;
-var FILLER=/^(?:(?:اخوي|اختي|اخي|أخي|أختي|يا اخوي|لو سمحت|لو سمحتي|من فضلك|طلب جديد|طلب|الطلب|طلبي|طلبيه|طلبية|ابغي اطلب|ابغى اطلب|ابي اطلب|اريد اطلب|حاب اطلب|حابه اطلب|بغيت اطلب|ممكن اطلب|ودي اطلب|اطلب|أطلب|ابغي|ابغى|ابي|اريد|بس|order|new order|hi|hello)[\s.!،,:؟?]*)+$/i;
+var FILLER=/^(?:(?:اخوي|اختي|اخي|أخي|أختي|يا اخوي|لو سمحت|لو سمحتي|من فضلك|طلب جديد|طلب|الطلب|طلبي|طلبيه|طلبية|ابغي اطلب|ابغى اطلب|ابي اطلب|اريد اطلب|حاب اطلب|حابه اطلب|بغيت اطلب|ممكن اطلب|ودي اطلب|اطلب|أطلب|ابغي|ابغى|ابي|اريد|بس|كل واحد(?: نسخه| حبه| قطعه)?|للمدرسه|للبيت|للعمل|للمكتب|هديه|عندي طلب|order|new order|hi|hello)[\s.!،,:؟?]*)+$/i;
 var GREET=/^(?:السلام عليكم(?: ورحمه الله(?: وبركاته)?)?|سلام عليكم|مرحبا|مرحباً|هلا(?: والله)?|اهلا|صباح الخير|مساء الخير|hi|hello)[\s.!،,]*/i;
-var ASK=/^(?:(?:لو سمحت|من فضلك|ممكن|عندكم|عندك|ابغي|ابغى|ابغا|ابي|ابا|اريد|أريد|بغيت|ودي|حاب|حابه|حبيت|اطلب|أطلب|طلبي|الطلب|طلب|i want|i need|i'?d like|please)\s*[:：]?\s+)+/i;
+var ASK=/^(?:(?:لو سمحت|من فضلك|ممكن|عندكم|عندك|ابغي|ابغى|ابغا|ابي|ابا|اريد|أريد|بغيت|ودي|حاب|حابه|حبيت|تطرشون لي|تطرشون|ترسلون لي|ترسلون|ترسل لي|اطلب|أطلب|طلبي|الطلب|طلب|i want|i need|i'?d like|please)\s*[:：]?\s+)+/i;
 var MAPS=/https?:\/\/(?:maps\.app\.goo\.gl|goo\.gl\/maps|(?:www\.)?google\.[a-z.]+\/maps|maps\.google\.[a-z.]+)\S*/i;
 var PHONE=/(?:\+|00)?(?:\s*968[\s\-]*)?(?<![\d])([279](?:[\s\-]?\d){7})(?![\d])/g;
 var QWORD={'واحد':1,'واحده':1,'وحده':1,'حبه':1,'اثنين':2,'اثنتين':2,'ثنتين':2,'ثلاث':3,'ثلاثه':3,'اربع':4,'اربعه':4,'خمس':5,'خمسه':5,'ست':6,'سته':6,'سبع':7,'سبعه':7,'ثمان':8,'ثمانيه':8,'تسع':9,'تسعه':9,'عشر':10,'عشره':10};
@@ -32169,13 +32171,19 @@ function canon(raw){
       var re=new RegExp('(^|[^a-z0-9])('+k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&').replace(/ /g,'\\s+')+')(?![a-z0-9])','ig');
       src=src.map(function(l){return l.replace(re,function(m,pre){return pre+AL[k].p})})})}catch(e){}
   if(/^\s*<?(?:media omitted|تم حذف هذه الرسالة|الوسائط غير مضمنة)>?\s*$/i.test(src.join('\n')))return {text:raw,extra:[]};
+  /* رسالة في سطر واحد: «مرحبا، اسمي جميلة رقمي 9xxxxxxx من صحار ابغى جزء عم» ← سطر لكل معلومة */
+  src=[].concat.apply([],src.map(function(l){var t=dg(l);
+    var K=/(?:^|[\s،,.]+)(?=و?(?:اسمي|الاسم|رقمي|الرقم|العنوان|والدفع|الدفع|طريقة الدفع|ملاحظه|ملاحظة|ابغى|ابغي|ابي|أبي|اريد|أريد|بغيت|حاب|ممكن)\s)/g;
+    var hits=(t.match(K)||[]).length;
+    if(t.length<25||hits<2&&!(hits>=1&&allPhones(t).length))return [l];
+    return t.replace(K,function(m){return '\n'}).split('\n').map(function(x){return x.replace(/^و(?=(?:الدفع|الاسم|الرقم|العنوان)\s)/,'').trim()}).filter(Boolean)}));
   /* افصل الأسطر التي تجمع عدة حقول أو منتجات بفاصلة */
   var lines=[];
   src.forEach(function(l){var parts=l.split(/[،,]\s*/);
     if(parts.length>1){var lab=parts.filter(function(p){return labelOf(p.replace(GREET,''))}).length,pr=parts.filter(hasProd).length;
       if(lab>=2||pr>=2||(lab>=1&&pr>=1)){parts.forEach(function(p){if(p.trim())lines.push(p)});return}}
     lines.push(l)});
-  var out=[],phones=[],have={};
+  var out=[],phones=[],have={},NAME='';
   lines.forEach(function(l0){
     var l=l0.trim();if(!l){out.push(l0);return}
     var lb=l.replace(/^[^\p{L}\p{N}\[(]+/u,'');
@@ -32187,15 +32195,17 @@ function canon(raw){
     if(am&&!/(?:رقم|حساب بنكي)/.test(am[1])){extra.push('💰 المبلغ في الرسالة: '+am[1].trim());return}
     var lab=labelOf(lb);
     if(lab){var v=lab.v;
-      if(lab.f==='الرقم'){var ps=allPhones(v);if(ps.length){ps.forEach(addPhone);return}out.push(l0);return}
-      if(lab.f==='الاسم'){var pn=allPhones(v);if(pn.length){pn.forEach(addPhone);v=stripPhones(v)}v=v.replace(/[\s،,.:\-–—]+$/,'').trim();if(v){out.push('الاسم: '+v);have.name=1}return}
+      if(lab.f==='الرقم'){var ps=allPhones(v);if(ps.length){ps.forEach(addPhone);var lf=stripPhones(v).replace(/^(?:من|في|بولايه|بولاية|ولايه|ولاية|و)\s+/,'').replace(/[\s،,.]+$/,'').trim();if(lf&&!have.place&&placeIdx(lf.split(/\s+/))===0){out.push('المكان: '+lf);have.place=1}return}out.push(l0);return}
+      if(lab.f==='الاسم'){var pn=allPhones(v);if(pn.length){pn.forEach(addPhone);v=stripPhones(v)}v=v.replace(/[\s،,.:\-–—]+$/,'').trim();
+        var fm=v.match(/^(.+?)\s+(?:من|في|ب|بولاية|ولاية)\s+(.+)$/);if(fm&&placeIdx(fm[2].split(/\s+/))===0){v=fm[1].trim();if(!have.place){out.push('المكان: '+fm[2].trim());have.place=1}}
+        if(v){out.push('الاسم: '+v);have.name=1;NAME=v}return}
       if(lab.f==='المكان'){var sh=shipOf(v);out.push('المكان: '+v.replace(/[\s،,.]+$/,''));have.place=1;return}
       if(lab.f==='طريقة الدفع'){out.push('طريقة الدفع: '+(payOf(v)||v));have.pay=1;return}
       out.push(lab.f+': '+v);return}
     /* «انا أحمد البلوشي» / «معك أحمد» */
     var me=lb.match(/^(?:انا|أنا|معك|معاك|هذا|this is|i am|i'm)\s+(.+)$/i);
     if(me&&!hasProd(me[1])){var rest=me[1],ph=allPhones(rest);rest=stripPhones(rest).replace(/\s*(?:و?رقمي|رقم|و?هذا رقمي)\s*$/,'').replace(/[\s،,.:\-]+$/,'').trim();
-      var w=rest.split(/\s+/);if(rest&&w.length<=4&&!/\d/.test(rest)&&!ASK.test(rest+' ')){out.push('الاسم: '+rest);have.name=1;ph.forEach(addPhone);return}}
+      var w=rest.split(/\s+/);if(rest&&w.length<=4&&!/\d/.test(rest)&&!ASK.test(rest+' ')){out.push('الاسم: '+rest);have.name=1;NAME=rest;ph.forEach(addPhone);return}}
     /* التوصيل لـ… */
     var to=lb.match(/^(?:التوصيل|توصيل|ارسله|أرسله|ارسلها|الشحن)?\s*(?:الى|إلى|على|ل\s*ـ|لـ|ل)\s*(.+)$/);
     if(to&&/^(?:التوصيل|توصيل|ارسل|أرسل|الشحن|لـ|ل\s*ـ)/.test(lb)){var tw=to[1].replace(/^لل/,'ال');var ws=tw.split(/\s+/);ws[0]=ws[0].replace(/^ل(?=[ء-ي]{3})/,function(){return ''});
@@ -32211,16 +32221,20 @@ function canon(raw){
     /* أرقام الهاتف داخل السطر */
     if(!/(?:التحويل|الحواله|الحوالة|حساب)/.test(lb)){var pl=allPhones(lb);
       if(pl.length){pl.forEach(addPhone);var left=stripPhones(lb).replace(/(?:^|\s)(?:و?رقمي|و?رقم(?:\s*ال(?:ثاني|واتس(?:اب)?|جوال))?|و?الرقم(?:\s*ال(?:ثاني|اخر|آخر))?|و?هذا|هو)(?=\s|$)/g,' ').replace(/\s+/g,' ').replace(/^[\s\-–—،,:]+|[\s\-–—،,:]+$/g,'').trim();
+        left=left.replace(/^(?:من|في|بولايه|بولاية|ولايه|ولاية)\s+/,'');
         if(!left)return;
         if(hasProd(left)){out.push(left);return}
         var lw=left.split(/\s*[\-–—]\s*|\s+/).filter(Boolean),pi=placeIdx(lw);
-        if(pi>0&&!have.name&&pi<=3){out.push('الاسم: '+lw.slice(0,pi).join(' '));out.push('المكان: '+lw.slice(pi).join(' '));have.name=have.place=1;return}
+        if(pi>0&&!have.name&&pi<=3){NAME=lw.slice(0,pi).join(' ');out.push('الاسم: '+NAME);out.push('المكان: '+lw.slice(pi).join(' '));have.name=have.place=1;return}
         if(pi===0&&!have.place){out.push('المكان: '+lw.join(' '));have.place=1;return}
         out.push(left);return}}
     /* «سعيد - المصنعة» */
     var dash=lb.split(/\s+[\-–—]\s+/);
     if(dash.length===2&&!hasProd(lb)&&!/\d/.test(lb)){var a=dash[0].trim(),b=dash[1].trim();
-      if(placeIdx(b.split(/\s+/))===0&&a.split(/\s+/).length<=3&&placeIdx(a.split(/\s+/))<0&&!have.name){out.push('الاسم: '+a);out.push('المكان: '+b);have.name=have.place=1;return}}
+      if(placeIdx(b.split(/\s+/))===0&&a.split(/\s+/).length<=3&&placeIdx(a.split(/\s+/))<0&&!have.name){NAME=a;out.push('الاسم: '+a);out.push('المكان: '+b);have.name=have.place=1;return}}
+    /* «… للعامرات» أو «… في صحم» في آخر سطر المنتج */
+    if(!have.place&&hasProd(lb)){var tp=lb.replace(/[؟?!.]+$/,'').match(/^(.*\S)\s+(?:لل|ل\s*ـ\s*|لـ|ل|الى\s+|إلى\s+|في\s+)([\u0621-\u064A]+(?:\s+[\u0621-\u064A]+)?)$/);
+      if(tp){var pw=(/^(?:لل)/.test(lb.slice(tp[1].length).trim())?'ال':'')+tp[2];if(placeIdx(pw.split(/\s+/))===0){out.push('المكان: '+pw);have.place=1;lb=tp[1]}}}
     /* الكميات بالكلمات: «دزينة»، «نص دزينة» */
     var q=lb.replace(/نص\s*(?:دزينه|دزينة|درزن)/g,'6').replace(/(?:دزينتين|درزنين)/g,'24').replace(/(?:دزينه|دزينة|درزينه|درزينة|درزن|دزن)/g,'12');
     /* سطر كمية وحده بعد المنتج: «واحد بس»، «3 حبات» */
@@ -32243,7 +32257,7 @@ function canon(raw){
   if(!have.place){for(var z=0;z<out.length;z++){var o=out[z];if(/[:：]/.test(o)||hasProd(o)||/\d{3,}/.test(o))continue;var ow=o.trim().split(/[\s,،\-–—]+/).filter(Boolean);if(ow.length&&ow.length<=6&&placeIdx(ow)===0){out[z]='المكان: '+o.trim();have.place=1;break}}}
   function addPhone(p){if(phones.indexOf(p)<0)phones.push(p)}
   if(phones.length){out.unshift('الرقم: '+phones[0]);phones.slice(1).forEach(function(p){extra.push('📱 رقم إضافي: '+p)})}
-  return {text:out.join('\n'),extra:extra}}
+  return {text:out.join('\n'),extra:extra,name:NAME}}
 function dual(t){var n=N(t);var hit=null;prods().forEach(function(p){if(hit)return;var w=N(p).split(' '),b=w[0];if(b.length<2)return;
     var forms=[b+'ين',b+'ان',b.replace(/ء$/,'ي')+'ين',b.replace(/ه$/,'ت')+'ين',b.replace(/ه$/,'ت')+'ان'];
     var rest=w.slice(1).join(' ');forms.forEach(function(f){if(hit)return;var ph=f+(rest?' '+rest:''),i=n.indexOf(ph);if(i>=0&&(i===0||/\s/.test(n[i-1]))){hit={p:p,i:i,len:ph.length}}})});
@@ -32265,8 +32279,11 @@ window.EMDCanonV172=canon;
 
 /* بعد التحليل: تنظيف بسيط + إضافة ما كان يضيع إلى الملاحظات */
 var BADN=/(?:^|\s)(?:اخوي|اختي|ابغي|ابغى|ابي|اريد|أريد|اطلب|أطلب|عندكم|ممكن|بغيت|حبيت|name|phone|want|order|طلب)(?:\s|$)/i;
-function fix(extra){
+function fix(extra,NAMEX){
   var n=document.getElementById('pname');
+  if(n&&NAMEX&&N(n.value)!==N(NAMEX)&&!n.dataset.v172u&&!(n.dataset.emdAuto==='1')){n.value=NAMEX}
+  if(n&&!NAMEX&&n.value&&(FILLER.test(N(n.value))||/^(?:لل|ل)[\u0621-\u064A]+$/.test(n.value.trim())&&!isPlaceWord(n.value)||hasProd(n.value)))n.value='';
+  var du=document.getElementById('pdue');if(du&&/^(?:التوصيل|الاستلام|الشحن|الارسال|الإرسال)$/.test(du.value.trim()))du.value='';
   if(n){var v=n.value.replace(/^(?:الاسم|اسمي|انا|أنا|معك|العميل|الزبون|name)\s*[:：\/\-]?\s*/i,'').replace(/[\s،,.:\-–—]+$/,'').trim();if(v!==n.value)n.value=v;
     if(BADN.test(N(v))||BADN.test(v)){n.classList.add('emd103-warn')}}
   var p=document.getElementById('pplace');
@@ -32284,8 +32301,9 @@ function wrap(){var f=window.parse;if(typeof f!=='function'||f.__v172)return;
     try{c=canon(orig)}catch(e){console.warn('V172',e)}
     ta.value=c.text;var r;
     try{r=f.apply(this,arguments)}finally{ta.value=orig}
-    try{fix(c.extra)}catch(e){console.warn('V172 fix',e)}
-    setTimeout(function(){try{fix([])}catch(e){}},160);
+    var nm=document.getElementById('pname');if(nm){nm.dataset.v172u='';nm.addEventListener('input',function(e){if(e.isTrusted)nm.dataset.v172u='1'})}
+    try{fix(c.extra,c.name)}catch(e){console.warn('V172 fix',e)}
+    setTimeout(function(){try{fix([],c.name)}catch(e){}},160);setTimeout(function(){try{fix([],c.name)}catch(e){}},700);
     return r};
   for(var k in f){try{g[k]=f[k]}catch(e){}}
   g.__v172=true;window.parse=g}
