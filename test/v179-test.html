@@ -32579,7 +32579,8 @@ if(window.__EMD_V179__)return;window.__EMD_V179__=true;
 var MAIN='emd_business_v1',BASE='emd_v93_keybase_v179',MKEY='emd_v93_sync_b',LOGK='emd_v93_mergelog_v179';
 var LEGACY=['emd_business_local_snapshot_v85','emd_business_last_backup_v287','emd_business_v313_snapshot_v1','emd_inventory_v2_legacy_backup_v356','emd_v303_integrity_guard'];
 var TK='emd179_times',OFFK='emd_v93_offline_v179',netFail=0,netOk=0;
-function offline(){return navigator.onLine===false||netFail>netOk}
+/* قرار Emad (2026-11-04): الأحدث وقتًا هو المعتمد دائمًا، حتى لو كان الجوال بلا إنترنت؛ لذلك لا قاعدة خاصة للجوال المنقطع */
+function offline(){return false}
 function offs(){var o=J(OFFK);o=isObj(o)?o:{};o.p=o.p||{};o.c=o.c||{};o.k=o.k||{};return o}
 function markOff(g,k,prev){var o=offs();if(!(k in o[g])){o[g][k]=prev==null?0:prev;lsSet(OFFK,JSON.stringify(o))}}
 var SKIP={'emd_business_ai_settings_v3201':1};SKIP[MAIN]=1;SKIP[TK]=1;
