@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V210</title>
+<title>EMD Business — Standalone V211</title>
 <!-- EMD V158: شاشة افتتاح تغطي التطبيق حتى تكتمل الواجهة الأخيرة، فلا تظهر الأشكال والأزرار القديمة أثناء التحميل -->
 <style id="EMD-V158-boot">
 html.emd-boot{background:#0f172a!important}
@@ -19212,7 +19212,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V210</div>
+<div id="emdStandaloneV2Badge">EMD Business • V211</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -27417,6 +27417,12 @@ function upImg(src,M,type){src=String(src||'');if(/^https:\/\//i.test(src))retur
 function b64(blob){return new Promise(function(ok,no){var r=new FileReader();r.onload=function(){ok(String(r.result).split(',')[1]||'')};r.onerror=no;r.readAsDataURL(blob)})}
 function snapshot(){var L=products(),snap={};L.forEach(function(p){var o=S.prod[p.k];if(o&&o.on)snap[p.k]={name:p.name,price:p.price,stock:p.stock,cat:p.cat,desc:o.desc||'',old:o.old||'',im:(o.imgs||[]).join('|')}});S.snap=snap;S.snapAt=stamp()}
 var busy=false;
+/* V211: إن كان الرابط محجوزًا لتاجر آخر تُضاف إليه علامة مميزة تلقائيًا ويُعاد النشر دون إزعاج التاجر */
+function slugNext(base,n){var suf=n<=9?'-'+n:'-'+Math.random().toString(36).slice(2,6);return base.slice(0,30-suf.length).replace(/-+$/,'')+suf}
+function slugTaken(e){var c=String(e&&e.code||''),m=String(e&&e.message||'');return c==='slug_taken'||(c==='23505'&&/slug/i.test(m))}
+function pubFree(st,rows){var base=st.slug,n=1;
+  function go(s){st.slug=s;return fn('publish',{store:st,products:rows}).then(function(r){if(s!==base){S.slug=s;S.slugAuto=true}return r},function(e){if(!slugTaken(e)||n>=14)throw e;n++;return go(slugNext(base,n))})}
+  return go(base)}
 function publish(){if(busy)return;if(!logged()){S.pubErr='سجّل الدخول أولًا من تبويب «الرابط».';paint();return}
   if(!slugOk(S.slug)){S.pubErr='اكتب اسم رابط صحيحًا أولًا (تبويب «الرابط»).';tab='pub';paint();return}
   busy=true;S.pubErr='';paint();
@@ -27429,8 +27435,8 @@ function publish(){if(busy)return;if(!logged()){S.pubErr='سجّل الدخول 
         return U.length?U[0]:upImg(p.img,600,'image/jpeg')}).then(function(u){rows.push({key:p.k,name:p.name,price:Math.max(0,p.price),old_price:num(o.old)>p.price?num(o.old):null,stock:Math.max(0,Math.floor(p.stock)),cat:(window.EMD150?window.EMD150.cat(p.cat):p.cat)||null,descr:o.desc||null,image:u||null});return next()})}
     return next()})
   .then(function(){if(brand){var gk=Object.keys(GAL);if(gk.length)brand.gal=GAL;while(gk.length&&JSON.stringify(brand).length>19500){var kk=gk[gk.length-1];GAL[kk].pop();if(!GAL[kk].length){delete GAL[kk];gk.pop()}}}
-    return fn('publish',{store:{slug:S.slug,is_open:!S.paused,brand:brand,ship:Math.max(0,num(S.ship)),free_over:num(S.free)>0?num(S.free):null},products:rows})})
-  .then(function(){S.pubRows=rows;S.pubStore={brand:brand,ship:Math.max(0,num(S.ship)),free_over:num(S.free)>0?num(S.free):null};S.stockErr='';snapshot();S.pubAt=stamp();S.pubSlug=S.slug;busy=false;save();paint();toast('✓ تم نشر متجرك');poll(true)})
+    return pubFree({slug:S.slug,is_open:!S.paused,brand:brand,ship:Math.max(0,num(S.ship)),free_over:num(S.free)>0?num(S.free):null},rows)})
+  .then(function(){S.pubRows=rows;S.pubStore={brand:brand,ship:Math.max(0,num(S.ship)),free_over:num(S.free)>0?num(S.free):null};S.stockErr='';snapshot();S.pubAt=stamp();S.pubSlug=S.slug;busy=false;save();paint();toast(S.slugAuto?'✓ تم نشر متجرك برابط: '+S.slug:'✓ تم نشر متجرك');S.slugAuto=false;poll(true)})
   .catch(function(e){busy=false;S.pubErr=errMsg(e);save();paint()})}
 /* V156: الكميات تتحدّث في المتجر تلقائيًا (الأسعار والتصميم تبقى كما نُشرت آخر مرة) */
 var stBusy=false;
@@ -27540,11 +27546,11 @@ function onClick(e){var w=$('emd411Store'),t=e.target;if(t===w){close();return}
   else if(act==='publish')publish();
   else if(act==='pv')pvOpen();
   else if(act==='login'){close();try{window.EMDCloudV93.open()}catch(x){}}
-  else if(act==='openst')window.open(URL0+S.slug,'_blank');
-  else if(act==='share')window.open('https://wa.me/?text='+encodeURIComponent('تفضّل بزيارة متجرنا 🛍️ '+URL0+S.slug),'_blank');
+  else if(act==='openst')window.open(URL0+(S.pubSlug||S.slug),'_blank');
+  else if(act==='share')window.open('https://wa.me/?text='+encodeURIComponent('تفضّل بزيارة متجرنا 🛍️ '+URL0+(S.pubSlug||S.slug)),'_blank');
   else if(act==='poll')poll(true);
   else if(act==='acc'||act==='rej'||act==='owa'){var oid=a.closest('[data-o]').getAttribute('data-o');if(act==='acc')accept(oid,a);else if(act==='rej')reject(oid,a);else owa(oid)}
-  else if(act==='copy'){var u='https://emd-business.github.io/store/?s='+S.slug;try{navigator.clipboard.writeText(u).then(function(){toast('✓ تم نسخ الرابط')},function(){toast(u)})}catch(x){toast(u)}}}
+  else if(act==='copy'){var u='https://emd-business.github.io/store/?s='+(S.pubSlug||S.slug);try{navigator.clipboard.writeText(u).then(function(){toast('✓ تم نسخ الرابط')},function(){toast(u)})}catch(x){toast(u)}}}
 var repaintT;
 function onInput(e){var t=e.target;
   if(t.classList.contains('srch')){q=t.value.trim();paint();return}
@@ -27585,7 +27591,7 @@ function cover(){var W=innerWidth,H=innerHeight,on=false,k=document.body.childre
   document.body.classList.toggle('emd411-covered',on);
   /* رقم النسخة أسفل قائمة «المزيد» (شارة النسخة مخفية على الجوال) */
   var sh=document.getElementById('emd410Sheet');if(sh&&sh.classList.contains('show')){var bx=sh.querySelector('.box');if(bx&&!bx.querySelector('.e141v')){var v=document.createElement('div');v.className='e141v';v.textContent=VER;bx.appendChild(v)}}}
-var VER='EMD Business • V210';
+var VER='EMD Business • V211';
 function boot(){cover();setInterval(cover,500)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
