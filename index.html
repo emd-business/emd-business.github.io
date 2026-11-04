@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V211</title>
+<title>EMD Business — Standalone V212</title>
 <!-- EMD V158: شاشة افتتاح تغطي التطبيق حتى تكتمل الواجهة الأخيرة، فلا تظهر الأشكال والأزرار القديمة أثناء التحميل -->
 <style id="EMD-V158-boot">
 html.emd-boot{background:#0f172a!important}
@@ -19212,7 +19212,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V211</div>
+<div id="emdStandaloneV2Badge">EMD Business • V212</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -27352,8 +27352,14 @@ function sync(){if(S.pubAt&&logged()){publish();return}snapshot();save();paint()
 
 /* تبويب الرابط: النشر الفعلي (V413) */
 function slugOk(s){return /^[a-z0-9][a-z0-9-]{1,28}[a-z0-9]$/.test(s)}
-function pubTab(){var url=URL0+(S.slug||'اسم-متجرك'),on=0,live=!!S.pubAt;products().forEach(function(p){if(S.prod[p.k]&&S.prod[p.k].on)on++});
-  var h='<label class="f">اسم الرابط (حروف إنجليزية صغيرة وأرقام و -)<input data-k="slug" dir="ltr" maxlength="30" placeholder="noor-perfumes" value="'+esc(S.slug)+'"></label>'+
+/* V212: لكل حساب رقم خاص ثابت من 4 خانات قبل اسم الرابط؛ المتاجر المنشورة سابقًا تبقى بروابطها */
+function slugNo(){var c=C(),u='';try{u=c&&c.uid()||''}catch(e){}if(!u)return '';var h=2166136261;u=String(u);for(var i=0;i<u.length;i++){h^=u.charCodeAt(i);h=Math.imul(h,16777619)}return String(1000+(h>>>0)%9000)}
+function slugHas(s,n){return !!n&&String(s||'').indexOf(n+'-')===0}
+function slugOld(){return !!(S.pubAt&&S.pubSlug&&!slugHas(S.pubSlug,slugNo()))}
+function slugFull(v){v=String(v||'');var n=slugNo();if(!n||!v||slugOld()||slugHas(v,n))return v;return n+'-'+v.slice(0,25)}
+function slugName(){var n=slugNo();return !slugOld()&&slugHas(S.slug,n)?S.slug.slice(n.length+1):S.slug}
+function pubTab(){S.slug=slugFull(S.slug);var url=URL0+(S.slug||'اسم-متجرك'),on=0,live=!!S.pubAt;products().forEach(function(p){if(S.prod[p.k]&&S.prod[p.k].on)on++});
+  var sn=slugNo(),h='<label class="f">'+(sn&&!slugOld()?'اسم متجرك في الرابط (حروف إنجليزية صغيرة وأرقام و -)':'اسم الرابط (حروف إنجليزية صغيرة وأرقام و -)')+'<input data-k="slug" dir="ltr" maxlength="'+(sn&&!slugOld()?25:30)+'" placeholder="noor-perfumes" value="'+esc(slugName())+'"></label>'+(sn&&!slugOld()?'<p class="hint">رقمك الخاص '+sn+' يُضاف تلقائيًا قبل الاسم، فلا يتكرر رابطك مع تاجر آخر.</p>':'')+
    (S.slug&&!slugOk(S.slug)?'<p class="hint" style="color:#b91c1c">من 3 إلى 30 حرفًا: a-z و 0-9 و - فقط، ولا يبدأ ولا ينتهي بـ -</p>':'')+
    (live&&S.pubSlug&&S.slug!==S.pubSlug?'<p class="hint" style="color:#b45309">غيّرت اسم الرابط. بعد تحديث المتجر يتوقف الرابط القديم، ويحتاج الزبائن إلى الرابط الجديد.</p>':'')+
    '<label class="f">رابط متجرك</label><div class="url">'+esc(url)+'</div>'+pvBtn();
@@ -27424,6 +27430,7 @@ function pubFree(st,rows){var base=st.slug,n=1;
   function go(s){st.slug=s;return fn('publish',{store:st,products:rows}).then(function(r){if(s!==base){S.slug=s;S.slugAuto=true}return r},function(e){if(!slugTaken(e)||n>=14)throw e;n++;return go(slugNext(base,n))})}
   return go(base)}
 function publish(){if(busy)return;if(!logged()){S.pubErr='سجّل الدخول أولًا من تبويب «الرابط».';paint();return}
+  S.slug=slugFull(S.slug);
   if(!slugOk(S.slug)){S.pubErr='اكتب اسم رابط صحيحًا أولًا (تبويب «الرابط»).';tab='pub';paint();return}
   busy=true;S.pubErr='';paint();
   var L=products().filter(function(p){var o=S.prod[p.k];return o&&o.on}),rows=[],brand=null,GAL={};
@@ -27554,7 +27561,7 @@ function onClick(e){var w=$('emd411Store'),t=e.target;if(t===w){close();return}
 var repaintT;
 function onInput(e){var t=e.target;
   if(t.classList.contains('srch')){q=t.value.trim();paint();return}
-  var k=t.getAttribute('data-k');if(k&&t.type!=='checkbox'){S[k]=t.type==='number'?Math.max(0,num(t.value)):(k==='slug'?t.value.toLowerCase().replace(/\s+/g,'-'):t.value);save();
+  var k=t.getAttribute('data-k');if(k&&t.type!=='checkbox'){S[k]=t.type==='number'?Math.max(0,num(t.value)):(k==='slug'?slugFull(t.value.toLowerCase().replace(/\s+/g,'-')):t.value);save();
     clearTimeout(repaintT);repaintT=setTimeout(function(){var m=$('emd411Store').querySelector('.mini');if(m)m.outerHTML=mini();if(k==='slug'){var u=$('emd411Store').querySelector('.url');if(u)u.textContent='https://emd-business.github.io/store/?s='+(S.slug||'اسم-متجرك');var c=$('emd411Store').querySelector('[data-a="copy"]');if(c)c.disabled=!slugOk(S.slug)}},120);return}
   var pd=t.getAttribute('data-pd');if(pd){var r=t.closest('.pr');pset(r.getAttribute('data-p'))[pd]=t.value;save()}}
 function onChange(e){var t=e.target,k=t.getAttribute('data-k');
@@ -27591,7 +27598,7 @@ function cover(){var W=innerWidth,H=innerHeight,on=false,k=document.body.childre
   document.body.classList.toggle('emd411-covered',on);
   /* رقم النسخة أسفل قائمة «المزيد» (شارة النسخة مخفية على الجوال) */
   var sh=document.getElementById('emd410Sheet');if(sh&&sh.classList.contains('show')){var bx=sh.querySelector('.box');if(bx&&!bx.querySelector('.e141v')){var v=document.createElement('div');v.className='e141v';v.textContent=VER;bx.appendChild(v)}}}
-var VER='EMD Business • V211';
+var VER='EMD Business • V212';
 function boot(){cover();setInterval(cover,500)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
