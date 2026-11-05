@@ -5633,6 +5633,24 @@ html.qk-on #app,html.qk-on #state,html.qk-on #notice,html.qk-on #lx{display:none
 #qk173 .qtg button[aria-pressed="true"]{border-color:var(--qn);background:var(--qn);color:#fff}
 #qk173 .qpk,#qk173 .qpay{margin:0;font-weight:700;color:#384152}
 #qk173 .qpay{margin:0 0 10px}
+#qk173 .qrc{margin:0 0 10px}
+#qk173 .qcp{display:inline-block;min-height:36px;margin:0 0 10px;padding:0 12px;border:1px solid #d9dde5;border-radius:9px;background:#fff;color:#0f1f3d;font:600 13px inherit;cursor:pointer}
+#qk173 .qam{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 8px;padding:9px 12px;background:#fff8e6;border-radius:12px;font-size:14px}
+#qk173 .qam b{font-size:16px}
+#qk173 .qfile{display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:8px 12px;border:1.5px dashed #0f1f3d;border-radius:12px;background:#fff;color:#0f1f3d;font-weight:700;cursor:pointer;text-align:center}
+#qk173 .qfile input{position:absolute;width:1px;height:1px;opacity:0}
+#qk173 .qrp{display:block;max-width:100%;max-height:200px;margin:9px auto 0;border-radius:10px;border:1px solid #e4e8ef}
+#qk173 .qre{margin:6px 0 0;color:#b91c1c;font-size:13px}
+#qk173 .qrs{margin:10px 0;padding:10px 12px;border-radius:12px;background:#eef6ff;color:#0f1f3d;font-size:14px;line-height:1.6}
+#qk173 .qrs button{margin-inline-start:6px;min-height:36px;padding:0 10px;border:1px solid #0f1f3d;border-radius:8px;background:#fff;color:#0f1f3d;font-weight:700}
+#qk173 .qtr{margin:12px 0;padding:11px 13px;background:#fff;border:1px solid #e4e0d4;border-radius:14px;font-size:14px}
+#qk173 .qtr b{display:block;margin-bottom:6px}
+#qk173 .qtr a{display:flex;justify-content:space-between;gap:8px;align-items:center;min-height:42px;padding:6px 0;border-top:1px solid #eef0f4;color:#0f1f3d;text-decoration:none}
+#qk173 .qtr a span:last-child{font-weight:700;white-space:nowrap}
+#qk173 .qcl{display:block;width:100%;margin:8px 0 4px}
+#qk173 .qsv{margin:4px 0 10px;font-size:12.5px;color:#5b6472}
+#qk173 .qtg3{flex-wrap:wrap}#qk173 .qtg3 button{flex:1 1 30%;min-width:96px}
+#qk173 .qfn{margin:-2px 0 8px;font-size:12.5px;color:#5b6472}
 #qk173 .qbank{background:#f4f6fa;border-radius:12px;padding:10px 12px;margin:0 0 10px;font-size:14px;white-space:pre-wrap}
 #qk173 .qnt,#qk173 .qadd{border:0;background:none;color:#8a6410;font:inherit;font-weight:800;font-size:15px;padding:4px 0;cursor:pointer}
 #qk173 .qadd{display:block;width:100%;margin-top:8px;padding:12px;border:1.5px dashed #d9c48f;border-radius:14px}
@@ -6998,7 +7016,7 @@ function q173miss(quiet){var o=q173tot(),Z=q173z();
   var n=($('qkName')||{}).value||'',ph=(($('qkPhone')||{}).value||'').replace(/\D/g,''),ad=($('qkAddr')||{}).value||'';
   if(n.trim().length<2)return ['qkName','يرجى كتابة الاسم'];
   if(ph.length<8||ph.length>15)return ['qkPhone','يرجى إدخال رقم هاتف صحيح'];
-  if(QS.del&&!ad.trim())return ['qkAddr','يرجى كتابة العنوان'];return null}
+  if(QS.del&&!ad.trim()&&(!B.qf||B.qf.ad==null||B.qf.ad===1))return ['qkAddr','يرجى كتابة العنوان'];return null}
 function q173boot(){if(QL.bad){qkMsg('🔎','الرابط غير صحيح','تأكد من نسخ الرابط كاملًا، أو تواصل مع المحل.',!B.qonly);return}
   if(B.qoff){qkMsg('⏸️','هذا الرابط غير متاح حاليًا','يرجى التواصل مع المحل.',!B.qonly);return}
   if(QL.e&&Math.floor(Date.now()/864e5)>+QL.e){qkMsg('⌛','انتهت صلاحية هذا الرابط','اطلب من المحل رابطًا جديدًا.',!B.qonly);return}
@@ -7011,16 +7029,16 @@ function q173boot(){if(QL.bad){qkMsg('🔎','الرابط غير صحيح','تأ
    (LAST.name?'<div class="qhi">👋 مرحبًا بعودتك يا '+esc(String(LAST.name).split(' ')[0])+'، بياناتك محفوظة. <button type="button" data-qclr>تغيير</button></div>':'')+
    '<section class="qc"><h2><span>١</span> المنتجات</h2>'+(L.length>8?'<input class="qsr" id="qkQ" type="search" placeholder="🔎 ابحث عن منتج">':'')+'<div id="qkL"></div>'+
    (QL.x?'<button type="button" class="qadd" data-qx>＋ أضف منتجًا آخر</button><div id="qkX" hidden></div>':'')+'</section>'+
-   '<section class="qc"><h2><span>٢</span> الاستلام</h2>'+(pk?'<div class="qtg"><button type="button" data-qdl="1" aria-pressed="true">🚚 توصيل</button><button type="button" data-qdl="0" aria-pressed="false">🏪 استلام من المحل</button></div>':'')+
+   '<section class="qc"><h2><span>٢</span> الاستلام</h2>'+qfTg(pk)+
    '<div id="qkDel">'+(q173nf()?'<p class="qpk" style="margin:0 0 10px">🚚 يحدد المحل رسوم التوصيل ويخبرك بها عند التواصل معك.</p>':'')+(Z.length&&!q173nf()?'<select id="qkZone" class="qin"><option value="">اختر منطقتك</option>'+Z.map(function(z){return '<option value="'+esc(z.n)+'"'+(LAST.city===z.n?' selected':'')+'>'+esc(z.n)+' · '+(+z.f?qm(z.f):'مجاني')+'</option>'}).join('')+'<option value="__o">منطقة أخرى · '+(+ST.ship?qm(ST.ship):'مجاني')+'</option></select>':'')+
-   '<label class="ql">العنوان<span class="qrw"><input id="qkAddr" class="qin" maxlength="260" autocomplete="street-address" placeholder="الولاية، المنطقة، رقم المنزل" value="'+esc(LAST.address||'')+'"><button type="button" class="qloc" data-qloc title="موقعي الحالي">📍</button></span></label></div>'+
+   qfCo()+'<label class="ql"'+((B.qf&&B.qf.ad===0)?' hidden':'')+'>العنوان'+((B.qf&&B.qf.ad===2)?' (اختياري)':'')+'<span class="qrw"><input id="qkAddr" class="qin" maxlength="260" autocomplete="street-address" placeholder="الولاية، المنطقة، رقم المنزل" value="'+esc(LAST.address||'')+'"><button type="button" class="qloc" data-qloc title="موقعي الحالي">📍</button></span></label></div>'+
    '<p class="qpk" id="qkPkI" hidden>🏪 ستستلم طلبك من المحل، وسيتواصل معك المحل لتحديد الوقت.</p></section>'+
    '<section class="qc"><h2><span>٣</span> بياناتك</h2><label class="ql">الاسم<input id="qkName" class="qin" maxlength="80" autocomplete="name" value="'+esc(LAST.name||'')+'"></label>'+
    '<label class="ql">رقم الهاتف<input id="qkPhone" class="qin" type="tel" inputmode="tel" dir="ltr" maxlength="20" autocomplete="tel" value="'+esc(LAST.phone||'')+'"></label>'+
    '<input id="qkHp" tabindex="-1" autocomplete="off" aria-hidden="true" class="qhp">'+
    ((cod&&bank)?'<div class="qtg"><button type="button" data-qpy="cod" aria-pressed="'+(QS.pay==='cod')+'">💵 الدفع عند الاستلام</button><button type="button" data-qpy="bank" aria-pressed="'+(QS.pay==='bank')+'">🏦 تحويل بنكي</button></div>':'<p class="qpay">'+(cod?'💵 الدفع عند الاستلام':'🏦 الدفع بتحويل بنكي')+'</p>')+
-   (bank?'<div class="qbank" id="qkBank"'+(QS.pay==='bank'?'':' hidden')+'>'+esc(B.bankInfo||'سيرسل لك المحل بيانات التحويل بعد تأكيد الطلب.')+'</div>':'')+
-   '<button type="button" class="qnt" data-qnt>＋ إضافة ملاحظة</button><textarea id="qkNote" class="qin" maxlength="200" placeholder="ملاحظة للمحل (اختياري)" hidden></textarea></section>'+
+   (bank?'<div id="qkBank"'+(QS.pay==='bank'?'':' hidden')+'><div class="qbank">'+esc(B.bankInfo||'سيرسل لك المحل بيانات التحويل بعد تأكيد الطلب.')+'</div>'+(B.bankInfo?'<button type="button" class="qcp" data-qcp="bank">📋 نسخ بيانات الحساب</button><div class="qam"><span><span id="qkAmL">حوّل المبلغ بالضبط: </span><b id="qkAmt"></b></span><button type="button" class="qcp" style="margin:0" data-qcp="amt">📋 نسخ</button></div><p class="qfn" id="qkFn" hidden></p><div class="qrc" id="qkRl"><label class="qfile"><input id="qkRf" type="file" accept="image/*"><span id="qkRt">📎 إرفاق صورة الإيصال</span></label><p class="qre" id="qkRe" role="alert"></p><img class="qrp" id="qkRp" alt="الإيصال المرفق" hidden></div>':'')+'</div>':'')+
+   ((B.qf&&B.qf.nt===0)?'':'<button type="button" class="qnt" data-qnt>＋ إضافة ملاحظة</button>')+'<textarea id="qkNote" class="qin" maxlength="200" placeholder="ملاحظة للمحل (اختياري)" hidden></textarea></section>'+
    q173foot()+'<div style="height:120px"></div></div>'+
    '<div class="qbar" id="qkBar"><div class="qs1"></div><p class="qerr" id="qkErr" role="alert"></p><button type="button" class="qgo" id="qkGo">تأكيد الطلب</button></div>';
   if(LAST.city&&Z.some(function(z){return z.n===LAST.city}))QS.zone=LAST.city;
@@ -7040,14 +7058,38 @@ function q173send(){if(QB)return;var m=q173miss();if(m){q173err(m[0],m[1]);retur
   var wait=Math.max(0,2500-(Date.now()-QS.t0));QB=true;var go=$('qkGo');go.disabled=true;go.textContent='جارٍ الإرسال…';$('qkErr').textContent='';
   setTimeout(function(){var n=$('qkName').value.trim(),phr=$('qkPhone').value.trim(),ph=phr.replace(/\D/g,''),ad=QS.del?$('qkAddr').value.trim():'',Z=q173z();
     var city=!QS.del?PK173:q173nf()?(q173zf()?ZF173:''):(Z.length&&QS.zone&&QS.zone!=='__o'?QS.zone:''),nt=($('qkNote')||{}).value||'';
-    var note=('⚡ رابط سريع'+(QL.l?' «'+String(QL.l).slice(0,30)+'»':'')+(!QS.del?' · استلام من المحل':'')+(nt.trim()?' — '+nt.trim():'')).slice(0,300);
+    var note=('⚡ رابط سريع'+(QL.l?' «'+String(QL.l).slice(0,30)+'»':'')+(!QS.del?' · استلام من المحل':'')+qfNote()+(nt.trim()?' — '+nt.trim():'')).slice(0,300);
     var items=Object.keys(QS.c).filter(function(k){return QS.c[k]>0&&item(k)}).map(function(k){return {key:k,qty:QS.c[k]}});
     LAST={name:n,phone:phr,city:QS.del?(QS.zone==='__o'?'':QS.zone):LAST.city||'',address:QS.del?ad:(LAST.address||'')};try{localStorage.setItem('emdStoreMe',JSON.stringify(LAST))}catch(x){}
     rpc('emd_store_order',{p_slug:SLUG,p_customer:{name:n,phone:ph,city:city,address:ad,note:note},p_items:items,p_payment:QS.pay,p_gift:false})
-    .then(function(r){QB=false;q173done(r,n)})
+    .then(function(r){if(qrUp()&&r&&r.token){go.textContent='جارٍ رفع الإيصال…';return qrSend(r).then(function(){QB=false;q173done(r,n);qrAfter(r,true)},function(){QB=false;q173done(r,n);qrAfter(r,false)})}QB=false;q173done(r,n)})
     .catch(function(x){QB=false;go.disabled=false;go.textContent='تأكيد الطلب';var c=String(x.message||'').match(/[a-z_]+/g)||[],key='';c.forEach(function(w){if(ERRS[w])key=ERRS[w]});
       $('qkErr').textContent=(key?T.ar[key]:T.ar.errNet);
       if(key==='errGone'||key==='errOut')rpc('emd_store_get',{p_slug:SLUG}).then(function(j){if(j){ST=j;P=(j.products||[]).filter(function(p){return p&&p.key&&p.name});for(var k in QS.c)if(!item(k)||!item(k).in_stock)delete QS.c[k];q173paint()}}).catch(function(){})})},wait)}
+/* V215: إيصال التحويل في رابط الطلب السريع */
+function qrNeed(){return QS.pay==='bank'&&!!B.bankInfo&&!(QS.del&&q173nf())&&!!$('qkRf')}
+function qrUp(){return QS.pay==='bank'&&!!QS.rc}
+(function(){var _m=q173miss;q173miss=function(q){var r=_m(q);if(r)return r;if(qrNeed()&&!QS.rc)return ['qkRl','يرجى إرفاق صورة إيصال التحويل'];return r};var _b=q173bar;q173bar=function(){_b();var a=$('qkAmt');if(a){var o=q173tot();var cr=qfCourier(),pay=cr?o.sub:o.tot;a.textContent=qm(pay);a.setAttribute('data-v',(+pay||0).toFixed(3));var al=$('qkAmL');if(al)al.textContent=(QS.del&&q173nf())||cr?'حوّل قيمة المنتجات: ':'حوّل المبلغ بالضبط: ';var fn=$('qkFn');if(fn){fn.hidden=!(cr&&QS.del);fn.textContent=o.sh>0?'رسوم التوصيل '+qm(o.sh)+' تُدفع للمندوب أو شركة التوصيل عند الاستلام.':'تُدفع رسوم التوصيل للمندوب أو شركة التوصيل عند الاستلام.'}}}})();
+function qrFile(f){if(!f)return;var e=$('qkRe');if(e)e.textContent='';if(!/^image\//.test(f.type||'image/')){if(e)e.textContent='اختر صورة للإيصال.';return}var u=URL.createObjectURL(f),im=new Image();im.onload=function(){var M=1500,sc=Math.min(1,M/Math.max(im.width,im.height)),c=document.createElement('canvas'),q=.82,d;c.width=Math.max(1,Math.round(im.width*sc));c.height=Math.max(1,Math.round(im.height*sc));var g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height);g.drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);d=c.toDataURL('image/jpeg',q);while(d.length>660000&&q>.4){q-=.12;d=c.toDataURL('image/jpeg',q)}if(d.length>690000){if(e)e.textContent='الصورة كبيرة جدًا، اختر صورة أصغر.';return}QS.rc=d;var p=$('qkRp');if(p){p.src=d;p.hidden=false}var l=$('qkRt');if(l)l.textContent='✓ تم إرفاق الإيصال، اضغط لتغييره';q173bar()};im.onerror=function(){URL.revokeObjectURL(u);if(e)e.textContent='تعذّر فتح الصورة، جرّب صورة أخرى.'};im.src=u}
+function qrSend(r){return fetch(API+'/functions/v1/store-receipt',{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify({action:'submit',slug:SLUG,token:r.token,data:String(QS.rc).split(',')[1]})}).then(function(x){return x.json().then(function(j){if(!x.ok||!j.ok)throw new Error(j.error||'upload');return j})})}
+function qrAfter(r,ok){var m=document.querySelector('#qk173 .qmsg .qno');if(!m)return;var o=$('qkRs');if(o)o.remove();var d=document.createElement('div');d.id='qkRs';d.className='qrs';d.innerHTML=ok?'🧾 وصل إيصالك، وسيراجع المحل الدفع قبل تأكيد طلبك.':'تعذّر رفع الإيصال. <button type="button" id="qkRr">إعادة المحاولة</button>';m.parentNode.insertBefore(d,m.nextSibling);if(!ok)$('qkRr').onclick=function(){this.disabled=true;this.textContent='جارٍ الرفع…';qrSend(r).then(function(){qrAfter(r,true)},function(){qrAfter(r,false)})}}
+function qrCopy(b){var v=b.getAttribute('data-qcp')==='amt'?($('qkAmt')||{getAttribute:function(){return ''}}).getAttribute('data-v'):String(B.bankInfo||''),z=b.textContent,fin=function(){b.textContent='✓ تم النسخ';setTimeout(function(){b.textContent=z},1300)};try{navigator.clipboard.writeText(v).then(fin,function(){})}catch(e){}}
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-qcp]');if(b)qrCopy(b)});
+document.addEventListener('change',function(e){if(e.target.id==='qkRf')qrFile(e.target.files&&e.target.files[0])});
+
+function qrTrk(){var L=[];try{L=JSON.parse(localStorage.getItem('emdStoreTrack')||'[]')}catch(e){}if(!Array.isArray(L))return [];var seen={},cut=Date.now()-1e10;return L.filter(function(x){if(!x||x.s!==SLUG||!x.t||x.at<cut||seen[x.t])return false;seen[x.t]=1;return true}).slice(0,3)}
+function qrBan(){var w=document.querySelector('#qk173 .qk');if(!w||$('qkTr'))return;var L=qrTrk();if(!L.length)return;var d=document.createElement('div');d.id='qkTr';d.className='qtr';d.innerHTML='<b>📦 طلباتك السابقة</b>'+L.map(function(x){var u=location.pathname+'?s='+encodeURIComponent(SLUG)+'&t='+encodeURIComponent(x.t),dt='';try{dt=new Date(x.at).toLocaleDateString('ar-OM',{day:'numeric',month:'long'})}catch(e){}return '<a href="'+esc(u)+'"><span>طلب '+esc(dt)+'</span><span>تتبّع الحالة ←</span></a>'}).join('');var h=w.querySelector('.qh');if(h)h.insertAdjacentElement('afterend',d);else w.insertBefore(d,w.firstChild)}
+function qfCourier(){return QS.pay==='bank'&&!!(B.qf&&B.qf.ft==='c')}
+function qfMeths(pk){var f=B.qf||{},a=[],mc=f.mc!==0,mo=!!f.mo;if(mc)a.push(['c',mo?'🚚 مندوب':'🚚 توصيل']);if(mo)a.push(['o','🏢 مكتب شركة التوصيل']);if(pk)a.push(['p','🏪 استلام من المحل']);if(!a.length)a.push(['c','🚚 توصيل']);return a}
+function qfTg(pk){var a=qfMeths(pk);if(!QS.me||!a.some(function(m){return m[0]===QS.me}))QS.me=a[0][0];QS.del=QS.me!=='p';return a.length>1?'<div class="qtg qtg3">'+a.map(function(m){return '<button type="button" data-qme="'+m[0]+'" aria-pressed="'+(QS.me===m[0])+'">'+m[1]+'</button>'}).join('')+'</div>':''}
+function qfCo(){var f=B.qf||{};if(!f.co)return '';var L=Array.isArray(f.cl)?f.cl:[],lb='شركة التوصيل'+(f.co===1?' (اختياري)':'');return '<label class="ql">'+lb+(L.length?'<select id="qkCo" class="qin"><option value="">'+(f.co===1?'بدون تحديد':'اختر الشركة')+'</option>'+L.map(function(c){return '<option value="'+esc(c)+'">'+esc(c)+'</option>'}).join('')+'</select>':'<input id="qkCo" class="qin" maxlength="60">')+'</label>'}
+function qfNote(){var f=B.qf||{},P=[],M={c:'مندوب',o:'مكتب شركة التوصيل',p:'استلام من المحل'},co=(($('qkCo')||{}).value||'').trim();if(f.mo&&QS.me)P.push('طريقة التوصيل: '+M[QS.me]);if(QS.del&&co)P.push('شركة التوصيل: '+co);if(qfCourier()&&QS.del)P.push('رسوم التوصيل للمندوب');return P.length?' · '+P.join(' · '):''}
+function qfSync(){var d=$('qkDel'),p=$('qkPkI');if(d)d.hidden=!QS.del;if(p)p.hidden=QS.del;var a=$('qkAddr');if(a)a.placeholder=QS.me==='o'?'المكتب أو الولاية التي تستلم منها':'الولاية، المنطقة، رقم المنزل'}
+document.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('[data-qpy]'))setTimeout(q173bar,0)});
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-qme]');if(!b)return;QS.me=b.getAttribute('data-qme');QS.del=QS.me!=='p';[].forEach.call(document.querySelectorAll('[data-qme]'),function(y){y.setAttribute('aria-pressed',String(y===b))});qfSync();q173bar()});
+(function(){var _m=q173miss;q173miss=function(q){var r=_m(q);if(r)return r;var f=B.qf||{};if(QS.del&&f.co===2&&!(($('qkCo')||{}).value||'').trim())return ['qkCo','يرجى تحديد شركة التوصيل'];return r}})();
+(function(){var _a=q173boot;q173boot=function(){_a();qrBan();qfSync();if($('qkBar'))q173bar()};var _k=qkMsg;qkMsg=function(a,b,c,e){_k(a,b,c,e);qrBan()};var _d=q173done;q173done=function(r,n){_d(r,n);if(!r||!r.token)return;var a=document.querySelector('#qk173 .qmsg a.qgo');if(!a)return;var u=a.href,b=document.createElement('button');b.type='button';b.className='qcp qcl';b.textContent='📋 نسخ رابط التتبع';b.onclick=function(){try{navigator.clipboard.writeText(u).then(function(){b.textContent='✓ تم النسخ'},function(){})}catch(e){}};a.insertAdjacentElement('afterend',b);if(qfCourier()&&QS.del){var q=document.querySelector('#qk173 .qno');if(q){var fx=document.createElement('small');fx.textContent='ورسوم التوصيل تُدفع للمندوب عند الاستلام';q.appendChild(fx)}}var p=document.createElement('p');p.className='qsv';p.textContent='احفظ هذا الرابط، أو عُد إلى رابط الطلب من هذا الجهاز لتجد طلبك في الأعلى.';b.insertAdjacentElement('afterend',p)}})();
+
 document.addEventListener('click',function(e){if(!QL||!$('qk173'))return;var x=e.target.closest?e.target:null;if(!x)return;var b;
   if(b=x.closest('[data-qu]')){var k=b.getAttribute('data-qu');QS.c[k]=Math.min(q173max(),(QS.c[k]||0)+1);q173paint();return}
   if(b=x.closest('[data-qd]')){var k2=b.getAttribute('data-qd');QS.c[k2]=Math.max(0,(QS.c[k2]||0)-1);if(!QS.c[k2])delete QS.c[k2];q173paint();return}
