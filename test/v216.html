@@ -32967,8 +32967,8 @@ function e215ext(text,total){var A='٠١٢٣٤٥٦٧٨٩',P='۰۱۲۳۴۵۶۷۸�
   var LB=/(reference|\bref\b|txn|transaction|\btrn\b|\butr\b|رقم\s*المرجع|الرقم\s*المرجعي|المرجع|مرجع|رقم\s*العملية|رقم\s*الحوالة|رقم\s*التحويل|رقم\s*المعاملة)/i,TK=/[A-Za-z0-9][A-Za-z0-9\-\/]{4,}[A-Za-z0-9]/g,ref='',how='';
   function ok(t){return /\d/.test(t)&&(t.match(/\d/g)||[]).length>=5&&!/^OM\d/i.test(t)&&!/^(00968|968)?[79]\d{7}$/.test(t)&&!/^\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}$/.test(t)&&!/^20\d{2}[\/\-]\d{1,2}/.test(t)}
   for(var i=0;i<L.length&&!ref;i++){if(!LB.test(L[i]))continue;var c=(L[i].match(TK)||[]).filter(ok);if(!c.length&&L[i+1])c=(L[i+1].match(TK)||[]).filter(ok);if(!c.length&&L[i-1])c=(L[i-1].match(TK)||[]).filter(ok);if(c.length){ref=c.sort(function(a,b){return b.length-a.length})[0];how='label'}}
-  if(!ref){var all=(s.match(TK)||[]).filter(ok).filter(function(t){return t.replace(/\D/g,'').length>=8&&!/^(\+?968)?[79]\d{7}$/.test(t)});if(all.length){ref=all.sort(function(a,b){return b.length-a.length})[0];how=all.length===1?'label':'guess'}}
-  var am=null,T=+total;if(T>0){var N=(s.replace(/,/g,'').match(/\d+(?:\.\d{1,3})?/g)||[]).map(Number);am=N.some(function(n){return Math.abs(n-T)<.0011})}
+  if(!ref){var all=(s.match(TK)||[]).filter(ok).filter(function(t){return t.replace(/\D/g,'').length>=8&&!/^(\+?968)?[79]\d{7}$/.test(t)});var U=all.filter(function(t,i){return all.indexOf(t)===i});if(U.length){ref=U.sort(function(a,b){return b.length-a.length})[0];how=U.length===1?'label':'guess'}}
+  var am=null,T=+total;if(T>0){var N=(s.replace(/\b\d{1,4}[\/\-]\d{1,2}[\/\-]\d{1,4}\b/g,' ').replace(/\b\d{1,2}:\d{2}(?::\d{2})?\b(?!\d)/g,' ').replace(/(\d):(\d{3})\b/g,'$1.$2').replace(/,/g,'').match(/\d+(?:\.\d{1,3})?/g)||[]).map(Number);am=N.some(function(n){return Math.abs(n-T)<.0011})}
   return {ref:ref.replace(/[^A-Za-z0-9]/g,'').toUpperCase(),how:how,amount:am}}
 
 function esc(x){return String(x==null?'':x).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
