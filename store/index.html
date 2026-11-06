@@ -5775,7 +5775,7 @@ var T={
   thanks:'شكرًا لك، %s',got:'استلمنا طلبك بقيمة %s',orderNo:'رقم طلبك',waConfirm:'أكّد طلبك عبر واتساب',keep:'متابعة التسوق',
   waMsg:'السلام عليكم، أرسلت طلبًا من المتجر رقمه %n بقيمة %t باسم %name.',
   promGift:'تغليف هدايا',promGiftS:'عند الطلب',promShip:'التوصيل',promFreeS:'مجاني فوق %s',promShipS:'%s لكل طلب',promPay:'الدفع',promWa:'واتساب',promWaS:'نرد عليك سريعًا',
-  errClosed:'أوقف المتجر استقبال الطلبات مؤقتًا. حاول لاحقًا.',errGone:'أُزيل منتج في حقيبتك من المتجر، وحدّثنا الصفحة لك.',errOut:'نفدت كمية منتج في حقيبتك، وحدّثنا الصفحة لك.',errStock:'الكمية المطلوبة أكبر من المتوفر، قلّلها قليلًا.',errMany:'أرسلت طلبات كثيرة من الرقم نفسه. انتظر 10 دقائق.',errDay:'بلغ المتجر الحد اليومي للطلبات. تواصل معه عبر واتساب.',errNet:'تعذّر إرسال الطلب. تأكد من الاتصال بالإنترنت وحاول مرة أخرى.',errBad:'توجد بيانات ناقصة، راجعها.'},
+  errBlock:'تعذّر قبول طلبك الآن بسبب كثرة المحاولات. تواصل مع المتجر.',errClosed:'أوقف المتجر استقبال الطلبات مؤقتًا. حاول لاحقًا.',errGone:'أُزيل منتج في حقيبتك من المتجر، وحدّثنا الصفحة لك.',errOut:'نفدت كمية منتج في حقيبتك، وحدّثنا الصفحة لك.',errStock:'الكمية المطلوبة أكبر من المتوفر، قلّلها قليلًا.',errMany:'أرسلت طلبات كثيرة من الرقم نفسه. انتظر 10 دقائق.',errDay:'بلغ المتجر الحد اليومي للطلبات. تواصل معه عبر واتساب.',errNet:'تعذّر إرسال الطلب. تأكد من الاتصال بالإنترنت وحاول مرة أخرى.',errBad:'توجد بيانات ناقصة، راجعها.'},
  en:{shop:'Shop',cols:'Collections',about:'About',search:'Search',bag:'Bag',shopNow:'Shop now',colsHint:'Pick a collection',yourBag:'Your bag',close:'Close',subtotal:'Subtotal',delivery:'Delivery',total:'Total',checkout:'Checkout',
   all:'All products',pieces:' items',none:'No product matches that.',noItems:'This store is adding its products. Check back soon.',add:'Add to bag',inBag:'In bag',out:'Sold out',na:'Unavailable',empty:'Your bag is empty.',free:'Free',
   left:'%s more for free delivery',srch:'Search the store…',loading:'Opening the store…',
@@ -5785,7 +5785,7 @@ var T={
   thanks:'Thank you, %s',got:'We received your order of %s',orderNo:'Your order number',waConfirm:'Confirm on WhatsApp',keep:'Continue shopping',
   waMsg:'Hello, I placed order #%n on your store for %t, name: %name.',
   promGift:'Gift wrap',promGiftS:'On request',promShip:'Delivery',promFreeS:'Free over %s',promShipS:'%s per order',promPay:'Payment',promWa:'WhatsApp',promWaS:'Quick replies',
-  errClosed:'The store just paused orders. Try later.',errGone:'An item in your bag was removed. We refreshed the page.',errOut:'An item in your bag sold out. We refreshed the page.',errStock:'That quantity is more than what\'s available.',errMany:'Too many orders from this number. Wait 10 minutes.',errDay:'The store reached today\'s order limit. Contact them on WhatsApp.',errNet:'We couldn\'t send your order. Check your connection and try again.',errBad:'Some details are missing.'}
+  errBlock:'We could not accept your order because of too many attempts. Please contact the store.',errClosed:'The store just paused orders. Try later.',errGone:'An item in your bag was removed. We refreshed the page.',errOut:'An item in your bag sold out. We refreshed the page.',errStock:'That quantity is more than what\'s available.',errMany:'Too many orders from this number. Wait 10 minutes.',errDay:'The store reached today\'s order limit. Contact them on WhatsApp.',errNet:'We couldn\'t send your order. Check your connection and try again.',errBad:'Some details are missing.'}
 };
 function pickLang(){try{var s=localStorage.getItem('emdStoreLang');if(s)return s}catch(e){}var q=new URLSearchParams(location.search).get('lang');if(q==='en'||q==='ar')return q;return 'ar'}
 var LANG=pickLang();
@@ -5897,7 +5897,7 @@ function form(){var cod=B.cod!==false,bank=!!B.bank;
 $('checkout').onclick=function(){drawer(false);$('coBox').innerHTML=form();$('sheet').classList.add('show');setTimeout(function(){var f=$('fName');if(f&&!f.value)f.focus()},50)};
 $('sheet').addEventListener('change',function(e){if(e.target.name==='pay'){var bi=$('bankInfo');if(bi)bi.hidden=e.target.value!=='bank'}});
 $('sheet').addEventListener('click',function(e){if(e.target===this)this.classList.remove('show');if(e.target.closest('#coBack')){this.classList.remove('show');drawer(true)}if(e.target.closest('#again'))this.classList.remove('show')});
-var ERRS={store_closed:'errClosed',product_gone:'errGone',out_of_stock:'errOut',not_enough_stock:'errStock',too_many:'errMany',daily_limit:'errDay',bad_phone:'ePhone',bad_name:'eName',bad_items:'errBad',bad_payment:'errBad'};
+var ERRS={store_closed:'errClosed',product_gone:'errGone',out_of_stock:'errOut',not_enough_stock:'errStock',too_many:'errMany',blocked:'errBlock',daily_limit:'errDay',bad_phone:'ePhone',bad_name:'eName',bad_items:'errBad',bad_payment:'errBad'};
 $('sheet').addEventListener('submit',function(e){e.preventDefault();
   var n=$('fName').value.trim(),ph=$('fPhone').value.replace(/\D/g,''),city=$('fCity').value.trim(),ad=$('fAddr').value.trim(),err=$('err');
   if(n.length<2){err.textContent=t('eName');return}if(ph.length<8||ph.length>15){err.textContent=t('ePhone');return}if(!city){err.textContent=t('eCity');return}if(!ad){err.textContent=t('eAddr');return}
@@ -5905,7 +5905,7 @@ $('sheet').addEventListener('submit',function(e){e.preventDefault();
   var pay=(B.cod!==false&&B.bank)?(($('coForm').querySelector('input[name=pay]:checked')||{}).value||'cod'):(B.cod!==false?'cod':'bank');
   var go=$('coGo');go.disabled=true;go.textContent=t('sending');err.textContent='';
   LAST={name:n,phone:$('fPhone').value.trim(),city:city,address:ad};try{localStorage.setItem('emdStoreMe',JSON.stringify(LAST))}catch(x){}
-  rpc('emd_store_order',{p_slug:SLUG,p_customer:{name:n,phone:ph,city:city,address:ad,note:$('fNote').value.trim()},p_items:o.ids.map(function(k){return {key:k,qty:cart[k]}}),p_payment:pay,p_gift:!!($('fGift')&&$('fGift').checked)})
+  rpcOrder({p_slug:SLUG,p_customer:{name:n,phone:ph,city:city,address:ad,note:$('fNote').value.trim()},p_items:o.ids.map(function(k){return {key:k,qty:cart[k]}}),p_payment:pay,p_gift:!!($('fGift')&&$('fGift').checked)})
   .then(function(r){cart={};saveCart();paint();done(n,r)})
   .catch(function(x){go.disabled=false;go.textContent=t('confirm');var c=String(x.message||'').match(/[a-z_]+/g)||[],key='';c.forEach(function(w){if(ERRS[w])key=ERRS[w]});
     err.textContent=key?t(key):t('errNet');
@@ -7061,11 +7061,13 @@ function q173send(){if(QB)return;var m=q173miss();if(m){q173err(m[0],m[1]);retur
     var note=('⚡ رابط سريع'+(QL.l?' «'+String(QL.l).slice(0,30)+'»':'')+(!QS.del?' · استلام من المحل':'')+qfNote()+(nt.trim()?' — '+nt.trim():'')).slice(0,300);
     var items=Object.keys(QS.c).filter(function(k){return QS.c[k]>0&&item(k)}).map(function(k){return {key:k,qty:QS.c[k]}});
     LAST={name:n,phone:phr,city:QS.del?(QS.zone==='__o'?'':QS.zone):LAST.city||'',address:QS.del?ad:(LAST.address||'')};try{localStorage.setItem('emdStoreMe',JSON.stringify(LAST))}catch(x){}
-    rpc('emd_store_order',{p_slug:SLUG,p_customer:{name:n,phone:ph,city:city,address:ad,note:note},p_items:items,p_payment:QS.pay,p_gift:false})
+    rpcOrder({p_slug:SLUG,p_customer:{name:n,phone:ph,city:city,address:ad,note:note},p_items:items,p_payment:QS.pay,p_gift:false})
     .then(function(r){if(qrUp()&&r&&r.token){go.textContent='جارٍ رفع الإيصال…';return qrSend(r).then(function(){QB=false;q173done(r,n);qrAfter(r,true)},function(){QB=false;q173done(r,n);qrAfter(r,false)})}QB=false;q173done(r,n)})
     .catch(function(x){QB=false;go.disabled=false;go.textContent='تأكيد الطلب';var c=String(x.message||'').match(/[a-z_]+/g)||[],key='';c.forEach(function(w){if(ERRS[w])key=ERRS[w]});
       $('qkErr').textContent=(key?T.ar[key]:T.ar.errNet);
       if(key==='errGone'||key==='errOut')rpc('emd_store_get',{p_slug:SLUG}).then(function(j){if(j){ST=j;P=(j.products||[]).filter(function(p){return p&&p.key&&p.name});for(var k in QS.c)if(!item(k)||!item(k).in_stock)delete QS.c[k];q173paint()}}).catch(function(){})})},wait)}
+/* V221: الطلب عبر الدالة المحمية من الطلبات الوهمية */
+function rpcOrder(b){return rpc('emd_store_order2',b).then(function(r){if(r&&r.error_code)throw new Error(r.error_code);return r})}
 /* V215: إيصال التحويل في رابط الطلب السريع */
 function qrNeed(){return QS.pay==='bank'&&!!B.bankInfo&&!(QS.del&&q173nf())&&!!$('qkRf')}
 function qrUp(){return QS.pay==='bank'&&!!QS.rc}

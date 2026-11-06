@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V219</title>
+<title>EMD Business — Standalone V221</title>
 <!-- EMD V158: شاشة افتتاح تغطي التطبيق حتى تكتمل الواجهة الأخيرة، فلا تظهر الأشكال والأزرار القديمة أثناء التحميل -->
 <style id="EMD-V158-boot">
 html.emd-boot{background:#0f172a!important}
@@ -19212,7 +19212,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V219</div>
+<div id="emdStandaloneV2Badge">EMD Business • V221</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -27496,7 +27496,7 @@ function ordTab(){if(!logged())return '<div class="note">🔐 سجّل الدخ�
      '<div class="its">'+(o.items||[]).map(function(i){return '<div><span>'+esc(i.name)+' × '+(+i.qty||1)+'</span><span>'+omr((+i.price||0)*(+i.qty||1))+'</span></div>'}).join('')+
      '<div class="sm"><span>التوصيل</span><span>'+(+o.ship?omr(o.ship):'مجاني')+'</span></div><div class="sm t"><span>الإجمالي</span><span>'+omr(o.total)+'</span></div></div>'+
      '<div class="ln">'+(o.payment==='bank'?'💳 تحويل بنكي':'💵 دفع عند الاستلام')+(o.gift?' · 🎁 تغليف هدية':'')+'</div>'+(o.payment==='bank'?'<div class="e215r" data-rid="'+o.id+'">🧾 جارٍ جلب الإيصال…</div>':'')+
-     '<div class="row"><button type="button" class="b pri" data-a="acc">✓ اعتمد</button><button type="button" class="b" data-a="owa">💬 واتساب</button><button type="button" class="b rej" data-a="rej">✕ رفض</button></div></div>'}).join('')}
+     '<div class="row"><button type="button" class="b pri" data-a="acc">✓ اعتمد</button><button type="button" class="b" data-a="owa">💬 واتساب</button><button type="button" class="b" data-e221t="'+esc(ph)+'">⭐ زبون موثوق</button><button type="button" class="b rej" data-a="rej">✕ رفض</button></div></div>'}).join('')}
 function findO(id){for(var i=0;i<ORD.length;i++)if(String(ORD[i].id)===String(id))return ORD[i]}
 function handled(id,st){return fn('handle',{id:+id,status:st}).then(function(j){return j.rows})}
 function drop(id){ORD=ORD.filter(function(x){return String(x.id)!==String(id)});N=ORD.length;badge();paint()}
@@ -27600,7 +27600,7 @@ function cover(){var W=innerWidth,H=innerHeight,on=false,k=document.body.childre
   document.body.classList.toggle('emd411-covered',on);
   /* رقم النسخة أسفل قائمة «المزيد» (شارة النسخة مخفية على الجوال) */
   var sh=document.getElementById('emd410Sheet');if(sh&&sh.classList.contains('show')){var bx=sh.querySelector('.box');if(bx&&!bx.querySelector('.e141v')){var v=document.createElement('div');v.className='e141v';v.textContent=VER;bx.appendChild(v)}}}
-var VER='EMD Business • V219';
+var VER='EMD Business • V221';
 function boot(){cover();setInterval(cover,500)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
@@ -33011,6 +33011,13 @@ function scan(){var E=document.querySelectorAll('.e215r[data-rid]'),need=[];[].f
 document.addEventListener('click',function(e){var t=e.target;if(!t.closest)return;var z=t.closest('[data-e215z]');if(z){var d=document.createElement('div');d.id='e215Z';d.innerHTML='<img alt="إيصال الدفع" src="'+esc(z.src)+'">';d.onclick=function(){d.remove()};document.body.appendChild(d);return}var rd=t.closest('[data-e215o]');if(rd){Q.push(+rd.getAttribute('data-e215o'));next();return}var b=t.closest('[data-e215s]');if(b){var id=+b.getAttribute('data-e215s'),inp=b.parentNode.querySelector('input'),v=String(inp.value||'').replace(/[^A-Za-z0-9]/g,'').toUpperCase();if(v.length<5)return;b.disabled=true;call('ref',{id:id,ref:v,how:'manual'}).then(function(j){var x=C[id];x.ref_last=j.ref_last;x.ref_dup=j.ref_dup;x.ref_how='manual';x.tried=true;inp.value='';draw(id)}).catch(function(){b.disabled=false})}});
 function pay(id){var x=C[id];if(!x)return null;var red=x.img_dup>0||x.ref_dup>0||x.date_state==='old'||x.who_state==='no';return {ok:!red,red:red,last:x.ref_last||''}}
 window.E215={scan:scan,ext:e215ext,prep:prep,pay:pay};
+/* V221: الزبون الموثوق؛ يحدده التاجر ويصل إشعار للمالك من الخادم */
+var GFN='https://pfkstppvnebagbdckgbu.supabase.co/functions/v1/store-guard',TR=null,TRq=false;
+function gcall(b){var c=window.EMDCloudV93&&window.EMDCloudV93.api;if(!c)return Promise.reject(new Error('auth'));return c.token().then(function(t){return fetch(GFN,{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json','x-emd-token':t},body:JSON.stringify(b)})}).then(function(r){return r.json().then(function(j){if(!r.ok||!j.ok)throw new Error(j.error||'x');return j})})}
+function trDraw(){[].forEach.call(document.querySelectorAll('[data-e221t]'),function(b){var on=TR&&TR.indexOf(String(b.getAttribute('data-e221t')).replace(/\D/g,''))>-1;b.textContent=on?'⭐ موثوق':'☆ زبون موثوق';b.setAttribute('aria-pressed',on?'true':'false')})}
+function trScan(){if(TR){trDraw();return}trDraw();if(TRq)return;TRq=true;gcall({action:'mine'}).then(function(j){TR=j.phones||[];trDraw()}).catch(function(){TRq=false})}
+var _sc=scan;scan=function(){_sc();trScan()};window.E215.scan=scan;
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-e221t]');if(!b)return;var ph=String(b.getAttribute('data-e221t')).replace(/\D/g,''),on=TR&&TR.indexOf(ph)>-1;b.disabled=true;gcall({action:on?'untrust':'trust',phone:ph}).then(function(){TR=TR||[];if(on)TR=TR.filter(function(x){return x!==ph});else TR.push(ph);b.disabled=false;trDraw()}).catch(function(){b.disabled=false;b.textContent='تعذّر الحفظ، أعد المحاولة'})});
 })();
 </script>
 
