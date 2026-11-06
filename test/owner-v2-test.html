@@ -307,7 +307,7 @@ document.querySelector('.tabs').addEventListener('click',function(e){var b=e.tar
 /* ===== حساباتي: دخل ومصروفات صاحب التطبيق (محلي على هذا الجهاز) ===== */
 var BKEY='emd_owner_books_v1';
 function bkLoad(){var d=J(BKEY);if(!d||!Array.isArray(d.items))d={v:1,items:[]};return d}
-function bkSave(d){try{localStorage.setItem(BKEY,JSON.stringify(d));return true}catch(e){return false}}
+function bkSave(d){try{localStorage.setItem(BKEY,JSON.stringify(d));try{window.__OWNSYNC&&window.__OWNSYNC.push()}catch(x){}return true}catch(e){return false}}
 function bkF(v){return (+v||0).toLocaleString('en-US',{minimumFractionDigits:3,maximumFractionDigits:3})}
 function bkNum(s){s=String(s||'').replace(/[٠-٩]/g,function(c){return '٠١٢٣٤٥٦٧٨٩'.indexOf(c)}).replace(/[،,]/g,'.').replace(/[^\d.]/g,'');var x=parseFloat(s);return isFinite(x)?x:0}
 function bkMonth(d){return String(d||'').slice(0,7)}
@@ -347,8 +347,8 @@ $('bkFi').addEventListener('submit',function(e){e.preventDefault();bkAdd('in')})
 $('bkFe').addEventListener('submit',function(e){e.preventDefault();bkAdd('ex')});
 $('bkM').addEventListener('change',bkDraw);
 $('bkL').addEventListener('click',function(e){var del=e.target.closest('[data-del]'),stp=e.target.closest('[data-stop]');var d=bkLoad();
-  if(del){if(!confirm('حذف هذه الحركة؟'))return;d.items=d.items.filter(function(x){return x.id!==del.getAttribute('data-del')});bkSave(d);bkDraw();return}
-  if(stp){var id=stp.getAttribute('data-stop'),mm=bkSel();d.items.forEach(function(x){if(x.id===id)x.until=mm+'-01'});bkSave(d);bkDraw()}});
+  if(del){if(!confirm('حذف هذه الحركة؟'))return;(d.del=d.del||[]).push(del.getAttribute('data-del'));d.items=d.items.filter(function(x){return x.id!==del.getAttribute('data-del')});bkSave(d);bkDraw();return}
+  if(stp){var id=stp.getAttribute('data-stop'),mm=bkSel();d.items.forEach(function(x){if(x.id===id){x.until=mm+'-01';x.u=Date.now()}});bkSave(d);bkDraw()}});
 $('bkCsv').addEventListener('click',function(){var d=bkLoad(),r=['النوع,التاريخ,المتجر أو البند,المبلغ,يتكرر شهريًا,ملاحظة'];d.items.slice().sort(function(a,b){return String(a.date).localeCompare(String(b.date))}).forEach(function(x){function q(v){return '"'+String(v==null?'':v).replace(/"/g,'""')+'"'}r.push([x.type==='in'?'دخل':'مصروف',x.date,q(x.type==='in'?x.store:x.cat),x.amount,x.rec?'نعم':'لا',q(x.note)].join(','))});bkDl('حساباتي-EMD.csv','text/csv;charset=utf-8','\ufeff'+r.join('\n'))});
 $('bkBak').addEventListener('click',function(){bkDl('نسخة-حساباتي-'+new Date().toISOString().slice(0,10)+'.json','application/json',JSON.stringify(bkLoad()))});
 $('bkRes').addEventListener('click',function(){$('bkFile').click()});
@@ -387,7 +387,7 @@ $('lf').addEventListener('submit',function(e){e.preventDefault();var em=$('em').
 $('eye').addEventListener('click',function(){var i=$('pw'),sh=i.type==='password';i.type=sh?'text':'password';this.textContent=sh?'🙈':'👁️'});
 $('refresh').addEventListener('click',load);
 $('out').addEventListener('click',function(){setS(null);showLogin('')});
-window.__OWNAPI={gcall:gcall,token:token,data:function(){return DATA},tk:function(){return TK}};
+window.__OWNAPI={gcall:gcall,token:token,data:function(){return DATA},tk:function(){return TK},redraw:function(){try{bkFillStores();bkDraw()}catch(e){}}};
 if(J(SKEY))load();else showLogin('');
 })();
 </script>
@@ -484,7 +484,7 @@ function month(){return new Date().toISOString().slice(0,7)}
 function D(){return A.data()||[]}
 function crm(){return J(CRM,{})}
 function C(e){return crm()[String(e||'').toLowerCase()]||{}}
-function setC(e,o){var c=crm(),k=String(e||'').toLowerCase();c[k]=Object.assign({},c[k]||{},o);return W(CRM,c)}
+function setC(e,o){var c=crm(),k=String(e||'').toLowerCase();c[k]=Object.assign({},c[k]||{},o,{at:Date.now()});var r=W(CRM,c);try{window.__OWNSYNC&&window.__OWNSYNC.push()}catch(x){}return r}
 function nm(r){return (r.store_name||'').trim()||r.email||'بدون اسم'}
 function label(r){var n=(r.store_name||'').trim()||r.email||'بدون اسم';return n+(r.email&&r.store_name?' · '+r.email:'')}
 function byEmail(e){e=String(e||'').toLowerCase();return D().filter(function(r){return String(r.email||'').toLowerCase()===e})[0]}
@@ -497,7 +497,7 @@ function paid(r,m){m=m||month();var L=label(r),bk=J(BKEY,{items:[]});return (bk.
   var s=String(it.date||'').slice(0,7);if(it.rec)return m>=s&&(!it.until||m<String(it.until).slice(0,7));return s===m})}
 function due(){return D().filter(function(r){return +C(r.email).fee>0&&!paid(r)})}
 function addPay(r,amt){var bk=J(BKEY,{v:1,items:[]});if(!Array.isArray(bk.items))bk.items=[];
-  bk.items.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),type:'in',amount:Math.round(amt*1000)/1000,date:new Date().toISOString().slice(0,10),note:'اشتراك شهر '+month(),rec:false,store:label(r)});return W(BKEY,bk)}
+  bk.items.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),type:'in',amount:Math.round(amt*1000)/1000,date:new Date().toISOString().slice(0,10),note:'اشتراك شهر '+month(),rec:false,store:label(r)});var ok=W(BKEY,bk);try{window.__OWNSYNC&&window.__OWNSYNC.push()}catch(x){}return ok}
 function remindTxt(r){var c=C(r.email);return 'السلام عليكم ورحمة الله،\nنودّ تذكيركم بموعد تجديد اشتراك «'+nm(r)+'» في تطبيق EMD Business لشهر '+month()+(+c.fee>0?' بمبلغ '+f3(c.fee)+' ر.ع':'')+'.\nشكرًا لثقتكم بنا.\n— فريق EMD Business'}
 function welcomeTxt(r){return 'السلام عليكم ورحمة الله،\nأهلًا بكم في EMD Business، ويسعدنا انضمام «'+nm(r)+'».\nإذا احتجتم أي مساعدة في البدء فنحن في خدمتكم.\n— فريق EMD Business'}
 function backTxt(r){return 'السلام عليكم ورحمة الله،\nلاحظنا أنكم لم تستخدموا تطبيق EMD Business منذ مدة. هل واجهتم أي صعوبة يمكننا مساعدتكم فيها؟\n— فريق EMD Business'}
@@ -599,6 +599,45 @@ document.addEventListener('own:tickets',function(){count();var v=$('vToday');if(
 })();
 </script>
 <!-- ===== نهاية EMD Owner V2 ===== -->
+
+<!-- ===== EMD Owner V2: حفظ «حساباتي» وملفات التجار في السحابة (جدول emd_owner_books، لحساب المالك فقط) ===== -->
+<script id="EMD-owner-v2-cloud">
+(function(){
+'use strict';
+var A=window.__OWNAPI;if(!A)return;
+var U='https://gpwgckwlcntvesnlptej.supabase.co',K='sb_publishable_wklrs_Z4xZmdPJ2nJ0iLiw_UEdPOOQZ',BK='emd_owner_books_v1',CR='emd_owner_crm_v1',ST='emd_owner_cloud_v2';
+function J(k,d){try{var x=JSON.parse(localStorage.getItem(k)||'null');return x==null?d:x}catch(e){return d}}
+function W(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}
+function req(path,o){return A.token().then(function(t){var h={apikey:K,Authorization:'Bearer '+t,'Content-Type':'application/json'};if(o&&o.prefer)h.Prefer=o.prefer;
+  return fetch(U+path,{method:(o&&o.method)||'GET',headers:h,body:o&&o.body?JSON.stringify(o.body):undefined}).then(function(r){return r.text().then(function(x){if(!r.ok){var e=new Error('HTTP '+r.status);e.status=r.status;throw e}return x?JSON.parse(x):null})})})}
+/* دمج الحركات: كل حركة لها رقم، والمحذوف يبقى محذوفًا، والأحدث تعديلًا يفوز */
+function mergeBooks(a,b){a=a&&Array.isArray(a.items)?a:{items:[]};b=b&&Array.isArray(b.items)?b:{items:[]};
+  var del={};(a.del||[]).concat(b.del||[]).forEach(function(i){del[i]=1});var m={};
+  a.items.concat(b.items).forEach(function(it){if(!it||!it.id||del[it.id])return;var o=m[it.id];if(!o||(+it.u||0)>(+o.u||0))m[it.id]=it});
+  return {v:1,items:Object.keys(m).map(function(k){return m[k]}),del:Object.keys(del).slice(-2000)}}
+function mergeCrm(a,b){a=a||{};b=b||{};var r={};Object.keys(a).concat(Object.keys(b)).forEach(function(k){var x=a[k],y=b[k];r[k]=!x?y:!y?x:((+y.at||0)>(+x.at||0)?y:x)});return r}
+function same(x,y){return JSON.stringify(x)===JSON.stringify(y)}
+var busy=false,again=false,ok=null,lastAt=0,err='';
+function status(){var el=document.getElementById('o2Cloud');if(!el){var n=document.querySelector('#vBooks .bk-note');if(!n)return;el=document.createElement('div');el.id='o2Cloud';el.className='bk-note';el.style.fontWeight='700';n.parentNode.insertBefore(el,n)}
+  el.style.color=ok===false?'var(--bad)':'var(--good)';
+  el.textContent=ok===false?'⚠️ لم تُحفظ آخر التعديلات في السحابة ('+err+'). البيانات محفوظة في هذا الجهاز، وسنعيد المحاولة تلقائيًا.':ok?'☁️ محفوظة في السحابة · آخر مزامنة '+new Date(lastAt).toLocaleTimeString('ar-OM-u-nu-latn',{hour:'numeric',minute:'2-digit'})+' · تظهر في أي جهاز تدخل منه بحساب المالك':'☁️ جارٍ المزامنة مع السحابة…'}
+function sync(){if(busy){again=true;return Promise.resolve()}busy=true;
+  return req('/rest/v1/emd_owner_books?select=id,data&id=in.(books,crm)').then(function(rows){var R={};(rows||[]).forEach(function(r){R[r.id]=r.data});
+    var lb=J(BK,{v:1,items:[]}),lc=J(CR,{}),mb=mergeBooks(lb,R.books),mc=mergeCrm(lc,R.crm);
+    var ch=!same(mb,lb)||!same(mc,lc);W(BK,mb);W(CR,mc);
+    var up=[];if(!same(mb,R.books))up.push({id:'books',data:mb,updated_at:new Date().toISOString()});if(!same(mc,R.crm))up.push({id:'crm',data:mc,updated_at:new Date().toISOString()});
+    return (up.length?req('/rest/v1/emd_owner_books',{method:'POST',prefer:'resolution=merge-duplicates,return=minimal',body:up}):Promise.resolve()).then(function(){
+      ok=true;err='';lastAt=Date.now();W(ST,{at:lastAt});if(ch){try{A.redraw&&A.redraw()}catch(e){}}})})
+  .catch(function(e){ok=false;err=e.status===404?'الجدول غير موجود بعد':e.status===401||e.status===403?'لا توجد صلاحية':'لا يوجد اتصال'})
+  .then(function(){busy=false;status();if(again){again=false;return sync()}})}
+var t=null;window.__OWNSYNC={push:function(){clearTimeout(t);t=setTimeout(sync,600)},sync:sync,mergeBooks:mergeBooks};
+document.addEventListener('own:data',function(){sync()});
+setInterval(function(){if(ok===false||Date.now()-lastAt>120000)sync()},30000);
+window.addEventListener('online',sync);
+document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')sync()});
+document.addEventListener('click',function(e){if(e.target.closest('.tabs button[data-t="books"]'))setTimeout(status,50)});
+})();
+</script>
 
 </body>
 </html>
