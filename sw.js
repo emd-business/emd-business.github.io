@@ -2,7 +2,7 @@
    لا يلمس أي طلبات خارجية (التتبع/المزامنة/الدعم) ولا صفحات أخرى مثل owner.html
    V158: الجلب من الشبكة يتجاوز ذاكرة المتصفح المؤقتة (كانت تُبقي النسخة القديمة حتى 10 دقائق بعد النشر)،
    ورقم النسخة هنا (emd-app-vNNN) هو ما يقارنه التطبيق ليعرف أن هناك تحديثًا. */
-var C='emd-app-v222';
+var C='emd-app-v223';
 var SHELL=['/','/manifest.webmanifest','/icon-192.png','/icon-512.png','/icon-maskable-512.png','/apple-touch-icon.png'];
 self.addEventListener('install',function(e){
   e.waitUntil(caches.open(C).then(function(c){return Promise.all(SHELL.map(function(u){
@@ -28,6 +28,8 @@ function networkFirst(r){
 self.addEventListener('message',function(e){if(e.data==='emd-skip-waiting')self.skipWaiting()});
 self.addEventListener('fetch',function(e){
   var r=e.request,u=new URL(r.url);
+  /* V223: صور المنتجات من السحابة: من الذاكرة أولًا، فتظهر بدون إنترنت */
+  if(r.method==='GET'&&u.pathname.indexOf('/storage/v1/object/public/emd-products/')===0){e.respondWith(caches.open('emd-img-v1').then(function(c){return c.match(r).then(function(m){return m||fetch(r).then(function(x){if(x&&(x.ok||x.type==='opaque'))c.put(r,x.clone());return x})})}));return}
   if(r.method!=='GET'||u.origin!==location.origin)return;
   if(r.mode==='navigate'){
     if(u.pathname==='/'||u.pathname==='/index.html'){e.respondWith(networkFirst(r))}

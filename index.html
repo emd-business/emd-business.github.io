@@ -16,7 +16,7 @@ window.EMDErrLog={list:function(){var c=Date.now()-3*864e5;return L().filter(fun
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V222</title>
+<title>EMD Business — Standalone V223</title>
 <!-- EMD V158: شاشة افتتاح تغطي التطبيق حتى تكتمل الواجهة الأخيرة، فلا تظهر الأشكال والأزرار القديمة أثناء التحميل -->
 <style id="EMD-V158-boot">
 html.emd-boot{background:#0f172a!important}
@@ -19216,7 +19216,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V222</div>
+<div id="emdStandaloneV2Badge">EMD Business • V223</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -27604,7 +27604,7 @@ function cover(){var W=innerWidth,H=innerHeight,on=false,k=document.body.childre
   document.body.classList.toggle('emd411-covered',on);
   /* رقم النسخة أسفل قائمة «المزيد» (شارة النسخة مخفية على الجوال) */
   var sh=document.getElementById('emd410Sheet');if(sh&&sh.classList.contains('show')){var bx=sh.querySelector('.box');if(bx&&!bx.querySelector('.e141v')){var v=document.createElement('div');v.className='e141v';v.textContent=VER;bx.appendChild(v)}}}
-var VER='EMD Business • V222';
+var VER='EMD Business • V223';
 function boot(){cover();setInterval(cover,500)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
@@ -33163,6 +33163,40 @@ setTimeout(run,4000);setInterval(function(){if(!running&&!document.hidden&&windo
 /* صورة جديدة: بعد كل حفظ نتحقق، والتحقق سريع (طول النص فقط) */
 var ps=window.save;if(typeof ps==='function'&&!ps.__e222){var w=function(){var r=ps.apply(this,arguments);if(!running&&window.db&&db.products&&db.products.some(big))soon(2500);return r};w.__e222=1;window.save=w}
 window.EMDImgV222={run:run};
+})();
+</script>
+
+<!-- EMD V223: صور المنتجات في السحابة (رابط صغير بدل الصورة داخل ذاكرة المتصفح) -->
+<script id="EMD-V223-cloudimg">
+(function(){
+'use strict';
+if(window.__EMD_V223__)return;window.__EMD_V223__=true;
+var BUCKET='emd-products';
+function C(){return window.EMDCloudV93||null}
+function A(){var c=C();return c&&c.api}
+function sess(){try{var c=C();return c&&c.session()}catch(e){return null}}
+function isData(s){return typeof s==='string'&&s.indexOf('data:image')===0}
+function hash(s){var h1=0x811c9dc5,h2=0x1b873593;for(var i=0;i<s.length;i++){var c=s.charCodeAt(i);h1=Math.imul(h1^c,16777619);h2=Math.imul(h2^c,2246822507)}return ((h1>>>0).toString(36)+(h2>>>0).toString(36))}
+function blob(d){var m=/^data:([^;]+);base64,(.*)$/.exec(d);if(!m)return null;var b=atob(m[2]),a=new Uint8Array(b.length);for(var i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return new Blob([a],{type:m[1]})}
+function ext(t){return t==='image/png'?'png':t==='image/webp'?'webp':'jpg'}
+var MEMO={};
+function up(d){var k=hash(d)+d.length;if(MEMO[k])return MEMO[k];var pr=up0(d);MEMO[k]=pr;pr.catch(function(){delete MEMO[k]});return pr}
+function up0(d){var a=A(),u=a&&a.uid&&a.uid();if(!a||!u)return Promise.reject(new Error('no session'));var b=blob(d);if(!b)return Promise.reject(new Error('bad image'));
+  var path=u+'/'+hash(d)+'.'+ext(b.type);
+  return Promise.resolve(a.token()).then(function(t){if(!t)throw new Error('no token');
+    return fetch(a.url+'/storage/v1/object/'+BUCKET+'/'+path,{method:'POST',headers:{apikey:a.key,Authorization:'Bearer '+t,'Content-Type':b.type,'x-upsert':'true','cache-control':'31536000'},body:b})}).then(function(r){
+    if(!r.ok&&r.status!==409)return r.text().then(function(x){throw new Error('upload '+r.status)});
+    return a.url+'/storage/v1/object/public/'+BUCKET+'/'+path})}
+var running=false,fails=0;
+function run(){if(running||!sess()||!navigator.onLine||!window.db||!Array.isArray(db.products))return Promise.resolve(0);
+  var L=db.products.filter(function(p){return isData(p.image)});if(!L.length)return Promise.resolve(0);running=true;var n=0,now=Date.now();
+  return L.reduce(function(pr,p){return pr.then(function(){var old=p.image;return up(old).then(function(url){if(p.image===old){p.image=url;p._u=now;n++}},function(){fails++})})},Promise.resolve())
+  .then(function(){if(n){try{window.save&&save()}catch(e){}try{window.render&&render()}catch(e){}try{var m=JSON.parse(localStorage.getItem('emd_v223_img')||'{}');m.n=(m.n||0)+n;m.at=now;localStorage.setItem('emd_v223_img',JSON.stringify(m))}catch(e){}}running=false;return n},function(){running=false;return 0})}
+/* بعد تصغير V222 (4 ثوانٍ) نرفع، ثم كل دقيقة إذا وُجدت صورة جديدة، وعند الرجوع للإنترنت */
+setTimeout(run,9000);
+setInterval(function(){if(!running&&!document.hidden&&window.db&&db.products&&db.products.some(function(p){return isData(p.image)})&&fails<20)run()},60000);
+window.addEventListener('online',function(){setTimeout(run,3000)});
+window.EMDCloudImgV223={run:run};
 })();
 </script>
 
