@@ -33045,5 +33045,99 @@ document.addEventListener('visibilitychange',function(){if(document.visibilitySt
 })();
 </script>
 
+<!-- EMD V222: السماح للدعم بالاطلاع + تعديلات المالك عن بُعد -->
+<style id="EMD-V222-assist-css">
+.e222-card{margin-top:12px;border:1px solid rgba(127,127,127,.25);border-radius:14px;padding:12px;text-align:right}
+.e222-card b{display:block;margin-bottom:4px}.e222-card small{display:block;opacity:.75;line-height:1.6}
+.e222-card .e222-on{color:#16a34a;font-weight:700}
+.e222-chk{display:flex;gap:8px;align-items:flex-start;margin:10px 0 0;font-size:13.5px;line-height:1.6;text-align:right}
+.e222-chk input{width:20px;height:20px;flex-shrink:0;margin-top:2px}
+.e222-ov{position:fixed;inset:0;z-index:2147483000;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center}
+.e222-box{background:var(--card,#fff);color:var(--text,#111827);width:100%;max-width:520px;max-height:88vh;overflow:auto;border-radius:20px 20px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom));box-sizing:border-box;direction:rtl;text-align:right}
+.e222-box h3{margin:0 0 4px;font-size:18px}.e222-box p{margin:6px 0;line-height:1.7;white-space:pre-wrap}
+.e222-tbl{width:100%;border-collapse:collapse;margin:10px 0;font-size:14px}.e222-tbl th,.e222-tbl td{border-bottom:1px solid rgba(127,127,127,.2);padding:8px 4px;text-align:right}
+.e222-tbl del{opacity:.6}.e222-tbl ins{text-decoration:none;font-weight:700;color:#16a34a}
+.e222-acts{display:flex;gap:8px;margin-top:12px}.e222-acts button{flex:1;min-height:46px;border-radius:12px;font:inherit;font-weight:700;border:1px solid rgba(127,127,127,.3);background:transparent;color:inherit}
+.e222-acts .go{background:#1d4ed8;color:#fff;border:0}
+</style>
+<script id="EMD-V222-assist">
+(function(){
+'use strict';
+if(window.__EMD_V222A__)return;window.__EMD_V222A__=true;
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function C(){return window.EMDCloudV93||null}
+function A(){var c=C();return c&&c.api}
+function sess(){try{var c=C();return c&&c.session()}catch(e){return null}}
+function tok(){var a=A();return a&&a.token?Promise.resolve(a.token()):Promise.resolve(null)}
+function req(path,o){o=o||{};var a=A();if(!a)return Promise.reject(new Error('السحابة غير جاهزة'));
+  return tok().then(function(t){if(!t)throw new Error('سجّل دخولك أولًا');var h={'apikey':a.key,'Authorization':'Bearer '+t,'Content-Type':'application/json'};if(o.prefer)h.Prefer=o.prefer;
+    return fetch(a.url+path,{method:o.method||'GET',headers:h,body:o.body?JSON.stringify(o.body):undefined}).then(function(r){if(!r.ok)return r.text().then(function(x){throw new Error('تعذّر الاتصال ('+r.status+')')});return r.status===204?null:r.text().then(function(x){return x?JSON.parse(x):null})})})}
+function uid(){var a=A();return a&&a.uid?a.uid():null}
+function note(t){try{var d=document.createElement('div');d.textContent=t;d.style.cssText='position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#111827;color:#fff;padding:10px 16px;border-radius:12px;z-index:2147483001;font:inherit;max-width:90vw;text-align:center';document.body.appendChild(d);setTimeout(function(){d.remove()},3200)}catch(e){}}
+
+/* ---------- السماح للدعم بالاطلاع ---------- */
+var ACC=null;/* {until} */
+function loadAcc(){if(!sess()||!uid())return Promise.resolve(null);return req('/rest/v1/emd_support_access?select=until&user_id=eq.'+uid()).then(function(a){ACC=a&&a[0]||{until:null};return ACC}).catch(function(){return null})}
+function active(){return ACC&&ACC.until&&new Date(ACC.until).getTime()>Date.now()}
+function grant(h){var c=C();var p=c&&c.push?Promise.resolve(c.push()).catch(function(){}):Promise.resolve();
+  return p.then(function(){var u=new Date(Date.now()+h*3600e3).toISOString();return req('/rest/v1/emd_support_access?on_conflict=user_id',{method:'POST',prefer:'resolution=merge-duplicates,return=minimal',body:{user_id:uid(),until:u,updated_at:new Date().toISOString()}}).then(function(){ACC={until:u}})})}
+function revoke(){var n=new Date().toISOString();return req('/rest/v1/emd_support_access?user_id=eq.'+uid(),{method:'PATCH',prefer:'return=minimal',body:{until:n,updated_at:n}}).then(function(){ACC={until:n}})}
+function hm(){var ms=new Date(ACC.until).getTime()-Date.now(),h=Math.floor(ms/3600e3),m=Math.floor(ms%3600e3/6e4);return h>0?h+' ساعة و'+m+' دقيقة':m+' دقيقة'}
+function card(){if(!sess())return '<div class="e222-card" id="e222A"><b>🔓 السماح للدعم بالاطلاع على بياناتك</b><small>سجّل دخولك بحساب أولًا، حتى تُحفظ بياناتك في السحابة ويتمكن الدعم من مساعدتك.</small></div>';
+  return '<div class="e222-card" id="e222A"><b>🔓 السماح للدعم بالاطلاع على بياناتك</b>'+(active()?
+    '<small class="e222-on">مسموح الآن، وينتهي تلقائيًا بعد '+esc(hm())+'.</small><small>يرى الدعم منتجاتك وطلباتك وإعداداتك للقراءة فقط، ولا يتغيّر شيء إلا إذا وافقت أنت على التعديل.</small><div class="e222-acts"><button type="button" data-e222="off">إيقاف السماح الآن</button></div>':
+    '<small>إذا واجهتك مشكلة، اسمح للدعم بالاطلاع على منتجاتك وطلباتك وإعداداتك لمدة 24 ساعة (قراءة فقط). ينتهي السماح تلقائيًا، ويمكنك إيقافه في أي وقت.</small><div class="e222-acts"><button type="button" class="go" data-e222="on">السماح لمدة 24 ساعة</button></div>')+'</div>'}
+function paint(box){if(!box)return;var row=box.querySelector('[data-k="mine"]');var ex=box.querySelector('#e222A');
+  if(row){var host=row.parentNode;if(ex)ex.outerHTML=card();else host.insertAdjacentHTML('afterend',card())}
+  var send=box.querySelector('[data-k="send"]');if(send&&sess()&&!box.querySelector('#e222Chk'))send.insertAdjacentHTML('beforebegin','<label class="e222-chk"><input type="checkbox" id="e222Chk"'+(active()?' checked disabled':'')+'> <span>أسمح للدعم بالاطلاع على بياناتي لمدة 24 ساعة (قراءة فقط) لحل المشكلة بشكل أسرع.</span></label>')}
+function hook(ov){if(ov.__e222)return;ov.__e222=1;var box=ov.firstChild;if(!box)return;
+  new MutationObserver(function(){if(!box.querySelector('#e222A')&&box.querySelector('[data-k="mine"]')||box.querySelector('[data-k="send"]')&&!box.querySelector('#e222Chk')&&sess())paint(box)}).observe(box,{childList:true});
+  ov.addEventListener('click',function(e){var b=e.target.closest('[data-e222],[data-k="send"]');if(!b)return;
+    if(b.getAttribute('data-k')==='send'){var c=box.querySelector('#e222Chk');if(c&&c.checked&&!c.disabled)grant(24).catch(function(){});return}
+    var k=b.getAttribute('data-e222');b.disabled=true;(k==='on'?grant(24):revoke()).then(function(){paint(box);note(k==='on'?'✅ تم السماح لمدة 24 ساعة':'تم إيقاف السماح')},function(er){b.disabled=false;note(er.message)})},true);
+  loadAcc().then(function(){paint(box)});paint(box)}
+new MutationObserver(function(ms){ms.forEach(function(m){[].forEach.call(m.addedNodes,function(n){if(n.nodeType===1&&n.classList&&n.classList.contains('emd93-ov'))setTimeout(function(){if(n.querySelector('[data-k="mine"],[data-k="send"],[data-k="home"]'))hook(n)},0)})})}).observe(document.body,{childList:true});
+
+/* ---------- تعديلات المالك عن بُعد ---------- */
+var busy=false,shown=false,lastChk=0;
+function f3(n){return (Math.round((+n||0)*1000)/1000).toFixed(3)}
+var LBL={price:'السعر',stock:'الكمية',cost:'التكلفة'};
+function findP(it){var P=(window.db&&db.products)||[],m=null;P.forEach(function(p){if(!m&&it.uid&&p.uid===it.uid)m=p});if(!m)P.forEach(function(p){if(!m&&String(p.name||'').trim()===String(it.name||'').trim())m=p});return m}
+function cur(p,k){if(!p)return '';if(k==='price')return p.price!=null?p.price:(p.salePrice!=null?p.salePrice:p.unitPrice);if(k==='cost')return p.costPrice!=null?p.costPrice:(p.purchasePrice!=null?p.purchasePrice:p.cost);if(k==='stock')return p.stock}
+function applyProducts(items){var n=0,now=Date.now(),iso=new Date().toISOString();
+  (items||[]).forEach(function(it){var p=findP(it),s=it.set||{};
+    if(!p){if(!it.add)return;p={name:String(it.name||'').trim(),stock:0,reserved:0,available:0,price:0,unitPrice:0,salePrice:0,defaultPrice:0};if(!p.name)return;db.products.push(p)}
+    if(s.price!=null&&isFinite(+s.price)){['price','unitPrice','salePrice','defaultPrice'].forEach(function(k){p[k]=+s.price})}
+    if(s.cost!=null&&isFinite(+s.cost)){['costPrice','purchasePrice','cost'].forEach(function(k){p[k]=+s.cost})}
+    if(s.stock!=null&&isFinite(+s.stock)){p.stock=+s.stock;p.available=Math.max(0,+s.stock-(+p.reserved||0))}
+    p._u=now;p.updatedAt=iso;n++});
+  if(n){try{window.save&&save()}catch(e){}try{window.render&&render()}catch(e){}}return n}
+function desc(f){var P=f.payload||{};if(f.kind==='product'){return '<table class="e222-tbl"><thead><tr><th>المنتج</th><th>التعديل</th></tr></thead><tbody>'+(P.items||[]).map(function(it){var p=findP(it),s=it.set||{};
+    return '<tr><td>'+esc(it.name)+(p?'':' <small>(منتج جديد)</small>')+'</td><td>'+Object.keys(s).filter(function(k){return LBL[k]}).map(function(k){var o=cur(p,k);return LBL[k]+': '+(o!==''&&o!=null?'<del>'+esc(k==='stock'?o:f3(o))+'</del> ← ':'')+'<ins>'+esc(k==='stock'?s[k]:f3(s[k]))+'</ins>'}).join('<br>')+'</td></tr>'}).join('')+'</tbody></table>'}
+  return ''}
+function setStatus(f,st){return req('/rest/v1/emd_support_fixes?id=eq.'+encodeURIComponent(f.id),{method:'PATCH',prefer:'return=minimal',body:{status:st,done_at:new Date().toISOString()}})}
+function show(list){if(shown||!list.length)return;shown=true;var f=list[0];
+  var o=document.createElement('div');o.className='e222-ov';
+  var isNote=f.kind!=='product';
+  o.innerHTML='<div class="e222-box" role="dialog" aria-modal="true" aria-labelledby="e222T"><h3 id="e222T">'+(isNote?'📩 رسالة من فريق الدعم':'🛠 الدعم أرسل لك تعديلًا')+'</h3>'+
+    (f.title?'<p><b>'+esc(f.title)+'</b></p>':'')+(f.payload&&f.payload.text?'<p>'+esc(f.payload.text)+'</p>':'')+desc(f)+
+    (isNote?'<div class="e222-acts"><button type="button" class="go" data-a="ok">تم، فهمت</button><button type="button" data-a="later">لاحقًا</button></div>':
+    '<p><small>لن يتغيّر شيء إلا إذا ضغطت «تطبيق». ويمكنك تعديل أي شيء بعدها كالمعتاد.</small></p><div class="e222-acts"><button type="button" class="go" data-a="ok">تطبيق</button><button type="button" data-a="later">لاحقًا</button><button type="button" data-a="no">رفض</button></div>')+'</div>';
+  document.body.appendChild(o);
+  o.addEventListener('click',function(e){var b=e.target.closest('[data-a]');if(!b)return;var a=b.getAttribute('data-a');
+    if(a==='later'){o.remove();return}
+    b.disabled=true;var p;
+    if(a==='ok'&&!isNote){var n=applyProducts((f.payload||{}).items);p=setStatus(f,'applied').then(function(){note('✅ تم تطبيق '+n+' تعديل')})}
+    else p=setStatus(f,a==='ok'?'applied':'rejected');
+    p.catch(function(){}).then(function(){o.remove();shown=false;setTimeout(check,400)})})}
+function check(){if(busy||shown||!sess()||!uid()||document.hidden)return;busy=true;lastChk=Date.now();
+  req('/rest/v1/emd_support_fixes?select=id,created_at,kind,title,payload&status=eq.pending&user_id=eq.'+uid()+'&order=created_at.asc&limit=5').then(function(a){busy=false;show(Array.isArray(a)?a:[])},function(){busy=false})}
+setTimeout(check,6000);
+document.addEventListener('visibilitychange',function(){if(!document.hidden&&Date.now()-lastChk>60e3)setTimeout(check,1500)});
+setInterval(function(){if(Date.now()-lastChk>10*60e3)check()},60e3);
+window.EMDAssistV222={check:check,grant:grant,revoke:revoke,applyProducts:applyProducts};
+})();
+</script>
+
 </body>
 </html>

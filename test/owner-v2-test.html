@@ -637,7 +637,7 @@ function openP(email,focus){var r=byEmail(email);if(!r)return;var c=C(email),s=s
    '<div class="o2-acts">'+btn('chat',r.email,'💬 واتساب')+(r.email?'<a class="b" href="mailto:'+encodeURIComponent(r.email)+'">📧 بريد</a>':'')+'</div></div>';
   o.addEventListener('submit',function(e){e.preventDefault();var ok=setC(r.email,{phone:$('o2P').value.trim(),fee:num($('o2F').value),notes:$('o2N').value.trim()});$('o2M').textContent=ok?'✅ حُفظ':'تعذّر الحفظ على هذا الجهاز';drawToday();setTimeout(function(){close();openP(r.email)},600)});
   o.addEventListener('click',function(e){if(e.target===o)close()});
-  document.body.appendChild(o);document.documentElement.style.overflow='hidden';
+  document.body.appendChild(o);document.documentElement.style.overflow='hidden';try{document.dispatchEvent(new CustomEvent('own:profile',{detail:{o:o,email:r.email}}))}catch(_){}
   if(focus==='phone'){var p=$('o2P');if(p){p.focus();$('o2M').textContent='أضف رقم الواتساب أولًا ثم اضغط «حفظ».'}}}
 function close(){var o=document.querySelector('.o2-ov');if(o)o.remove();document.documentElement.style.overflow=''}
 document.addEventListener('keydown',function(e){if(e.key==='Escape')close()});
@@ -830,6 +830,109 @@ function drawV(){var st=$('vStats');if(!st)return;var p=$('o4Vis');if(!p){p=docu
    '<div class="o4-leg"><span>مسجّلون</span><span class="a">بدون تسجيل</span>'+Object.keys(pl).map(function(k){return '<em style="font-style:normal">'+esc(k==='?'?'غير معروف':k)+': '+pl[k]+'</em>'}).join(' · ')+(d.pwa?' · مثبّت كتطبيق: '+d.pwa:'')+'</div>'}
 document.addEventListener('own:data',loadV);
 document.addEventListener('click',function(e){if(e.target.closest('.tabs button[data-t="stats"]'))setTimeout(drawV,30)});
+})();
+</script>
+
+<!-- EMD-owner-v2-assist: شوف مثل التاجر + إصلاح عن بُعد -->
+<style id="EMD-owner-v2-assist-css">
+.o6-st{font-size:13px;color:var(--text2);margin:4px 0 8px;line-height:1.6}.o6-st b.ok{color:var(--good)}
+.o6-btns{display:flex;gap:8px;flex-wrap:wrap}.o6-btns .b{flex:1;min-height:44px}
+.o6-fx{font-size:12.5px;margin-top:8px}.o6-fx div{display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-top:1px solid var(--line)}
+.o6-tag{border-radius:999px;padding:1px 8px;font-size:11.5px;font-weight:700;white-space:nowrap}.o6-tag.pending{background:rgba(234,179,8,.18);color:var(--warn)}.o6-tag.applied{background:rgba(34,197,94,.16);color:var(--good)}.o6-tag.rejected{background:rgba(239,68,68,.15);color:var(--bad)}
+.o6-vw .o2-box{max-width:720px;height:92vh;display:flex;flex-direction:column;padding-bottom:0}
+.o6-tabs{display:flex;gap:6px;overflow-x:auto;margin:6px 0 10px;flex-shrink:0}.o6-tabs button{flex-shrink:0;border-radius:999px;padding:8px 14px;border:1px solid var(--line);background:var(--card);color:var(--text);font:inherit;font-size:13px}.o6-tabs button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent,#fff);border-color:transparent;font-weight:700}
+.o6-body{flex:1;overflow:auto;padding-bottom:12px}
+.o6-ro{font-size:12px;color:var(--text2);margin-bottom:8px}
+.o6-q{width:100%;box-sizing:border-box;font:inherit;border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:12px;padding:10px 12px;margin-bottom:8px}
+.o6-it{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:6px}
+.o6-it .h{display:flex;justify-content:space-between;gap:8px;align-items:center}.o6-it small{color:var(--text2);display:block;margin-top:2px;line-height:1.6}
+.o6-it.ch{border-color:var(--accent)}
+.o6-ed{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:8px}.o6-ed label{font-size:11.5px;color:var(--text2)}.o6-ed input{width:100%;box-sizing:border-box;font:inherit;border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:10px;padding:8px;direction:ltr;text-align:right}
+.o6-bar{position:sticky;bottom:0;background:var(--bg);padding:10px 0 calc(10px + env(safe-area-inset-bottom));border-top:1px solid var(--line);display:flex;gap:8px;flex-shrink:0}.o6-bar .b{flex:1;min-height:46px}
+.o6-kp{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.o6-f label{display:block;font-size:13px;margin:10px 0 4px}.o6-f input,.o6-f textarea{width:100%;box-sizing:border-box;font:inherit;border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:12px;padding:10px}.o6-f textarea{min-height:140px}
+</style>
+<script id="EMD-owner-v2-assist">
+(function(){
+'use strict';
+var U='https://gpwgckwlcntvesnlptej.supabase.co',K='sb_publishable_wklrs_Z4xZmdPJ2nJ0iLiw_UEdPOOQZ';
+function A(){return window.__OWNAPI}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function f3(n){return (Math.round((+n||0)*1000)/1000).toFixed(3)}
+function ago(ts){if(!ts)return '—';var m=Math.round((Date.now()-new Date(ts).getTime())/6e4);if(m<1)return 'الآن';if(m<60)return 'قبل '+m+' دقيقة';var h=Math.round(m/60);if(h<24)return 'قبل '+h+' ساعة';var d=Math.round(h/24);return 'قبل '+d+' يوم'}
+function left(ts){var ms=new Date(ts).getTime()-Date.now();if(ms<=0)return '';var h=Math.floor(ms/3600e3),m=Math.floor(ms%3600e3/6e4);return h>0?h+' ساعة و'+m+' دقيقة':m+' دقيقة'}
+function mask(p){var d=String(p||'').replace(/\D/g,'');return d.length>5?d.slice(0,5)+'•••':d}
+function rpc(n,b){return A().token().then(function(t){return fetch(U+'/rest/v1/rpc/'+n,{method:'POST',headers:{apikey:K,Authorization:'Bearer '+t,'Content-Type':'application/json'},body:JSON.stringify(b||{})})}).then(function(r){return r.text().then(function(x){if(!r.ok){var m=/no consent/.test(x)?'انتهى سماح التاجر. اطلب منه السماح من جديد.':/not found/.test(x)?'لا يوجد حساب بهذا البريد.':'تعذّر الاتصال ('+r.status+')';throw new Error(m)}return x?JSON.parse(x):null})})}
+function J(s){try{return typeof s==='string'?JSON.parse(s):s}catch(e){return null}}
+var ST={pending:'بانتظار التاجر',applied:'طبّقه',rejected:'رفضه'};
+var CACHE={};
+
+/* ---------- بطاقة داخل ملف التاجر ---------- */
+function cardHtml(em,P){var h='<h4>🤝 مساعدة التاجر عن بُعد</h4>';
+  if(!P)return h+'<div class="o6-st">جارٍ التحقق…</div>';
+  if(P.err)return h+'<div class="o6-st">'+esc(P.err)+'</div>';
+  if(!P.found)return h+'<div class="o6-st">هذا التاجر لم ينشئ حسابًا في السحابة، لذلك لا يمكن الاطلاع على بياناته.</div><div class="o6-btns"><button class="b" type="button" data-o6="note">📝 أرسل تعليمات</button></div>';
+  var s=P.allowed?'<b class="ok">✅ سمح لك بالاطلاع</b> · ينتهي بعد '+esc(left(P.until)):'لم يسمح بالاطلاع'+(P.until?' (انتهى آخر سماح '+esc(ago(P.until))+')':'')+'. يمكنه السماح من «المساعدة والدعم» في تطبيقه.';
+  var fx=(P.fixes||[]);
+  return h+'<div class="o6-st">'+s+'</div><div class="o6-btns">'+(P.allowed?'<button class="b primary" type="button" data-o6="view">👁 شوف مثل التاجر</button>':'<button class="b" type="button" data-o6="ask">✉️ اطلب منه السماح</button>')+'<button class="b" type="button" data-o6="note">📝 أرسل تعليمات</button></div>'+
+    (fx.length?'<div class="o6-fx"><b>ما أرسلته له</b>'+fx.map(function(f){return '<div><span>'+esc(f.title||(f.kind==='note'?'تعليمات':'تعديل منتجات'))+' <small style="color:var(--text2)">'+esc(ago(f.created_at))+'</small></span><span class="o6-tag '+esc(f.status)+'">'+esc(ST[f.status]||f.status)+'</span></div>'}).join('')+'</div>':'')}
+function paintCard(o,em){var c=o.querySelector('.o6-card');if(!c){c=document.createElement('div');c.className='o2-card o6-card';var box=o.querySelector('.o2-box');var after=box.querySelector('.o2-grid');if(after&&after.nextSibling)box.insertBefore(c,after.nextSibling);else box.appendChild(c)}c.innerHTML=cardHtml(em,CACHE[em])}
+function load(em){return rpc('emd_owner_peek',{p_email:em}).then(function(j){CACHE[em]=j||{found:false};return j},function(e){CACHE[em]={err:e.message};return null})}
+document.addEventListener('own:profile',function(ev){var o=ev.detail&&ev.detail.o,em=ev.detail&&ev.detail.email;if(!o||!em)return;o.setAttribute('data-o6e',em);delete CACHE[em];paintCard(o,em);
+  load(em).then(function(){if(o.isConnected)paintCard(o,em)})});
+document.addEventListener('click',function(e){var b=e.target.closest('[data-o6]');if(!b)return;var host=b.closest('[data-o6e]'),em=host&&host.getAttribute('data-o6e');var a=b.getAttribute('data-o6');
+  if(a==='view'&&em)viewer(em);
+  if(a==='note'&&em)noteSheet(em);
+  if(a==='ask'&&em){location.href='mailto:'+encodeURIComponent(em)+'?subject='+encodeURIComponent('EMD Business: طلب السماح بالاطلاع للمساعدة')+'&body='+encodeURIComponent('السلام عليكم ورحمة الله،\nحتى نتمكن من مساعدتكم بشكل أسرع، نرجو السماح لنا بالاطلاع على بياناتكم لمدة 24 ساعة (قراءة فقط):\n1. افتحوا تطبيق EMD Business.\n2. اضغطوا «المساعدة والدعم».\n3. اضغطوا «السماح لمدة 24 ساعة».\nينتهي السماح تلقائيًا، ولن يتغيّر شيء في بياناتكم إلا بموافقتكم.\n— فريق EMD Business')}
+});
+
+/* ---------- إرسال تعليمات ---------- */
+function sheet(html,cls){var o=document.createElement('div');o.className='o2-ov '+(cls||'');o.innerHTML='<div class="o2-box" role="dialog" aria-modal="true">'+html+'</div>';document.body.appendChild(o);
+  o.addEventListener('click',function(e){if(e.target===o||e.target.closest('[data-o6x]'))o.remove()});return o}
+function noteSheet(em){var o=sheet('<div class="o2-hd"><div style="flex:1"><h3>📝 تعليمات للتاجر</h3><small>تظهر له داخل التطبيق عند فتحه، مع زر «تم، فهمت».</small></div><button class="o2-x" type="button" data-o6x aria-label="إغلاق">✕</button></div><div class="o6-f"><label for="o6NT">العنوان</label><input id="o6NT" maxlength="100" placeholder="مثال: طريقة إضافة المنتجات"><label for="o6NB">الشرح</label><textarea id="o6NB" maxlength="3000" placeholder="اكتب الخطوات بالترتيب…"></textarea></div><div class="o6-bar"><button class="b primary" type="button" data-o6s>إرسال</button><button class="b" type="button" data-o6x>إلغاء</button></div>');
+  o.querySelector('[data-o6s]').addEventListener('click',function(){var t=o.querySelector('#o6NT').value.trim(),x=o.querySelector('#o6NB').value.trim();if(x.length<3){alert('اكتب الشرح أولًا.');return}this.disabled=true;var btn=this;
+    rpc('emd_owner_send_fix',{p_email:em,p_kind:'note',p_title:t||'رسالة من فريق الدعم',p_payload:{text:x}}).then(function(){o.remove();refresh(em);alert('✅ أُرسلت. ستظهر له عند فتح التطبيق.')},function(er){btn.disabled=false;alert(er.message)})})}
+function refresh(em){var o=document.querySelector('[data-o6e="'+CSS.escape(em)+'"]');load(em).then(function(){if(o&&o.isConnected)paintCard(o,em)})}
+
+/* ---------- شوف مثل التاجر ---------- */
+function viewer(em){var P=CACHE[em]||{};var K2=P.keys||{},D=J(K2.emd_business_v1)||{},prof=J(K2.emd_business_profile_v333)||{};
+  var PR=(D.products||[]).slice(),OR=(D.orders||[]).slice(),CU=(D.customers||[]).slice();
+  var EDIT={},TAB='sum',Q='';
+  function key(p){return p.uid||('n:'+String(p.name||'').trim())}
+  function price(p){return p.price!=null?p.price:(p.salePrice!=null?p.salePrice:p.unitPrice)}
+  function cost(p){return p.costPrice!=null?p.costPrice:(p.purchasePrice!=null?p.purchasePrice:p.cost)}
+  var r=(A().data()||[]).filter(function(x){return x.email===em})[0]||{};
+  var o=sheet('<div class="o2-hd"><div style="flex:1;min-width:0"><h3>👁 '+esc(prof.name||prof.storeName||r.store_name||em)+'</h3><small>نسخة من السحابة · آخر حفظ '+esc(ago(P.updated_at))+'</small></div><button class="o2-x" type="button" data-o6x aria-label="إغلاق">✕</button></div>'+
+    '<div class="o6-tabs" role="group" aria-label="الأقسام">'+[['sum','الملخص'],['prod','المنتجات ('+PR.length+')'],['ord','الطلبات ('+OR.length+')'],['cust','العملاء ('+CU.length+')']].map(function(t){return '<button type="button" data-t="'+t[0]+'" aria-pressed="'+(t[0]===TAB)+'">'+t[1]+'</button>'}).join('')+'</div><div class="o6-body"></div><div class="o6-bar" hidden><button class="b primary" type="button" data-o6send></button><button class="b" type="button" data-o6clear>إلغاء التعديلات</button></div>','o6-vw');
+  var body=o.querySelector('.o6-body'),bar=o.querySelector('.o6-bar');
+  function bar_(){var n=Object.keys(EDIT).length;bar.hidden=!n;bar.querySelector('[data-o6send]').textContent='إرسال '+n+' تعديل للتاجر'}
+  function draw(){[].forEach.call(o.querySelectorAll('.o6-tabs button'),function(b){b.setAttribute('aria-pressed',String(b.getAttribute('data-t')===TAB))});var h='<div class="o6-ro">👁 قراءة فقط. أي تعديل يُرسل للتاجر ولا يُطبَّق إلا إذا وافق.</div>';
+    if(TAB==='sum'){var low=PR.filter(function(p){return (+p.stock||0)<=0}).length,np=PR.filter(function(p){return !(+price(p))}).length,open=OR.filter(function(x){return !/deliver|done|تم|cancel|ملغ/i.test(String(x.status||''))}).length;
+      h+='<div class="o6-kp"><div class="kpi"><div class="l">المنتجات</div><div class="v">'+PR.length+'</div></div><div class="kpi"><div class="l">الطلبات</div><div class="v">'+OR.length+'</div></div><div class="kpi"><div class="l">العملاء</div><div class="v">'+CU.length+'</div></div><div class="kpi"><div class="l">طلبات غير مكتملة</div><div class="v">'+open+'</div></div></div>'+
+        '<div class="o2-card"><h4>ملاحظات سريعة</h4>'+(np?'<div class="o2-row"><span>منتجات بلا سعر</span><b style="color:var(--warn)">'+np+'</b></div>':'')+(low?'<div class="o2-row"><span>منتجات نفدت كميتها</span><b style="color:var(--warn)">'+low+'</b></div>':'')+(!np&&!low?'<div class="o6-st">لا توجد ملاحظات على المنتجات.</div>':'')+'</div>'+
+        '<div class="o2-card"><h4>الجهاز</h4><div class="o2-row"><span>الجهاز</span><span>'+esc(P.device||'—')+'</span></div><div class="o2-row"><span>النسخة</span><span>'+esc(P.app_version||'—')+'</span></div><div class="o2-row"><span>آخر حفظ في السحابة</span><span>'+esc(ago(P.updated_at))+'</span></div><div class="o2-row"><span>ينتهي السماح بعد</span><span>'+esc(left(P.until)||'انتهى')+'</span></div></div>'}
+    if(TAB==='prod'){h+='<input class="o6-q" type="search" placeholder="ابحث عن منتج" value="'+esc(Q)+'" data-o6q><button class="b" type="button" data-o6add style="margin-bottom:8px">➕ إضافة منتج له</button>';
+      var L=PR.concat(Object.keys(EDIT).filter(function(k){return EDIT[k].add}).map(function(k){return EDIT[k].p})).filter(function(p){return !Q||String(p.name||'').toLowerCase().indexOf(Q.toLowerCase())>=0});
+      h+=L.slice(0,200).map(function(p){var k=key(p),e=EDIT[k],s=e?e.set:{};return '<div class="o6-it'+(e?' ch':'')+'" data-k="'+esc(k)+'"><div class="h"><b>'+esc(p.name)+(e&&e.add?' <small style="display:inline">(جديد)</small>':'')+'</b><button class="b" type="button" data-o6ed>'+(e?'إلغاء':'تعديل')+'</button></div><small>السعر '+f3(price(p))+' · الكمية '+(+p.stock||0)+' · التكلفة '+f3(cost(p))+'</small>'+
+        (e?'<div class="o6-ed"><div><label>السعر</label><input inputmode="decimal" data-f="price" value="'+esc(s.price!=null?s.price:f3(price(p)))+'"></div><div><label>الكمية</label><input inputmode="numeric" data-f="stock" value="'+esc(s.stock!=null?s.stock:(+p.stock||0))+'"></div><div><label>التكلفة</label><input inputmode="decimal" data-f="cost" value="'+esc(s.cost!=null?s.cost:f3(cost(p)))+'"></div></div>':'')+'</div>'}).join('')+(L.length>200?'<div class="o6-st">يظهر أول 200 منتج. استخدم البحث.</div>':'')+(!L.length?'<div class="o6-st">لا توجد منتجات.</div>':'')}
+    if(TAB==='ord'){var S=OR.slice().sort(function(a,b){return String(b.created||b.orderDate||'').localeCompare(String(a.created||a.orderDate||''))}).slice(0,50);
+      h+=S.map(function(x){var it=Array.isArray(x.products)?x.products.map(function(p){return (p.name||p.product||'')+(p.qty||p.quantity?' ×'+(p.qty||p.quantity):'')}).join('، '):String(x.products||'');var tot=x.total!=null?x.total:x.due;
+        return '<div class="o6-it"><div class="h"><b>'+esc(x.name||'بدون اسم')+'</b><span class="o6-tag pending">'+esc(x.status||'—')+'</span></div><small>'+esc(x.customerTrackingNumber||x.id||'')+' · '+esc(x.place||'')+' · '+esc(String(x.created||x.orderDate||'').slice(0,10))+(tot!=null&&tot!==''?' · '+f3(tot)+' ر.ع':'')+'</small>'+(it?'<small>'+esc(it.slice(0,160))+'</small>':'')+'</div>'}).join('')+(OR.length>50?'<div class="o6-st">يظهر آخر 50 طلبًا.</div>':'')+(!OR.length?'<div class="o6-st">لا توجد طلبات.</div>':'')}
+    if(TAB==='cust'){h+=CU.slice().sort(function(a,b){return (+b.orders||0)-(+a.orders||0)}).slice(0,50).map(function(c){return '<div class="o6-it"><div class="h"><b>'+esc(c.name||'—')+'</b><span>'+(+c.orders||0)+' طلب</span></div><small style="direction:ltr;text-align:right">'+esc(mask(c.phone))+'</small><small>'+esc(c.place||'')+'</small></div>'}).join('')+(!CU.length?'<div class="o6-st">لا يوجد عملاء.</div>':'')}
+    body.innerHTML=h;bar_()}
+  function read(it){var k=it.getAttribute('data-k'),e=EDIT[k];if(!e)return;[].forEach.call(it.querySelectorAll('[data-f]'),function(i){var v=String(i.value).replace(/[٠-٩]/g,function(d){return '٠١٢٣٤٥٦٧٨٩'.indexOf(d)}).replace(',','.').trim();e.set[i.getAttribute('data-f')]=v===''?null:+v})}
+  o.addEventListener('click',function(e){var t=e.target.closest('.o6-tabs [data-t]');if(t){TAB=t.getAttribute('data-t');draw();return}
+    var ed=e.target.closest('[data-o6ed]');if(ed){var it=ed.closest('.o6-it'),k=it.getAttribute('data-k');if(EDIT[k])delete EDIT[k];else{var p=PR.filter(function(x){return key(x)===k})[0];if(p)EDIT[k]={p:p,set:{}}}draw();return}
+    if(e.target.closest('[data-o6add]')){var n=prompt('اسم المنتج الجديد:');if(!n||!n.trim())return;var p={name:n.trim(),stock:0};EDIT['n:'+n.trim()]={p:p,set:{},add:true};Q='';draw();return}
+    if(e.target.closest('[data-o6clear]')){EDIT={};draw();return}
+    var sd=e.target.closest('[data-o6send]');if(sd){[].forEach.call(body.querySelectorAll('.o6-it.ch'),read);
+      var items=Object.keys(EDIT).map(function(k){var x=EDIT[k],p=x.p,s={};['price','stock','cost'].forEach(function(f){var v=x.set[f],old=f==='price'?+price(p):f==='cost'?+cost(p):+p.stock;if(v!=null&&isFinite(v)&&(x.add||Math.abs(v-(old||0))>1e-9))s[f]=v});return {name:p.name,uid:p.uid||null,set:s,add:!!x.add}}).filter(function(x){return Object.keys(x.set).length||x.add});
+      if(!items.length){alert('لم تغيّر أي قيمة.');return}
+      if(items.some(function(x){return ['price','stock','cost'].some(function(f){return x.set[f]!=null&&x.set[f]<0})})){alert('لا يمكن أن تكون القيم سالبة.');return}
+      if(!confirm('إرسال '+items.length+' تعديل إلى التاجر؟\nلن يُطبَّق إلا إذا ضغط «تطبيق» في تطبيقه.'))return;sd.disabled=true;
+      rpc('emd_owner_send_fix',{p_email:em,p_kind:'product',p_title:'تصحيح بيانات '+items.length+' منتج',p_payload:{items:items}}).then(function(){EDIT={};sd.disabled=false;draw();refresh(em);alert('✅ أُرسلت. ستظهر له عند فتح التطبيق، وترى النتيجة في ملفه.')},function(er){sd.disabled=false;alert(er.message)})}});
+  o.addEventListener('input',function(e){if(e.target.matches('[data-o6q]')){Q=e.target.value;var pos=e.target.selectionStart;draw();var q=body.querySelector('[data-o6q]');q.focus();try{q.setSelectionRange(pos,pos)}catch(_){}}else if(e.target.matches('[data-f]'))read(e.target.closest('.o6-it'))});
+  draw()}
 })();
 </script>
 
