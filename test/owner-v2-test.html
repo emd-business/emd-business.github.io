@@ -14,6 +14,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
 <title>لوحة صاحب التطبيق — EMD Business (تجريبية V2)</title>
+<script>try{document.documentElement.setAttribute("data-o3",localStorage.getItem("emd_owner_theme")||"navy")}catch(e){}</script>
 <style>
 :root{color-scheme:light;--bg:#f5f6f4;--surface:#fcfcfb;--card:#ffffff;--line:#e6e6e2;--grid:#ecebe7;--text:#0b0b0b;--text2:#52514e;--muted:#8a8984;--series:#2a78d6;--series-soft:rgba(42,120,214,.14);--good:#0f8a4b;--warn:#b07400;--bad:#c23b3b;--chip:#f1f1ee;--accent:#18202a}
 @media (prefers-color-scheme:dark){:root:where(:not([data-theme="light"])){color-scheme:dark;--bg:#121211;--surface:#1a1a19;--card:#1f1f1e;--line:#2e2e2c;--grid:#2a2a28;--text:#f0efec;--text2:#c3c2b7;--muted:#8f8e88;--series:#3987e5;--series-soft:rgba(57,135,229,.2);--good:#3fbf7f;--warn:#e0a531;--bad:#e66767;--chip:#2a2a28;--accent:#f0efec}}
@@ -465,7 +466,7 @@ var last=Date.now();document.addEventListener('visibilitychange',function(){if(d
   #dash{padding-bottom:84px}
 }
 /* ===== V3: شكل «الخليط» — كحلي داكن وذهبي ===== */
-:root:root:root{color-scheme:dark;--bg:#070d1f;--surface:#0d1838;--card:#121c3d;--line:#24325c;--grid:#1b2a57;--text:#eef1f8;--text2:#aab3cc;--muted:#8792b0;--accent:#e3c27a;--series:#e3c27a;--series-soft:rgba(227,194,122,.18);--good:#7ee2a8;--warn:#f0c36a;--bad:#f5a3a3;--chip:#1b2a57}
+:root:root:root{color-scheme:dark;--bg:#070d1f;--surface:#0d1838;--card:#121c3d;--line:#24325c;--grid:#1b2a57;--text:#eef1f8;--text2:#aab3cc;--muted:#8792b0;--accent:#e3c27a;--series:#e3c27a;--series-soft:rgba(227,194,122,.18);--good:#7ee2a8;--warn:#f0c36a;--bad:#f5a3a3;--chip:#1b2a57;--on-accent:#070d1f;--shadow:rgba(0,0,0,.35)}
 body{font-family:'Tajawal',system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;background:var(--bg)}
 #dash header{background:var(--surface);margin:-16px -16px 14px;padding:18px 16px 16px;border-radius:0 0 28px 28px;align-items:center}
 #dash header{flex-wrap:wrap;gap:10px}
@@ -474,7 +475,7 @@ body{font-family:'Tajawal',system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;
 #dash header .o2-search{order:3;flex:1 1 100%;max-width:none}
 .o3-logo{width:40px;height:40px;border-radius:10px;border:1.5px solid var(--accent);color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0}
 .b{background:var(--card);border-color:var(--line);color:var(--text);border-radius:12px;min-height:40px}
-.b.primary{background:var(--accent);color:#070d1f;border-color:var(--accent);font-weight:800}
+.b.primary{background:var(--accent);color:var(--on-accent);border-color:var(--accent);font-weight:800}
 .kpi,.panel,.o2-sec,.tk,.bk-card,.o2-card,.login{background:var(--card);border-color:var(--line);border-radius:16px}
 .o2-search input,.tools input,.tools select,.login input,.o2-f input,.o2-f textarea,.bk-card input,.bk-card select,.bk-bar input,.bk-bar select,.tk textarea,.gi{background:var(--surface)!important;color:var(--text)!important;border-color:var(--line)!important}
 .o3-hero{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:16px 16px 44px}
@@ -490,7 +491,7 @@ body{font-family:'Tajawal',system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;
 .o3-strip .gold b{color:var(--accent)}
 .o3-chips{display:flex;gap:8px;overflow-x:auto;margin:14px 0 2px;padding-bottom:2px;scrollbar-width:none}
 .o3-chips button{flex-shrink:0;border-radius:999px;padding:8px 14px;background:var(--card);border:1px solid var(--line);color:var(--text);font-size:13px;min-height:38px}
-.o3-chips button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#070d1f;font-weight:800}
+.o3-chips button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:800}
 .o2-sec h2{font-size:15px;font-weight:800}
 .o2-it{gap:12px}.o2-it .t{flex:1}
 .o3-ic{width:40px;height:40px;border-radius:12px;background:var(--grid);color:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -504,9 +505,22 @@ body{font-family:'Tajawal',system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;
 .o2-x{background:var(--card)}
 .st{background:var(--grid)}
 a{color:var(--accent)}
+/* ===== التصاميم الثلاثة: كحلي وذهبي (الافتراضي) · هادئ · أبيض بسيط ===== */
+html[data-o3="calm"]:root:root{color-scheme:light;--bg:#f3f1ec;--surface:#e6ece5;--card:#fbfaf7;--line:#dcdcd2;--grid:#e9eee7;--text:#2d322c;--text2:#5f665d;--muted:#7d837a;--accent:#5b7b67;--series:#5b7b67;--series-soft:rgba(91,123,103,.15);--good:#3f7d57;--warn:#9a6a14;--bad:#a84a42;--chip:#e9eee7;--on-accent:#ffffff;--shadow:rgba(60,70,55,.12)}
+html[data-o3="white"]:root:root{color-scheme:light;--bg:#f7f8fb;--surface:#ffffff;--card:#ffffff;--line:#e5e7ee;--grid:#eef1f7;--text:#111827;--text2:#545b6a;--muted:#7a8191;--accent:#1d4ed8;--series:#1d4ed8;--series-soft:rgba(29,78,216,.12);--good:#15803d;--warn:#a16207;--bad:#b91c1c;--chip:#eef1f7;--on-accent:#ffffff;--shadow:rgba(17,24,39,.1)}
+html[data-o3="calm"] body,html[data-o3="white"] body{background:var(--bg)}
+html[data-o3="calm"] .o2-ov,html[data-o3="white"] .o2-ov{background:rgba(30,35,30,.35)}
+html[data-o3="calm"] .st.good{color:#2f6a46}
+.o3-tbtn{width:44px;min-height:40px;display:inline-flex;align-items:center;justify-content:center;padding:0}
+.o3-themes{display:grid;gap:10px;margin-top:6px}
+.o3-th{display:flex;align-items:center;gap:12px;width:100%;text-align:start;border:2px solid var(--line);background:var(--card);color:var(--text);border-radius:16px;padding:12px;font:inherit}
+.o3-th[aria-pressed="true"]{border-color:var(--accent)}
+.o3-sw{display:flex;width:64px;height:44px;border-radius:12px;overflow:hidden;flex-shrink:0;border:1px solid var(--line)}
+.o3-sw i{flex:1}
+.o3-th b{display:block;font-size:15px}.o3-th small{display:block;color:var(--text2);font-size:12.5px}
 .tabs button{display:inline-flex;align-items:center;gap:6px}.tabs button i{font-style:normal;display:inline-flex}
 @media(max-width:720px){
-  .tabs{left:12px;right:12px;bottom:10px;border-radius:20px;background:var(--surface);border:1px solid var(--line);padding:6px 4px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+  .tabs{left:12px;right:12px;bottom:10px;border-radius:20px;background:var(--surface);border:1px solid var(--line);padding:6px 4px;box-shadow:0 10px 30px var(--shadow)}
   .tabs button{color:var(--text2)}
   .tabs button.on{background:transparent;color:var(--accent);box-shadow:none;font-weight:800}
   #dash{padding-bottom:96px}
@@ -652,8 +666,19 @@ function setup(){var nav=document.querySelector('.tabs');if(!nav||$('vToday'))re
   var NI={today:'home',stats:'chart',support:'chat',guard:'shield',books:'wallet'};
   [].forEach.call(nav.querySelectorAll('button'),function(x){var t=x.firstChild;if(t&&t.nodeType===3){var s=t.textContent.trim(),i=s.indexOf(' ');if(i>0){var ic=document.createElement('i');ic.innerHTML=svg(NI[x.getAttribute('data-t')]||'home',21);var sp=document.createElement('span');sp.textContent=x.getAttribute('data-t')==='stats'?'المتاجر':s.slice(i+1);x.replaceChild(sp,t);x.insertBefore(ic,sp)}}});
   var h1=document.querySelector('#dash header h1');if(h1&&!document.querySelector('.o3-logo')){var lg=document.createElement('span');lg.className='o3-logo';lg.textContent='EMD';h1.parentNode.insertBefore(lg,h1)}
+  if(h1&&h1.firstChild&&h1.firstChild.nodeType===3)h1.firstChild.textContent='لوحة المالك';
   nav.addEventListener('click',function(e){var x=e.target.closest('button[data-t]');if(!x)return;var on=x.getAttribute('data-t')==='today';v.classList.toggle('hide',!on);if(on){[].forEach.call(document.querySelectorAll('.tabs button'),function(y){y.classList.toggle('on',y===x)});['vStats','vSupport','vBooks','vGuard'].forEach(function(id){var el=$(id);if(el)el.classList.add('hide')});drawToday();guard().then(drawToday)}});
+  var bt=document.querySelector('#dash header .btns');if(bt&&!$('o3T')){var tb=document.createElement('button');tb.type='button';tb.id='o3T';tb.className='b o3-tbtn';tb.setAttribute('aria-label','تغيير التصميم');tb.innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1.2 0 1.8-.9 1.4-1.9-.4-1 .3-2.1 1.4-2.1H17a4 4 0 0 0 4-4c0-5-4-10-9-10z"/><circle cx="7.5" cy="11" r="1.2"/><circle cx="10" cy="7" r="1.2"/><circle cx="15" cy="7.5" r="1.2"/></svg>';tb.onclick=themeSheet;bt.insertBefore(tb,bt.firstChild)}
   search();hookRows()}
+var THEMES=[['navy','كحلي وذهبي','داكن بهوية EMD',['#070d1f','#121c3d','#e3c27a']],['calm','هادئ','ألوان فاتحة مريحة للعين',['#f3f1ec','#e6ece5','#5b7b67']],['white','أبيض بسيط','أبيض وأزرق، واضح في الشمس',['#ffffff','#eef1f7','#1d4ed8']]];
+function curTheme(){try{return localStorage.getItem('emd_owner_theme')||'navy'}catch(e){return 'navy'}}
+function setTheme(k){try{localStorage.setItem('emd_owner_theme',k)}catch(e){}document.documentElement.setAttribute('data-o3',k);var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',k==='navy'?'#0d1838':k==='calm'?'#e6ece5':'#ffffff')}
+function themeSheet(){close();var o=document.createElement('div');o.className='o2-ov';var c=curTheme();
+  o.innerHTML='<div class="o2-box" role="dialog" aria-modal="true" aria-labelledby="o3TT"><div class="o2-hd"><div style="flex:1"><h3 id="o3TT">تغيير التصميم</h3></div><button class="o2-x" type="button" data-o2="x" aria-label="إغلاق">✕</button></div><div class="o3-themes">'+
+   THEMES.map(function(t){return '<button type="button" class="o3-th" data-th="'+t[0]+'" aria-pressed="'+(c===t[0])+'"><span class="o3-sw" aria-hidden="true">'+t[3].map(function(x){return '<i style="background:'+x+'"></i>'}).join('')+'</span><span><b>'+t[1]+'</b><small>'+t[2]+'</small></span></button>'}).join('')+'</div></div>';
+  o.addEventListener('click',function(e){if(e.target===o){close();return}var b=e.target.closest('[data-th]');if(!b)return;setTheme(b.getAttribute('data-th'));[].forEach.call(o.querySelectorAll('[data-th]'),function(x){x.setAttribute('aria-pressed',String(x===b))})});
+  document.body.appendChild(o);document.documentElement.style.overflow='hidden'}
+setTheme(curTheme());
 function count(){var g=GD||{},n=(A.tk()||[]).filter(function(x){return x.status==='open'}).length+(g.alerts||[]).filter(function(a){return !a.seen}).length+due().length;var c=$('o2cnt');if(c)c.textContent=n?String(n):''}
 var first=true;
 document.addEventListener('own:data',function(){setup();hookRows();if(first){first=false;tab('today')}else if($('vToday')&&!$('vToday').classList.contains('hide'))drawToday();guard().then(function(){count();if(!$('vToday').classList.contains('hide'))drawToday()})});
