@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 
 <html dir="rtl" lang="ar">
-<head>
+<head><script id="EMD-V222-errlog">(function(){if(window.EMDErrLog)return;var K='emd_err_log';function L(){try{return JSON.parse(localStorage.getItem(K)||'[]')}catch(e){return []}}
+function add(m,w){try{m=String(m||'').slice(0,180);if(!m)return;var a=L();var x=a[a.length-1];if(x&&x.m===m){x.n=(x.n||1)+1;x.t=Date.now()}else a.push({t:Date.now(),m:m,w:String(w||'').slice(-60)});localStorage.setItem(K,JSON.stringify(a.slice(-6)))}catch(e){}}
+window.addEventListener('error',function(e){add(e.message||(e.target&&e.target.src?'تعذر تحميل '+e.target.src:''),e.filename?(e.filename.split('/').pop()+':'+e.lineno):'')},true);
+window.addEventListener('unhandledrejection',function(e){var r=e.reason;add(r&&r.message?r.message:r,'promise')});
+window.EMDErrLog={list:function(){var c=Date.now()-3*864e5;return L().filter(function(x){return x.t>c}).slice(-5)}}})();</script>
 <!-- EMD BUILD V408: WhatsApp direct tracking + public star rating redesign -->
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
@@ -24411,7 +24415,7 @@ function send(){if(busy)return;var g=function(id){var x=ov.querySelector(id);ret
   var m=g('#emd101M'),em=g('#emd101E').toLowerCase(),c=g('#emd101C'),s=g('#emd101S');
   if(m.length<3){msg('err','اكتب تفاصيل المشكلة أولًا.');return}
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)){msg('err','اكتب بريدًا إلكترونيًا صحيحًا لنتمكن من الرد عليك.');return}
-  var a=api(),meta={v:a&&a.version||'',device:a&&a.device?a.device():'',lang:lang(),ua:navigator.userAgent.slice(0,160),screen:screen.width+'x'+screen.height,counts:counts(),cloud:!!sess(),hasImage:!!shot,page:location.origin+location.pathname};
+  var a=api(),meta={v:a&&a.version||'',device:a&&a.device?a.device():'',lang:lang(),ua:navigator.userAgent.slice(0,160),screen:screen.width+'x'+screen.height,counts:counts(),cloud:!!sess(),hasImage:!!shot,page:location.origin+location.pathname,errs:(window.EMDErrLog?EMDErrLog.list():[]),net:navigator.onLine,pwa:!!((window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone),store:(function(){try{return Math.round((localStorage.getItem('emd_business_v1')||'').length/1024)}catch(e){return 0}})(),dev:(function(){try{return localStorage.getItem('emd_dev_id')||''}catch(e){return ''}})()};
   busy=true;var b=ov.querySelector('[data-k=send]');if(b){b.disabled=true;b.textContent='⏳ جارٍ الإرسال…'}
   tok().then(function(t){var uid=t&&a.uid?a.uid():null;return req('/rest/v1/emd_support_tickets',{method:'POST',token:t,prefer:'return=minimal',body:{user_id:uid||null,email:em,contact:c||null,kind:kind,subject:s||null,message:m,meta:meta,image:shot||null}})}).then(function(){
     busy=false;shot=null;draft=null;var n=+(lsGet(LOCAL)||0)+1;lsSet(LOCAL,String(n));mine=null;view='sent';render();loadMine()},function(err){busy=false;if(b){b.disabled=false;b.textContent='📤 إرسال البلاغ'}msg('err',err.message)})}
