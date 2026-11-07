@@ -574,7 +574,7 @@ function stuck(r){var su=days(r.signed_up),ls=days(r.last_sync),p=+r.products||0
   if(o===0&&su>=3)return {k:'ord',t:'أضاف منتجات ولم يسجّل أي طلب',m:SIG+'رأينا أنكم أضفتم منتجاتكم، فأحسنتم. الخطوة التالية: انسخوا رسالة أي عميل من واتساب والصقوها في «طلب جديد»، وسيستخرج التطبيق الطلب تلقائيًا. هل تودّون أن نجرّبها معكم؟'+END};
   if(ls>=5&&ls<=14)return {k:'gone',t:'غاب '+dn(ls),m:SIG+'افتقدناكم في EMD Business خلال الأيام الماضية. هل واجهتم أي صعوبة يمكننا مساعدتكم فيها؟'+END};
   return null}
-function hcard(r){var x=stuck(r);return x?'<div class="o2-card o5-help"><h4>يحتاج مساعدة</h4><span>'+esc(x.t)+'</span><button class="b primary" type="button" data-o2="help" data-e="'+esc(r.email||'')+'" style="margin-top:8px">رسالة مساعدة بالواتساب</button></div>':''}
+function hcard(r){var x=stuck(r);return x?'<div class="o2-card o5-help"><h4>يحتاج مساعدة</h4><span>'+esc(x.t)+'</span><button class="b primary" type="button" data-o2="help" data-e="'+esc(r.email||'')+'" style="margin-top:8px">رسالة مساعدة بالإيميل</button></div>':''}
 function backTxt(r){return 'السلام عليكم ورحمة الله،\nلاحظنا أنكم لم تستخدموا تطبيق EMD Business منذ مدة. هل واجهتم أي صعوبة يمكننا مساعدتكم فيها؟\n— فريق EMD Business'}
 function goWa(r,txt){var p=wa(C(r.email).phone);if(!p){openP(r.email,'phone');return}window.open('https://wa.me/'+p+'?text='+encodeURIComponent(txt),'_blank')}
 function tab(t){var b=document.querySelector('.tabs button[data-t="'+t+'"]');if(b)b.click()}
@@ -655,7 +655,7 @@ document.addEventListener('click',function(e){var b=e.target.closest('[data-o2]'
   if(a==='remind'){goWa(r,remindTxt(r));return}
   if(a==='welcome'){goWa(r,welcomeTxt(r));return}
   if(a==='back'){goWa(r,backTxt(r));return}
-  if(a==='help'){var sx=stuck(r);goWa(r,sx?sx.m:backTxt(r));return}
+  if(a==='help'){var sx=stuck(r),bd=sx?sx.m:backTxt(r);if(!r.email)return;location.href='mailto:'+encodeURIComponent(r.email)+'?subject='+encodeURIComponent('EMD Business: نحن هنا لمساعدتكم')+'&body='+encodeURIComponent(bd);return}
   if(a==='chat'){goWa(r,'السلام عليكم ورحمة الله،\n');return}
   if(a==='pay'){var fee=+C(em).fee||0;var v=prompt('مبلغ دفعة اشتراك «'+nm(r)+'» لهذا الشهر (ر.ع):',fee?f3(fee):'');if(v==null)return;var amt=num(v);if(amt<=0){alert('اكتب مبلغًا أكبر من صفر.');return}
     if(!addPay(r,amt)){alert('تعذّر الحفظ على هذا الجهاز.');return}var open=!!document.querySelector('.o2-ov');close();drawToday();if(open)openP(em);return}
