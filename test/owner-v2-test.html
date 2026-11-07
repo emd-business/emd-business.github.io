@@ -464,7 +464,55 @@ var last=Date.now();document.addEventListener('visibilitychange',function(){if(d
   .tabs button .cnt{position:absolute;top:0;inset-inline-end:14%;margin:0}
   #dash{padding-bottom:84px}
 }
+/* ===== V3: شكل «الخليط» — كحلي داكن وذهبي ===== */
+:root:root:root{color-scheme:dark;--bg:#070d1f;--surface:#0d1838;--card:#121c3d;--line:#24325c;--grid:#1b2a57;--text:#eef1f8;--text2:#aab3cc;--muted:#8792b0;--accent:#e3c27a;--series:#e3c27a;--series-soft:rgba(227,194,122,.18);--good:#7ee2a8;--warn:#f0c36a;--bad:#f5a3a3;--chip:#1b2a57}
+body{font-family:'Tajawal',system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;background:var(--bg)}
+#dash header{background:var(--surface);margin:-16px -16px 14px;padding:18px 16px 16px;border-radius:0 0 28px 28px;align-items:center}
+#dash header{flex-wrap:wrap;gap:10px}
+#dash header h1{font-size:17px;font-weight:800;flex:1;white-space:nowrap;min-width:0}
+#dash header .btns{order:2}
+#dash header .o2-search{order:3;flex:1 1 100%;max-width:none}
+.o3-logo{width:40px;height:40px;border-radius:10px;border:1.5px solid var(--accent);color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0}
+.b{background:var(--card);border-color:var(--line);color:var(--text);border-radius:12px;min-height:40px}
+.b.primary{background:var(--accent);color:#070d1f;border-color:var(--accent);font-weight:800}
+.kpi,.panel,.o2-sec,.tk,.bk-card,.o2-card,.login{background:var(--card);border-color:var(--line);border-radius:16px}
+.o2-search input,.tools input,.tools select,.login input,.o2-f input,.o2-f textarea,.bk-card input,.bk-card select,.bk-bar input,.bk-bar select,.tk textarea,.gi{background:var(--surface)!important;color:var(--text)!important;border-color:var(--line)!important}
+.o3-hero{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:16px 16px 44px}
+.o3-hero>div:first-child{display:flex;flex-direction:column;gap:2px;min-width:0}
+.o3-l{font-size:12.5px;color:var(--text2)}
+.o3-big{font-size:32px;font-weight:800;color:var(--accent);line-height:1.2;font-variant-numeric:tabular-nums}.o3-big small{font-size:14px}
+.o3-bars{display:flex;align-items:flex-end;gap:4px;height:52px;width:110px;flex-shrink:0}
+.o3-bars i{flex:1;border-radius:3px;background:var(--line)}.o3-bars i.on{background:var(--accent)}
+.o3-strip{margin:-34px 12px 0;position:relative;background:var(--card);border:1px solid var(--line);border-radius:18px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));padding:10px 4px}
+.o3-strip button{border:0;background:transparent;color:var(--text);display:flex;flex-direction:column;align-items:center;gap:1px;min-height:48px;padding:2px}
+.o3-strip button+button{border-right:1px solid var(--line)}
+.o3-strip b{font-size:22px;font-weight:800;line-height:1.2}.o3-strip span{font-size:11.5px;color:var(--text2)}
+.o3-strip .gold b{color:var(--accent)}
+.o3-chips{display:flex;gap:8px;overflow-x:auto;margin:14px 0 2px;padding-bottom:2px;scrollbar-width:none}
+.o3-chips button{flex-shrink:0;border-radius:999px;padding:8px 14px;background:var(--card);border:1px solid var(--line);color:var(--text);font-size:13px;min-height:38px}
+.o3-chips button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#070d1f;font-weight:800}
+.o2-sec h2{font-size:15px;font-weight:800}
+.o2-it{gap:12px}.o2-it .t{flex:1}
+.o3-ic{width:40px;height:40px;border-radius:12px;background:var(--grid);color:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.o2-link{color:var(--accent)}
+.o2-ok{color:var(--good)}
+.o2-ov{background:rgba(3,6,15,.7)}
+.o2-box{background:var(--bg)}
+.o2-hd{align-items:center}
+.o3-av{width:52px;height:52px;border-radius:16px;background:var(--grid);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;flex-shrink:0}
+.o2-bar{background:var(--line)}.o2-bar i{background:var(--accent)}
+.o2-x{background:var(--card)}
+.st{background:var(--grid)}
+a{color:var(--accent)}
+.tabs button{display:inline-flex;align-items:center;gap:6px}.tabs button i{font-style:normal;display:inline-flex}
+@media(max-width:720px){
+  .tabs{left:12px;right:12px;bottom:10px;border-radius:20px;background:var(--surface);border:1px solid var(--line);padding:6px 4px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+  .tabs button{color:var(--text2)}
+  .tabs button.on{background:transparent;color:var(--accent);box-shadow:none;font-weight:800}
+  #dash{padding-bottom:96px}
+}
 </style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap">
 <script id="EMD-owner-v2">
 (function(){
 'use strict';
@@ -507,42 +555,52 @@ function tab(t){var b=document.querySelector('.tabs button[data-t="'+t+'"]');if(
 /* ---------- تبويب «اليوم» ---------- */
 var GD=null,gAt=0;
 function guard(){if(GD&&Date.now()-gAt<60000)return Promise.resolve(GD);return A.gcall({action:'dash'}).then(function(j){GD=j;gAt=Date.now();return j},function(){return GD})}
-function it(t,s,acts){return '<div class="o2-it"><div class="t"><b>'+t+'</b><small>'+s+'</small></div><div class="a">'+(acts||'')+'</div></div>'}
-function sec(ic,h,sub,rows,more){return rows.length?'<section class="o2-sec"><h2>'+ic+' '+h+'</h2>'+(sub?'<p class="sub">'+sub+'</p>':'')+rows.slice(0,5).join('')+(rows.length>5||more?'<button class="o2-link" type="button" data-o2="'+(more||'')+'">'+(rows.length>5?'عرض الكل ('+rows.length+') ←':'فتح ←')+'</button>':'')+'</section>':''}
+var ICO={home:'<path d="M3 11l9-7 9 7v9H3z"/>',chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',chat:'<path d="M4 5h16v11H8l-4 4z"/>',shield:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/>',wallet:'<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/>',gift:'<path d="M4 10h16v10H4zM2 7h20v3H2zM12 7v13M12 7c-2-4-6-3-5 0M12 7c2-4 6-3 5 0"/>',clock:'<circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/>',moon:'<path d="M20 14A8 8 0 1 1 10 4a6 6 0 0 0 10 10z"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/>',up:'<path d="M4 17l6-6 4 4 6-7M14 8h6v6"/>',search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>'};
+function svg(k,z){return '<svg width="'+(z||20)+'" height="'+(z||20)+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(ICO[k]||'')+'</svg>'}
+var CUR='';function it(t,s,acts,ic){ic=ic||CUR;return '<div class="o2-it">'+(ic?'<span class="o3-ic">'+svg(ic)+'</span>':'')+'<div class="t"><b>'+t+'</b><small>'+s+'</small></div><div class="a">'+(acts||'')+'</div></div>'}
+function sec(ic,h,sub,rows,more,k){return rows.length?'<section class="o2-sec" data-k="'+(k||'other')+'"'+(FIL&&FIL!==(k||'other')?' hidden':'')+'><h2>'+h+'</h2>'+(sub?'<p class="sub">'+sub+'</p>':'')+rows.slice(0,5).join('')+(rows.length>5||more?'<button class="o2-link" type="button" data-o2="'+(more||'')+'">'+(rows.length>5?'عرض الكل ('+rows.length+') ←':'فتح ←')+'</button>':'')+'</section>':''}
 function btn(a,e,t,cls){return '<button class="b'+(cls?' '+cls:'')+'" type="button" data-o2="'+a+'" data-e="'+esc(e||'')+'">'+t+'</button>'}
+var FIL='';
+function bkM(m){var bk=J(BKEY,{items:[]}),inc=0,ex=0;(bk.items||[]).forEach(function(it){var s=String(it.date||'').slice(0,7),on=it.rec?(m>=s&&m<=(it.until?String(it.until).slice(0,7):'9999-12')):s===m;if(!on)return;if(it.type==='in')inc+=+it.amount||0;else ex+=+it.amount||0});return {i:inc,e:ex,n:inc-ex}}
+function months(k){var r=[],d=new Date();d.setDate(1);for(var i=k-1;i>=0;i--){var x=new Date(d.getFullYear(),d.getMonth()-i,1);r.push(x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0'))}return r}
+function hero(){var M=months(7),V=M.map(bkM),cur=V[V.length-1],mx=Math.max.apply(null,V.map(function(x){return Math.max(0,x.n)}).concat([1]));
+  var mn=new Date().toLocaleDateString('ar-OM-u-nu-latn',{month:'long'});
+  return '<section class="o3-hero"><div><span class="o3-l">صافي ربح '+esc(mn)+'</span><b class="o3-big">'+f3(cur.n)+' <small>ر.ع</small></b><span class="o3-l">الدخل '+f3(cur.i)+' · المصروف '+f3(cur.e)+'</span></div>'+
+   '<div class="o3-bars" role="img" aria-label="صافي الربح لآخر 7 أشهر">'+V.map(function(x,i){return '<i style="height:'+Math.max(6,Math.round(Math.max(0,x.n)/mx*100))+'%"'+(i===V.length-1?' class="on"':'')+' title="'+M[i]+': '+f3(x.n)+'"></i>'}).join('')+'</div></section>'}
 function drawToday(){var v=$('vToday');if(!v)return;var R=D(),TK=(A.tk()||[]).filter(function(x){return x.status==='open'}),g=GD||{},al=(g.alerts||[]).filter(function(a){return !a.seen});
   var near=(g.stores||[]).filter(function(s){return +s.today>=+s.alert});
   var du=due(),fy=R.filter(function(r){return found(r).st==='yes'}),fs=R.filter(function(r){var f=found(r);return f.st==='wait'&&f.left<=5&&days(r.last_sync)<=7});
   var stop=R.filter(function(r){return r.last_sync&&days(r.last_sync)>14}),nw=R.filter(function(r){return days(r.signed_up)<=7});
-  var h='<section class="o2-kpis" aria-label="ما يحتاج انتباهك">'+
-    '<div class="kpi" data-o2="support"><div class="l">🎫 تذاكر جديدة</div><div class="v">'+TK.length+'</div></div>'+
-    '<div class="kpi" data-o2="guard"><div class="l">🛡️ تنبيهات الحماية</div><div class="v">'+al.length+'</div></div>'+
-    '<div class="kpi" data-o2="due"><div class="l">💰 اشتراكات لم تُدفع</div><div class="v">'+du.length+'</div><div class="s">شهر '+month()+'</div></div>'+
-    '<div class="kpi" data-o2="found"><div class="l">🎁 يستحقون المتجر المجاني</div><div class="v">'+fy.length+'</div></div></section>';
+  var h=hero()+'<section class="o3-strip" aria-label="ما يحتاج انتباهك">'+
+    '<button type="button" data-o2="support"><b>'+TK.length+'</b><span>تذاكر</span></button>'+
+    '<button type="button" data-o2="guard"><b>'+al.length+'</b><span>حماية</span></button>'+
+    '<button type="button" data-o2f="subs" class="gold"><b>'+du.length+'</b><span>لم يدفعوا</span></button>'+
+    '<button type="button" data-o2f="found"><b>'+fy.length+'</b><span>متجر مجاني</span></button></section>'+
+    '<div class="o3-chips" role="group" aria-label="تصفية">'+[['','الكل'],['support','تذاكر'],['guard','حماية'],['subs','اشتراكات'],['found','المؤسسون'],['other','التجار']].map(function(c){return '<button type="button" data-o2f="'+c[0]+'" aria-pressed="'+(FIL===c[0])+'">'+c[1]+'</button>'}).join('')+'</div>';
   var any=TK.length+al.length+near.length+du.length+fy.length+fs.length+stop.length+nw.length;
-  h+=sec('🎫','تذاكر الدعم الجديدة','',TK.map(function(x){return it(esc(x.subject||x.message||'بلاغ'),esc((x.email||'')+' · '+ago(x.created_at)),'<button class="b" type="button" data-o2="support">الرد</button>')}),'support');
-  h+=sec('🛡️','تنبيهات الحماية','',al.map(function(a){return it(esc(a.title),esc(a.body||''),'<button class="b" type="button" data-o2="guard">مراجعة</button>')}),'guard');
-  h+=sec('📈','متاجر قريبة من الحد اليومي','وصلت إلى حد التنبيه خلال آخر 24 ساعة.',near.map(function(s){return it(esc(s.name),'طلبات 24 ساعة: '+(+s.today)+' · السقف: '+(+s.cap),'<button class="b" type="button" data-o2="guard">الحدود</button>')}),'guard');
-  h+=sec('💰','اشتراكات هذا الشهر لم تُدفع','حسب الرسوم الشهرية المسجلة في ملف كل تاجر، والدفعات المسجلة في «حساباتي».',du.map(function(r){return it(esc(nm(r)),f3(C(r.email).fee)+' ر.ع',btn('remind',r.email,'🔔 تذكير')+btn('pay',r.email,'✅ دفع','primary'))}));
-  h+=sec('🎁','حملة المؤسسين','أكملوا '+FOUND+' يومًا وهم نشطون: يستحقون المتجر المجاني.',fy.map(function(r){return it(esc(nm(r)),'مضى '+found(r).d+' يومًا · '+esc(state(r).t),btn('open',r.email,'الملف'))}));
-  h+=sec('⏳','اقتربوا من الاستحقاق','بقي 5 أيام أو أقل.',fs.map(function(r){return it(esc(nm(r)),'بقي '+found(r).left+' يوم',btn('open',r.email,'الملف'))}));
-  h+=sec('😴','متوقفون أكثر من 14 يومًا','تواصل معهم واسألهم عن السبب.',stop.sort(function(a,b){return days(a.last_sync)-days(b.last_sync)}).map(function(r){return it(esc(nm(r)),'آخر نشاط '+ago(r.last_sync),btn('back',r.email,'💬 تواصل')+btn('open',r.email,'الملف'))}));
-  h+=sec('🆕','تجار جدد هذا الأسبوع','',nw.map(function(r){return it(esc(nm(r)),'سجّل '+ago(r.signed_up),btn('welcome',r.email,'💬 ترحيب')+btn('open',r.email,'الملف'))}));
-  if(!any)h+='<div class="o2-sec o2-ok">✅ لا يوجد ما يحتاج انتباهك اليوم</div>';
+  CUR='chat';h+=sec('🎫','تذاكر الدعم الجديدة','',TK.map(function(x){return it(esc(x.subject||x.message||'بلاغ'),esc((x.email||'')+' · '+ago(x.created_at)),'<button class="b" type="button" data-o2="support">الرد</button>')}),'support','support');
+  CUR='shield';h+=sec('🛡️','تنبيهات الحماية','',al.map(function(a){return it(esc(a.title),esc(a.body||''),'<button class="b" type="button" data-o2="guard">مراجعة</button>')}),'guard','guard');
+  CUR='up';h+=sec('📈','متاجر قريبة من الحد اليومي','وصلت إلى حد التنبيه خلال آخر 24 ساعة.',near.map(function(s){return it(esc(s.name),'طلبات 24 ساعة: '+(+s.today)+' · السقف: '+(+s.cap),'<button class="b" type="button" data-o2="guard">الحدود</button>')}),'guard','guard');
+  CUR='wallet';h+=sec('💰','اشتراكات هذا الشهر لم تُدفع','حسب الرسوم الشهرية المسجلة في ملف كل تاجر، والدفعات المسجلة في «حساباتي».',du.map(function(r){return it(esc(nm(r)),f3(C(r.email).fee)+' ر.ع',btn('remind',r.email,'تذكير')+btn('pay',r.email,'دفع','primary'))}),'','subs');
+  CUR='gift';h+=sec('🎁','حملة المؤسسين','أكملوا '+FOUND+' يومًا وهم نشطون: يستحقون المتجر المجاني.',fy.map(function(r){return it(esc(nm(r)),'مضى '+found(r).d+' يومًا · '+esc(state(r).t),btn('open',r.email,'الملف'))}),'','found');
+  CUR='clock';h+=sec('⏳','اقتربوا من الاستحقاق','بقي 5 أيام أو أقل.',fs.map(function(r){return it(esc(nm(r)),'بقي '+found(r).left+' يوم',btn('open',r.email,'الملف'))}),'','found');
+  CUR='moon';h+=sec('😴','متوقفون أكثر من 14 يومًا','تواصل معهم واسألهم عن السبب.',stop.sort(function(a,b){return days(a.last_sync)-days(b.last_sync)}).map(function(r){return it(esc(nm(r)),'آخر نشاط '+ago(r.last_sync),btn('back',r.email,'تواصل')+btn('open',r.email,'الملف'))}));
+  CUR='user';h+=sec('🆕','تجار جدد هذا الأسبوع','',nw.map(function(r){return it(esc(nm(r)),'سجّل '+ago(r.signed_up),btn('welcome',r.email,'ترحيب')+btn('open',r.email,'الملف'))}));
+  CUR='';if(!any)h+='<div class="o2-sec o2-ok">لا يوجد ما يحتاج انتباهك اليوم</div>';
   v.innerHTML=h}
 
 /* ---------- ملف التاجر ---------- */
 function openP(email,focus){var r=byEmail(email);if(!r)return;var c=C(email),s=state(r),f=found(r),gs=null;
   ((GD&&GD.stores)||[]).forEach(function(x){if(!gs&&String(x.name||'').trim()&&String(x.name).trim()===String(r.store_name||'').trim())gs=x});
-  var fh=f.st==='yes'?'<b style="color:var(--good)">✅ يستحق المتجر المجاني</b>':f.st==='idle'?'<b style="color:var(--warn)">⚠️ أكمل '+FOUND+' يومًا لكنه غير نشط خلال آخر 7 أيام</b>':f.st==='wait'?'بقي <b>'+f.left+'</b> يوم للاستحقاق':'لا يوجد تاريخ تسجيل';
+  var fh=f.st==='yes'?'<b style="color:var(--accent)">يستحق المتجر المجاني</b>':f.st==='idle'?'<b style="color:var(--warn)">⚠️ أكمل '+FOUND+' يومًا لكنه غير نشط خلال آخر 7 أيام</b>':f.st==='wait'?'بقي <b>'+f.left+'</b> يوم للاستحقاق':'لا يوجد تاريخ تسجيل';
   var o=document.createElement('div');o.className='o2-ov';o.setAttribute('data-e',r.email||'');
-  o.innerHTML='<div class="o2-box" role="dialog" aria-modal="true" aria-labelledby="o2T"><div class="o2-hd"><div><h3 id="o2T">'+esc(nm(r))+'</h3><small>'+esc(r.email||'')+'</small></div><button class="o2-x" type="button" data-o2="x" aria-label="إغلاق">✕</button></div>'+
+  o.innerHTML='<div class="o2-box" role="dialog" aria-modal="true" aria-labelledby="o2T"><div class="o2-hd"><span class="o3-av" aria-hidden="true">'+esc(nm(r).charAt(0))+'</span><div style="flex:1;min-width:0"><h3 id="o2T">'+esc(nm(r))+'</h3><small>'+esc(r.email||'')+'</small></div><button class="o2-x" type="button" data-o2="x" aria-label="إغلاق">✕</button></div>'+
    '<div style="margin-bottom:8px"><span class="st '+s.k+'">'+esc(s.t)+'</span> <span class="st none">آخر نشاط '+esc(ago(r.last_sync||r.last_sign_in))+'</span></div>'+
    '<div class="o2-grid"><div class="kpi"><div class="l">الطلبات</div><div class="v">'+(+r.orders||0)+'</div></div><div class="kpi"><div class="l">المنتجات</div><div class="v">'+(+r.products||0)+'</div></div><div class="kpi"><div class="l">العملاء</div><div class="v">'+(+r.customers||0)+'</div></div></div>'+
-   '<div class="o2-card"><h4>🎁 حملة المؤسسين</h4>'+fh+'<div class="o2-bar"><i style="width:'+(f.pct||0)+'%"></i></div><small style="color:var(--text2)">سجّل في '+esc(dt(r.signed_up))+' · مضى '+f.d+' يومًا من '+FOUND+'</small></div>'+
-   '<div class="o2-card"><h4>📋 التفاصيل</h4><div class="o2-row"><span>الجهاز</span><span>'+esc(r.device||'—')+'</span></div><div class="o2-row"><span>نسخة التطبيق</span><span>'+esc(r.app_version||'—')+'</span></div><div class="o2-row"><span>تأكيد البريد</span><span>'+(r.confirmed?'نعم':'لا')+'</span></div>'+
+   '<div class="o2-card"><h4>حملة المؤسسين</h4>'+fh+'<div class="o2-bar"><i style="width:'+(f.pct||0)+'%"></i></div><small style="color:var(--text2)">سجّل في '+esc(dt(r.signed_up))+' · مضى '+f.d+' يومًا من '+FOUND+'</small></div>'+
+   '<div class="o2-card"><h4>التفاصيل</h4><div class="o2-row"><span>الجهاز</span><span>'+esc(r.device||'—')+'</span></div><div class="o2-row"><span>نسخة التطبيق</span><span>'+esc(r.app_version||'—')+'</span></div><div class="o2-row"><span>تأكيد البريد</span><span>'+(r.confirmed?'نعم':'لا')+'</span></div>'+
      (gs?'<div class="o2-row"><span>المتجر الإلكتروني</span><span><a href="https://emd-business.github.io/store/?s='+encodeURIComponent(gs.slug)+'" target="_blank" rel="noopener" dir="ltr">'+esc(gs.slug)+'</a></span></div><div class="o2-row"><span>طلبات المتجر خلال 24 ساعة</span><span>'+(+gs.today)+'</span></div>':'')+'</div>'+
-   '<form class="o2-card o2-f" novalidate><h4>💰 الاشتراك والتواصل</h4><p style="margin:0;color:var(--text2);font-size:12.5px">تُحفظ هذه البيانات على هذا الجهاز فقط، مثل «حساباتي».</p>'+
+   '<form class="o2-card o2-f" novalidate><h4>الاشتراك والتواصل</h4><p style="margin:0;color:var(--text2);font-size:12.5px">تُحفظ هذه البيانات على هذا الجهاز فقط، مثل «حساباتي».</p>'+
      '<label for="o2P">رقم الواتساب</label><input id="o2P" inputmode="tel" dir="ltr" placeholder="9xxxxxxx" value="'+esc(c.phone||'')+'">'+
      '<label for="o2F">الاشتراك الشهري (ر.ع) — اتركه فارغًا إن كان مجانيًا</label><input id="o2F" inputmode="decimal" placeholder="0.000" value="'+(+c.fee>0?esc(c.fee):'')+'">'+
      '<label for="o2N">ملاحظاتي عن التاجر</label><textarea id="o2N" placeholder="مثل: يحتاج تدريبًا على المخزون">'+esc(c.notes||'')+'</textarea>'+
@@ -556,6 +614,8 @@ function openP(email,focus){var r=byEmail(email);if(!r)return;var c=C(email),s=s
 function close(){var o=document.querySelector('.o2-ov');if(o)o.remove();document.documentElement.style.overflow=''}
 document.addEventListener('keydown',function(e){if(e.key==='Escape')close()});
 
+/* ---------- التصفية ---------- */
+document.addEventListener('click',function(e){var b=e.target.closest('[data-o2f]');if(!b)return;FIL=b.getAttribute('data-o2f')||'';drawToday();var c=document.querySelector('#vToday .o3-chips');if(c&&FIL)c.scrollIntoView({behavior:'smooth',block:'start'})});
 /* ---------- الأزرار ---------- */
 document.addEventListener('click',function(e){var b=e.target.closest('[data-o2]');if(!b)return;var a=b.getAttribute('data-o2'),em=b.getAttribute('data-e'),r=em?byEmail(em):null;
   if(a==='x'){close();return}
@@ -576,7 +636,7 @@ function hookRows(){var tb=$('rows');if(!tb||tb.__o2)return;tb.__o2=1;tb.addEven
 
 /* ---------- البحث السريع ---------- */
 function search(){var hd=document.querySelector('#dash header');if(!hd||$('o2Q'))return;var w=document.createElement('div');w.className='o2-search';
-  w.innerHTML='<input id="o2Q" type="search" placeholder="🔎 ابحث عن تاجر بالاسم أو البريد أو الرقم" aria-label="ابحث عن تاجر" autocomplete="off"><div class="o2-res hide" id="o2R"></div>';
+  w.innerHTML='<input id="o2Q" type="search" placeholder="ابحث عن تاجر بالاسم أو البريد أو الرقم" aria-label="ابحث عن تاجر" autocomplete="off"><div class="o2-res hide" id="o2R"></div>';
   hd.insertBefore(w,hd.querySelector('.btns'));
   var q=$('o2Q'),R=$('o2R');
   q.addEventListener('input',function(){var s=q.value.trim().toLowerCase(),c=crm();if(!s){R.classList.add('hide');return}
@@ -589,7 +649,9 @@ function setup(){var nav=document.querySelector('.tabs');if(!nav||$('vToday'))re
   var b=document.createElement('button');b.type='button';b.setAttribute('data-t','today');b.innerHTML='☀️ اليوم<span class="cnt" id="o2cnt"></span>';nav.insertBefore(b,nav.firstChild);
   var v=document.createElement('div');v.id='vToday';$('vStats').parentNode.insertBefore(v,$('vStats'));
   /* الرمز فوق الاسم في الشريط السفلي */
-  [].forEach.call(nav.querySelectorAll('button'),function(x){var t=x.firstChild;if(t&&t.nodeType===3){var s=t.textContent.trim(),i=s.indexOf(' ');if(i>0){var ic=document.createElement('i');ic.textContent=s.slice(0,i);var sp=document.createElement('span');sp.textContent=s.slice(i+1);x.replaceChild(sp,t);x.insertBefore(ic,sp)}}});
+  var NI={today:'home',stats:'chart',support:'chat',guard:'shield',books:'wallet'};
+  [].forEach.call(nav.querySelectorAll('button'),function(x){var t=x.firstChild;if(t&&t.nodeType===3){var s=t.textContent.trim(),i=s.indexOf(' ');if(i>0){var ic=document.createElement('i');ic.innerHTML=svg(NI[x.getAttribute('data-t')]||'home',21);var sp=document.createElement('span');sp.textContent=x.getAttribute('data-t')==='stats'?'المتاجر':s.slice(i+1);x.replaceChild(sp,t);x.insertBefore(ic,sp)}}});
+  var h1=document.querySelector('#dash header h1');if(h1&&!document.querySelector('.o3-logo')){var lg=document.createElement('span');lg.className='o3-logo';lg.textContent='EMD';h1.parentNode.insertBefore(lg,h1)}
   nav.addEventListener('click',function(e){var x=e.target.closest('button[data-t]');if(!x)return;var on=x.getAttribute('data-t')==='today';v.classList.toggle('hide',!on);if(on){[].forEach.call(document.querySelectorAll('.tabs button'),function(y){y.classList.toggle('on',y===x)});['vStats','vSupport','vBooks','vGuard'].forEach(function(id){var el=$(id);if(el)el.classList.add('hide')});drawToday();guard().then(drawToday)}});
   search();hookRows()}
 function count(){var g=GD||{},n=(A.tk()||[]).filter(function(x){return x.status==='open'}).length+(g.alerts||[]).filter(function(a){return !a.seen}).length+due().length;var c=$('o2cnt');if(c)c.textContent=n?String(n):''}
