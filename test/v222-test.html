@@ -20887,7 +20887,7 @@ if(window.__EMD_V66_PROTECT__)return;window.__EMD_V66_PROTECT__=true;
 
 var MAIN='emd_business_v1';
 var META='emd_v66_meta';
-var LIMIT=5000000; /* حد ذاكرة المتصفح التقريبي بالحروف */
+var LIMIT=(function(){var u=navigator.userAgent||'';return (/iPhone|iPad|iPod/.test(u)||(/Safari/.test(u)&&!/Chrome|Chromium|CriOS|Android|Edg|OPR/.test(u)))?2500000:5000000})(); /* حد ذاكرة المتصفح التقريبي بالحروف */
 var LEGACY=['emd_business_local_snapshot_v85','emd_business_last_backup_v287','emd_business_v313_snapshot_v1','emd_inventory_v2_legacy_backup_v356','emd_v303_integrity_guard'];
 var KEEP_RECENT=15, KEEP_DAYS=30, KEEP_PINNED=5, MIN_GAP=3*60*1000, DEBOUNCE=15000;
 var REASON={auto:'تلقائية',daily:'يومية',before_restore:'قبل الاسترجاع',quota:'عند امتلاء الذاكرة',before_drop:'قبل نقص كبير',manual:'يدوية'};
@@ -26264,7 +26264,7 @@ window.EMDOrderTemplatesV121={gen:gen,cfg:cfg,open:open,styles:STYLES};
 (function(){'use strict';
 if(window.__EMD_V122__)return;window.__EMD_V122__=true;
 /* V122: تذكير النسخ الاحتياطي + مراقبة امتلاء التخزين + طلب تخزين دائم */
-var LK='emd_v122_lastbk',CK='emd_v122_cfg',LIMIT=5000000;
+var LK='emd_v122_lastbk',CK='emd_v122_cfg',LIMIT=(function(){var u=navigator.userAgent||'';return (/iPhone|iPad|iPod/.test(u)||(/Safari/.test(u)&&!/Chrome|Chromium|CriOS|Android|Edg|OPR/.test(u)))?2500000:5000000})();
 function rd(k,d){try{var v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}}
 function wr(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}
 function cfg(){var c=rd(CK,{});if(c.hours==null)c.hours=24;if(c.on==null)c.on=true;return c}
@@ -33136,6 +33136,33 @@ setTimeout(check,6000);
 document.addEventListener('visibilitychange',function(){if(!document.hidden&&Date.now()-lastChk>60e3)setTimeout(check,1500)});
 setInterval(function(){if(Date.now()-lastChk>10*60e3)check()},60e3);
 window.EMDAssistV222={check:check,grant:grant,revoke:revoke,applyProducts:applyProducts};
+})();
+</script>
+
+<!-- EMD V222: تصغير صور المنتجات تلقائيًا لتوفير ذاكرة المتصفح -->
+<script id="EMD-V222-imgshrink">
+(function(){
+'use strict';
+if(window.__EMD_V222I__)return;window.__EMD_V222I__=true;
+var MAXPX=240,TARGET=24000,MIN=26000;/* بالحروف */
+function big(p){return p&&typeof p.image==='string'&&p.image.indexOf('data:image')===0&&p.image.length>MIN}
+function shrink(url){return new Promise(function(res){var im=new Image();im.onload=function(){try{
+  var sc=Math.min(1,MAXPX/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.max(1,Math.round(im.width*sc));c.height=Math.max(1,Math.round(im.height*sc));
+  var x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);
+  var q=0.7,out=c.toDataURL('image/jpeg',q);while(out.length>TARGET&&q>0.35){q-=0.07;out=c.toDataURL('image/jpeg',q)}
+  res(out.length<url.length?out:null)}catch(e){res(null)}};im.onerror=function(){res(null)};im.src=url})}
+var running=false,snapDone=false;
+function run(){if(running||!window.db||!Array.isArray(db.products))return Promise.resolve(0);var L=db.products.filter(big);if(!L.length)return Promise.resolve(0);running=true;
+  var pre=(!snapDone&&window.EMDProtectV66&&EMDProtectV66.snapshot)?Promise.resolve(EMDProtectV66.snapshot()).catch(function(){}):Promise.resolve();
+  return pre.then(function(){snapDone=true;var n=0,saved=0,now=Date.now();
+    return L.reduce(function(pr,p){return pr.then(function(){var old=p.image;return shrink(old).then(function(nu){if(nu&&p.image===old){saved+=old.length-nu.length;p.image=nu;p._u=now;n++}})})},Promise.resolve()).then(function(){
+      if(n){try{window.save&&save()}catch(e){}try{window.render&&render()}catch(e){}try{var m=JSON.parse(localStorage.getItem('emd_v222_shrink')||'{}');m.n=(m.n||0)+n;m.saved=(m.saved||0)+saved;m.at=now;localStorage.setItem('emd_v222_shrink',JSON.stringify(m))}catch(e){}}
+      running=false;return n})}).catch(function(){running=false;return 0})}
+var t=null;function soon(ms){clearTimeout(t);t=setTimeout(run,ms||3000)}
+setTimeout(run,4000);setInterval(function(){if(!running&&!document.hidden&&window.db&&db.products&&db.products.some(big))run()},60000);
+/* صورة جديدة: بعد كل حفظ نتحقق، والتحقق سريع (طول النص فقط) */
+var ps=window.save;if(typeof ps==='function'&&!ps.__e222){var w=function(){var r=ps.apply(this,arguments);if(!running&&window.db&&db.products&&db.products.some(big))soon(2500);return r};w.__e222=1;window.save=w}
+window.EMDImgV222={run:run};
 })();
 </script>
 
