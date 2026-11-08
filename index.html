@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 <html dir="rtl" lang="ar">
-<head><script id="EMD-V224-lsv">(function(){try{var P=Storage.prototype,s=P.setItem,r=P.removeItem,c=P.clear;window.__emdLSv=0;P.setItem=function(){window.__emdLSv++;return s.apply(this,arguments)};P.removeItem=function(){window.__emdLSv++;return r.apply(this,arguments)};P.clear=function(){window.__emdLSv++;return c.apply(this,arguments)}}catch(e){}})();</script><script id="EMD-V222-errlog">(function(){if(window.EMDErrLog)return;var K='emd_err_log';function L(){try{return JSON.parse(localStorage.getItem(K)||'[]')}catch(e){return []}}
+<head><script id="EMD-V226-invopen">window.EMDInvOpenV226=function(){try{var m=document.getElementById('inventoryModal');return !!(m&&m.style.display!=='none'&&getComputedStyle(m).display!=='none')}catch(e){return true}};</script><script id="EMD-V224-lsv">(function(){try{var P=Storage.prototype,s=P.setItem,r=P.removeItem,c=P.clear;window.__emdLSv=0;P.setItem=function(){window.__emdLSv++;return s.apply(this,arguments)};P.removeItem=function(){window.__emdLSv++;return r.apply(this,arguments)};P.clear=function(){window.__emdLSv++;return c.apply(this,arguments)}}catch(e){}})();</script><script id="EMD-V222-errlog">(function(){if(window.EMDErrLog)return;var K='emd_err_log';function L(){try{return JSON.parse(localStorage.getItem(K)||'[]')}catch(e){return []}}
 function add(m,w){try{m=String(m||'').slice(0,180);if(!m)return;var a=L();var x=a[a.length-1];if(x&&x.m===m){x.n=(x.n||1)+1;x.t=Date.now()}else a.push({t:Date.now(),m:m,w:String(w||'').slice(-60)});localStorage.setItem(K,JSON.stringify(a.slice(-6)))}catch(e){}}
 window.addEventListener('error',function(e){add(e.message||(e.target&&e.target.src?'تعذر تحميل '+e.target.src:''),e.filename?(e.filename.split('/').pop()+':'+e.lineno):'')},true);
 window.addEventListener('unhandledrejection',function(e){var r=e.reason;add(r&&r.message?r.message:r,'promise')});
@@ -16,7 +16,7 @@ window.EMDErrLog={list:function(){var c=Date.now()-3*864e5;return L().filter(fun
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V225</title>
+<title>EMD Business — Standalone V226</title>
 <!-- EMD V158: شاشة افتتاح تغطي التطبيق حتى تكتمل الواجهة الأخيرة، فلا تظهر الأشكال والأزرار القديمة أثناء التحميل -->
 <style id="EMD-V158-boot">
 html.emd-boot{background:#0f172a!important}
@@ -257,7 +257,7 @@ header .brand small{flex-basis:100%;direction:rtl;text-align:right}
 <section class="view" id="orders">
 <div class="row emd-v36-orders-head" style="gap:12px;flex-wrap:wrap"><div style="flex:1;min-width:230px"><h2>📋 الطلبات</h2><p class="muted">كل الطلبات المحفوظة وحالتها.</p></div><select id="filter" onchange="render()"><option value="all">الكل</option><option value="new">🆕 جديد</option><option value="waiting">⏳ بانتظار المنتج</option><option value="ready">🟢 جاهز</option><option value="packing">🛠️ قيد التجهيز</option><option value="shipped">🚚 تم الشحن</option><option value="received">📬 تم الاستلام</option></select></div>
 <div class="emd-v36-search-row">
-<input id="orderSearchV27" oninput="render()" placeholder="🔎 ابحث بالاسم أو الرقم أو الموقع أو المنتج أو رقم الطلب"/>
+<input id="orderSearchV27" oninput="clearTimeout(window.__s226);window.__s226=setTimeout(function(){try{render()}catch(e){}},250)" placeholder="🔎 ابحث بالاسم أو الرقم أو الموقع أو المنتج أو رقم الطلب"/>
 <button class="secondary" type="button" id="emdV36FilterBtn">⚙️ الفلاتر</button>
 <button class="secondary" type="button" id="emdV340PinnedOnlyBtn">📌 المثبتة فقط</button>
 <button class="secondary" type="button" onclick="document.getElementById('orderSearchV27').value='';render()">مسح البحث</button>
@@ -1719,8 +1719,11 @@ function openWhatsApp(order){
   }
   window.refreshOrderReadinessV23=function(){
     let changed=false;
+    const tot226=reserved23(null),st226=new Map();products23().forEach(x=>{const k=norm23(x.name);if(!st226.has(k))st226.set(k,Number(x.stock||0))});
+    const can226=o=>{const its=items23(o),own={};if(!(terminal.has(o.status)||o.status==='shipped'||o.stockDeducted===true))its.forEach(i=>{const k=norm23(i.name);own[k]=(own[k]||0)+i.qty});
+      return its.every(i=>{const k=norm23(i.name);return (st226.has(k)?st226.get(k):0)-Number(((tot226[k]||0)-(own[k]||0))||0)>=i.qty})};
     orders23().forEach(o=>{
-      if(['new','waiting'].includes(o.status) && canFulfill23(o)){
+      if(['new','waiting'].includes(o.status) && can226(o)){
         o.status='ready';
         o.readyAt=o.readyAt||new Date().toISOString();
         changed=true;
@@ -6571,6 +6574,7 @@ function addInventory133(name){
 function render133(){
   const host=document.getElementById('emdV133Forecast');
   if(!host)return;
+  if(!window.EMDInvOpenV226())return;
   const rows=forecast133();
   let s='<div class="emd-v133"><div class="emd-v133-head"><div><div class="emd-v133-title">🔮 توقع الاحتياج القادم</div><div class="emd-v133-sub">تقدير مبني على حركة الطلب خلال آخر 30 يومًا</div></div></div>';
   if(!rows.length){s+='<div class="emd-v133-empty">✅ لا توجد حاليًا منتجات يظهر عليها احتياج قريب.</div>'}
@@ -6740,7 +6744,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 else {wrapAddInventory();setTimeout(renderArrival,300)}
 })();
 </script>
-<script id="emd-v137-movement-js">(function(){const KEY='emd_stock_movements_v1';function read(){try{const x=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(x)?x:[]}catch(e){return[]}}function write(a){try{localStorage.setItem(KEY,JSON.stringify(a.slice(-300)))}catch(e){}}function db(){return window.db||{products:[]}}function norm(s){return String(s||'').toLowerCase().replace(/[ـ]/g,'').replace(/\s+/g,' ').trim()}function prod(n){return (db().products||[]).find(p=>norm(p.name)===norm(n))}function log(n,q,t,src,b,a){if(!n||!q)return;const x=read();x.push({id:Date.now()+Math.random(),product:n,qty:+q,type:t,source:src||'المخزن',before:+b||0,after:+a||0,at:new Date().toISOString()});write(x);render()}window.clearStockMovements137=function(){if(confirm('مسح سجل حركة المخزون؟')){write([]);render()}};window.renderMov137=function(){const box=document.getElementById('emdStockMovements137');if(!box)return;const q=norm(document.getElementById('emdMovSearch137')?.value||'');const rows=read().slice().reverse().filter(m=>!q||norm(m.product).includes(q)).slice(0,30);box.innerHTML=rows.length?rows.map(m=>{const d=new Date(m.at),ds=isNaN(d)?'':d.toLocaleString('ar-OM',{dateStyle:'short',timeStyle:'short'}),add=m.type==='add';return '<div class="emd-mov-row"><div><b>📦 '+String(m.product).replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]))+'</b><br><span class="muted">'+ds+' · '+(m.source||'المخزن')+'</span></div><div style="text-align:left"><div class="'+(add?'emd-mov-add':'emd-mov-remove')+'">'+(add?'＋':'−')+m.qty+'</div><span class="muted">'+m.before+' → '+m.after+'</span></div></div>'}).join(''):'<p class="muted">لا توجد حركة مسجلة حتى الآن.</p>'};function mount(){const inv=document.getElementById('inventoryModal');if(!inv||document.getElementById('emdMovWrap137'))return;const w=document.createElement('div');w.id='emdMovWrap137';w.className='emd-mov-card';w.innerHTML='<div class="emd-mov-head"><div><b>📈 سجل حركة المخزون</b><div class="muted" style="margin-top:3px">متى دخلت أو خرجت الكمية، وما الرصيد بعدها.</div></div><button class="emd-mov-btn" type="button" onclick="clearStockMovements137()">🗑️ مسح السجل</button></div><div style="display:flex;gap:8px;margin:10px 0"><input id="emdMovSearch137" placeholder="ابحث عن منتج..." style="flex:1;padding:10px;border:1px solid #ddd;border-radius:10px" oninput="renderMov137()"></div><div id="emdStockMovements137"></div>';const t=document.getElementById('inventoryTable');(t?.parentNode||inv).appendChild(w);render()}const oldOpen=window.openInventory;window.openInventory=function(){if(typeof oldOpen==='function')oldOpen();mount();render()};function wrap(name,fn,src){const p=prod(name),b=p?+p.stock||0:0,r=fn(),p2=prod(name),a=p2?+p2.stock||0:b;if(a!==b)log(p2.name,Math.abs(a-b),a>b?'add':'remove',src,b,a);return r}setTimeout(()=>{if(typeof window.addStockV16==='function'&&!window.addStockV16.__v137){const f=window.addStockV16;window.addStockV16=function(enc){return wrap(decodeURIComponent(enc||''),()=>f.apply(this,arguments),'المنتجات')};window.addStockV16.__v137=1}if(typeof window.removeStockV16==='function'&&!window.removeStockV16.__v137){const f=window.removeStockV16;window.removeStockV16=function(enc){return wrap(decodeURIComponent(enc||''),()=>f.apply(this,arguments),'المنتجات')};window.removeStockV16.__v137=1}if(typeof window.addInventoryByProduct33==='function'&&!window.addInventoryByProduct33.__v137){const f=window.addInventoryByProduct33;window.addInventoryByProduct33=function(enc){return wrap(decodeURIComponent(enc||''),()=>f.apply(this,arguments),'المخزن')};window.addInventoryByProduct33.__v137=1}if(typeof window.removeInventory==='function'&&!window.removeInventory.__v137){const f=window.removeInventory;window.removeInventory=function(enc){return wrap(decodeURIComponent(enc||''),()=>f.apply(this,arguments),'المخزن')};window.removeInventory.__v137=1}if(typeof window.addInventory==='function'&&!window.addInventory.__v137){const f=window.addInventory;window.addInventory=function(){const n=document.getElementById('invProductName')?.value||'';return wrap(n,()=>f.apply(this,arguments),'المخزن')};window.addInventory.__v137=1}},1200);document.addEventListener('click',()=>setTimeout(mount,150))})();</script>
+<script id="emd-v137-movement-js">(function(){const KEY='emd_stock_movements_v1';function read(){try{const x=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(x)?x:[]}catch(e){return[]}}function write(a){try{localStorage.setItem(KEY,JSON.stringify(a.slice(-300)))}catch(e){}}function db(){return window.db||{products:[]}}function norm(s){return String(s||'').toLowerCase().replace(/[ـ]/g,'').replace(/\s+/g,' ').trim()}function prod(n){return (db().products||[]).find(p=>norm(p.name)===norm(n))}function log(n,q,t,src,b,a){if(!n||!q)return;const x=read();x.push({id:Date.now()+Math.random(),product:n,qty:+q,type:t,source:src||'المخزن',before:+b||0,after:+a||0,at:new Date().toISOString()});write(x);render()}window.clearStockMovements137=function(){if(confirm('مسح سجل حركة المخزون؟')){write([]);render()}};window.renderMov137=function(){const box=document.getElementById('emdStockMovements137');if(!box)return;const q=norm(document.getElementById('emdMovSearch137')?.value||'');const rows=read().slice().reverse().filter(m=>!q||norm(m.product).includes(q)).slice(0,30);box.innerHTML=rows.length?rows.map(m=>{const d=new Date(m.at),ds=isNaN(d)?'':d.toLocaleString('ar-OM',{dateStyle:'short',timeStyle:'short'}),add=m.type==='add';return '<div class="emd-mov-row"><div><b>📦 '+String(m.product).replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]))+'</b><br><span class="muted">'+ds+' · '+(m.source||'المخزن')+'</span></div><div style="text-align:left"><div class="'+(add?'emd-mov-add':'emd-mov-remove')+'">'+(add?'＋':'−')+m.qty+'</div><span class="muted">'+m.before+' → '+m.after+'</span></div></div>'}).join(''):'<p class="muted">لا توجد حركة مسجلة حتى الآن.</p>'};function mount(){const inv=document.getElementById('inventoryModal');if(!inv||document.getElementById('emdMovWrap137'))return;const w=document.createElement('div');w.id='emdMovWrap137';w.className='emd-mov-card';w.innerHTML='<div class="emd-mov-head"><div><b>📈 سجل حركة المخزون</b><div class="muted" style="margin-top:3px">متى دخلت أو خرجت الكمية، وما الرصيد بعدها.</div></div><button class="emd-mov-btn" type="button" onclick="clearStockMovements137()">🗑️ مسح السجل</button></div><div style="display:flex;gap:8px;margin:10px 0"><input id="emdMovSearch137" placeholder="ابحث عن منتج..." style="flex:1;padding:10px;border:1px solid #ddd;border-radius:10px" oninput="renderMov137()"></div><div id="emdStockMovements137"></div>';const t=document.getElementById('inventoryTable');(t?.parentNode||inv).appendChild(w);window.renderMov137()}const oldOpen=window.openInventory;window.openInventory=function(){if(typeof oldOpen==='function')oldOpen();mount();window.renderMov137()};function wrap(name,fn,src){const p=prod(name),b=p?+p.stock||0:0,r=fn(),p2=prod(name),a=p2?+p2.stock||0:b;if(a!==b)log(p2.name,Math.abs(a-b),a>b?'add':'remove',src,b,a);return r}setTimeout(()=>{if(typeof window.addStockV16==='function'&&!window.addStockV16.__v137){const f=window.addStockV16;window.addStockV16=function(enc){return wrap(decodeURIComponent(enc||''),()=>f.apply(this,arguments),'المنتجات')};window.addStockV16.__v137=1}if(typeof window.removeStockV16==='function'&&!window.removeStockV16.__v137){const f=window.removeStockV16;window.removeStockV16=function(enc){return wrap(decodeURIComponent(enc||''),()=>f.apply(this,arguments),'المنتجات')};window.removeStockV16.__v137=1}if(typeof window.addInventoryByProduct33==='function'&&!window.addInventoryByProduct33.__v137){const f=window.addInventoryByProduct33;window.addInventoryByProduct33=function(enc){return wrap(decodeURIComponent(enc||''),()=>f.apply(this,arguments),'المخزن')};window.addInventoryByProduct33.__v137=1}if(typeof window.removeInventory==='function'&&!window.removeInventory.__v137){const f=window.removeInventory;window.removeInventory=function(enc){return wrap(decodeURIComponent(enc||''),()=>f.apply(this,arguments),'المخزن')};window.removeInventory.__v137=1}if(typeof window.addInventory==='function'&&!window.addInventory.__v137){const f=window.addInventory;window.addInventory=function(){const n=document.getElementById('invProductName')?.value||'';return wrap(n,()=>f.apply(this,arguments),'المخزن')};window.addInventory.__v137=1}},1200);document.addEventListener('click',()=>setTimeout(mount,150))})();</script>
 <style id="emd-v138-report-css">
 .emd-v138-card{margin:12px 0;padding:14px;border:1px solid #e6e9ef;border-radius:16px;background:linear-gradient(180deg,#fff,#fbfcff);box-shadow:0 6px 18px rgba(0,0,0,.04)}
 .emd-v138-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.emd-v138-title{font-weight:800;font-size:16px}.emd-v138-sub{font-size:12px;color:#6b7280;margin-top:3px}
@@ -18753,6 +18757,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   function renderAudit(){
     if(!visible())return;
     var modal=document.getElementById('inventoryModal'); if(!modal)return;
+    if(!window.EMDInvOpenV226())return;
     var host=document.getElementById('emdV356InventoryAudit');
     if(!host){host=document.createElement('div');host.id='emdV356InventoryAudit';host.style.cssText='margin-top:14px;border:1px solid #e5e7eb;border-radius:14px;padding:14px;background:#fafafa';var table=document.getElementById('inventoryTable');(table&&table.parentNode?table.parentNode:modal).appendChild(host)}
     var a=auditState();
@@ -18779,6 +18784,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     registerFeature();
     if(enabled())archiveLegacy();
     setTimeout(function(){renderAudit()},300);
+    try{var im226=document.getElementById('inventoryModal');if(im226)new MutationObserver(function(){if(window.EMDInvOpenV226())setTimeout(function(){renderAudit();},60)}).observe(im226,{attributes:true,attributeFilter:['style','class']})}catch(e){}
     document.addEventListener('click',function(){setTimeout(renderAudit,120)});
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
@@ -18845,6 +18851,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   }
   function renderAudit(){
     var host=document.getElementById('emdV357InventoryLifecycleAudit');if(!host)return;
+    if(!window.EMDInvOpenV226())return;
     var a=audit(), problems=a.legacyShipped.length+a.missing.length+a.shortage.length+a.duplicates.length;
     host.innerHTML='<div><b>🔄 دورة المخزون V357</b><div style="font-size:12px;color:#777;margin-top:4px">الحجز يعتمد على الطلبات النشطة، والخصم الفعلي يتم مرة واحدة عند تأكيد الشحن.</div></div>'+
       '<div class="emd-v357-grid"><div class="emd-v357-stat">📦 المنتجات <b>'+a.products+'</b></div><div class="emd-v357-stat">📋 الطلبات <b>'+a.orders+'</b></div><div class="emd-v357-stat">🚚 مشحونة بلا خصم <b>'+a.legacyShipped.length+'</b></div><div class="emd-v357-stat">⚠️ مشاكل حالية <b>'+problems+'</b></div></div>'+
@@ -18887,7 +18894,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     var o=orders().find(function(x){return oid(x)===String(id)});if(!o||o.stockDeducted!==true||o.stockReturned===true)return false;
     items(o).forEach(function(i){var p=productByName(i.name);if(p)p.stock=Number(p.stock||0)+i.qty});o.stockReturned=true;o.stockReturnedAt=new Date().toISOString();save();return true;
   }};
-  function init(){register();setTimeout(mount,500);document.addEventListener('click',function(){setTimeout(renderAudit,150)});}
+  function init(){register();setTimeout(mount,500);document.addEventListener('click',function(){setTimeout(renderAudit,150)});try{var im226=document.getElementById('inventoryModal');if(im226)new MutationObserver(function(){if(window.EMDInvOpenV226())setTimeout(renderAudit,60)}).observe(im226,{attributes:true,attributeFilter:['style','class']})}catch(e){}}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
 </script>
@@ -19219,7 +19226,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V225</div>
+<div id="emdStandaloneV2Badge">EMD Business • V226</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -20090,8 +20097,7 @@ setTimeout(install,500);setTimeout(install,1500);
         var wrapped=function(id){
           var r=oldShow.apply(this,arguments);
           if(id==='orders'){
-            setTimeout(refreshOrdersNow,0);
-            setTimeout(refreshOrdersNow,80);
+            /* V226: show() يرسم الطلبات مباشرة؛ لا حاجة لرسمها مرتين إضافيتين */
           }
           return r;
         };
@@ -20503,7 +20509,7 @@ try{(window.__EMD_V75_NO_V55_OBS__=1)||new MutationObserver(function(ms){ms.forE
       }
       // Important: old local-only EMD-* tokens are never trusted.
       if(existing){
-        try{var d=read(),a=Array.isArray(d.orders)?d.orders:[],x=a.find(function(q){return idOf(q)===id});if(x){delete x.clientToken;delete x.client_token;delete x.clientTrackingSynced;delete x.trackingUrl;delete x.tracking_url;write(d)}}catch(e){}
+        try{var d=read(),a=Array.isArray(d.orders)?d.orders:[],x=a.find(function(q){return idOf(q)===id});if(x&&(x.clientToken!=null||x.client_token!=null||x.clientTrackingSynced!=null||x.trackingUrl!=null||x.tracking_url!=null)){delete x.clientToken;delete x.client_token;delete x.clientTrackingSynced;delete x.trackingUrl;delete x.tracking_url;write(d)}}catch(e){}
       }
       return await createRemote(o);
     })().finally(function(){delete busy[id]});
@@ -20558,7 +20564,9 @@ try{(window.__EMD_V75_NO_V55_OBS__=1)||new MutationObserver(function(ms){ms.forE
   async function boot(){
     migrateInvalid();
     var d=read(),a=Array.isArray(d.orders)?d.orders:[];
-    a.filter(function(o){return ['shipped','received','out_for_delivery'].indexOf(String(o.status||''))>=0}).slice(-30).forEach(function(o){ensure(o).catch(function(){})});
+    var L226=a.filter(function(o){return ['shipped','received','out_for_delivery'].indexOf(String(o.status||''))>=0}).slice(-30);
+    try{var ids226={};L226.forEach(function(o){if(idOf(o)&&o.trackingUid&&rawToken(o))ids226[idOf(o)]=1});if(Object.keys(ids226).length){var d2=read(),a2=Array.isArray(d2.orders)?d2.orders:[],ch226=false;a2.forEach(function(x){if(ids226[idOf(x)]&&(x.clientToken!=null||x.client_token!=null||x.clientTrackingSynced!=null||x.trackingUrl!=null||x.tracking_url!=null)){delete x.clientToken;delete x.client_token;delete x.clientTrackingSynced;delete x.trackingUrl;delete x.tracking_url;ch226=true}});if(ch226)write(d2)}}catch(e){}
+    L226.forEach(function(o){ensure(o).catch(function(){})});
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(boot,250)});else setTimeout(boot,250);
 })();
@@ -27159,7 +27167,7 @@ function paintBar(){var b=$('emd410Bar');if(!b)return;var act=document.querySele
   if(document.body.classList.contains('emd410-tools')){var p=$('emdQuickPanelFinal');if(p&&!p.classList.contains('emd305-open')&&!vis(p))document.body.classList.remove('emd410-tools')}}
 
 function tick(){head();homeBtn();ordersBtn();alerts();bar();paintBar()}
-function boot(){if(ls('emd410_home_open')==='1')document.body.classList.add('emd410-home-open');if(ls('emd410_orders_open')==='1')document.body.classList.add('emd410-orders-open');tick();setInterval(tick,800)}
+function boot(){if(ls('emd410_home_open')==='1')document.body.classList.add('emd410-home-open');if(ls('emd410_orders_open')==='1')document.body.classList.add('emd410-orders-open');tick();setInterval(tick,800);try{var ol226=$('ordersList'),f226=0;if(ol226)new MutationObserver(function(){if(f226)return;f226=requestAnimationFrame(function(){f226=0;try{ordersBtn()}catch(e){}})}).observe(ol226,{childList:true})}catch(e){}}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
 </script>
@@ -27610,7 +27618,7 @@ function cover(){var W=innerWidth,H=innerHeight,on=false,k=document.body.childre
   document.body.classList.toggle('emd411-covered',on);
   /* رقم النسخة أسفل قائمة «المزيد» (شارة النسخة مخفية على الجوال) */
   var sh=document.getElementById('emd410Sheet');if(sh&&sh.classList.contains('show')){var bx=sh.querySelector('.box');if(bx&&!bx.querySelector('.e141v')){var v=document.createElement('div');v.className='e141v';v.textContent=VER;bx.appendChild(v)}}}
-var VER='EMD Business • V225';
+var VER='EMD Business • V226';
 function boot(){cover();setInterval(cover,500)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
@@ -30558,7 +30566,7 @@ function addButtons(){
     var q=document.createElement('button');q.type='button';q.className='secondary e423-q';q.setAttribute('data-e423q',id);q.title='طباعة ملصق شحن سريع';q.setAttribute('aria-label','ملصق سريع للطلب '+id);q.textContent='🏷️ ملصق';p.insertBefore(q,b.nextSibling)});
   /* نافذة الطلب: بجانب «🏷️ ملصق الشحن» */
   var m=$('emdOrderModalV26');if(m){var lb=m.querySelector('[data-emd418]');if(lb&&!m.querySelector('[data-e423m]')){var q2=document.createElement('button');q2.type='button';q2.className='secondary e423-q';q2.setAttribute('data-e423m','1');q2.textContent='🏷️ ملصق سريع';lb.parentNode.insertBefore(q2,lb.nextSibling)}}}
-/* V428: لا نفحص الصفحة إلا والطلبات أو نافذة الطلب ظاهرة */setInterval(function(){if(document.hidden)return;var ov=document.getElementById('orders'),md=document.getElementById('emdOrderModalV26');if((ov&&ov.classList.contains('active'))||(md&&md.style.display!=='none'&&getComputedStyle(md).display!=='none'))addButtons()},1200);document.addEventListener('DOMContentLoaded',addButtons);
+/* V428: لا نفحص الصفحة إلا والطلبات أو نافذة الطلب ظاهرة */setInterval(function(){if(document.hidden)return;var ov=document.getElementById('orders'),md=document.getElementById('emdOrderModalV26');if((ov&&ov.classList.contains('active'))||(md&&md.style.display!=='none'&&getComputedStyle(md).display!=='none'))addButtons()},1200);document.addEventListener('DOMContentLoaded',addButtons);(function(){var f226=0;function o226(){var ol=document.getElementById('ordersList');if(!ol)return;new MutationObserver(function(){if(f226)return;f226=requestAnimationFrame(function(){f226=0;var ov=document.getElementById('orders');if(ov&&ov.classList.contains('active'))try{addButtons()}catch(e){}})}).observe(ol,{childList:true})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',o226);else o226()})();
 document.addEventListener('click',function(ev){var b=ev.target.closest&&ev.target.closest('[data-e423q],[data-e423m]');if(!b)return;ev.preventDefault();ev.stopPropagation();quick(b.hasAttribute('data-e423m')?oidFromModal():b.getAttribute('data-e423q'))},true);
 
 /* ===== لوحة «🎨 تصميم الملصق» داخل نافذة الملصق ===== */
@@ -30772,7 +30780,7 @@ function orders(){try{return (window.db&&Array.isArray(db.orders))?db.orders:[]}
 function saveDb(){try{window.save&&window.save()}catch(e){}}
 /* أ) في شاشة الطلب الجديد: صف فوق زر الحفظ */
 var pend='';
-function saveBtns(){return [].filter.call(document.querySelectorAll('button'),function(b){return b.offsetParent&&/حفظ الطلب/.test(b.textContent)&&!b.closest('#emd418')})}
+function saveBtns(){return [].filter.call(document.querySelectorAll('button'),function(b){return /حفظ الطلب/.test(b.textContent)&&b.offsetParent&&!b.closest('#emd418')})}
 function addOrderRow(){saveBtns().forEach(function(b){var box=b.closest('.actions')||b.parentElement;if(!box||!box.parentNode)return;var par=box.parentNode;/* V174: صف واحد فقط في النموذج — إن وُجد يُنقل فوق زر الحفظ بحالته بدل إضافة صف جديد */var rows=[].filter.call(par.querySelectorAll('[data-e137fee="new"]'),function(r){return r.parentNode===par});if(rows.length){var keep=rows.filter(function(r){return r.querySelector('button.on')}).pop()||rows[rows.length-1];rows.forEach(function(r){if(r!==keep)r.remove()});if(box.previousElementSibling!==keep)par.insertBefore(keep,box);return}pend='';var d=document.createElement('div');d.innerHTML=feeRow('','new');par.insertBefore(d.firstChild,box)})}
 /* ج) داخل «📋 تفاصيل الطلب»: نفس الصف في أعلى التفاصيل */
 function detailOrder(){var t=(document.getElementById('emdOrderIdV26')||{}).textContent||'',id=t.split(' · ')[0].trim();if(!id)return null;var o=orders().find(function(x){return String(x.id)===id});if(o)return o;try{o=window.EMDLabelV418&&EMDLabelV418._h.orderOf(id)}catch(e){}if(o)return o;var d=id.replace(/\D/g,'').replace(/^0+/,'');return d?orders().find(function(x){return String(x.id).replace(/\D/g,'').replace(/^0+/,'')===d})||null:null}
