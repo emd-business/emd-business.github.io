@@ -3865,10 +3865,10 @@ function openWhatsApp(order){
   function decorate52(){
     const products=list52();
     // الصفحة الرئيسية للمنتجات: ابحث عن البطاقات التي تحتوي أسماء المنتجات.
-    const candidates=[...document.querySelectorAll('main .card, main section, .view, .card')];
+    const W52=(t,n)=>{t=String(t||'');n=String(n||'');if(!n)return false;let i=t.indexOf(n);const L=/[\p{L}\p{N}]/u;while(i>-1){const a=t.charAt(i-1),b=t.charAt(i+n.length);if(!(a&&L.test(a))&&!(b&&L.test(b)))return true;i=t.indexOf(n,i+1)}return false};const H52=(el,n)=>{const w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);let x;while((x=w.nextNode()))if(W52(x.data,n))return true;return false};const OFF52=el=>!!(el.closest&&el.closest('#home,header,nav,.nav'));document.querySelectorAll('#home [data-emd-product-image52],header [data-emd-product-image52]').forEach(x=>x.remove());const candidates=[...document.querySelectorAll('main .card, main section, .view, .card')].filter(c=>!OFF52(c));
     candidates.forEach(container=>{
       const text=container.textContent||'';
-      const matches=products.filter(p=>p&&p.name&&text.includes(p.name));
+      const matches=products.filter(p=>p&&p.name&&text.includes(p.name)&&H52(container,p.name));
       if(!matches.length)return;
       matches.forEach(p=>{
         // لا نضيف الصورة أكثر من مرة لنفس المنتج.
@@ -3876,7 +3876,7 @@ function openWhatsApp(order){
         if(container.querySelector('['+marker+'="'+CSS.escape(norm52(p.name))+'"]'))return;
         const rows=[...container.querySelectorAll('div,li,tr')].filter(row=>{
           const t=row.textContent||'';
-          return t.includes(p.name) && t.length<500;
+          return t.includes(p.name) && t.length<500 && H52(row,p.name) && !OFF52(row);
         });
         const row=rows.sort((a,b)=>a.textContent.length-b.textContent.length)[0];
         if(!row||row.querySelector('.emd-main-product-image52,.emd-main-product-placeholder52'))return;
