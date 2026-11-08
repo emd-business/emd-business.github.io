@@ -16,7 +16,7 @@ window.EMDErrLog={list:function(){var c=Date.now()-3*864e5;return L().filter(fun
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V226</title>
+<title>EMD Business — Standalone V227</title>
 <!-- EMD V158: شاشة افتتاح تغطي التطبيق حتى تكتمل الواجهة الأخيرة، فلا تظهر الأشكال والأزرار القديمة أثناء التحميل -->
 <style id="EMD-V158-boot">
 html.emd-boot{background:#0f172a!important}
@@ -19226,7 +19226,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V226</div>
+<div id="emdStandaloneV2Badge">EMD Business • V227</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -27159,7 +27159,7 @@ function sheet(open){var s=$('emd410Sheet');if(!s)return;if(open){
   bs.forEach(function(x,i){if(!vis(x)&&getComputedStyle(x).display==='none')return;var t=x.textContent.trim(),m=t.match(/^(\S+)\s+(.*)$/);h+='<button type="button" data-i="'+i+'"><i>'+(m?m[1]:'•')+'</i>'+(m?m[2]:t)+'</button>'});
   s.firstChild.innerHTML='<h3>كل الصفحات</h3><div class="sub">اختر الصفحة التي تريدها.</div><div class="grid3">'+h+'</div>'+
    '<div class="sec">أدوات</div><div class="grid3"><button type="button" data-i="settings"><i>⚙️</i>الإعدادات</button><button type="button" data-i="ai"><i>🤖</i>اسأل EMD</button><button type="button" data-i="tools"><i>🧰</i>أدوات النظام</button></div>';
-  s.classList.add('show')}else s.classList.remove('show')}
+  s.classList.add('show');try{document.dispatchEvent(new Event('emd410open'))}catch(e){}}else s.classList.remove('show')}
 function paintBar(){var b=$('emd410Bar');if(!b)return;var act=document.querySelector('.app > .view.active'),id=act?act.id:'';
   [].forEach.call(b.querySelectorAll('button'),function(x){var n=x.getAttribute('data-n');x.classList.toggle('on',(n==='home'&&id==='home')||(n==='orders'&&id==='orders')||(n==='add'&&id==='import'))});
   var c=$('emdNotifyCountV317'),cn=b.querySelector('.cnt');if(c&&cn){var v=c.textContent.trim();if(cn.textContent!==v)cn.textContent=v;cn.setAttribute('data-z',(v===''||v==='0')?'1':'0')}
@@ -27597,7 +27597,7 @@ function cover(){var W=innerWidth,H=innerHeight,on=false,k=document.body.childre
     if(st.position!=='fixed'||st.display==='none'||st.visibility==='hidden'||+st.opacity<.05||st.pointerEvents==='none')continue;
     var r=e.getBoundingClientRect();if(r.width>=W*.85&&r.height>=H*.6)on=true}
   document.body.classList.toggle('emd411-covered',on)}
-function boot(){inject();cover();setInterval(function(){inject();cover();badge()},400);setTimeout(function(){poll(true)},4000);setInterval(function(){poll()},15000);document.addEventListener('visibilitychange',function(){if(!document.hidden)poll()})}
+function boot(){inject();cover();document.addEventListener('emd410open',function(){try{inject();badge()}catch(e){}});setInterval(function(){inject();cover();badge()},400);setTimeout(function(){poll(true)},4000);setInterval(function(){poll()},15000);document.addEventListener('visibilitychange',function(){if(!document.hidden)poll()})}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
 </script>
@@ -27618,8 +27618,8 @@ function cover(){var W=innerWidth,H=innerHeight,on=false,k=document.body.childre
   document.body.classList.toggle('emd411-covered',on);
   /* رقم النسخة أسفل قائمة «المزيد» (شارة النسخة مخفية على الجوال) */
   var sh=document.getElementById('emd410Sheet');if(sh&&sh.classList.contains('show')){var bx=sh.querySelector('.box');if(bx&&!bx.querySelector('.e141v')){var v=document.createElement('div');v.className='e141v';v.textContent=VER;bx.appendChild(v)}}}
-var VER='EMD Business • V226';
-function boot(){cover();setInterval(cover,500)}
+var VER='EMD Business • V227';
+function boot(){cover();document.addEventListener('emd410open',function(){try{cover()}catch(e){}});setInterval(cover,500)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
 </script>
@@ -27856,7 +27856,7 @@ window.EMDIconsV412={open:openModal,style:style,set:setStyle};
 
 var obsT=0;function soon(){if(obsT)return;obsT=setTimeout(function(){obsT=0;sweep()},60)}
 function tick(){buildBar();extras();sweep()}
-function boot(){applyStyle();tick();setInterval(tick,1000)}
+function boot(){applyStyle();tick();document.addEventListener('emd410open',function(){try{extras()}catch(e){}});setInterval(tick,1000)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
 </script>
