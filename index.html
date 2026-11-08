@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 <html dir="rtl" lang="ar">
-<head><script id="EMD-V222-errlog">(function(){if(window.EMDErrLog)return;var K='emd_err_log';function L(){try{return JSON.parse(localStorage.getItem(K)||'[]')}catch(e){return []}}
+<head><script id="EMD-V224-lsv">(function(){try{var P=Storage.prototype,s=P.setItem,r=P.removeItem,c=P.clear;window.__emdLSv=0;P.setItem=function(){window.__emdLSv++;return s.apply(this,arguments)};P.removeItem=function(){window.__emdLSv++;return r.apply(this,arguments)};P.clear=function(){window.__emdLSv++;return c.apply(this,arguments)}}catch(e){}})();</script><script id="EMD-V222-errlog">(function(){if(window.EMDErrLog)return;var K='emd_err_log';function L(){try{return JSON.parse(localStorage.getItem(K)||'[]')}catch(e){return []}}
 function add(m,w){try{m=String(m||'').slice(0,180);if(!m)return;var a=L();var x=a[a.length-1];if(x&&x.m===m){x.n=(x.n||1)+1;x.t=Date.now()}else a.push({t:Date.now(),m:m,w:String(w||'').slice(-60)});localStorage.setItem(K,JSON.stringify(a.slice(-6)))}catch(e){}}
 window.addEventListener('error',function(e){add(e.message||(e.target&&e.target.src?'تعذر تحميل '+e.target.src:''),e.filename?(e.filename.split('/').pop()+':'+e.lineno):'')},true);
 window.addEventListener('unhandledrejection',function(e){var r=e.reason;add(r&&r.message?r.message:r,'promise')});
@@ -16,7 +16,7 @@ window.EMDErrLog={list:function(){var c=Date.now()-3*864e5;return L().filter(fun
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V223</title>
+<title>EMD Business — Standalone V224</title>
 <!-- EMD V158: شاشة افتتاح تغطي التطبيق حتى تكتمل الواجهة الأخيرة، فلا تظهر الأشكال والأزرار القديمة أثناء التحميل -->
 <style id="EMD-V158-boot">
 html.emd-boot{background:#0f172a!important}
@@ -3865,10 +3865,10 @@ function openWhatsApp(order){
   function decorate52(){
     const products=list52();
     // الصفحة الرئيسية للمنتجات: ابحث عن البطاقات التي تحتوي أسماء المنتجات.
-    const candidates=[...document.querySelectorAll('main .card, main section, .view, .card')];
+    const W52=(t,n)=>{t=String(t||'');n=String(n||'');if(!n)return false;let i=t.indexOf(n);const L=/[\p{L}\p{N}]/u;while(i>-1){const a=t.charAt(i-1),b=t.charAt(i+n.length);if(!(a&&L.test(a))&&!(b&&L.test(b)))return true;i=t.indexOf(n,i+1)}return false};const H52=(el,n)=>{const w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);let x;while((x=w.nextNode()))if(W52(x.data,n))return true;return false};const OFF52=el=>!!(el.closest&&el.closest('#home,header,nav,.nav'));document.querySelectorAll('#home [data-emd-product-image52],header [data-emd-product-image52]').forEach(x=>x.remove());const candidates=[...document.querySelectorAll('main .card, main section, .view, .card')].filter(c=>!OFF52(c));
     candidates.forEach(container=>{
       const text=container.textContent||'';
-      const matches=products.filter(p=>p&&p.name&&text.includes(p.name));
+      const matches=products.filter(p=>p&&p.name&&text.includes(p.name)&&H52(container,p.name));
       if(!matches.length)return;
       matches.forEach(p=>{
         // لا نضيف الصورة أكثر من مرة لنفس المنتج.
@@ -3876,7 +3876,7 @@ function openWhatsApp(order){
         if(container.querySelector('['+marker+'="'+CSS.escape(norm52(p.name))+'"]'))return;
         const rows=[...container.querySelectorAll('div,li,tr')].filter(row=>{
           const t=row.textContent||'';
-          return t.includes(p.name) && t.length<500;
+          return t.includes(p.name) && t.length<500 && H52(row,p.name) && !OFF52(row);
         });
         const row=rows.sort((a,b)=>a.textContent.length-b.textContent.length)[0];
         if(!row||row.querySelector('.emd-main-product-image52,.emd-main-product-placeholder52'))return;
@@ -5551,7 +5551,7 @@ function openWhatsApp(order){
   const terminal75=s=>['received','cancelled','canceled'].includes(s);
   const allocStatus75=s=>['new','ready','packing','shipped'].includes(s);
   const date75=o=>{const d=new Date(o?.orderDate||o?.created||0);return isNaN(d)?0:d.getTime()};
-  const findProduct75=name=>products75().find(p=>norm75(p.name)===norm75(name))||products75().find(p=>{const a=norm75(p.name),b=norm75(name);return a&&(a.includes(b)||b.includes(a))});
+  let __fp75=null;const findProduct75=name=>{const ps=products75();if(!__fp75||__fp75.ps!==ps||__fp75.n!==ps.length){__fp75={ps:ps,n:ps.length,m:new Map()};setTimeout(()=>{__fp75=null},0)}const k=String(name??'');if(__fp75.m.has(k))return __fp75.m.get(k);const r=ps.find(p=>norm75(p.name)===norm75(name))||ps.find(p=>{const a=norm75(p.name),b=norm75(name);return a&&(a.includes(b)||b.includes(a))});__fp75.m.set(k,r);return r};
   function persist75(){try{localStorage.setItem(V75KEY,JSON.stringify(window.db))}catch(e){}try{if(typeof window.save==='function')window.save()}catch(e){}}
 
   // Inventory allocation model: waiting orders do not consume unavailable stock.
@@ -6438,8 +6438,9 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     let q=(document.getElementById('customerSearch')?.value||'').trim().toLowerCase();
     let arr=(db.customers||[]).filter(c=>(c.name||'').toLowerCase().includes(q)||(c.phone||'').includes(q)||(window.EMDPQ&&EMDPQ.hit(c.phone,q)));
     const el=document.getElementById('customersList'); if(!el)return;
+    const __byP={};(db.orders||[]).forEach(o=>{(__byP[o.phone]||(__byP[o.phone]=[])).push(o)});
     el.innerHTML=arr.length?arr.map(c=>{
-      const os=(db.orders||[]).filter(o=>o.phone===c.phone); let pieces=0,active=0,counts={};
+      const os=__byP[c.phone]||[]; let pieces=0,active=0,counts={};
       os.forEach(o=>{if(o.status!=='received')active++;(o.products||[]).forEach(x=>{let z=Number(x.qty)||0;pieces+=z;counts[x.name]=(counts[x.name]||0)+z;});});
       let fav=Object.entries(counts).sort((a,b)=>b[1]-a[1])[0];
       return `<div class="product"><span>👤 <b>${esc(c.name||'غير مذكور')}</b><br><span class="muted">📱 ${esc(c.phone)} · 📍 ${esc(c.place||'')}</span><div class="emd-smart-row"><span class="emd-smart-chip">📦 ${os.length} طلب</span><span class="emd-smart-chip">🧾 ${pieces} قطعة</span>${active?`<span class="emd-smart-chip">🔄 ${active} نشط</span>`:''}</div><div class="emd-smart-mini">⭐ الأكثر طلبًا: ${esc(fav?fav[0]+' × '+fav[1]:'لا يوجد')}</div></span><span style="display:flex;gap:7px;align-items:center;flex-wrap:wrap;justify-content:flex-end"><button class="secondary" onclick="showCustomerHistory('${esc(c.phone)}')">📋 السجل</button><button class="emd-smart-action" onclick="showCustomerSmart('${esc(c.phone)}')">🧠 تحليل</button></span></div>`;
@@ -19216,7 +19217,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V223</div>
+<div id="emdStandaloneV2Badge">EMD Business • V224</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -20941,16 +20942,19 @@ function idb(){
   return idbP;
 }
 function tx(mode,fn){return idb().then(function(d){return new Promise(function(res,rej){var t=d.transaction('snaps',mode),s=t.objectStore('snaps'),out=fn(s);t.oncomplete=function(){res(out&&out.result!==undefined?out.result:out)};t.onerror=function(){rej(t.error)};t.onabort=function(){rej(t.error||new Error('aborted'))}})})}
-function listSnaps(){
-  return idb().then(function(d){return new Promise(function(res,rej){
-    var out=[],t=d.transaction('snaps','readonly'),s=t.objectStore('snaps'),c=s.openCursor();
-    c.onsuccess=function(){var cur=c.result;if(cur){var v=cur.value;out.push({id:v.id,at:v.at,reason:v.reason,counts:v.counts,hash:v.hash,size:v.size,pinned:!!v.pinned});cur.continue()}else res(out.sort(function(a,b){return b.at-a.at}))};
-    c.onerror=function(){rej(c.error)};
-  })});
-}
+var IDXK='emd_v66_idx';
+function idxGet(){try{var a=JSON.parse(localStorage.getItem(IDXK)||'null');return Array.isArray(a)?a:null}catch(e){return null}}
+function idxSet(a){try{localStorage.setItem(IDXK,JSON.stringify(a))}catch(e){try{localStorage.removeItem(IDXK)}catch(_){}}}
+function metaOf(v){return {id:v.id,at:v.at,reason:v.reason,counts:v.counts,hash:v.hash,size:v.size,pinned:!!v.pinned}}
+function srt(a){return a.slice().sort(function(x,y){return y.at-x.at})}
+function allIds(){return idb().then(function(d){return new Promise(function(res,rej){var st=d.transaction('snaps','readonly').objectStore('snaps');
+  if(st.getAllKeys){var r=st.getAllKeys();r.onsuccess=function(){res(r.result||[])};r.onerror=function(){rej(r.error)};return}
+  var out=[],c=st.openKeyCursor?st.openKeyCursor():st.openCursor();c.onsuccess=function(){var cur=c.result;if(cur){out.push(cur.key);cur.continue()}else res(out)};c.onerror=function(){rej(c.error)}})})}
+function buildIdx(){return allIds().then(function(ids){var out=[];return ids.reduce(function(p,id){return p.then(function(){return getSnap(id).then(function(v){if(v)out.push(metaOf(v))})})},Promise.resolve()).then(function(){idxSet(out);return srt(out)})})}
+function listSnaps(){var a=idxGet();return a?Promise.resolve(srt(a)):buildIdx()}
 function getSnap(id){return idb().then(function(d){return new Promise(function(res,rej){var r=d.transaction('snaps','readonly').objectStore('snaps').get(id);r.onsuccess=function(){res(r.result)};r.onerror=function(){rej(r.error)}})})}
-function putSnap(s){return tx('readwrite',function(st){st.put(s)})}
-function delSnap(id){return tx('readwrite',function(st){st.delete(id)})}
+function putSnap(s){return tx('readwrite',function(st){st.put(s)}).then(function(r){var a=idxGet();if(a){a=a.filter(function(x){return x.id!==s.id});a.push(metaOf(s));idxSet(a)}return r})}
+function delSnap(id){return tx('readwrite',function(st){st.delete(id)}).then(function(r){var a=idxGet();if(a)idxSet(a.filter(function(x){return x.id!==id}));return r})}
 function prune(){
   return listSnaps().then(function(all){
     var keep={},recent=0,days={},pinned=0,pinHash={},cutoff=Date.now()-KEEP_DAYS*864e5;
@@ -23954,7 +23958,7 @@ function poll(){setTimeout(poll,pollGap);
   }).catch(function(e){pollGap=e&&e.net?30000:15000})}
 setTimeout(poll,5000);
 var stableT=null,lastSeen='';
-function watch(){if(!uid()||blocked)return;var h=hashKeys(collectKeys());if(h===meta().lastHash){lastSeen=h;return}
+function watch(){if(!uid()||blocked)return;var _v=window.__emdLSv||0,_n=Date.now();if(_v===watch._v&&_n-(watch._t||0)<30000)return;watch._v=_v;watch._t=_n;var h=hashKeys(collectKeys());if(h===meta().lastHash){lastSeen=h;return}
   if(h!==lastSeen){lastSeen=h;clearTimeout(stableT);stableT=setTimeout(function(){push()},1200)}}
 
 /* ===== الواجهة ===== */
@@ -27604,7 +27608,7 @@ function cover(){var W=innerWidth,H=innerHeight,on=false,k=document.body.childre
   document.body.classList.toggle('emd411-covered',on);
   /* رقم النسخة أسفل قائمة «المزيد» (شارة النسخة مخفية على الجوال) */
   var sh=document.getElementById('emd410Sheet');if(sh&&sh.classList.contains('show')){var bx=sh.querySelector('.box');if(bx&&!bx.querySelector('.e141v')){var v=document.createElement('div');v.className='e141v';v.textContent=VER;bx.appendChild(v)}}}
-var VER='EMD Business • V223';
+var VER='EMD Business • V224';
 function boot(){cover();setInterval(cover,500)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
@@ -33197,6 +33201,28 @@ setTimeout(run,9000);
 setInterval(function(){if(!running&&!document.hidden&&window.db&&db.products&&db.products.some(function(p){return isData(p.image)})&&fails<20)run()},60000);
 window.addEventListener('online',function(){setTimeout(run,3000)});
 window.EMDCloudImgV223={run:run};
+})();
+</script>
+
+<!-- EMD V224: زر «المنتجات» واحد: كل الأزرار تفتح صفحة المنتجات، والنافذة القديمة صارت «تعديل سريع» داخلها -->
+<script id="EMD-V224-products-one">
+(function(){
+'use strict';
+if(window.__EMD_V224__)return;window.__EMD_V224__=true;
+function closeTools(){['emdV305Panel','emdV306Panel','emdV306','emdV305'].forEach(function(id){var e=document.getElementById(id);if(e&&e.classList)e.classList.remove('show','open','active')});
+  [].forEach.call(document.querySelectorAll('.emd306-ov.show,.emd305-ov.show,#emd410Sheet.show,#emd410Sheet.open'),function(e){e.classList.remove('show','open')});document.body.classList.remove('emd410-sheet-open')}
+function addBtn(){var sec=document.getElementById('products');if(!sec||document.getElementById('e224Quick'))return;var row=sec.querySelector('.row');if(!row)return;
+  var add=row.querySelector('button');var w=document.createElement('span');w.style.cssText='display:flex;gap:6px;align-items:center;flex-shrink:0';
+  var b=document.createElement('button');b.id='e224Quick';b.type='button';b.className='secondary';b.textContent='✏️ تعديل سريع';b.style.cssText='white-space:nowrap;padding-inline:12px';
+  b.onclick=function(){var q=window.EMDProductsQuickV224;if(q)q()};row.insertBefore(w,add);w.appendChild(b);if(add){add.style.whiteSpace='nowrap';w.appendChild(add)}row.style.flexWrap='nowrap';row.style.gap='8px';var h=row.querySelector('h2');if(h)h.style.whiteSpace='nowrap';b.style.fontSize=add?getComputedStyle(add).fontSize:'';}
+function hook(){var o=window.openProducts;if(typeof o!=='function'||o.__e224)return false;window.EMDProductsQuickV224=o;
+  var w=function(){try{closeTools()}catch(e){}var m=document.getElementById('productsModal');if(m)m.style.display='none';try{show('products')}catch(e){return o.apply(this,arguments)}addBtn();try{window.scrollTo(0,0)}catch(e){}};w.__e224=1;window.openProducts=w;return true}
+hook();setTimeout(hook,1500);setTimeout(hook,4000);addBtn();setTimeout(addBtn,1500);
+/* أداء: قائمتا العملاء والمنتجات ثقيلتان (تُبنى مع كل حفظ)، فلا نبنيهما إلا إذا كانت صفحتهما ظاهرة */
+function lazy(name,sec){var o=window[name];if(typeof o!=='function'||o.__e224l)return;var w=function(){var s=document.getElementById(sec);if(s&&!s.classList.contains('active')){w.d=1;return}w.d=0;return o.apply(this,arguments)};w.__e224l=1;w.d=1;window[name]=w}
+function lazyAll(){lazy('renderCustomers','customers');lazy('renderProducts','products');
+  var sh=window.show;if(typeof sh==='function'&&!sh.__e224l){var ws=function(id){var r=sh.apply(this,arguments);try{if(id==='customers'&&window.renderCustomers&&renderCustomers.d)renderCustomers();if(id==='products'&&window.renderProducts&&renderProducts.d)renderProducts()}catch(e){}return r};ws.__e224l=1;window.show=ws}}
+lazyAll();setTimeout(lazyAll,1500);setTimeout(lazyAll,4000);setTimeout(lazyAll,9000);
 })();
 </script>
 
