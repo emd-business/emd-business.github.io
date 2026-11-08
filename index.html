@@ -16,7 +16,7 @@ window.EMDErrLog={list:function(){var c=Date.now()-3*864e5;return L().filter(fun
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V224</title>
+<title>EMD Business — Standalone V225</title>
 <!-- EMD V158: شاشة افتتاح تغطي التطبيق حتى تكتمل الواجهة الأخيرة، فلا تظهر الأشكال والأزرار القديمة أثناء التحميل -->
 <style id="EMD-V158-boot">
 html.emd-boot{background:#0f172a!important}
@@ -879,7 +879,9 @@ function reconcileOrderInventory(){
   const digits=s=>String(s||'').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d));
   const n=s=>digits(s).replace(/ـ/g,'').trim().toLowerCase().replace(/\s+/g,' ');
   const products=db.products||[];
-  const matchProduct=name=>{
+  const mp225=new Map();
+  const matchProduct=name=>{const raw0=n(name);if(mp225.has(raw0))return mp225.get(raw0);const r=matchProduct0(name);mp225.set(raw0,r);return r};
+  const matchProduct0=name=>{
     const raw=n(name);
     if(!raw)return '';
     let p=products.find(x=>n(x.name)===raw);
@@ -3865,7 +3867,7 @@ function openWhatsApp(order){
   function decorate52(){
     const products=list52();
     // الصفحة الرئيسية للمنتجات: ابحث عن البطاقات التي تحتوي أسماء المنتجات.
-    const W52=(t,n)=>{t=String(t||'');n=String(n||'');if(!n)return false;let i=t.indexOf(n);const L=/[\p{L}\p{N}]/u;while(i>-1){const a=t.charAt(i-1),b=t.charAt(i+n.length);if(!(a&&L.test(a))&&!(b&&L.test(b)))return true;i=t.indexOf(n,i+1)}return false};const H52=(el,n)=>{const w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);let x;while((x=w.nextNode()))if(W52(x.data,n))return true;return false};const OFF52=el=>!!(el.closest&&el.closest('#home,header,nav,.nav'));document.querySelectorAll('#home [data-emd-product-image52],header [data-emd-product-image52]').forEach(x=>x.remove());const candidates=[...document.querySelectorAll('main .card, main section, .view, .card')].filter(c=>!OFF52(c));
+    const W52=(t,n)=>{t=String(t||'');n=String(n||'');if(!n)return false;let i=t.indexOf(n);const L=/[\p{L}\p{N}]/u;while(i>-1){const a=t.charAt(i-1),b=t.charAt(i+n.length);if(!(a&&L.test(a))&&!(b&&L.test(b)))return true;i=t.indexOf(n,i+1)}return false};const H52=(el,n)=>{const w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);let x;while((x=w.nextNode()))if(W52(x.data,n))return true;return false};const OFF52=el=>!!(el.closest&&el.closest('#home,header,nav,.nav'));document.querySelectorAll('#home [data-emd-product-image52],header [data-emd-product-image52]').forEach(x=>x.remove());const candidates=[...document.querySelectorAll('#products.active, #products.active .card, #stock.active, #stock.active .card')].filter(c=>!OFF52(c));
     candidates.forEach(container=>{
       const text=container.textContent||'';
       const matches=products.filter(p=>p&&p.name&&text.includes(p.name)&&H52(container,p.name));
@@ -6188,8 +6190,8 @@ function openWhatsApp(order){
   const orders104=()=>window.db&&Array.isArray(window.db.orders)?window.db.orders:[];
   const products104=()=>window.db&&Array.isArray(window.db.products)?window.db.products:[];
   const items104=o=>{const a=o&&(o.products||o.items);return Array.isArray(a)?a.map(x=>({name:String(x.name||x.product||'').trim(),qty:Math.max(1,Number(x.qty??x.quantity)||1)})).filter(x=>x.name):[]};
-  const find104=name=>products104().find(p=>norm104(p.name)===norm104(name))||products104().find(p=>{const a=norm104(p.name),b=norm104(name);return a&&b&&(a.includes(b)||b.includes(a))});
-  function reserved104(name){let n=0;const k=norm104(name);orders104().filter(o=>(['new','ready','packing'].includes(String(o.status||'new'))&&o.stockDeducted!==true)).forEach(o=>items104(o).forEach(i=>{const p=find104(i.name);if(p&&norm104(p.name)===k)n+=i.qty}));return n}
+  let C104=null;const cache104=()=>{const ps=products104(),os=orders104();if(C104&&C104.ps===ps&&C104.os===os&&C104.np===ps.length&&C104.no===os.length)return C104;C104={ps:ps,os:os,np:ps.length,no:os.length,f:new Map(),r:null};setTimeout(()=>{C104=null},0);return C104};const find104=name=>{const c=cache104(),k=String(name??'');if(c.f.has(k))return c.f.get(k);const b=norm104(name);const r=c.ps.find(p=>norm104(p.name)===b)||c.ps.find(p=>{const a=norm104(p.name);return a&&b&&(a.includes(b)||b.includes(a))});c.f.set(k,r);return r};
+  function reserved104(name){const c=cache104();if(!c.r){const m=new Map();c.os.filter(o=>(['new','ready','packing'].includes(String(o.status||'new'))&&o.stockDeducted!==true)).forEach(o=>items104(o).forEach(i=>{const p=find104(i.name);if(p){const k=norm104(p.name);m.set(k,(m.get(k)||0)+i.qty)}}));c.r=m}return c.r.get(norm104(name))||0}
   function build104(){const map={};orders104().filter(o=>o.status==='waiting').forEach(o=>items104(o).forEach(i=>{const p=find104(i.name),key=p?norm104(p.name):norm104(i.name);if(!map[key])map[key]={name:p?p.name:i.name,demand:0};map[key].demand+=i.qty;}));return Object.values(map).map(x=>{const p=find104(x.name),stock=p?Math.max(0,Number(p.stock||0)):0,available=Math.max(0,stock-reserved104(x.name)),shortage=Math.max(0,x.demand-available);return {...x,available,shortage,registered:!!p};}).filter(x=>x.shortage>0).sort((a,b)=>b.shortage-a.shortage||b.demand-a.demand).slice(0,6)}
   function render104(){const panel=document.getElementById('emdV90DailyPanel');if(!panel)return;let box=document.getElementById('emdV104Need');if(!box){box=document.createElement('div');box.id='emdV104Need';box.className='emd-v104-need';const smart=document.getElementById('emdV99Smart');if(smart&&smart.parentNode===panel)smart.insertAdjacentElement('afterend',box);else panel.appendChild(box)}const arr=build104();box.innerHTML='<div class="emd-v104-head"><div class="emd-v104-title">📦 احتياج المخزن</div><span class="emd-v104-badge">EMD</span></div><div class="emd-v104-sub">المنتجات التي ينقصها المخزون حاليًا لإكمال الطلبات المنتظرة.</div>'+(arr.length?'<div class="emd-v104-list">'+arr.map(x=>'<div class="emd-v104-row"><span class="emd-v104-name">'+esc104(x.name)+'</span><span class="emd-v104-qty">ناقص '+x.shortage+'</span></div>').join('')+'</div><div class="emd-v104-actions"><button type="button" class="emd-v104-btn primary" onclick="try{window.openInventory()}catch(e){}">🏬 فتح المخزن</button><button type="button" class="emd-v104-btn" onclick="try{window.openEMDV92AI()}catch(e){}">🤖 اسأل EMD</button></div>':'<div class="emd-v104-empty">لا توجد نواقص مرتبطة بطلبات منتظرة حاليًا ✅</div>')}
   function install104(){render104();if(typeof window.render==='function'&&!window.__emdV104Wrapped){const old=window.render;window.render=function(){const r=old.apply(this,arguments);setTimeout(render104,0);return r};window.__emdV104Wrapped=true}}
@@ -7583,7 +7585,7 @@ else {wrapAddInventory();setTimeout(renderArrival,300)}
  const N=x=>String(x||'').replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/[ـً-ٰٟ]/g,'').trim().toLowerCase().replace(/\s+/g,' ');
  const name=i=>i.name||i.product||i.productName||'';
  const qty=i=>{const n=Number(i.qty!=null?i.qty:(i.quantity!=null?i.quantity:1));return Number.isFinite(n)&&n>0?n:0};
- function product(n0,ps){const n=N(n0);if(!n)return null;return ps.find(p=>N(p.name||p.productName||p.title)===n)||null}
+ let PX225=null;function product(n0,ps){const n=N(n0);if(!n)return null;if(!PX225||PX225.ps!==ps||PX225.n!==ps.length){const m=new Map();for(let i=ps.length-1;i>=0;i--){const p=ps[i];m.set(N(p.name||p.productName||p.title),p)}PX225={ps:ps,n:ps.length,m:m};setTimeout(()=>{PX225=null},0)}return PX225.m.get(n)||null}
  function state(o){return String(o.status||'new').toLowerCase()}
  function stock(p){return Math.max(0,Number(p.stock??p.quantity??p.qty??0)||0)}
  function items(o){return arr(o.products||o.items).filter(i=>name(i)&&qty(i)>0)}
@@ -19217,7 +19219,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V224</div>
+<div id="emdStandaloneV2Badge">EMD Business • V225</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -27608,7 +27610,7 @@ function cover(){var W=innerWidth,H=innerHeight,on=false,k=document.body.childre
   document.body.classList.toggle('emd411-covered',on);
   /* رقم النسخة أسفل قائمة «المزيد» (شارة النسخة مخفية على الجوال) */
   var sh=document.getElementById('emd410Sheet');if(sh&&sh.classList.contains('show')){var bx=sh.querySelector('.box');if(bx&&!bx.querySelector('.e141v')){var v=document.createElement('div');v.className='e141v';v.textContent=VER;bx.appendChild(v)}}}
-var VER='EMD Business • V224';
+var VER='EMD Business • V225';
 function boot(){cover();setInterval(cover,500)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
@@ -33001,21 +33003,21 @@ function verdict(x){if(x.img_dup>0)return ['r','🔴 مشكوك فيه: الصو
 function draw(id){var e=document.querySelector('.e215r[data-rid="'+id+'"]'),x=C[id];if(!e)return;if(x===0){e.innerHTML='<span class="e215b y">🧾 لم يُرفق الزبون إيصالًا</span>';return}if(!x)return;var v=verdict(x),typed=e.querySelector('input'),val=typed?typed.value:'';
   e.innerHTML='<div class="e215t"><img alt="إيصال الدفع" src="'+esc(x.url)+'" data-e215z="1"><div><span class="e215b '+v[0]+'">'+esc(v[1])+'</span>'+(v[2]?'<span class="e215s">'+esc(v[2])+'</span>':'')+'<span class="e215s">هذا الفحص لا يثبت وصول المال. تأكد من حسابك البنكي قبل الاعتماد.</span></div></div><div class="e215m"><input inputmode="text" placeholder="رقم الحوالة (إن لم يُقرأ)" value="'+esc(val)+'" aria-label="رقم الحوالة"><button type="button" data-e215s="'+id+'">فحص</button>'+(x.reading||x.ref_last?'':'<button type="button" data-e215o="'+id+'">🔄 قراءة</button>')+'</div>'}
 /* القراءة تجري داخل إطار معزول: لا يصل إلى بيانات التطبيق ولا جلسة التاجر حتى لو اختُرقت المكتبة الخارجية */
-function sand(imgs){return new Promise(function(ok,no){var f=document.createElement('iframe'),T=setTimeout(function(){fin(new Error('timeout'))},240000);f.setAttribute('sandbox','allow-scripts');f.setAttribute('aria-hidden','true');f.style.cssText='position:absolute;width:1px;height:1px;left:-9999px;border:0';
+function sand(imgs){return new Promise(function(ok,no){var f=document.createElement('iframe'),T=setTimeout(function(){fin(new Error('timeout'))},240000);f.setAttribute('sandbox','allow-scripts');f.setAttribute('aria-hidden','true');f.style.cssText='position:fixed;width:1px;height:1px;left:0;top:0;opacity:0;pointer-events:none;border:0;z-index:-1';
   function fin(e,v){clearTimeout(T);removeEventListener('message',on);try{f.remove()}catch(x){}if(e)no(e);else ok(v)}
   function on(e){if(e.source!==f.contentWindow)return;var d=e.data||{};if(d.t==='ready')f.contentWindow.postMessage({t:'go',imgs:imgs},'*');else if(d.t==='done')fin(null,String(d.text||''));else if(d.t==='err')fin(new Error('ocr'))}
   addEventListener('message',on);
   f.srcdoc='<!doctype html><meta charset="utf-8"><script src="'+OCR+'"><\/script><script>addEventListener("message",function(e){if(!e.data||e.data.t!=="go")return;var I=e.data.imgs,o="";(function n(i){if(i>=I.length){parent.postMessage({t:"done",text:o},"*");return}Tesseract.recognize(I[i],"ara+eng",{cacheMethod:"none"}).then(function(r){o+=(r.data&&r.data.text||"")+"\\n";n(i+1)}).catch(function(){parent.postMessage({t:"err"},"*")})})(0)});parent.postMessage(window.Tesseract?{t:"ready"}:{t:"err"},"*");<\/script>';
   document.body.appendChild(f)})}
 function shot(src,M){return new Promise(function(ok,no){var im=new Image();im.onload=function(){if(im.naturalWidth>6000||im.naturalHeight>6000){no(new Error('big'));return}var k=Math.min(1,M/Math.max(im.naturalWidth,im.naturalHeight)),c=document.createElement('canvas');c.width=Math.round(im.naturalWidth*k);c.height=Math.round(im.naturalHeight*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);ok(c.toDataURL('image/jpeg',.92))};im.onerror=function(){no(new Error('img'))};im.src=src})}
-function readAll(url){return fetch(url).then(function(r){if(!r.ok)throw new Error('img');return r.blob()}).then(function(b){var u=URL.createObjectURL(b);return shot(u,2000).then(function(a){return prep(a).then(function(c){URL.revokeObjectURL(u);return sand([a,c.toDataURL?c.toDataURL('image/jpeg',.92):a])})},function(e){URL.revokeObjectURL(u);throw e})})}
+function readAll(url){return fetch(url).then(function(r){if(!r.ok)throw new Error('img');return r.blob()}).then(function(b){var u=URL.createObjectURL(b);return shot(u,1600).then(function(a){URL.revokeObjectURL(u);return sand([a]).then(function(t1){if(e215ext(t1,0).ref)return t1;return new Promise(function(ok){setTimeout(ok,50)}).then(function(){return prep(a)}).then(function(c){return sand([c.toDataURL?c.toDataURL('image/jpeg',.9):a]).then(function(t2){return t1+'\n'+t2})})})},function(e){URL.revokeObjectURL(u);throw e})})}
 /* تهيئة الصورة: يبرز النص أيًّا كان لونه وخلفيته، حتى في الإيصالات الداكنة */
 function prep(url){return new Promise(function(ok){var im=new Image();im.crossOrigin='anonymous';im.onload=function(){try{var k=Math.min(2,2400/Math.max(im.width,im.height)),W=Math.round(im.width*k),H=Math.round(im.height*k),c=document.createElement('canvas');c.width=W;c.height=H;var g=c.getContext('2d',{willReadFrequently:true});g.imageSmoothingQuality='high';g.drawImage(im,0,0,W,H);var D=g.getImageData(0,0,W,H),d=D.data,W1=W+1,I=new Float64Array(W1*(H+1)),G=new Float32Array(W*H),x,y,i;for(y=0;y<H;y++){var row=0;for(x=0;x<W;x++){i=(y*W+x)*4;var v=.299*d[i]+.587*d[i+1]+.114*d[i+2];G[y*W+x]=v;row+=v;I[(y+1)*W1+x+1]=I[y*W1+x+1]+row}}var R=40,mx=1,O=new Float32Array(W*H);for(y=0;y<H;y++){var y0=Math.max(0,y-R),y1=Math.min(H,y+R+1);for(x=0;x<W;x++){var x0=Math.max(0,x-R),x1=Math.min(W,x+R+1),m=(I[y1*W1+x1]-I[y0*W1+x1]-I[y1*W1+x0]+I[y0*W1+x0])/((x1-x0)*(y1-y0)),a=Math.abs(G[y*W+x]-m);O[y*W+x]=a;if(a>mx)mx=a}}for(i=0;i<O.length;i++){var o=255-Math.min(255,O[i]*255/mx);d[i*4]=d[i*4+1]=d[i*4+2]=o;d[i*4+3]=255}g.putImageData(D,0,0);ok(c)}catch(e){ok(url)}};im.onerror=function(){ok(url)};im.src=url})}
 function ord(id){var o=[];try{o=window.EMDStoreV411.orders()||[]}catch(e){}if(!Array.isArray(o))o=[];for(var i=0;i<o.length;i++)if(String(o[i].id)===String(id))return o[i];return null}
 function total(id){var o=ord(id);if(!o)return 0;return String(o.customer&&o.customer.note||'').indexOf('رسوم التوصيل للمندوب')>-1?+o.subtotal:+o.total}
 function rcWho(){try{return (JSON.parse(localStorage.getItem('emd173_quick')||'{}')||{}).rcWho||''}catch(e){return ''}}
-function next(){if(busy||!Q.length)return;var id=Q.shift(),x=C[id];if(!x)return next();busy=true;x.reading=true;draw(id);x.failed=false;call('ref',{id:id}).catch(function(){}).then(function(){return readAll(x.url)}).then(function(txt){var o=e215ext(txt,total(id)),od=ord(id),dt=e215date(txt,od&&od.created_at),wh=e215who(txt,rcWho(),!!o.ref);return call('ref',{id:id,ref:o.ref,how:o.how,amount_ok:o.amount,rc_date:dt.date,date_state:dt.state,who_state:wh}).then(function(j){x.ref_last=j.ref_last||'';x.ref_dup=j.ref_dup||0;x.ref_how=o.how;x.amount_ok=o.amount;x.tried=true;x.rc_date=dt.date;x.date_state=dt.state;x.who_state=wh})}).catch(function(){x.tried=true;x.failed=true}).then(function(){x.reading=false;busy=false;draw(id);next()})}
-function scan(){var E=document.querySelectorAll('.e215r[data-rid]'),need=[];[].forEach.call(E,function(e){var id=e.getAttribute('data-rid');if(C[id]!==undefined)draw(id);else if(!asked[id]){asked[id]=1;need.push(+id)}});if(!need.length)return;call('list',{ids:need}).then(function(j){need.forEach(function(id){var r=(j.rows||[]).filter(function(x){return +x.id===id})[0];C[id]=r||0;draw(id);if(r&&!r.tried&&!r.ref_last)Q.push(id)});next()}).catch(function(){need.forEach(function(id){delete asked[id]})})}
+function next(){if(busy||!Q.length)return;var id=Q.shift(),x=C[id];if(!x)return next();busy=true;x.reading=true;draw(id);x.failed=false;Promise.resolve().then(function(){return readAll(x.url)}).then(function(txt){var o=e215ext(txt,total(id)),od=ord(id),dt=e215date(txt,od&&od.created_at),wh=e215who(txt,rcWho(),!!o.ref);return call('ref',{id:id,ref:o.ref,how:o.how,amount_ok:o.amount,rc_date:dt.date,date_state:dt.state,who_state:wh}).then(function(j){x.ref_last=j.ref_last||'';x.ref_dup=j.ref_dup||0;x.ref_how=o.how;x.amount_ok=o.amount;x.tried=true;x.rc_date=dt.date;x.date_state=dt.state;x.who_state=wh})}).catch(function(){x.tried=true;x.failed=true}).then(function(){x.reading=false;busy=false;draw(id);next()})}
+function scan(){var E=document.querySelectorAll('.e215r[data-rid]'),need=[];[].forEach.call(E,function(e){var id=e.getAttribute('data-rid');if(C[id]!==undefined)draw(id);else if(!asked[id]){asked[id]=1;need.push(+id)}});if(!need.length)return;call('list',{ids:need}).then(function(j){need.forEach(function(id){var r=(j.rows||[]).filter(function(x){return +x.id===id})[0];C[id]=r||0;draw(id);if(r&&!r.ref_last&&((function(){var m={};try{m=JSON.parse(localStorage.getItem('emd225_rc')||'{}')||{}}catch(e){}var n=m[id]||0;if(n>=2)return false;m[id]=n+1;try{localStorage.setItem('emd225_rc',JSON.stringify(m))}catch(e){}return true})()))Q.push(id)});next()}).catch(function(){need.forEach(function(id){delete asked[id]})})}
 document.addEventListener('click',function(e){var t=e.target;if(!t.closest)return;var z=t.closest('[data-e215z]');if(z){var d=document.createElement('div');d.id='e215Z';d.innerHTML='<img alt="إيصال الدفع" src="'+esc(z.src)+'">';d.onclick=function(){d.remove()};document.body.appendChild(d);return}var rd=t.closest('[data-e215o]');if(rd){Q.push(+rd.getAttribute('data-e215o'));next();return}var b=t.closest('[data-e215s]');if(b){var id=+b.getAttribute('data-e215s'),inp=b.parentNode.querySelector('input'),v=String(inp.value||'').replace(/[^A-Za-z0-9]/g,'').toUpperCase();if(v.length<5)return;b.disabled=true;call('ref',{id:id,ref:v,how:'manual'}).then(function(j){var x=C[id];x.ref_last=j.ref_last;x.ref_dup=j.ref_dup;x.ref_how='manual';x.tried=true;inp.value='';draw(id)}).catch(function(){b.disabled=false})}});
 function pay(id){var x=C[id];if(!x)return null;var red=x.img_dup>0||x.ref_dup>0||x.date_state==='old'||x.who_state==='no';return {ok:!red,red:red,last:x.ref_last||''}}
 window.E215={scan:scan,ext:e215ext,prep:prep,pay:pay};
