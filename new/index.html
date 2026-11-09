@@ -133,6 +133,7 @@ label.f em{color:var(--bad);font-style:normal}
 .pw{position:relative}.pw .eye{position:absolute;inset-inline-end:6px;top:50%;transform:translateY(-50%);border:0;background:none;font-size:16px;cursor:pointer}
 .lnk{border:0;background:none;color:var(--navy,#0f2747);font-weight:700;text-decoration:underline;padding:8px 0;cursor:pointer;font:inherit}
 .cmsg{display:none;margin-top:8px;padding:9px 12px;border-radius:12px;font-size:13px;font-weight:700}.cmsg.show{display:block}.cmsg.err{background:#fef2f2;color:#991b1b}.cmsg.ok{background:#ecfdf5;color:#065f46}.cmsg.info{background:#eff6ff;color:#1e40af}.bad{color:#991b1b}
+.scard{display:flex;align-items:center;gap:10px;width:100%;margin:0 0 10px;padding:12px 14px;border-radius:16px;border:1px solid var(--line);background:#fff;text-align:start;font:inherit;cursor:pointer}.scard .ic{font-size:22px}.scard small{display:block;color:var(--muted,#64748b);font-size:12px}.scard>span:nth-child(2){flex:1}.scard .n{font-size:20px}.scard.on{border-color:#c9a227;background:#fffbeb}
 .cltxt{white-space:pre-wrap;background:#f8fafc;border:1px solid var(--line);border-radius:12px;padding:10px;font:inherit;font-size:13px;margin:8px 0;max-height:40vh;overflow:auto}
 .okbar{margin:4px 0 10px;padding:9px 12px;border-radius:12px;background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;font-size:13px;font-weight:700}
 textarea.msg{min-height:190px;font-size:15px;line-height:1.7}
@@ -346,12 +347,12 @@ function dirty(){IX=null;HAY=new WeakMap()}
 function index(){
   if(IX)return IX;
   var byName={},reserved={},counts={all:0,pinned:0},alerts=0,today=dkey(new Date()),mon=today.slice(0,7);
-  var sales=0,unpaid=0,profit=0;
+  var sales=0,unpaid=0,profit=0,st=0;
   Object.keys(ST).forEach(function(k){counts[k]=0});
   db.products.forEach(function(p){var k=normTxt(p.name);if(k)byName[k]=p});
   var pins=pinned();
   db.orders.forEach(function(o){
-    var s=status(o);counts[s]++;if(s!=='cancelled')counts.all++;
+    var s=status(o);counts[s]++;if(s!=='cancelled')counts.all++;if(o.source==='store'||o.storeOrderId)st++;
     if(pins[oid(o)])counts.pinned++;
     if((s==='new'||s==='ready'||s==='packing')&&o.stockDeducted!==true){
       items(o).forEach(function(x){var k=normTxt(iname(x));reserved[k]=(reserved[k]||0)+qty(x)});
@@ -362,7 +363,7 @@ function index(){
     unpaid+=remaining(o,byName);
     if(s==='waiting'||(s==='new')||(s==='shipped'&&t&&Date.now()-t>5*864e5))alerts++;
   });
-  IX={byName:byName,reserved:reserved,counts:counts,alerts:alerts,sales:sales,unpaid:unpaid,profit:profit};
+  IX={byName:byName,reserved:reserved,counts:counts,alerts:alerts,sales:sales,unpaid:unpaid,profit:profit,store:st};
   return IX;
 }
 function product(name,byName){return (byName||index().byName)[normTxt(name)]||null}
@@ -809,6 +810,30 @@ function cloudBoot(){cloudReadHash();cloudPaint();
   document.addEventListener('visibilitychange',function(){if(!cUid())return;if(document.hidden){if(clHash(clCollect())!==cMeta().lastHash)cloudPush()}else cloudCheck()});
   window.addEventListener('online',function(){if(cUid())cloudCheck()})}
 
+/* ===== lib/storeapi.js ===== */
+/* ---------- ربط «🛍️ متجري» بالتطبيق ----------
+   منشئ المتجر ملف منفصل (store.js) يُحمَّل عند فتحه، أو بعد التشغيل بقليل إن كان المتجر منشورًا
+   حتى تصل طلباته ويتحدّث مخزونه. هنا فقط الواجهة بين الملف والتطبيق، والمؤقتات تُدار من ساعة التطبيق. */
+var STORE_LIVE_KEY='emd_store_v411',STORE_KEY=CLOUD_SANDBOX?'emd_rb_store':STORE_LIVE_KEY;
+var stTasks=[],stN=0,stLoading=null,stHtml=null;
+function storeState(){try{return JSON.parse(lsGet(STORE_KEY)||'{}')||{}}catch(e){return {}}}
+function storePublished(){return !!storeState().pubAt}
+function storeSeed(){if(CLOUD_SANDBOX&&lsGet(STORE_KEY)==null){var v=lsGet(STORE_LIVE_KEY);if(v)lsSet(STORE_KEY,v)}}
+function storeHelpers(){return {storeKey:STORE_KEY,db:function(){return db},save:save,render:render,nextId:nextId,
+  hasStock:function(o){return !shortage(o).length},storeQty:function(p){return num(p.stock!=null?p.stock:p.qty)},
+  cloud:{token:cToken,uid:cUid,url:CL_URL,key:CL_KEY},login:function(){cloudSheet('login')},canWrite:cloudCanWrite,
+  every:function(ms,fn){stTasks.push({ms:ms,fn:fn,at:Date.now()})},badge:function(n){if(stN!==n){stN=n;if(state.view==='home')render()}},
+  openOrder:function(id){if(window.EMDStoreV411)window.EMDStoreV411.close();openOrder(id)},
+  storeHtml:function(){if(!stHtml)stHtml=fetch('../store/index.html',{cache:'no-cache'}).then(function(r){if(!r.ok)throw new Error(r.status);return r.text()});stHtml.catch(function(){stHtml=null});return stHtml}}}
+function storeLoad(){if(window.EMDStoreV411)return Promise.resolve(window.EMDStoreV411);if(stLoading)return stLoading;storeSeed();window.EMDH=storeHelpers();
+  stLoading=new Promise(function(ok,no){var s=document.createElement('script');s.src='store.js?v=1';s.onload=function(){ok(window.EMDStoreV411)};s.onerror=function(){stLoading=null;no(new Error('load'))};document.head.appendChild(s)});return stLoading}
+function storeOpen(tab){toast('🛍️ جارٍ فتح متجري…');storeLoad().then(function(X){X.open(tab)},function(){toast('تعذّر فتح متجري. تحقّق من الاتصال.')})}
+function storeOrdersOpen(){storeLoad().then(function(X){var L=X.orders();if(L.length===1)X.openOrd(L[0].id);else{X.open('ord');X.poll(true)}})}
+function storeTick(){if(document.hidden)return;var now=Date.now();stTasks.forEach(function(t){if(now-t.at>=t.ms){t.at=now;try{t.fn()}catch(e){}}})}
+function storeBoot(){storeSeed();if(storePublished()&&cUid())setTimeout(function(){storeLoad().catch(function(){})},3000)}
+function storeHomeCard(){if(!storePublished())return '';
+  return '<button class="scard'+(stN?' on':'')+'" data-act="storeOrders"><span class="ic">🛍️</span><span><b>طلبات متجري</b><small>'+(stN?'تنتظر منك القبول أو الرفض':'لا توجد طلبات جديدة')+'</small></span><b class="n">'+stN+'</b></button>'}
+
 /* ===== screens/home-orders.js ===== */
 /* ---------- 4) العرض ---------- */
 var state={view:'home',filter:'all',q:'',pinnedOnly:false,limit:30,ptab:'prep',sel:{}};
@@ -839,7 +864,7 @@ function homeHtml(){
   }).join('');
   return '<div class="hero"><div><h2>'+greet+'</h2><div class="clock">'+hh+':'+pad(now.getMinutes())+' <span>'+(h<12?'ص':'م')+'</span></div><div class="date">'+esc(greg)+(hijri?' · '+esc(hijri):'')+'</div></div></div>'+
     '<div class="money"><div><small>مبيعات اليوم</small><b>'+money(ix.sales)+'</b></div><div><small>غير محصّل</small><b class="gold">'+money(ix.unpaid)+'</b></div><div><small>ربح الشهر</small><b>'+money(ix.profit)+'</b></div></div>'+
-    '<div class="stats">'+cards+'</div>'+
+    storeHomeCard()+'<div class="stats">'+cards+'</div>'+
     '<div class="quick"><button class="btn dark" data-act="importMsg">🤖 إدخال من رسالة</button><button class="btn" data-act="newOrder">✍️ كتابة طلب يدوي</button><button class="btn" data-act="prepNow">🧑‍💼 ماذا أجهز الآن؟</button><button class="btn" data-act="closing">📊 تقفيلة اليوم</button></div>'+
     '<button class="fold" data-act="soon" data-what="تفاصيل اليوم والتوصيات">▼ تفاصيل اليوم والتوصيات <small>(لوحة اليوم، ما يحتاج انتباهك)</small></button>';
 }
@@ -849,7 +874,7 @@ function filtered(){
   var qs=q?q.split(' '):null;
   for(var i=0;i<db.orders.length;i++){
     var o=db.orders[i],s=status(o);
-    if(f==='all'){if(s==='cancelled'&&!q)continue}else if(f==='prep'){if(s!=='ready'&&s!=='packing')continue}else if(s!==f)continue;
+    if(f==='all'){if(s==='cancelled'&&!q)continue}else if(f==='store'){if(o.source!=='store'&&!o.storeOrderId)continue}else if(f==='prep'){if(s!=='ready'&&s!=='packing')continue}else if(s!==f)continue;
     if(state.pinnedOnly&&!pins[oid(o)])continue;
     if(qs){var h=hay(o),ok=true;for(var j=0;j<qs.length;j++)if(h.indexOf(qs[j])<0){ok=false;break}if(!ok)continue}
     out.push(o);
@@ -877,7 +902,7 @@ function ordersHtml(){
   var shown=list.slice(0,state.limit);
   return '<h2 class="ptitle">📋 الطلبات</h2><p class="psub">كل الطلبات المحفوظة وحالاتها.</p>'+
     '<div class="chips">'+chips.map(function(c){return '<button class="chip'+(state.filter===c[0]?' on':'')+'" data-filter="'+c[0]+'">'+c[1]+' '+c[2]+'</button>'}).join('')+
-    (state.filter==='prep'?'<button class="chip on" data-filter="prep">🧑‍💼 للتجهيز الآن '+list.length+'</button>':'')+'</div>'+
+    (storePublished()||ix.store?'<button class="chip'+(state.filter==='store'?' on':'')+'" data-filter="store">🛍️ المتجر '+(ix.store||0)+'</button>':'')+(state.filter==='prep'?'<button class="chip on" data-filter="prep">🧑‍💼 للتجهيز الآن '+list.length+'</button>':'')+'</div>'+
     '<div class="search">🔎<input id="q" type="search" placeholder="ابحث بالاسم أو الرقم أو المكان أو المنتج" value="'+esc(state.q)+'" autocomplete="off"></div>'+
     '<div class="tools"><button class="btn sm'+(state.pinnedOnly?' dark':'')+'" data-act="pinnedOnly">📌 المثبتة فقط'+(ix.counts.pinned?' ('+ix.counts.pinned+')':'')+'</button>'+(state.q?'<button class="btn sm" data-act="clearQ">مسح البحث</button>':'')+'</div>'+
     '<div id="list">'+(shown.length?shown.map(function(o){return cardHtml(o,pins)}).join(''):'<div class="empty">لا توجد طلبات مطابقة.</div>')+'</div>'+
@@ -1094,8 +1119,8 @@ function cardMore(id){
 function moreSheet(){
   openSheet('<div class="sh"><h3>☰ المزيد</h3><button class="x" data-act="close">إغلاق ✕</button></div><div class="list">'+
     '<button data-go="customers">👥 العملاء</button><button data-go="products">📦 المنتجات</button><button data-go="stock">🏭 المخزون</button>'+
-    ['🛒 بيع مباشر','🛍️ متجري','📊 التقارير'].map(function(x){return '<button data-act="soon" data-what="'+x.replace(/^\S+\s/,'')+'">'+x+'</button>'}).join('')+
-    '</div><p class="note">البيع المباشر والمتجر والتقارير تُبنى في المراحل القادمة.</p>');
+    '<button data-act="store">🛍️ متجري</button>'+['🛒 بيع مباشر','📊 التقارير'].map(function(x){return '<button data-act="soon" data-what="'+x.replace(/^\S+\s/,'')+'">'+x+'</button>'}).join('')+
+    '</div><p class="note">البيع المباشر والتقارير تُبنى في المراحل القادمة.</p>');
 }
 function alertsSheet(){
   var arr=[],now=Date.now();
@@ -1587,6 +1612,8 @@ document.addEventListener('click',function(e){
     case 'cWa':{var cc=custByKey(ck(b));if(cc)waOpen({phone:cc.phone,name:cc.name,status:'x',products:[]},true);break}
     case 'cNew':{var cn=custByKey(ck(b));closeSheet();newOrder();if(cn){$('fPhone').value=cn.phone;$('fName').value=cn.name||'';$('fPlace').value=cn.place||'';$('fPlace').dispatchEvent(new Event('input',{bubbles:true}))}break}
     case 'cAll':{var ca=custByKey(ck(b));closeSheet();state.view='orders';state.filter='all';state.q=ca?phoneKey(ca.phone):'';state.limit=30;render();window.scrollTo(0,0);break}
+    case 'store':closeSheetIfMenu(b);storeOpen();break;
+    case 'storeOrders':storeOrdersOpen();break;
     case 'cloud':closeSheetIfMenu(b);cloudSheet();break;
     case 'closing':var cs=b.closest('.sheet');if(cs)closeSheet(cs);closingSheet();break;
     case 'prepNow':state.view='prep';state.sel={};render();window.scrollTo(0,0);break;
@@ -1632,8 +1659,8 @@ function boot(){
   var sn=storeName();if(sn)$('storeName').textContent=sn;
   render();
 }
-boot();cloudBoot();
-setInterval(function(){cloudTick();if(!$('sheets').children.length)closingTick();if(state.view==='home'&&!$('sheets').children.length){var c=document.querySelector('.clock');if(c){var n=new Date(),h=n.getHours();c.innerHTML=(h%12||12)+':'+pad(n.getMinutes())+' <span>'+(h<12?'ص':'م')+'</span>'}}},10000);
+boot();cloudBoot();storeBoot();
+setInterval(function(){cloudTick();storeTick();if(!$('sheets').children.length)closingTick();if(state.view==='home'&&!$('sheets').children.length){var c=document.querySelector('.clock');if(c){var n=new Date(),h=n.getHours();c.innerHTML=(h%12||12)+':'+pad(n.getMinutes())+' <span>'+(h<12?'ص':'م')+'</span>'}}},10000);
 window.EMDRebuild={db:function(){return db},save:save,cloudCheck:cloudCheck,index:index,total:total,payState:payState,status:status};
 
 })();

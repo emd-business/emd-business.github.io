@@ -4,12 +4,12 @@ function dirty(){IX=null;HAY=new WeakMap()}
 function index(){
   if(IX)return IX;
   var byName={},reserved={},counts={all:0,pinned:0},alerts=0,today=dkey(new Date()),mon=today.slice(0,7);
-  var sales=0,unpaid=0,profit=0;
+  var sales=0,unpaid=0,profit=0,st=0;
   Object.keys(ST).forEach(function(k){counts[k]=0});
   db.products.forEach(function(p){var k=normTxt(p.name);if(k)byName[k]=p});
   var pins=pinned();
   db.orders.forEach(function(o){
-    var s=status(o);counts[s]++;if(s!=='cancelled')counts.all++;
+    var s=status(o);counts[s]++;if(s!=='cancelled')counts.all++;if(o.source==='store'||o.storeOrderId)st++;
     if(pins[oid(o)])counts.pinned++;
     if((s==='new'||s==='ready'||s==='packing')&&o.stockDeducted!==true){
       items(o).forEach(function(x){var k=normTxt(iname(x));reserved[k]=(reserved[k]||0)+qty(x)});
@@ -20,7 +20,7 @@ function index(){
     unpaid+=remaining(o,byName);
     if(s==='waiting'||(s==='new')||(s==='shipped'&&t&&Date.now()-t>5*864e5))alerts++;
   });
-  IX={byName:byName,reserved:reserved,counts:counts,alerts:alerts,sales:sales,unpaid:unpaid,profit:profit};
+  IX={byName:byName,reserved:reserved,counts:counts,alerts:alerts,sales:sales,unpaid:unpaid,profit:profit,store:st};
   return IX;
 }
 function product(name,byName){return (byName||index().byName)[normTxt(name)]||null}

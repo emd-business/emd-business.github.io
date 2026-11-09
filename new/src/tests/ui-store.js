@@ -1,0 +1,26 @@
+// اختبار «متجري» في التجربة: التحميل عند الحاجة، الطلبات الواردة، المعاينة، ومنع الكتابة في الخادم
+const {chromium}=require('playwright');const fs=require('fs'),path=require('path');
+const STORE_PAGE=fs.readFileSync('/home/user/emd-business.github.io/store/index.html','utf8');
+(async()=>{const b=await chromium.launch();const ctx=await b.newContext({viewport:{width:400,height:860}});const errs=[],calls=[];
+await ctx.route('https://gpwgckwlcntvesnlptej.supabase.co/**',r=>{const u=r.request().url();if(u.includes('/auth/v1/token'))return r.fulfill({status:200,contentType:'application/json',body:JSON.stringify({access_token:'AT',refresh_token:'RT',expires_in:3600,user:{id:'U1',email:'a@b.co'}})});return r.fulfill({status:200,contentType:'application/json',body:'[]'})});
+await ctx.route('https://pfkstppvnebagbdckgbu.supabase.co/**',r=>{const body=JSON.parse(r.request().postData()||'{}');calls.push(body.action);
+  if(body.action==='orders')return r.fulfill({status:200,contentType:'application/json',body:JSON.stringify({ok:true,orders:[{id:501,created_at:new Date().toISOString(),total:12.5,subtotal:10.5,ship:2,payment:'cod',customer:{name:'نورة',phone:'99112233',city:'مسقط'},items:[{name:'عطر ليالي',qty:1,price:10.5}]}]})});
+  return r.fulfill({status:200,contentType:'application/json',body:JSON.stringify({ok:true,rows:[]})})});
+await ctx.route('**/store/index.html',r=>r.fulfill({status:200,contentType:'text/html',body:STORE_PAGE}));
+const p=await ctx.newPage();p.on('pageerror',e=>errs.push(e.message));p.on('dialog',d=>d.accept());
+await p.goto('http://localhost:8131/index.html');await p.waitForTimeout(300);await p.click('[data-act=demo][data-n="40"]');await p.waitForTimeout(300);
+await p.evaluate(()=>{localStorage.setItem('emd_store_v411',JSON.stringify({on:true,name:'متجر التجربة',slug:'test-shop',pubAt:'9/11 · 10:00',pubSlug:'test-shop',prod:{}}));localStorage.removeItem('emd_rb_store')});
+await p.click('#cloudChip');await p.fill('#clEmail','a@b.co');await p.fill('#clPw','pass1234');await p.click('[data-ck=go]');await p.waitForTimeout(600);
+await p.evaluate(()=>document.querySelectorAll('.sheet').forEach(s=>s.remove()));await p.reload();await p.waitForTimeout(5500);
+console.log('store.js loaded:',await p.evaluate(()=>!!window.EMDStoreV411),'| seeded:',await p.evaluate(()=>!!localStorage.getItem('emd_rb_store')),'| card:',JSON.stringify(await p.evaluate(()=>(document.querySelector('.scard')||{}).textContent)));
+await p.click('.scard');await p.waitForTimeout(500);await p.screenshot({path:'/tmp/store-orders.png'});
+const before=calls.length;await p.click('#emd411Store [data-a=acc]');await p.waitForTimeout(600);
+console.log('accept blocked: toast',JSON.stringify(await p.evaluate(()=>(document.getElementById('emd411Toast')||{}).textContent)),'| server writes',calls.slice(before).filter(a=>a!=='orders').length,'| orders still',await p.evaluate(()=>EMDRebuild.db().orders.length));
+await p.click('#emd411Store [data-tab=design]');await p.waitForTimeout(300);await p.screenshot({path:'/tmp/store-design.png'});
+await p.click('#emd411Store [data-tab=pub]');await p.waitForTimeout(300);
+const pub=await p.$('#emd411Store [data-a=publish]');if(pub){await pub.click();await p.waitForTimeout(800)}
+console.log('publish blocked:',JSON.stringify(await p.evaluate(()=>{const e=document.querySelector('#emd411Store .err,#emd411Store .bad,#emd411Store [class*=err]');return e&&e.textContent.slice(0,80)})),'| writes',calls.filter(a=>a!=='orders').length);
+console.log('calls',calls.join(','));
+const pv=await p.$('#emd411Store [data-a=pv]');if(pv){await pv.click();await p.waitForTimeout(1500);console.log('preview:',await p.evaluate(()=>{const f=document.querySelector('#emd414Pv iframe');return f&&f.srcdoc.length>100000&&f.srcdoc.includes('__PV')}))}else console.log('no preview button on this tab');
+await p.screenshot({path:'/tmp/store-pv.png'});
+console.log('errs',errs);await b.close()})();

@@ -12,6 +12,7 @@ lib/print.js
 lib/sync.js
 lib/archive.js
 lib/cloud.js
+lib/storeapi.js
 screens/home-orders.js
 screens/order-form.js
 screens/import.js
