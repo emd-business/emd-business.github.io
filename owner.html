@@ -433,7 +433,8 @@ function bkDown(){var a=document.createElement('a'),u=URL.createObjectURL(new Bl
 function bkReset(){BKF=null;BKT='';var g=$('bkBtn');g.textContent=BKO;g.classList.remove('primary');g.disabled=false}
 $('bkBtn').addEventListener('click',function(){var g=this;if(g.disabled)return;
   if(BKT){/* الضغطة الثانية: الجوال يسمح بقائمة المشاركة فقط مباشرة بعد ضغطة */
-    if(BKF&&navigator.canShare&&navigator.canShare({files:[BKF]})){navigator.share({files:[BKF],title:BKN}).then(bkReset,function(e){if(e&&e.name==='AbortError')return;bkDown();bkReset()})}
+    var sf=null;if(navigator.canShare){if(BKF&&navigator.canShare({files:[BKF]}))sf=BKF;else{/* بعض الجوالات لا تشارك ملفات json، فنرسله نصًّا بالمحتوى نفسه */try{var tf=new File([BKT],BKN.replace(/\.json$/,'.txt'),{type:'text/plain'});if(navigator.canShare({files:[tf]}))sf=tf}catch(e){}}}
+    if(sf){navigator.share({files:[sf],title:sf.name}).then(bkReset,function(e){if(e&&e.name==='AbortError')return;bkDown();bkReset()})}
     else{bkDown();bkReset()}return}
   g.disabled=true;g.textContent='⏳ أجهّز النسخة…';
   Promise.all([rpc('emd_owner_backup'),gcall({action:'backup'})]).then(function(r){
