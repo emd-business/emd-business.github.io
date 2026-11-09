@@ -52,6 +52,8 @@ document.addEventListener('click',function(e){
     case 'cNew':{var cn=custByKey(ck(b));closeSheet();newOrder();if(cn){$('fPhone').value=cn.phone;$('fName').value=cn.name||'';$('fPlace').value=cn.place||'';$('fPlace').dispatchEvent(new Event('input',{bubbles:true}))}break}
     case 'cAll':{var ca=custByKey(ck(b));closeSheet();state.view='orders';state.filter='all';state.q=ca?phoneKey(ca.phone):'';state.limit=30;render();window.scrollTo(0,0);break}
     case 'store':closeSheetIfMenu(b);storeOpen();break;
+    case 'push':closeSheetIfMenu(b);pushSheet();break;
+    case 'quickLink':quickOpen();break;
     case 'storeOrders':storeOrdersOpen();break;
     case 'cloud':closeSheetIfMenu(b);cloudSheet();break;
     case 'closing':var cs=b.closest('.sheet');if(cs)closeSheet(cs);closingSheet();break;

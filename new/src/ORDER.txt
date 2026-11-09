@@ -13,6 +13,8 @@ lib/sync.js
 lib/archive.js
 lib/cloud.js
 lib/storeapi.js
+lib/track.js
+lib/push.js
 screens/home-orders.js
 screens/order-form.js
 screens/import.js

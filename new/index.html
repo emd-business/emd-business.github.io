@@ -134,6 +134,7 @@ label.f em{color:var(--bad);font-style:normal}
 .lnk{border:0;background:none;color:var(--navy,#0f2747);font-weight:700;text-decoration:underline;padding:8px 0;cursor:pointer;font:inherit}
 .cmsg{display:none;margin-top:8px;padding:9px 12px;border-radius:12px;font-size:13px;font-weight:700}.cmsg.show{display:block}.cmsg.err{background:#fef2f2;color:#991b1b}.cmsg.ok{background:#ecfdf5;color:#065f46}.cmsg.info{background:#eff6ff;color:#1e40af}.bad{color:#991b1b}
 .scard{display:flex;align-items:center;gap:10px;width:100%;margin:0 0 10px;padding:12px 14px;border-radius:16px;border:1px solid var(--line);background:#fff;text-align:start;font:inherit;cursor:pointer}.scard .ic{font-size:22px}.scard small{display:block;color:var(--muted,#64748b);font-size:12px}.scard>span:nth-child(2){flex:1}.scard .n{font-size:20px}.scard.on{border-color:#c9a227;background:#fffbeb}
+.tag.ok{background:#ecfdf5;color:#065f46}.tag.gold{background:#fffbeb;color:#92400e}
 .cltxt{white-space:pre-wrap;background:#f8fafc;border:1px solid var(--line);border-radius:12px;padding:10px;font:inherit;font-size:13px;margin:8px 0;max-height:40vh;overflow:auto}
 .okbar{margin:4px 0 10px;padding:9px 12px;border-radius:12px;background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;font-size:13px;font-weight:700}
 textarea.msg{min-height:190px;font-size:15px;line-height:1.7}
@@ -177,7 +178,7 @@ details.more summary{font-weight:800;padding:8px 0;cursor:pointer}
 <div class="wrap">
   <header>
     <div class="brand"><img src="logo.svg" alt=""><div><h1>EMD Business</h1><small id="storeName">إدارة الطلبات والمخزون</small></div></div>
-    <div class="hbtns"><button id="cloudChip" class="cchip off" data-act="cloud">☁️ الحساب</button><button data-act="settings">⚙️ الإعدادات</button><button data-act="moreSheet">☰ المزيد</button></div>
+    <div class="hbtns"><button id="cloudChip" class="cchip off" data-act="cloud">☁️ الحساب</button><button data-act="settings">⚙️ الإعدادات</button></div>
   </header>
   <main id="view"></main>
 </div>
@@ -237,7 +238,7 @@ function save(){ // حفظ واحد مؤجل قليلًا بدل عشرات عم
   clearTimeout(saveT);
   saveT=setTimeout(saveNow,120);
 }
-function saveNow(){saveT=0;var known=syStamp(db,cJ(CK.known,null));lsSet(KEY,JSON.stringify(db));lsSet(CK.known,JSON.stringify(known));cloudDirty()}
+function saveNow(){saveT=0;var known=syStamp(db,cJ(CK.known,null));lsSet(KEY,JSON.stringify(db));lsSet(CK.known,JSON.stringify(known));cloudDirty();trBoot()}
 window.addEventListener('pagehide',function(){if(saveT){clearTimeout(saveT);saveNow()}});
 
 var PIN_KEY='emd_rb_pins_v1'; // تثبيت التجربة منفصل عن تثبيت التطبيق الأصلي
@@ -457,7 +458,8 @@ function waSheet(o){
     '<div class="chips" id="waChips"></div><textarea class="in msg" id="waTa"></textarea>'+
     '<label class="chk" style="margin:8px 0"><input type="checkbox" id="waKeep"> احفظ تعديلي رسالةً دائمة لهذا النوع</label>'+
     '<div class="foot"><button class="btn green" id="waGo">💬 إرسال في واتساب</button><button class="btn" data-act="close">إلغاء</button></div>');
-  function paint(){d.querySelector('#waChips').innerHTML=WA_TYPES.map(function(t){return '<button type="button" class="chip'+(t.k===k?' on':'')+'" data-wk="'+t.k+'">'+t.t+'</button>'}).join('');$('waTa').value=waText(o,k);edited=false}
+  function paint(){d.querySelector('#waChips').innerHTML=WA_TYPES.map(function(t){return '<button type="button" class="chip'+(t.k===k?' on':'')+'" data-wk="'+t.k+'">'+t.t+'</button>'}).join('');$('waTa').value=waText(o,k);edited=false;
+    if(!waLink(o)&&(k==='shipped'||k==='received')&&cloudCanWrite()){var kk=k;trLink(o).then(function(){if(!edited&&k===kk)$('waTa').value=waText(o,k)},function(e){toast(e.message)})}}
   d.addEventListener('click',function(e){var c=e.target.closest('[data-wk]');if(c){if(edited&&!confirm('تغيير نوع الرسالة يلغي تعديلك. هل تريد المتابعة؟'))return;k=c.dataset.wk;paint();return}
     if(e.target.id==='waGo'){var txt=$('waTa').value;
       if($('waKeep').checked){var s=waSaved(WA_KEY);s[k]={enabled:true,text:txt};lsSet(WA_KEY,JSON.stringify(s));toast('💾 حُفظت الرسالة لهذا النوع')}
@@ -814,25 +816,171 @@ function cloudBoot(){cloudReadHash();cloudPaint();
 /* ---------- ربط «🛍️ متجري» بالتطبيق ----------
    منشئ المتجر ملف منفصل (store.js) يُحمَّل عند فتحه، أو بعد التشغيل بقليل إن كان المتجر منشورًا
    حتى تصل طلباته ويتحدّث مخزونه. هنا فقط الواجهة بين الملف والتطبيق، والمؤقتات تُدار من ساعة التطبيق. */
-var STORE_LIVE_KEY='emd_store_v411',STORE_KEY=CLOUD_SANDBOX?'emd_rb_store':STORE_LIVE_KEY;
+var STORE_LIVE_KEY='emd_store_v411',STORE_KEY=CLOUD_SANDBOX?'emd_rb_store':STORE_LIVE_KEY,QUICK_LIVE_KEY='emd173_quick',QUICK_KEY=CLOUD_SANDBOX?'emd_rb_quick':QUICK_LIVE_KEY;
 var stTasks=[],stN=0,stLoading=null,stHtml=null;
 function storeState(){try{return JSON.parse(lsGet(STORE_KEY)||'{}')||{}}catch(e){return {}}}
 function storePublished(){return !!storeState().pubAt}
-function storeSeed(){if(CLOUD_SANDBOX&&lsGet(STORE_KEY)==null){var v=lsGet(STORE_LIVE_KEY);if(v)lsSet(STORE_KEY,v)}}
-function storeHelpers(){return {storeKey:STORE_KEY,db:function(){return db},save:save,render:render,nextId:nextId,
+function storeSeed(){if(!CLOUD_SANDBOX)return;[[STORE_KEY,STORE_LIVE_KEY],[QUICK_KEY,QUICK_LIVE_KEY]].forEach(function(k){if(lsGet(k[0])==null){var v=lsGet(k[1]);if(v)lsSet(k[0],v)}})}
+function storeHelpers(){return {storeKey:STORE_KEY,quickKey:QUICK_KEY,lk:function(k){return !CLOUD_SANDBOX?k:k==='emd_v72_customer_events'?TR_EVENTS:k==='emd173_quick'?QUICK_KEY:'emd_rb_'+k},db:function(){return db},save:save,render:render,nextId:nextId,
   hasStock:function(o){return !shortage(o).length},storeQty:function(p){return num(p.stock!=null?p.stock:p.qty)},
   cloud:{token:cToken,uid:cUid,url:CL_URL,key:CL_KEY},login:function(){cloudSheet('login')},canWrite:cloudCanWrite,
   every:function(ms,fn){stTasks.push({ms:ms,fn:fn,at:Date.now()})},badge:function(n){if(stN!==n){stN=n;if(state.view==='home')render()}},
   openOrder:function(id){if(window.EMDStoreV411)window.EMDStoreV411.close();openOrder(id)},
   storeHtml:function(){if(!stHtml)stHtml=fetch('../store/index.html',{cache:'no-cache'}).then(function(r){if(!r.ok)throw new Error(r.status);return r.text()});stHtml.catch(function(){stHtml=null});return stHtml}}}
 function storeLoad(){if(window.EMDStoreV411)return Promise.resolve(window.EMDStoreV411);if(stLoading)return stLoading;storeSeed();window.EMDH=storeHelpers();
-  stLoading=new Promise(function(ok,no){var s=document.createElement('script');s.src='store.js?v=1';s.onload=function(){ok(window.EMDStoreV411)};s.onerror=function(){stLoading=null;no(new Error('load'))};document.head.appendChild(s)});return stLoading}
+  stLoading=(window.EMDqr418?Promise.resolve():loadScript('qrcode.js?v=1')).then(function(){return loadScript('store.js?v=2')}).then(function(){return window.EMDStoreV411},function(e){stLoading=null;throw e});return stLoading}
 function storeOpen(tab){toast('🛍️ جارٍ فتح متجري…');storeLoad().then(function(X){X.open(tab)},function(){toast('تعذّر فتح متجري. تحقّق من الاتصال.')})}
 function storeOrdersOpen(){storeLoad().then(function(X){var L=X.orders();if(L.length===1)X.openOrd(L[0].id);else{X.open('ord');X.poll(true)}})}
+function quickOpen(){toast('⚡ جارٍ فتح الرابط السريع…');storeLoad().then(function(){window.EMDQuickV173.open()},function(){toast('تعذّر الفتح. تحقّق من الاتصال.')})}
 function storeTick(){if(document.hidden)return;var now=Date.now();stTasks.forEach(function(t){if(now-t.at>=t.ms){t.at=now;try{t.fn()}catch(e){}}})}
 function storeBoot(){storeSeed();if(storePublished()&&cUid())setTimeout(function(){storeLoad().catch(function(){})},3000)}
 function storeHomeCard(){if(!storePublished())return '';
   return '<button class="scard'+(stN?' on':'')+'" data-act="storeOrders"><span class="ic">🛍️</span><span><b>طلبات متجري</b><small>'+(stN?'تنتظر منك القبول أو الرفض':'لا توجد طلبات جديدة')+'</small></span><b class="n">'+stN+'</b></button>'}
+
+/* ===== lib/track.js ===== */
+/* ---------- رابط تتبع الطلب للعميل، وتأكيد الاستلام والتقييم ----------
+   موقع التتبع نفسه في التطبيق الحالي (EMD Track & Confirm). مصدر واحد بدل طبقات V53–V421.
+   في التجربة: يُستعمل رابط التتبع الموجود فقط، ولا يُنشأ رابط جديد ولا تُرسل حالة إلى الموقع؛ قراءة تأكيدات العملاء مسموحة. */
+var TR_BASE='https://emd-track-confirm.lovable.app',TR_PUBLIC=TR_BASE+'/t/';
+var TR_EVENTS=CLOUD_SANDBOX?'emd_rb_customer_events':'emd_v72_customer_events',TR_META=CLOUD_SANDBOX?'emd_rb_track_meta':'emd_v70_meta';
+var TR_LABEL={'new':'جديد',waiting:'بانتظار المنتج',ready:'جاهز للتجهيز',packing:'قيد التجهيز',shipped:'تم الشحن',out_for_delivery:'خرج للتوصيل',received:'تم الاستلام',cancelled:'ملغي'};
+var trBusy={};
+function trToken(o){return String(o&&(o.clientToken||o.client_token)||'').trim()}
+function trHas(o){return !!(o&&o.clientTrackingSynced&&trToken(o))}
+function trUrl(o){return trHas(o)?TR_PUBLIC+encodeURIComponent(trToken(o)):''}
+function trUid(o){if(!o.trackingUid){var u='';try{var b=new Uint8Array(12);crypto.getRandomValues(b);u=Array.from(b,function(x){return x.toString(16).padStart(2,'0')}).join('')}catch(e){u=Date.now().toString(36)+Math.random().toString(36).slice(2,12)}o.trackingUid=u}return o.trackingUid}
+function trPayload(o){var s=String(o.status||'new');return {action:'create',order_uid:trUid(o),client_token:trHas(o)?trToken(o):'',created_at:String(o.orderDate||o.created||o.createdAt||''),
+  tracking_number:String(o.customerTrackingNumber||o.trackingNumber||o.tracking_number||o.tracking||''),order_ref:oid(o),details:String(o.notes||o.note||o.details||''),
+  items:items(o).map(function(x){return {name:iname(x),qty:qty(x)}}),delivery_location:cplace(o),shipping_company:String(o.shippingCompany||o.company||o.courier||''),
+  delivery_method:String(o.deliveryMethod||o.method||''),customer:{name:cname(o)||'عميل',phone:cphone(o)},status:s,status_label:TR_LABEL[s]||s,
+  shipped_at:o.shippedAt||new Date().toISOString(),updated_at:new Date().toISOString()}}
+function trPost(path,body){var txt=JSON.stringify(body);
+  return fetch(TR_BASE+path,{method:'POST',headers:{'Content-Type':'application/json'},body:txt}).catch(function(){return fetch(TR_BASE+path,{method:'POST',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:txt})})
+    .then(function(r){return r.json().catch(function(){return {}}).then(function(j){j=j||{};j.__status=r.status;j.__ok=r.ok;return j})})}
+/* يُنشئ الرابط أو يحدّث حالة الطلب في موقع التتبع، ويعيد الرابط */
+function trLink(o){var id=oid(o);
+  if(!cloudCanWrite())return trHas(o)?Promise.resolve(trUrl(o)):Promise.reject(new Error('🧪 في التجربة لا يُنشأ رابط تتبع جديد.'));
+  if(trBusy[id])return trBusy[id];
+  trBusy[id]=trPost('/api/public/create-tracking',trPayload(o)).then(function(j){
+    var url=String(j.tracking_url||(j.order&&j.order.tracking_url)||'').trim(),t=String((j.order&&j.order.client_token)||j.client_token||'').trim();
+    if(!t&&url.indexOf(TR_PUBLIC)===0)t=decodeURIComponent(url.slice(TR_PUBLIC.length).split(/[?#]/)[0]);
+    if(!j.__ok||j.ok===false||!t)throw new Error(j.error||'تعذّر إنشاء رابط التتبع');
+    var sv=(j.order&&(j.order.status||j.order.current_status))||j.status||'';
+    o.clientToken=t;o.client_token=t;o.clientTrackingSynced=true;o.trackingUrl=TR_PUBLIC+encodeURIComponent(t);o.tracking_url=o.trackingUrl;
+    o.trackingSentStatus=String(o.status||'');o.trackingServerStatus=typeof sv==='string'?sv:'';o.trackingSyncAt=Date.now();save();
+    return o.trackingUrl}).then(function(u){delete trBusy[id];return u},function(e){delete trBusy[id];throw e});
+  return trBusy[id]}
+/* بعد تغيّر حالة طلب له رابط: تُحدَّث صفحة العميل */
+function trSync(o){if(trHas(o)&&cloudCanWrite()&&String(o.status)!==String(o.trackingSentStatus||''))trLink(o).catch(function(){})}
+function trBoot(){if(!cloudCanWrite())return;db.orders.filter(function(o){return trHas(o)&&['shipped','received','out_for_delivery'].indexOf(String(o.status))>=0&&String(o.status)!==String(o.trackingSentStatus||'')}).slice(-30).forEach(trSync)}
+
+/* تأكيد الاستلام والتقييم من صفحة العميل: فحص كل 3 دقائق للطلبات المشحونة */
+function trMeta(){try{return JSON.parse(lsGet(TR_META)||'{}')||{}}catch(e){return {}}}
+function trWatched(){var cut=Date.now()-14*864e5;return db.orders.filter(function(o){if(!trHas(o))return false;var s=status(o);
+  return s==='shipped'||(s==='received'&&!o.customerRating&&new Date(o.receivedAt||o.customerConfirmedAt||0).getTime()>=cut)})}
+function trRating(x){var r=x.rating!=null?x.rating:(x.stars!=null?x.stars:x.customer_rating),c=x.comment||x.rating_comment||x.review||'';
+  if(r&&typeof r==='object'){c=c||r.comment||'';r=r.stars!=null?r.stars:r.value}r=Number(r);if(!isFinite(r)||r<=0)return null;
+  return {stars:Math.min(5,Math.round(r)),comment:String(c||'').slice(0,500),at:x.rated_at||x.updated_at||new Date().toISOString()}}
+function trStars(n){n=Math.max(0,Math.min(5,Math.round(+n||0)));return '★★★★★'.slice(0,n)+'☆☆☆☆☆'.slice(0,5-n)}
+var trRunning=false,trLast=0;
+function trPoll(force){var m=trMeta();if(trRunning||(!force&&Date.now()-trLast<180000))return Promise.resolve(0);if(m.unsupportedAt&&!force&&Date.now()-m.unsupportedAt<216e5)return Promise.resolve(0);
+  var list=trWatched();if(!list.length)return Promise.resolve(0);trRunning=true;trLast=Date.now();var conf=[],rated=[];
+  return trPost('/api/public/order-status',{action:'status',items:list.slice(0,100).map(function(o){return {client_token:trToken(o),order_uid:String(o.trackingUid||''),order_ref:oid(o)}})}).then(function(j){
+    if(j.__status===404||j.__status===405){m.unsupportedAt=Date.now();lsSet(TR_META,JSON.stringify(m));return 0}
+    if(!j.__ok||j.ok===false)throw new Error(j.error||'HTTP '+j.__status);
+    (j.orders||j.items||j.results||[]).forEach(function(x){if(!x)return;var t=String(x.client_token||x.token||''),u=String(x.order_uid||'');
+      var o=list.filter(function(q){return (t&&trToken(q)===t)||(u&&String(q.trackingUid||'')===u)})[0];if(!o)return;
+      var at=x.customer_confirmed_at||x.confirmed_at||x.received_at||'',st=String(x.status||'');
+      if((st==='received'||at)&&status(o)==='shipped'){receiveOrder(o);o.receivedAt=at||o.receivedAt;o.customerConfirmed=true;o.customerConfirmedAt=at||nowIso();o.trackingServerStatus='received';o.trackingSentStatus='received';addEvent(o,'أكّد العميل الاستلام من صفحة التتبع');conf.push(o)}
+      else if(st==='received'&&!o.customerConfirmed){o.customerConfirmed=true;o.customerConfirmedAt=at||o.receivedAt||''}
+      var r=trRating(x);if(r&&(!o.customerRating||o.customerRating.stars!==r.stars||o.customerRating.comment!==r.comment)){o.customerRating=r;rated.push(o)}});
+    m=trMeta();delete m.unsupportedAt;delete m.lastError;m.lastOk=Date.now();lsSet(TR_META,JSON.stringify(m));
+    if(conf.length||rated.length){save();render();trLog(conf,rated);
+      var p=conf.map(function(o){return '📬 '+onum(o)+' '+cname(o)+': أكّد العميل الاستلام'}).concat(rated.filter(function(o){return conf.indexOf(o)<0}).map(function(o){return '⭐ '+onum(o)+' '+cname(o)+': '+trStars(o.customerRating.stars)}));toast(p.slice(0,2).join(' · ')+(p.length>2?' +'+(p.length-2):''))}
+    return conf.length+rated.length})
+  .catch(function(e){var mm=trMeta();mm.lastError=String(e&&e.message||e).slice(0,160);lsSet(TR_META,JSON.stringify(mm));return 0}).then(function(n){trRunning=false;return n})}
+function trLog(conf,rated){var evs;try{evs=JSON.parse(lsGet(TR_EVENTS)||'[]');if(!Array.isArray(evs))evs=[]}catch(e){evs=[]}var has={};evs.forEach(function(e){has[e.key]=1});
+  function push(kind,o){var r=o.customerRating,key=kind==='confirm'?'confirm:'+(o.trackingUid||oid(o)):'rating:'+(o.trackingUid||oid(o))+':'+(r?r.stars+':'+r.comment:'');if(has[key])return;has[key]=1;
+    evs.unshift({id:Date.now().toString(36)+Math.random().toString(36).slice(2,7),key:key,kind:kind,orderId:oid(o),name:cname(o),stars:r?r.stars:0,comment:r?r.comment:'',at:Date.now(),read:false})}
+  conf.forEach(function(o){push('confirm',o)});rated.filter(function(o){return conf.indexOf(o)<0}).forEach(function(o){push('rating',o)});lsSet(TR_EVENTS,JSON.stringify(evs.slice(0,300)))}
+function trTick(){if(!document.hidden&&navigator.onLine!==false)trPoll()}
+function trPills(o){return (o.customerConfirmed?'<span class="tag ok">✅ أكّد العميل الاستلام</span>':'')+(o.customerRating?'<span class="tag gold">'+trStars(o.customerRating.stars)+'</span>':'')}
+
+/* ===== lib/push.js ===== */
+/* ---------- إشعارات الجوال ----------
+   الاشتراك عبر دالة push نفسها في التطبيق الحالي (تصل طلبات المتجر حتى والتطبيق مغلق).
+   تنبيهات التقييم والاستلام والمخزون تُعرض من الجهاز نفسه عند ظهورها.
+   في التجربة: الإشعارات المحلية تعمل، أما ربط الجهاز بالخادم فمتوقف. */
+var PU_FN='https://pfkstppvnebagbdckgbu.supabase.co/functions/v1/push',PU_KEY='sb_publishable__tfVZiyph-xyB87GzmHrkQ_9DVpPHJ0';
+var PU_CK=CLOUD_SANDBOX?'emd_rb_push':'emd161_push',PU_SK=CLOUD_SANDBOX?'emd_rb_push_seen':'emd161_seen';
+var PU_KINDS=[['store','🛍️ طلب جديد من المتجر','يصل حتى لو كان التطبيق مغلقًا (يتطلب تسجيل الدخول).'],['customer','⭐ تأكيد الاستلام والتقييم','عندما يؤكد العميل الاستلام أو يقيّم الطلب.'],
+  ['stock','📦 نفاد المخزون أو قربه','عندما تصل كمية منتج إلى حد التنبيه.'],['summary','📊 ملخص اليوم','تذكير تقفيلة اليوم في وقتها.']];
+function puCfg(){var c={};try{c=JSON.parse(lsGet(PU_CK)||'{}')||{}}catch(e){}c.k=c.k||{};PU_KINDS.forEach(function(k){if(c.k[k[0]]===undefined)c.k[k[0]]=true});return c}
+function puSave(c){lsSet(PU_CK,JSON.stringify(c))}
+function puSup(){return 'Notification' in window&&'serviceWorker' in navigator&&'PushManager' in window}
+function puIos(){return /iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)}
+function puStd(){try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true}catch(e){return false}}
+function puPerm(){return 'Notification' in window?Notification.permission:'unsupported'}
+function puCall(body,auth){if(body.action!=='key'&&!cloudCanWrite())return Promise.reject(Object.assign(new Error('sandbox'),{sandbox:true}));
+  var go=function(tk){var h={apikey:PU_KEY,'Content-Type':'application/json'};if(tk)h['x-emd-token']=tk;
+    return fetch(PU_FN,{method:'POST',headers:h,body:JSON.stringify(body)}).then(function(r){return r.json().catch(function(){return {}}).then(function(j){if(!r.ok||!j.ok)throw new Error(j.error||'HTTP '+r.status);return j})})};
+  if(!auth)return go('');if(!cUid())return Promise.reject(Object.assign(new Error('login'),{login:true}));return cToken().then(go)}
+function puReg(){return navigator.serviceWorker.getRegistration('/').then(function(r){if(!r)throw new Error('nosw');return r})}
+function puB64(s){s=(s+'='.repeat((4-s.length%4)%4)).replace(/-/g,'+').replace(/_/g,'/');var r=atob(s),a=new Uint8Array(r.length);for(var i=0;i<r.length;i++)a[i]=r.charCodeAt(i);return a}
+function puShow(title,o){o=o||{};if(puPerm()!=='granted')return Promise.resolve(false);
+  return puReg().then(function(r){return r.showNotification(title,{body:o.body||'',tag:o.tag,icon:'../icon-192.png',badge:'../icon-192.png',dir:'rtl',lang:'ar',data:{go:o.go||''}}).then(function(){return true})})
+    .catch(function(){try{new Notification(title,{body:o.body||'',tag:o.tag});return true}catch(e){return false}})}
+function puSubscribe(){return puReg().then(function(r){return r.pushManager.getSubscription().then(function(s){return s||puCall({action:'key'}).then(function(j){return r.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:puB64(j.key)})})})})}
+function puLink(c){return puSubscribe().then(function(s){var j=s.toJSON();c.ep=s.endpoint;puSave(c);return puCall({action:'subscribe',endpoint:j.endpoint,keys:j.keys,kinds:c.k},true)}).then(function(){c.srv=true;c.srvAt=Date.now();puSave(c)})}
+function puEnable(){var c=puCfg();if(!puSup()){puPaint('unsupported');return}puPaint('busy');
+  Notification.requestPermission().then(function(p){if(p!=='granted'){c.on=false;puSave(c);puPaint(p==='denied'?'denied':'idle');return}
+    c.on=true;c.srv=false;puSave(c);puMarkSeen();if(!cloudCanWrite()){puPaint('sandbox');return}return puLink(c).then(function(){puPaint()},function(e){puPaint(e.sandbox?'sandbox':e.login?'nologin':'srverr')})})}
+function puDisable(){var c=puCfg();c.on=false;c.srv=false;puSave(c);
+  if(cloudCanWrite())puReg().then(function(r){return r.pushManager.getSubscription()}).then(function(s){if(!s)return;var ep=s.endpoint;s.unsubscribe().catch(function(){});if(cUid())puCall({action:'unsubscribe',endpoint:ep},true).catch(function(){})}).catch(function(){});
+  puPaint('idle')}
+function puResync(){var c=puCfg();if(!c.on||puPerm()!=='granted'||!puSup()||!cUid()||!cloudCanWrite())return;if(c.srv&&c.srvAt&&Date.now()-c.srvAt<864e5)return;puLink(c).then(function(){puPaint()},function(){})}
+/* ما يستحق التنبيه: أحداث العملاء وطلبات المتجر، والمخزون عند حد التنبيه */
+function puCollect(){var out=[],ev;try{ev=JSON.parse(lsGet(TR_EVENTS)||'[]')}catch(e){ev=[]}
+  (Array.isArray(ev)?ev:[]).forEach(function(e){if(!e||e.read)return;var st=e.stars?' '+'★★★★★'.slice(0,e.stars):'';
+    if(e.kind==='store')out.push({id:'ev_'+e.id,k:'store',t:'🛍️ طلب جديد من المتجر',b:(e.name||'زبون')+(e.comment?' · '+e.comment:''),go:'store'});
+    else out.push({id:'ev_'+e.id,k:'customer',t:e.kind==='rating'?'⭐ تقييم جديد'+st:'📬 العميل أكّد الاستلام'+st,b:'#'+String(e.orderId||'').replace(/^#+/,'')+' — '+(e.name||'بدون اسم')+(e.comment?' · '+e.comment:''),go:'order:'+e.orderId})});
+  db.products.forEach(function(p){var min=p.minStock!=null?p.minStock:(p.lowStock!=null?p.lowStock:p.alertAt);if(min==null||min==='')return;var q=num(p.stock),m=num(min);
+    if(q<=m)out.push({id:'st_'+(p.id||p.name)+'_'+(q<=0?0:1),k:'stock',t:q<=0?'📦 نفد المخزون':'📦 المخزون قارب على النفاد',b:p.name+' — المتوفر: '+q+' · حد التنبيه: '+m,go:'stock'})});
+  return out}
+function puSeen(){try{return JSON.parse(lsGet(PU_SK)||'{}')||{}}catch(e){return {}}}
+function puMarkSeen(){var s={};puCollect().forEach(function(x){s[x.id]=Date.now()});lsSet(PU_SK,JSON.stringify(s))}
+var puLast=0;
+function puTick(){if(Date.now()-puLast<30000)return;puLast=Date.now();var c=puCfg();if(!c.on||puPerm()!=='granted'||!db)return;
+  var s=puSeen(),now=Date.now(),live={},ch=false;
+  puCollect().forEach(function(x){live[x.id]=1;if(s[x.id])return;s[x.id]=now;ch=true;if(c.k[x.k]===false||(x.k==='store'&&c.srv)||(!document.hidden&&x.k!=='stock'))return;puShow(x.t,{body:x.b,tag:x.id,go:x.go})});
+  Object.keys(s).forEach(function(k){if(!live[k]&&now-s[k]>3*864e5){delete s[k];ch=true}});if(ch)lsSet(PU_SK,JSON.stringify(s))}
+/* الضغط على الإشعار يفتح ما يخصه */
+function puGo(g){g=String(g||'');if(g==='store'||g.indexOf('store:')===0)storeOrdersOpen();else if(g.indexOf('order:')===0)openOrder(g.slice(6));else if(g==='stock'){state.view='stock';render()}}
+function puBoot(){if('serviceWorker' in navigator)navigator.serviceWorker.addEventListener('message',function(e){if(e.data&&e.data.emd161go!==undefined)setTimeout(function(){puGo(e.data.emd161go)},400)});
+  try{var q=new URLSearchParams(location.search).get('emdgo');if(q){setTimeout(function(){puGo(q)},600);history.replaceState(null,'',location.pathname+location.hash)}}catch(e){}
+  setTimeout(puResync,8000);document.addEventListener('visibilitychange',function(){if(!document.hidden)puResync()})}
+/* النافذة */
+var puBox=null;
+function pushSheet(){puBox=openSheet('<div class="sh"><div><h3>🔔 الإشعارات</h3><small>تنبيهات على جوالك بالطلبات الجديدة وما يحتاج انتباهك.</small></div><button class="x" data-act="close">إغلاق ✕</button></div>'+
+  (CLOUD_SANDBOX?'<p class="note amb">🧪 في التجربة تعمل الإشعارات على هذا الجهاز فقط، ولا يُربط الجهاز بالخادم.</p>':'')+
+  '<div class="cmsg show" id="puSt"></div><div class="foot"><button class="btn dark" id="puMain" data-pu="main"></button></div>'+
+  '<div id="puKinds">'+PU_KINDS.map(function(k){return '<label class="chk"><input type="checkbox" data-puk="'+k[0]+'"> <span><b>'+k[1]+'</b><br><small class="mute">'+k[2]+'</small></span></label>'}).join('')+'</div>'+
+  '<div class="foot"><button class="btn" data-pu="test">📨 إشعار تجريبي</button></div><p class="note">الإشعارات خاصة بهذا الجهاز؛ فعّلها على كل جوال تريد أن تصله.</p>');
+  puBox.addEventListener('click',function(e){var b=e.target.closest('[data-pu]');if(!b)return;var c=puCfg();
+    if(b.dataset.pu==='main'){if(c.on&&puPerm()==='granted')puDisable();else puEnable()}
+    else{c.srv&&cloudCanWrite()?puCall({action:'test',endpoint:c.ep||'https://x'},true).then(function(j){if(!j.sent)puShow('EMD Business',{body:'✅ الإشعارات تعمل على هذا الجهاز',tag:'emd-test'})},function(){puShow('EMD Business',{body:'✅ الإشعارات تعمل على هذا الجهاز',tag:'emd-test'})}):puShow('EMD Business',{body:'✅ الإشعارات تعمل على هذا الجهاز',tag:'emd-test'})}});
+  puBox.addEventListener('change',function(e){var k=e.target.dataset.puk;if(!k)return;var c=puCfg();c.k[k]=!!e.target.checked;puSave(c);if(c.on&&c.srv&&c.ep)puCall({action:'prefs',endpoint:c.ep,kinds:c.k},true).catch(function(){})});
+  puResync();puPaint()}
+function puPaint(force){if(!puBox||!puBox.isConnected)return;var c=puCfg(),p=puPerm(),s=force||'';
+  if(!s){if(!puSup())s=puIos()&&!puStd()?'ios':'unsupported';else if(p==='denied')s='denied';else if(c.on&&p==='granted')s=c.srv?'ok':CLOUD_SANDBOX?'sandbox':cUid()?'srverr':'nologin';else s='idle'}
+  var M={idle:['info','الإشعارات غير مفعّلة على هذا الجهاز.'],busy:['info','جارٍ التفعيل… وافق على طلب الإذن الذي يظهر لك.'],ok:['ok','✅ الإشعارات مفعّلة، وطلبات المتجر تصلك حتى لو كان التطبيق مغلقًا.'],
+    sandbox:['ok','✅ الإشعارات مفعّلة على هذا الجهاز (التجربة لا تربطه بالخادم).'],nologin:['err','✅ الإشعارات مفعّلة، لكن طلبات المتجر لا تصلك والتطبيق مغلق إلا بعد تسجيل الدخول.'],
+    srverr:['err','✅ الإشعارات مفعّلة داخل التطبيق، وتعذّر ربط الجهاز بالخادم الآن. ستُعاد المحاولة تلقائيًا.'],denied:['err','الإشعارات محظورة. افتح إعدادات المتصفح ← الإشعارات ← اسمح لـ EMD Business، ثم ارجع إلى هنا.'],
+    ios:['err','على الآيفون تعمل الإشعارات بعد إضافة التطبيق إلى الشاشة الرئيسية: زر المشاركة ⬆️ ثم «إضافة إلى الشاشة الرئيسية»، ثم افتحه من الأيقونة وفعّل الإشعارات (iOS 16.4 أو أحدث).'],
+    unsupported:['err','هذا المتصفح لا يدعم الإشعارات. استخدم Chrome على أندرويد أو التطبيق من Google Play.']}[s];
+  var st=puBox.querySelector('#puSt');st.className='cmsg show '+M[0];st.textContent=M[1];
+  var on=c.on&&p==='granted',b=puBox.querySelector('#puMain');b.textContent=on?'إيقاف الإشعارات على هذا الجهاز':'🔔 تفعيل الإشعارات';b.style.display=(s==='ios'||s==='unsupported'||s==='denied')?'none':'';b.disabled=s==='busy';
+  [].forEach.call(puBox.querySelectorAll('[data-puk]'),function(i){i.checked=c.k[i.dataset.puk]!==false;i.disabled=!on})}
 
 /* ===== screens/home-orders.js ===== */
 /* ---------- 4) العرض ---------- */
@@ -886,6 +1034,7 @@ function cardHtml(o,pins){
   var s=status(o),id=oid(o),its=items(o),n=0;its.forEach(function(x){n+=qty(x)});
   var nx=NEXT[s],ps=payState(o),pin=pins[id];
   var tags='<span class="tag">📦 '+n+' قطعة</span>'+its.slice(0,4).map(function(x){return '<span class="tag">'+esc(iname(x))+' × '+qty(x)+'</span>'}).join('')+(its.length>4?'<span class="tag">+'+(its.length-4)+'</span>':'');
+  tags+=trPills(o);
   if(ps!=='paid'&&s!=='cancelled')tags+='<span class="tag warn">'+PAYL[ps]+' · '+money(remaining(o))+'</span>';
   return '<div class="card" style="--sc:'+ST[s].c+'" data-id="'+esc(id)+'">'+
     '<div class="ch"><h3>'+(pin?'<span class="pin">📌</span> ':'')+esc(onum(o))+' — '+esc(cname(o)||'بدون اسم')+'</h3><span class="pill">'+ST[s].i+' '+ST[s].l+'</span></div>'+
@@ -904,7 +1053,7 @@ function ordersHtml(){
     '<div class="chips">'+chips.map(function(c){return '<button class="chip'+(state.filter===c[0]?' on':'')+'" data-filter="'+c[0]+'">'+c[1]+' '+c[2]+'</button>'}).join('')+
     (storePublished()||ix.store?'<button class="chip'+(state.filter==='store'?' on':'')+'" data-filter="store">🛍️ المتجر '+(ix.store||0)+'</button>':'')+(state.filter==='prep'?'<button class="chip on" data-filter="prep">🧑‍💼 للتجهيز الآن '+list.length+'</button>':'')+'</div>'+
     '<div class="search">🔎<input id="q" type="search" placeholder="ابحث بالاسم أو الرقم أو المكان أو المنتج" value="'+esc(state.q)+'" autocomplete="off"></div>'+
-    '<div class="tools"><button class="btn sm'+(state.pinnedOnly?' dark':'')+'" data-act="pinnedOnly">📌 المثبتة فقط'+(ix.counts.pinned?' ('+ix.counts.pinned+')':'')+'</button>'+(state.q?'<button class="btn sm" data-act="clearQ">مسح البحث</button>':'')+'</div>'+
+    '<div class="tools"><button class="btn sm" data-act="quickLink">⚡ رابط طلب سريع</button><button class="btn sm'+(state.pinnedOnly?' dark':'')+'" data-act="pinnedOnly">📌 المثبتة فقط'+(ix.counts.pinned?' ('+ix.counts.pinned+')':'')+'</button>'+(state.q?'<button class="btn sm" data-act="clearQ">مسح البحث</button>':'')+'</div>'+
     '<div id="list">'+(shown.length?shown.map(function(o){return cardHtml(o,pins)}).join(''):'<div class="empty">لا توجد طلبات مطابقة.</div>')+'</div>'+
     (list.length>shown.length?'<button class="btn moreBtn" data-act="showMore">عرض المزيد ('+(list.length-shown.length)+')</button>':'');
 }
@@ -1525,7 +1674,7 @@ function settingsSheet(){
   openSheet('<div class="sh"><h3>⚙️ إعدادات التجربة</h3><button class="x" data-act="close">إغلاق ✕</button></div>'+
     '<p class="note">هذه نسخة تجريبية من التطبيق الجديد. مصدر البيانات الحالي: <b>'+esc(srcLabel())+'</b>. تعديلاتك هنا تبقى داخل التجربة فقط ولا تصل إلى تطبيقك الأصلي.</p><div class="list">'+
     (live?'<button data-act="recopy">🔁 إعادة نسخ بياناتي من التطبيق الحالي</button>':'')+
-    '<button data-act="cloud">☁️ الحساب والحفظ في السحابة</button><button data-act="openFile">📂 فتح ملف نسخة احتياطية</button>'+
+    '<button data-act="cloud">☁️ الحساب والحفظ في السحابة</button><button data-act="push">🔔 الإشعارات</button><button data-act="openFile">📂 فتح ملف نسخة احتياطية</button>'+
     '<button data-act="demo" data-n="40">🧪 بيانات تجريبية صغيرة (40 طلبًا)</button>'+
     '<button data-act="demo" data-n="1500">⚡ بيانات كبيرة لاختبار السرعة (1500 طلب)</button></div>');
 }
@@ -1613,6 +1762,8 @@ document.addEventListener('click',function(e){
     case 'cNew':{var cn=custByKey(ck(b));closeSheet();newOrder();if(cn){$('fPhone').value=cn.phone;$('fName').value=cn.name||'';$('fPlace').value=cn.place||'';$('fPlace').dispatchEvent(new Event('input',{bubbles:true}))}break}
     case 'cAll':{var ca=custByKey(ck(b));closeSheet();state.view='orders';state.filter='all';state.q=ca?phoneKey(ca.phone):'';state.limit=30;render();window.scrollTo(0,0);break}
     case 'store':closeSheetIfMenu(b);storeOpen();break;
+    case 'push':closeSheetIfMenu(b);pushSheet();break;
+    case 'quickLink':quickOpen();break;
     case 'storeOrders':storeOrdersOpen();break;
     case 'cloud':closeSheetIfMenu(b);cloudSheet();break;
     case 'closing':var cs=b.closest('.sheet');if(cs)closeSheet(cs);closingSheet();break;
@@ -1659,9 +1810,10 @@ function boot(){
   var sn=storeName();if(sn)$('storeName').textContent=sn;
   render();
 }
-boot();cloudBoot();storeBoot();
-setInterval(function(){cloudTick();storeTick();if(!$('sheets').children.length)closingTick();if(state.view==='home'&&!$('sheets').children.length){var c=document.querySelector('.clock');if(c){var n=new Date(),h=n.getHours();c.innerHTML=(h%12||12)+':'+pad(n.getMinutes())+' <span>'+(h<12?'ص':'م')+'</span>'}}},10000);
-window.EMDRebuild={db:function(){return db},save:save,cloudCheck:cloudCheck,index:index,total:total,payState:payState,status:status};
+boot();cloudBoot();storeBoot();puBoot();
+setTimeout(trBoot,2500);
+setInterval(function(){cloudTick();storeTick();trTick();puTick();if(!$('sheets').children.length)closingTick();if(state.view==='home'&&!$('sheets').children.length){var c=document.querySelector('.clock');if(c){var n=new Date(),h=n.getHours();c.innerHTML=(h%12||12)+':'+pad(n.getMinutes())+' <span>'+(h<12?'ص':'م')+'</span>'}}},10000);
+window.EMDRebuild={db:function(){return db},save:save,cloudCheck:cloudCheck,trPoll:trPoll,render:render,index:index,total:total,payState:payState,status:status};
 
 })();
 </script>

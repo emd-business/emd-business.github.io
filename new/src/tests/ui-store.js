@@ -23,4 +23,8 @@ console.log('publish blocked:',JSON.stringify(await p.evaluate(()=>{const e=docu
 console.log('calls',calls.join(','));
 const pv=await p.$('#emd411Store [data-a=pv]');if(pv){await pv.click();await p.waitForTimeout(1500);console.log('preview:',await p.evaluate(()=>{const f=document.querySelector('#emd414Pv iframe');return f&&f.srcdoc.length>100000&&f.srcdoc.includes('__PV')}))}else console.log('no preview button on this tab');
 await p.screenshot({path:'/tmp/store-pv.png'});
+await p.evaluate(()=>document.querySelectorAll('#emd414Pv').forEach(x=>x.remove()));await p.evaluate(()=>EMDStoreV411.close());
+await p.click('nav#bar [data-go=orders]');await p.waitForTimeout(200);await p.click('[data-act=quickLink]');await p.waitForTimeout(800);
+console.log('quick open:',await p.evaluate(()=>{const w=document.getElementById('e173');return !!(w&&w.classList.contains('show'))}),'| key seeded:',await p.evaluate(()=>localStorage.getItem('emd_rb_quick')!==null||localStorage.getItem('emd173_quick')===null));
+await p.screenshot({path:'/tmp/quick.png'});
 console.log('errs',errs);await b.close()})();

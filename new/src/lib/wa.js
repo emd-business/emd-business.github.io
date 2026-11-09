@@ -37,7 +37,8 @@ function waSheet(o){
     '<div class="chips" id="waChips"></div><textarea class="in msg" id="waTa"></textarea>'+
     '<label class="chk" style="margin:8px 0"><input type="checkbox" id="waKeep"> احفظ تعديلي رسالةً دائمة لهذا النوع</label>'+
     '<div class="foot"><button class="btn green" id="waGo">💬 إرسال في واتساب</button><button class="btn" data-act="close">إلغاء</button></div>');
-  function paint(){d.querySelector('#waChips').innerHTML=WA_TYPES.map(function(t){return '<button type="button" class="chip'+(t.k===k?' on':'')+'" data-wk="'+t.k+'">'+t.t+'</button>'}).join('');$('waTa').value=waText(o,k);edited=false}
+  function paint(){d.querySelector('#waChips').innerHTML=WA_TYPES.map(function(t){return '<button type="button" class="chip'+(t.k===k?' on':'')+'" data-wk="'+t.k+'">'+t.t+'</button>'}).join('');$('waTa').value=waText(o,k);edited=false;
+    if(!waLink(o)&&(k==='shipped'||k==='received')&&cloudCanWrite()){var kk=k;trLink(o).then(function(){if(!edited&&k===kk)$('waTa').value=waText(o,k)},function(e){toast(e.message)})}}
   d.addEventListener('click',function(e){var c=e.target.closest('[data-wk]');if(c){if(edited&&!confirm('تغيير نوع الرسالة يلغي تعديلك. هل تريد المتابعة؟'))return;k=c.dataset.wk;paint();return}
     if(e.target.id==='waGo'){var txt=$('waTa').value;
       if($('waKeep').checked){var s=waSaved(WA_KEY);s[k]={enabled:true,text:txt};lsSet(WA_KEY,JSON.stringify(s));toast('💾 حُفظت الرسالة لهذا النوع')}
