@@ -12,9 +12,9 @@ function boot(){
   db=fix(db);dirty();syPrime();banner();
   var sn=storeName();if(sn){$('storeName').textContent='🏪 '+sn;$('storeName').classList.remove('hide')}
 $('homeImgIn').addEventListener('change',function(){var f=this.files&&this.files[0];this.value='';homeImgPicked(f)});
-  render();
+  render();setTimeout(modesFirstRun,1500);
 }
 boot();cloudBoot();storeBoot();puBoot();
 setTimeout(trBoot,2500);setTimeout(archRefresh,2500);setTimeout(trEnsureAll,3000);
-setInterval(function(){cloudTick();storeTick();trTick();puTick();supTick();archTick();if(!$('sheets').children.length)closingTick();if(state.view==='home'&&!$('sheets').children.length){var c=document.querySelector('.clock');if(c){var n=new Date(),h=n.getHours();c.innerHTML=(h%12||12)+':'+pad(n.getMinutes())+' <span>'+(h<12?'ص':'م')+'</span>'}}},10000);
+setInterval(function(){cloudTick();storeTick();trTick();puTick();supTick();archTick();if(!$('sheets').children.length)closingTick();if(state.view==='home'&&!$('sheets').children.length){var c=document.querySelector('.clock');if(c){var n=new Date(),h=n.getHours();c.innerHTML=pad(h%12||12)+':'+pad(n.getMinutes())+' <span>'+(h<12?'ص':'م')+'</span>'}}},10000);
 window.EMDRebuild={db:function(){return db},save:save,cloudCheck:cloudCheck,trPoll:trPoll,render:render,index:index,total:total,payState:payState,status:status};

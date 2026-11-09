@@ -6,7 +6,7 @@ function hay(o){var h=HAY.get(o);if(h==null){h=normTxt([oid(o),onum(o),cname(o),
 function render(){
   var v=$('view');
   document.querySelectorAll('nav#bar [data-go]').forEach(function(b){b.classList.toggle('on',b.dataset.go===state.view)});
-  var ix=index(),b=$('alertBadge');b.textContent=ix.alerts;b.classList.toggle('hide',!ix.alerts);
+  renderBar();var ix=index(),b=$('alertBadge');if(b){b.textContent=ix.alerts;b.classList.toggle('hide',!ix.alerts)}
   if(state.view==='home')v.innerHTML=homeHtml();
   else if(state.view==='products')v.innerHTML=productsHtml();
   else if(state.view==='stock')v.innerHTML=stockHtml();
@@ -26,10 +26,10 @@ function homeHtml(){
   var cards=['new','waiting','ready','packing','shipped','received'].map(function(k){
     return '<button class="stat" data-filter="'+k+'"><b>'+ix.counts[k]+'</b><span><i style="background:'+ST[k].c+'">'+ST[k].i+'</i>'+(k==='new'?'طلبات جديدة':k==='waiting'?'بانتظار المنتجات':k==='ready'?'جاهزة للتجهيز':ST[k].l)+'</span></button>';
   }).join('');
-  return '<div class="hero"><div><h2>'+greet+'</h2><div class="clock">'+pad(hh)+':'+pad(now.getMinutes())+' <span>'+(h<12?'ص':'م')+'</span></div><div class="date">'+esc(greg)+(hijri?' · '+esc(hijri):'')+'</div></div>'+heroImg()+'</div>'+
+  return '<div class="hero"><div><h2>'+greet+'</h2><div class="clock">'+pad(hh)+':'+pad(now.getMinutes())+' <span>'+(h<12?'ص':'م')+'</span></div><div class="date">'+esc(greg)+(hijri?' · '+esc(hijri):'')+'</div></div>'+heroImg()+'</div>'+modesHome()+
     '<div class="money" data-act="finance" role="button"><div><small>مبيعات اليوم</small><b>'+money(ix.sales)+'</b></div><div><small>غير محصّل</small><b class="gold">'+money(ix.unpaid)+'</b></div><div><small>ربح الشهر</small><b>'+money(ix.profit)+'</b></div><div class="cap">💰 اضغط لفتح المالية · '+CUR+'</div></div>'+
     storeHomeCard()+'<div class="stats">'+cards+'</div>'+
-    '<div class="quick"><button class="btn dark" data-act="importMsg">🤖 إدخال من رسالة</button><button class="btn" data-act="newOrder">✍️ كتابة طلب يدوي</button><button class="btn" data-act="prepNow">🧑‍💼 ماذا أجهز الآن؟</button><button class="btn" data-act="closing">📊 تقفيلة اليوم</button></div>'+
+    '<div class="quick"><button class="btn dark" data-act="importMsg">🤖 إدخال من رسالة</button><button class="btn" data-act="newOrder">✍️ كتابة طلب يدوي</button>'+(shopMode()?'':'<button class="btn" data-act="prepNow">🧑‍💼 ماذا أجهز الآن؟</button>')+'<button class="btn" data-act="closing">📊 تقفيلة اليوم</button></div>'+
     (state.dayOpen?'<button class="fold" data-act="dayFold">▲ إخفاء تفاصيل اليوم</button>'+dayHtml():'<button class="fold" data-act="dayFold">▼ تفاصيل اليوم والتوصيات <small>(لوحة اليوم، ما يحتاج انتباهك)</small></button>');
 }
 

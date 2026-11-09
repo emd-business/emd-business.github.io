@@ -70,6 +70,7 @@ document.addEventListener('click',function(e){
     case 'moreSheet':moreSheet();break;
     case 'alerts':alertsSheet();break;
     case 'settings':closeSheetIfMenu(b);settingsSheet();break;
+    case 'modes':closeSheet();modesOpen();break;
     case 'soon':toast('«'+(b.dataset.what||'هذا القسم')+'» يُبنى في المرحلة القادمة');break;
     case 'recopy':recopy();break;
     case 'openFile':$('fileIn').click();break;

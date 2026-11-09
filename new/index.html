@@ -1072,6 +1072,49 @@ function financeLoad(){if(window.EMDMoneyV75)return Promise.resolve(window.EMDMo
   finLoading=directLoad().then(function(){window.EMDMonH=finHelpers();return loadScript('money.js?v=2')}).then(function(){if(!window.EMDMoneyV75)throw new Error('money');return window.EMDMoneyV75},function(e){finLoading=null;throw e});return finLoading}
 function financeOpen(tab){financeLoad().then(function(X){X.open(tab||'sum')},function(){toast('تعذّر فتح المالية. تحقّق من الاتصال.')})}
 
+/* ===== lib/modes.js ===== */
+/* ---------- نوع النشاط (V416) والشريط السفلي (V412) ----------
+   نافذة الاختيار ولوحة البيع في الرئيسية (V417) في lazy/modes.js (مولَّدة بـ tools/port-modes.py) وتُحمَّل عند الحاجة فقط.
+   نوع النشاط يغيّر الشريط وظهور أدوات الشحن فقط، ولا يلمس البيانات. */
+var MODE_IDS=['online','shop','hybrid','company'];
+var MODE_NAME={online:'بيع أونلاين',shop:'محل ونقطة بيع',hybrid:'محل + أونلاين',company:'شركة'};
+var BAR_OPT={home:['🏠','الرئيسية','data-go="home"'],orders:['📋','الطلبات','data-go="orders"'],add:['＋','طلب جديد','data-act="importMsg"'],direct:['🛒','بيع مباشر','data-act="direct"'],
+  bell:['🔔','التنبيهات','data-act="alerts"'],finance:['💰','المالية','data-act="finance"'],tracking:['🔗','التتبع','data-act="track"'],customers:['👤','العملاء','data-go="customers"'],
+  products:['📦','المنتجات','data-go="products"'],stock:['🏭','المخزن','data-go="stock"'],performance:['📊','الأداء','data-go="perf"'],store:['🛍️','متجري','data-act="store"']};
+var BAR_DEF=['home','orders','add','bell'];
+var MODE_BAR={shop:['home','products','direct','stock'],hybrid:['home','orders','direct','bell'],company:['home','orders','direct','bell']};
+function mdLs(k,v){var rk=CLOUD_SANDBOX?'emd_rb_'+k:k;
+  if(v===undefined){var x=lsGet(rk);return x==null&&CLOUD_SANDBOX?lsGet(k):x}
+  if(v===null){try{LS.removeItem(rk)}catch(e){}}else lsSet(rk,v);return v}
+function mode(){var m=mdLs('emd416_mode');return MODE_IDS.indexOf(m)>-1?m:'online'}
+function shopMode(){return mode()==='shop'}
+function barSlots(){var s=null;try{s=JSON.parse(mdLs('emd412_bar')||'null')}catch(e){}
+  if(!Array.isArray(s)||(s.length!==4&&s.length!==5))return (MODE_BAR[mode()]||BAR_DEF).slice();
+  return s.map(function(k,i){return BAR_OPT[k]?k:(BAR_DEF[i]||'direct')})}
+var barSig='';
+function renderBar(){var bar=$('bar');if(!bar)return;var sl=barSlots(),sig=sl.join(',');if(sig===barSig)return;barSig=sig;
+  bar.style.gridTemplateColumns='repeat('+(sl.length+1)+',1fr)';
+  bar.innerHTML=sl.concat(['more']).map(function(k,i){var o=k==='more'?['☰','المزيد','data-act="moreSheet"']:BAR_OPT[k];
+    return '<button '+o[2]+(i===2?' class="plus"':'')+'><span class="ic">'+o[0]+'</span>'+o[1]+(k==='bell'?'<span class="badge hide" id="alertBadge"></span>':'')+'</button>'}).join('');
+}
+var modesP=null;
+function modesHelpers(){return {db:function(){return db},toast:toast,
+  ls:function(k,v){return mdLs(k,v)},
+  changed:function(){barSig='';renderBar();render()},
+  company:function(sub){toast('🏢 لوحة الفروع والمخازن تُضاف في الخطوة القادمة.');if(window.EMDModesV416)window.EMDModesV416.openCo()},
+  dsSummary:dsSummary,dsVoid:dsVoid,
+  low:function(){return db.products.filter(function(p){if(!p||p.stock==null)return false;var a=available(p.name),mn=minStock(p);return mn>0?a<=mn:a<=2})},
+  img:function(p){var u=String(p&&(p.image||p.img||p.imageUrl)||'');return /^(data:image\/|https:\/\/)/.test(u)?u:''},
+  go:function(k){if(k==='direct')directOpen('new');else if(k==='add')importSheet('');else{state.view=k==='stock'?'stock':'products';render();scrollTo(0,0)}}}}
+function modesLoad(){if(window.EMDModesV416&&window.EMD417)return Promise.resolve(window.EMDModesV416);if(modesP)return modesP;window.EMDModH=modesHelpers();
+  modesP=loadScript('modes.js?v=1').then(function(){if(!window.EMDModesV416)throw new Error('modes');return window.EMDModesV416},function(e){modesP=null;throw e});return modesP}
+function modesOpen(){modesLoad().then(function(M){M.open('settings')},function(){toast('تعذّر فتح نوع النشاط. تحقّق من الاتصال.')})}
+/* لوحة البيع في الرئيسية لأنواع المحل؛ تُحمَّل الوحدة أول مرة ثم تُعاد الرسمة */
+function modesHome(){if(mode()==='online')return '';if(window.EMD417)return window.EMD417.homeHtml();modesLoad().then(function(){if(state.view==='home')render()},function(){});return ''}
+/* سؤال أول تشغيل: فقط لتطبيق جديد بلا طلبات ولا منتجات، كي لا يُفاجأ التاجر الحالي بنافذة */
+function modesFirstRun(){if(mdLs('emd416_asked')||mdLs('emd416_mode'))return;if(db.orders.length||db.products.length)return;
+  modesLoad().then(function(M){M.firstRun()},function(){})}
+
 /* ===== screens/home-orders.js ===== */
 /* ---------- 4) العرض ---------- */
 var state={view:'home',filter:'all',q:'',pinnedOnly:false,limit:30,ptab:'prep',sel:{}};
@@ -1081,7 +1124,7 @@ function hay(o){var h=HAY.get(o);if(h==null){h=normTxt([oid(o),onum(o),cname(o),
 function render(){
   var v=$('view');
   document.querySelectorAll('nav#bar [data-go]').forEach(function(b){b.classList.toggle('on',b.dataset.go===state.view)});
-  var ix=index(),b=$('alertBadge');b.textContent=ix.alerts;b.classList.toggle('hide',!ix.alerts);
+  renderBar();var ix=index(),b=$('alertBadge');if(b){b.textContent=ix.alerts;b.classList.toggle('hide',!ix.alerts)}
   if(state.view==='home')v.innerHTML=homeHtml();
   else if(state.view==='products')v.innerHTML=productsHtml();
   else if(state.view==='stock')v.innerHTML=stockHtml();
@@ -1101,10 +1144,10 @@ function homeHtml(){
   var cards=['new','waiting','ready','packing','shipped','received'].map(function(k){
     return '<button class="stat" data-filter="'+k+'"><b>'+ix.counts[k]+'</b><span><i style="background:'+ST[k].c+'">'+ST[k].i+'</i>'+(k==='new'?'طلبات جديدة':k==='waiting'?'بانتظار المنتجات':k==='ready'?'جاهزة للتجهيز':ST[k].l)+'</span></button>';
   }).join('');
-  return '<div class="hero"><div><h2>'+greet+'</h2><div class="clock">'+pad(hh)+':'+pad(now.getMinutes())+' <span>'+(h<12?'ص':'م')+'</span></div><div class="date">'+esc(greg)+(hijri?' · '+esc(hijri):'')+'</div></div>'+heroImg()+'</div>'+
+  return '<div class="hero"><div><h2>'+greet+'</h2><div class="clock">'+pad(hh)+':'+pad(now.getMinutes())+' <span>'+(h<12?'ص':'م')+'</span></div><div class="date">'+esc(greg)+(hijri?' · '+esc(hijri):'')+'</div></div>'+heroImg()+'</div>'+modesHome()+
     '<div class="money" data-act="finance" role="button"><div><small>مبيعات اليوم</small><b>'+money(ix.sales)+'</b></div><div><small>غير محصّل</small><b class="gold">'+money(ix.unpaid)+'</b></div><div><small>ربح الشهر</small><b>'+money(ix.profit)+'</b></div><div class="cap">💰 اضغط لفتح المالية · '+CUR+'</div></div>'+
     storeHomeCard()+'<div class="stats">'+cards+'</div>'+
-    '<div class="quick"><button class="btn dark" data-act="importMsg">🤖 إدخال من رسالة</button><button class="btn" data-act="newOrder">✍️ كتابة طلب يدوي</button><button class="btn" data-act="prepNow">🧑‍💼 ماذا أجهز الآن؟</button><button class="btn" data-act="closing">📊 تقفيلة اليوم</button></div>'+
+    '<div class="quick"><button class="btn dark" data-act="importMsg">🤖 إدخال من رسالة</button><button class="btn" data-act="newOrder">✍️ كتابة طلب يدوي</button>'+(shopMode()?'':'<button class="btn" data-act="prepNow">🧑‍💼 ماذا أجهز الآن؟</button>')+'<button class="btn" data-act="closing">📊 تقفيلة اليوم</button></div>'+
     (state.dayOpen?'<button class="fold" data-act="dayFold">▲ إخفاء تفاصيل اليوم</button>'+dayHtml():'<button class="fold" data-act="dayFold">▼ تفاصيل اليوم والتوصيات <small>(لوحة اليوم، ما يحتاج انتباهك)</small></button>');
 }
 
@@ -1371,7 +1414,7 @@ function cardMore(id){
 function moreSheet(){ // مثل «كل الصفحات» في التطبيق الحالي (V410)
   function g(a){return '<div class="grid3">'+a.map(function(x){return '<button '+x[0]+'><i>'+x[1]+'</i>'+x[2]+'</button>'}).join('')+'</div>'}
   openSheet('<div class="sh"><div><h3>كل الصفحات</h3><small>اختر الصفحة التي تريدها.</small></div><button class="x" data-act="close">إغلاق ✕</button></div>'+
-    g([['data-act="finance"','💰','المالية'],['data-act="track"','🔗','التتبع'],['data-go="customers"','👤','العملاء'],['data-go="products"','📦','المنتجات'],['data-go="stock"','🏭','المخزن'],['data-act="direct"','🛒','بيع مباشر'],['data-go="perf"','📊','الأداء']])+
+    g([['data-act="finance"','💰','المالية']].concat(shopMode()?[]:[['data-act="track"','🔗','التتبع']]).concat([['data-go="customers"','👤','العملاء'],['data-go="products"','📦','المنتجات'],['data-go="stock"','🏭','المخزن'],['data-act="direct"','🛒','بيع مباشر'],['data-go="perf"','📊','الأداء']]))+
     '<div class="msec">أدوات</div>'+g([['data-act="store"','🛍️','متجري'],['data-act="settings"','⚙️','الإعدادات'],['data-act="support"','🆘','المساعدة']])+
     '<div class="mver">EMD Business • النسخة الجديدة (تجربة)</div>');
 }
@@ -1618,7 +1661,7 @@ function dayHtml(){
       '<div class="kp4"><div><b>'+td.length+'</b><small>طلبات اليوم</small></div><div><b>'+ready+'</b><small>جاهز للتجهيز</small></div><div><b>'+packing+'</b><small>قيد التجهيز</small></div><div><b>'+a.length+'</b><small>طلبات نشطة</small></div></div>'+
       '<div class="dsub"><b>💡 EMD يقترح عليك الآن</b>'+(focus.length?focus.map(function(o){return insRow(o)}).join(''):'<p class="note">لا توجد طلبات تحتاج إجراء الآن ✅</p>')+'</div>'+
       '<div class="dsub"><b>🧠 توصية EMD</b><h4>'+esc(rc[0])+'</h4><p>'+esc(rc[1])+'</p><div class="kp3"><div><b>'+td.length+'</b><small>طلبات اليوم</small></div><div><b>'+recvToday+'</b><small>مستلمة اليوم</small></div><div><b>'+a.length+'</b><small>نشطة الآن</small></div></div><button class="btn dark wide" '+rc[2]+'>'+esc(rc[3])+'</button></div>'+
-      '<div class="dsub"><b>⏰ شحن يحتاج متابعة</b><small>طلبات مضى على شحنها 48 ساعة أو أكثر ولم تُسجَّل كمستلمة.</small>'+(late.length?late.slice(0,5).map(function(o){return insRow(o,'<button class="btn sm" data-act="wa" data-id="'+esc(oid(o))+'">💬 متابعة</button>')}).join(''):'<p class="okbox">✅ لا توجد حاليًا طلبات مشحونة متأخرة 48 ساعة أو أكثر.</p>')+'</div>'+
+      (shopMode()?'':'<div class="dsub"><b>⏰ شحن يحتاج متابعة</b><small>طلبات مضى على شحنها 48 ساعة أو أكثر ولم تُسجَّل كمستلمة.</small>'+(late.length?late.slice(0,5).map(function(o){return insRow(o,'<button class="btn sm" data-act="wa" data-id="'+esc(oid(o))+'">💬 متابعة</button>')}).join(''):'<p class="okbox">✅ لا توجد حاليًا طلبات مشحونة متأخرة 48 ساعة أو أكثر.</p>')+'</div>')+
       '<div class="dsub"><b>🔔 مركز التنبيهات</b><small>ملخص سريع للأشياء التي تستحق انتباهك الآن، بدل البحث بينها داخل الطلبات.</small>'+(alerts.length?alerts.map(function(x){return '<button class="arow" data-filter="'+x[3]+'"><span><b>'+x[1]+'</b><small>'+x[2]+'</small></span><i>'+x[0]+'</i></button>'}).join(''):'<p class="okbox">✅ لا توجد تنبيهات الآن.</p>')+'</div>'+
       '<div class="dsub"><b>⚡ إجراء سريع</b><small>'+esc(quick)+'</small><div class="rowb">'+(shipped?'<button class="btn sm dark" data-filter="shipped">🚚 متابعة الشحن</button>':'')+(ready?'<button class="btn sm" data-filter="ready">🟢 التجهيز الآن</button>':'')+(waiting?'<button class="btn sm" data-go="stock">📦 فتح المخزن</button>':'')+'</div></div>'+
     '</div>'+
@@ -1865,7 +1908,7 @@ function settingsSheet(){
   var live=lsGet(LIVE_KEY);
   openSheet('<div class="sh"><h3>⚙️ إعدادات التجربة</h3><button class="x" data-act="close">إغلاق ✕</button></div>'+
     '<p class="note">هذه نسخة تجريبية من التطبيق الجديد. مصدر البيانات الحالي: <b>'+esc(srcLabel())+'</b>. تعديلاتك هنا تبقى داخل التجربة فقط ولا تصل إلى تطبيقك الأصلي.</p><div class="list">'+
-    (live?'<button data-act="recopy">🔁 إعادة نسخ بياناتي من التطبيق الحالي</button>':'')+
+    '<button data-act="modes">🧭 نوع النشاط <small class="note">الحالي: '+MODE_NAME[mode()]+'</small></button>'+(live?'<button data-act="recopy">🔁 إعادة نسخ بياناتي من التطبيق الحالي</button>':'')+
     '<button data-act="cloud">☁️ الحساب والحفظ في السحابة</button><button data-act="push">🔔 الإشعارات</button><button data-act="support">🆘 المساعدة والدعم</button><button data-act="openFile">📂 فتح ملف نسخة احتياطية</button>'+
     '<button data-act="demo" data-n="40">🧪 بيانات تجريبية صغيرة (40 طلبًا)</button>'+
     '<button data-act="demo" data-n="1500">⚡ بيانات كبيرة لاختبار السرعة (1500 طلب)</button></div>');
@@ -1972,6 +2015,7 @@ document.addEventListener('click',function(e){
     case 'moreSheet':moreSheet();break;
     case 'alerts':alertsSheet();break;
     case 'settings':closeSheetIfMenu(b);settingsSheet();break;
+    case 'modes':closeSheet();modesOpen();break;
     case 'soon':toast('«'+(b.dataset.what||'هذا القسم')+'» يُبنى في المرحلة القادمة');break;
     case 'recopy':recopy();break;
     case 'openFile':$('fileIn').click();break;
@@ -2011,11 +2055,11 @@ function boot(){
   db=fix(db);dirty();syPrime();banner();
   var sn=storeName();if(sn){$('storeName').textContent='🏪 '+sn;$('storeName').classList.remove('hide')}
 $('homeImgIn').addEventListener('change',function(){var f=this.files&&this.files[0];this.value='';homeImgPicked(f)});
-  render();
+  render();setTimeout(modesFirstRun,1500);
 }
 boot();cloudBoot();storeBoot();puBoot();
 setTimeout(trBoot,2500);setTimeout(archRefresh,2500);setTimeout(trEnsureAll,3000);
-setInterval(function(){cloudTick();storeTick();trTick();puTick();supTick();archTick();if(!$('sheets').children.length)closingTick();if(state.view==='home'&&!$('sheets').children.length){var c=document.querySelector('.clock');if(c){var n=new Date(),h=n.getHours();c.innerHTML=(h%12||12)+':'+pad(n.getMinutes())+' <span>'+(h<12?'ص':'م')+'</span>'}}},10000);
+setInterval(function(){cloudTick();storeTick();trTick();puTick();supTick();archTick();if(!$('sheets').children.length)closingTick();if(state.view==='home'&&!$('sheets').children.length){var c=document.querySelector('.clock');if(c){var n=new Date(),h=n.getHours();c.innerHTML=pad(h%12||12)+':'+pad(n.getMinutes())+' <span>'+(h<12?'ص':'م')+'</span>'}}},10000);
 window.EMDRebuild={db:function(){return db},save:save,cloudCheck:cloudCheck,trPoll:trPoll,render:render,index:index,total:total,payState:payState,status:status};
 
 })();
