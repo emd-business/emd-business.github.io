@@ -129,6 +129,10 @@ label.f em{color:var(--bad);font-style:normal}
 .left{margin:4px 0 10px;padding:10px 12px;border-radius:12px;background:#fffbeb;border:1px solid #fcd34d;color:#78350f;font-size:13px;font-weight:700;line-height:1.8}
 .left b{background:#fef3c7;border-radius:6px;padding:1px 6px;margin:0 2px;display:inline-block}
 .left small{display:block;font-weight:600;color:#a16207}
+.cchip{border-radius:999px!important;font-size:12px!important}.cchip.ok{background:#ecfdf5!important;color:#065f46!important}.cchip.err{background:#fef2f2!important;color:#991b1b!important}
+.pw{position:relative}.pw .eye{position:absolute;inset-inline-end:6px;top:50%;transform:translateY(-50%);border:0;background:none;font-size:16px;cursor:pointer}
+.lnk{border:0;background:none;color:var(--navy,#0f2747);font-weight:700;text-decoration:underline;padding:8px 0;cursor:pointer;font:inherit}
+.cmsg{display:none;margin-top:8px;padding:9px 12px;border-radius:12px;font-size:13px;font-weight:700}.cmsg.show{display:block}.cmsg.err{background:#fef2f2;color:#991b1b}.cmsg.ok{background:#ecfdf5;color:#065f46}.cmsg.info{background:#eff6ff;color:#1e40af}.bad{color:#991b1b}
 .cltxt{white-space:pre-wrap;background:#f8fafc;border:1px solid var(--line);border-radius:12px;padding:10px;font:inherit;font-size:13px;margin:8px 0;max-height:40vh;overflow:auto}
 .okbar{margin:4px 0 10px;padding:9px 12px;border-radius:12px;background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;font-size:13px;font-weight:700}
 textarea.msg{min-height:190px;font-size:15px;line-height:1.7}
@@ -172,7 +176,7 @@ details.more summary{font-weight:800;padding:8px 0;cursor:pointer}
 <div class="wrap">
   <header>
     <div class="brand"><img src="logo.svg" alt=""><div><h1>EMD Business</h1><small id="storeName">إدارة الطلبات والمخزون</small></div></div>
-    <div class="hbtns"><button data-act="settings">⚙️ الإعدادات</button><button data-act="moreSheet">☰ المزيد</button></div>
+    <div class="hbtns"><button id="cloudChip" class="cchip off" data-act="cloud">☁️ الحساب</button><button data-act="settings">⚙️ الإعدادات</button><button data-act="moreSheet">☰ المزيد</button></div>
   </header>
   <main id="view"></main>
 </div>

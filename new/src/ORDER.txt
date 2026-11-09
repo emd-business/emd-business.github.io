@@ -9,12 +9,16 @@ lib/customers.js
 lib/wa.js
 lib/flow.js
 lib/print.js
+lib/sync.js
+lib/archive.js
+lib/cloud.js
 screens/home-orders.js
 screens/order-form.js
 screens/import.js
 screens/sheets.js
 screens/prep.js
 screens/closing.js
+screens/account.js
 screens/products.js
 screens/customers.js
 screens/settings.js

@@ -25,15 +25,16 @@ function adopt(d,src){
   lsSet(PIN_KEY,src==='live'?(lsGet('emd_pinned_orders_v340')||'[]'):'[]');
   lsSet('emd_rb_learn232',src==='live'?(lsGet('emd_v232_learn')||'{}'):'{}');lsSet('emd_rb_learn103',src==='live'?(lsGet('emd_v103_learn')||'{}'):'{}');
   lsSet(KEY,JSON.stringify(db));lsSet(META,JSON.stringify(meta));
-  dirty();
+  dirty();syPrime();
 }
 var saveT=0;
 function save(){ // حفظ واحد مؤجل قليلًا بدل عشرات عمليات الحفظ المتتالية
   dirty();
   clearTimeout(saveT);
-  saveT=setTimeout(function(){lsSet(KEY,JSON.stringify(db))},120);
+  saveT=setTimeout(saveNow,120);
 }
-window.addEventListener('pagehide',function(){if(saveT){clearTimeout(saveT);lsSet(KEY,JSON.stringify(db))}});
+function saveNow(){saveT=0;var known=syStamp(db,cJ(CK.known,null));lsSet(KEY,JSON.stringify(db));lsSet(CK.known,JSON.stringify(known));cloudDirty()}
+window.addEventListener('pagehide',function(){if(saveT){clearTimeout(saveT);saveNow()}});
 
 var PIN_KEY='emd_rb_pins_v1'; // تثبيت التجربة منفصل عن تثبيت التطبيق الأصلي
 function pinned(){try{var a=JSON.parse(lsGet(PIN_KEY)||'[]');var m={};(Array.isArray(a)?a:[]).forEach(function(x){m[String(x)]=1});return m}catch(e){return {}}}

@@ -4,11 +4,11 @@ function settingsSheet(){
   openSheet('<div class="sh"><h3>⚙️ إعدادات التجربة</h3><button class="x" data-act="close">إغلاق ✕</button></div>'+
     '<p class="note">هذه نسخة تجريبية من التطبيق الجديد. مصدر البيانات الحالي: <b>'+esc(srcLabel())+'</b>. تعديلاتك هنا تبقى داخل التجربة فقط ولا تصل إلى تطبيقك الأصلي.</p><div class="list">'+
     (live?'<button data-act="recopy">🔁 إعادة نسخ بياناتي من التطبيق الحالي</button>':'')+
-    '<button data-act="openFile">📂 فتح ملف نسخة احتياطية</button>'+
+    '<button data-act="cloud">☁️ الحساب والحفظ في السحابة</button><button data-act="openFile">📂 فتح ملف نسخة احتياطية</button>'+
     '<button data-act="demo" data-n="40">🧪 بيانات تجريبية صغيرة (40 طلبًا)</button>'+
     '<button data-act="demo" data-n="1500">⚡ بيانات كبيرة لاختبار السرعة (1500 طلب)</button></div>');
 }
-function srcLabel(){var s=meta.source||'';return s==='live'?'نسخة من بيانات تطبيقك':s.indexOf('file:')===0?'ملف '+s.slice(5):s.indexOf('demo')===0?'بيانات تجريبية':'—'}
+function srcLabel(){var s=meta.source||'';return s==='live'?'نسخة من بيانات تطبيقك':s==='cloud'?'نسختك في السحابة':s.indexOf('file:')===0?'ملف '+s.slice(5):s.indexOf('demo')===0?'بيانات تجريبية':'—'}
 function recopy(){
   var live=lsGet(LIVE_KEY);if(!live)return;
   if(!confirm('سيتم استبدال بيانات التجربة بنسخة جديدة من بيانات تطبيقك. تطبيقك نفسه لن يتغير. متابعة؟'))return;

@@ -9,10 +9,10 @@ function welcome(){
 function boot(){
   if(!db){var live=lsGet(LIVE_KEY);if(load()){}else if(live&&!meta.source){try{adopt(JSON.parse(live),'live')}catch(e){}}}
   if(!db)return welcome();
-  db=fix(db);dirty();banner();
+  db=fix(db);dirty();syPrime();banner();
   var sn=storeName();if(sn)$('storeName').textContent=sn;
   render();
 }
-boot();
-setInterval(function(){if(!$('sheets').children.length)closingTick();if(state.view==='home'&&!$('sheets').children.length){var c=document.querySelector('.clock');if(c){var n=new Date(),h=n.getHours();c.innerHTML=(h%12||12)+':'+pad(n.getMinutes())+' <span>'+(h<12?'ص':'م')+'</span>'}}},30000);
-window.EMDRebuild={db:function(){return db},index:index,total:total,payState:payState,status:status};
+boot();cloudBoot();
+setInterval(function(){cloudTick();if(!$('sheets').children.length)closingTick();if(state.view==='home'&&!$('sheets').children.length){var c=document.querySelector('.clock');if(c){var n=new Date(),h=n.getHours();c.innerHTML=(h%12||12)+':'+pad(n.getMinutes())+' <span>'+(h<12?'ص':'م')+'</span>'}}},10000);
+window.EMDRebuild={db:function(){return db},save:save,cloudCheck:cloudCheck,index:index,total:total,payState:payState,status:status};

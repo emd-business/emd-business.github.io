@@ -129,6 +129,10 @@ label.f em{color:var(--bad);font-style:normal}
 .left{margin:4px 0 10px;padding:10px 12px;border-radius:12px;background:#fffbeb;border:1px solid #fcd34d;color:#78350f;font-size:13px;font-weight:700;line-height:1.8}
 .left b{background:#fef3c7;border-radius:6px;padding:1px 6px;margin:0 2px;display:inline-block}
 .left small{display:block;font-weight:600;color:#a16207}
+.cchip{border-radius:999px!important;font-size:12px!important}.cchip.ok{background:#ecfdf5!important;color:#065f46!important}.cchip.err{background:#fef2f2!important;color:#991b1b!important}
+.pw{position:relative}.pw .eye{position:absolute;inset-inline-end:6px;top:50%;transform:translateY(-50%);border:0;background:none;font-size:16px;cursor:pointer}
+.lnk{border:0;background:none;color:var(--navy,#0f2747);font-weight:700;text-decoration:underline;padding:8px 0;cursor:pointer;font:inherit}
+.cmsg{display:none;margin-top:8px;padding:9px 12px;border-radius:12px;font-size:13px;font-weight:700}.cmsg.show{display:block}.cmsg.err{background:#fef2f2;color:#991b1b}.cmsg.ok{background:#ecfdf5;color:#065f46}.cmsg.info{background:#eff6ff;color:#1e40af}.bad{color:#991b1b}
 .cltxt{white-space:pre-wrap;background:#f8fafc;border:1px solid var(--line);border-radius:12px;padding:10px;font:inherit;font-size:13px;margin:8px 0;max-height:40vh;overflow:auto}
 .okbar{margin:4px 0 10px;padding:9px 12px;border-radius:12px;background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;font-size:13px;font-weight:700}
 textarea.msg{min-height:190px;font-size:15px;line-height:1.7}
@@ -172,7 +176,7 @@ details.more summary{font-weight:800;padding:8px 0;cursor:pointer}
 <div class="wrap">
   <header>
     <div class="brand"><img src="logo.svg" alt=""><div><h1>EMD Business</h1><small id="storeName">إدارة الطلبات والمخزون</small></div></div>
-    <div class="hbtns"><button data-act="settings">⚙️ الإعدادات</button><button data-act="moreSheet">☰ المزيد</button></div>
+    <div class="hbtns"><button id="cloudChip" class="cchip off" data-act="cloud">☁️ الحساب</button><button data-act="settings">⚙️ الإعدادات</button><button data-act="moreSheet">☰ المزيد</button></div>
   </header>
   <main id="view"></main>
 </div>
@@ -224,15 +228,16 @@ function adopt(d,src){
   lsSet(PIN_KEY,src==='live'?(lsGet('emd_pinned_orders_v340')||'[]'):'[]');
   lsSet('emd_rb_learn232',src==='live'?(lsGet('emd_v232_learn')||'{}'):'{}');lsSet('emd_rb_learn103',src==='live'?(lsGet('emd_v103_learn')||'{}'):'{}');
   lsSet(KEY,JSON.stringify(db));lsSet(META,JSON.stringify(meta));
-  dirty();
+  dirty();syPrime();
 }
 var saveT=0;
 function save(){ // حفظ واحد مؤجل قليلًا بدل عشرات عمليات الحفظ المتتالية
   dirty();
   clearTimeout(saveT);
-  saveT=setTimeout(function(){lsSet(KEY,JSON.stringify(db))},120);
+  saveT=setTimeout(saveNow,120);
 }
-window.addEventListener('pagehide',function(){if(saveT){clearTimeout(saveT);lsSet(KEY,JSON.stringify(db))}});
+function saveNow(){saveT=0;var known=syStamp(db,cJ(CK.known,null));lsSet(KEY,JSON.stringify(db));lsSet(CK.known,JSON.stringify(known));cloudDirty()}
+window.addEventListener('pagehide',function(){if(saveT){clearTimeout(saveT);saveNow()}});
 
 var PIN_KEY='emd_rb_pins_v1'; // تثبيت التجربة منفصل عن تثبيت التطبيق الأصلي
 function pinned(){try{var a=JSON.parse(lsGet(PIN_KEY)||'[]');var m={};(Array.isArray(a)?a:[]).forEach(function(x){m[String(x)]=1});return m}catch(e){return {}}}
@@ -521,6 +526,288 @@ function withDocs(cb){
 }
 function openLabels(ids){var os=ids.map(findOrder).filter(Boolean);if(!os.length){toast('حدّد طلبًا واحدًا على الأقل');return}withDocs(function(D){D.labels(os)})}
 function openInvoice(id){var o=findOrder(id);if(o)withDocs(function(D){D.invoice(o)})}
+
+/* ===== lib/sync.js ===== */
+/* ---------- المزامنة بين الأجهزة: دمج على مستوى السجل ----------
+   الصيغة نفسها التي يحفظها التطبيق الحالي في السحابة، حتى يعمل الجهازان معًا أثناء الانتقال:
+   _u وقت آخر تعديل لكل طلب ومنتج وعميل، _o هوية الطلب، _tomb139 (طلبات ومنتجات محذوفة)،
+   _tomb179 (عملاء محذوفون)، وorderSeq. القاعدة: الأحدث وقتًا هو المعتمد، والمخزون يُدمج بالفرق. */
+var SY_RANK={'new':1,waiting:2,ready:3,packing:4,shipped:5,received:6};
+var SY_RECS={orders:1,products:1,customers:1,_tomb139:1,_tomb179:1};
+var SY_DROP={o:{_u:1,recoveredAt:1},p:{_u:1,stock:1,updatedAt:1},c:{_u:1,orders:1,updatedAt:1}};
+var SY_TOMB_DAYS=90,SY_TOMB_MAX=10;
+function fnv(s){var h=2166136261;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return (h>>>0).toString(36)+'.'+s.length}
+function hv(v){return v===undefined?'-':fnv(JSON.stringify(v))}
+function syArr(a){return Array.isArray(a)?a:[]}
+function isObj(x){return !!x&&typeof x==='object'&&!Array.isArray(x)}
+function clone(x){return x===undefined?undefined:JSON.parse(JSON.stringify(x))}
+function syNorm(x){return String(x||'').replace(/ـ/g,'').trim().toLowerCase().replace(/\s+/g,' ')}
+function kO(o){return o?oid(o):''}
+function kP(p){return p?(p.id!=null&&p.id!==''?'i'+p.id:(syNorm(p.name)?'n'+syNorm(p.name):'')):''}
+function kPT(p){return p?(syNorm(p.name)||(p.id!=null?'#'+p.id:'')):''}   // مفتاح المحذوفات والمخزون
+function kC(c){return c?String(c.id||c.phone||c.name||''):''}
+function oIdent(o){return o?String(o.created||o.createdAt||o.orderDate||o._o||''):''}
+function oNum(o){var m=String(kO(o)).replace(/^#/,'').trim();return /^\d+$/.test(m)?+m:0}
+function sigOf(o,drop){var c={};for(var k in o)if(!drop[k])c[k]=o[k];return fnv(JSON.stringify(c))}
+function syStocks(d){var m={};syArr(d&&d.products).forEach(function(p){var k=kPT(p);if(k&&!(k in m))m[k]=num(p.stock)});return m}
+function syDed(o){return !!(o&&o.stockDeducted===true&&o.stockReturned!==true)}
+function syItems(o){return syArr(o&&(Array.isArray(o.products)?o.products:o.items)).map(function(x){return {k:syNorm(x&&(x.name||x.product||x.productName)),q:num(x&&(x.qty!=null?x.qty:(x.quantity!=null?x.quantity:x.count)))}}).filter(function(x){return x.k&&x.q>0})}
+
+/* ===== ختم التعديلات: يُستدعى من الحفظ ===== */
+var syCache=null;
+function syStampList(list,kf,g,first,now){var b=syCache[g],seen={};
+  syArr(list).forEach(function(o){if(!o||typeof o!=='object')return;var k=kf(o);if(!k||seen[k])return;seen[k]=1;var h=sigOf(o,SY_DROP[g]),c=b[k];
+    if(!c){if(!o._u&&(!first||g==='o'))o._u=first?1:now;b[k]={h:h,u:o._u};return}
+    if(o._u!==c.u){c.h=h;c.u=o._u;return}          // وصل من جهاز آخر بطابعه
+    if(c.h!==h){o._u=now;c.h=h;c.u=now}});          // تعديل على هذا الجهاز
+  Object.keys(b).forEach(function(k){if(!seen[k])delete b[k]})}
+/* المحذوفات: ما يُحذف من هذا الجهاز لا يرجع من الجهاز الآخر (حتى 10 سجلات في المرة، وتُنسى بعد 90 يومًا) */
+function syTomb(d,known,now){
+  var cur={o:{},p:{},c:{}},t1=isObj(d._tomb139)?d._tomb139:{o:{},p:{}},t2=isObj(d._tomb179)?d._tomb179:{c:{}},T={o:t1.o||{},p:t1.p||{},c:t2.c||{}},ch=false;
+  syArr(d.orders).forEach(function(o){var i=kO(o);if(i)cur.o[i]=1});syArr(d.products).forEach(function(p){var i=kPT(p);if(i)cur.p[i]=1});syArr(d.customers).forEach(function(c){var i=kC(c);if(i)cur.c[i]=1});
+  if(known)['o','p','c'].forEach(function(g){var gone=Object.keys(known[g]||{}).filter(function(i){return !cur[g][i]});if(gone.length&&gone.length<=SY_TOMB_MAX)gone.forEach(function(i){T[g][i]=now;ch=true})});
+  ['o','p','c'].forEach(function(g){Object.keys(T[g]).forEach(function(i){if(cur[g][i]||now-T[g][i]>SY_TOMB_DAYS*864e5){delete T[g][i];ch=true}})});
+  if(ch||d._tomb139)d._tomb139={o:T.o,p:T.p};if(ch||d._tomb179)d._tomb179={c:T.c};
+  return cur}
+/* بداية الختم: تُسجَّل بصمة كل سجل كما هو الآن، فأي تعديل بعدها يُختم بوقته */
+function syPrime(){syCache=null;if(db)syStamp(db,null)}
+function syStamp(d,known,now){now=now||Date.now();var first=!syCache;if(first)syCache={o:{},p:{},c:{}};
+  syStampList(d.orders,kO,'o',first,now);syStampList(d.products,kP,'p',first,now);syStampList(d.customers,kC,'c',first,now);
+  syArr(d.orders).forEach(function(o){if(o&&typeof o==='object'&&!oIdent(o))o._o=now+'-'+Math.random().toString(36).slice(2,8)});
+  return syTomb(d,known,now)}
+
+/* ===== نقطة البداية المشتركة: شكل البيانات عند آخر تطابق مع السحابة ===== */
+function subHashes(o){var s={};if(isObj(o))Object.keys(o).forEach(function(k){s[k]=hv(o[k])});return s}
+function syBase(d){var b={stocks:syStocks(d),f:{},fs:{}};Object.keys(d||{}).forEach(function(k){if(SY_RECS[k])return;b.f[k]=hv(d[k]);if(isObj(d[k]))b.fs[k]=subHashes(d[k])});return b}
+
+/* دمج ثلاثي لقيمة واحدة: l محلي، r سحابة، bh بصمة آخر تطابق، bs بصمات حقولها، rnew: هل تعديل الجهاز الآخر أحدث */
+function merge3(l,r,bh,bs,rnew){
+  var lh=hv(l),rh=hv(r);if(lh===rh)return {v:l};
+  if(bh==null)return {v:l===undefined?clone(r):l};               // لا نقطة بداية: لا نخسر شيئًا
+  if(lh===bh)return {v:clone(r),changed:true};                    // غيّره الجهاز الآخر فقط
+  if(rh===bh)return {v:l};                                        // غيّره هذا الجهاز فقط
+  if(rnew===true)return {v:clone(r),changed:true};                // غيّره الجهازان: الأحدث هو المعتمد
+  if(isObj(l)&&isObj(r)&&bs){var o=clone(l),ch=false;              // غيّره الجهازان: حقلًا حقلًا
+    Object.keys(r).forEach(function(k){var a=hv(l[k]),b=hv(r[k]);if(a===b)return;if(bs[k]===a||(bs[k]==null&&!(k in l))){o[k]=clone(r[k]);ch=true}});
+    Object.keys(l).forEach(function(k){if(!(k in r)&&bs[k]!=null&&bs[k]===hv(l[k])){delete o[k];ch=true}});
+    return {v:o,changed:ch}}
+  if(Array.isArray(l)&&Array.isArray(r)){var seen={},out=clone(l),ch2=false;out.forEach(function(x){seen[x&&x.id!=null?'i'+x.id:hv(x)]=1});
+    r.forEach(function(x){var k=x&&x.id!=null?'i'+x.id:hv(x);if(!seen[k]){out.push(clone(x));seen[k]=1;ch2=true}});return {v:out,changed:ch2}}
+  return {v:l}}
+
+/* طلبان مختلفان بالرقم نفسه من جهازين: يأخذ طلب هذا الجهاز رقمًا جديدًا */
+function syRenumber(L,R,ren,now){var rm={},max=0,rids={};
+  syArr(R.orders).forEach(function(o){var i=kO(o);if(i)rm[i]=o;max=Math.max(max,oNum(o));rids[oIdent(o)]=1});syArr(L.orders).forEach(function(o){max=Math.max(max,oNum(o))});
+  syArr(L.orders).forEach(function(o){var i=kO(o),r=rm[i];if(!r)return;var a=oIdent(o),b=oIdent(r);if(!a||!b||a===b||rids[a])return;
+    var n='#'+String(++max).padStart(4,'0');o.id=n;if(o.orderNumber!=null)o.orderNumber=n;if(o.number!=null)o.number=n;o._u=now;ren.push({from:i,to:n,name:o.name||''})});
+  if(ren.length)L.orderSeq=max+1}
+
+/* ===== الدمج ===== opt: {archived:{id:1}, base, times:{local:{},remote:{}}, now} */
+function syMerge(local,remote,opt){
+  opt=opt||{};var now=opt.now||Date.now(),base=opt.base||null,arch=opt.archived||{},st={added:0,updated:0,deleted:0,stock:0,fields:0,renumbered:[]};
+  var L=clone(local||{}),R=remote||{},out=L;['orders','products','customers'].forEach(function(k){if(!Array.isArray(out[k]))out[k]=[]});
+  var T={o:{},p:{},c:{}};[[local&&local._tomb139,'o'],[local&&local._tomb139,'p'],[R._tomb139,'o'],[R._tomb139,'p'],[local&&local._tomb179,'c'],[R._tomb179,'c']].forEach(function(x){var src=x[0]&&x[0][x[1]]||{};Object.keys(src).forEach(function(i){T[x[1]][i]=Math.max(T[x[1]][i]||0,num(src[i]))})});
+  var RT={p:(R._tomb139&&R._tomb139.p)||{},c:(R._tomb179&&R._tomb179.c)||{}};
+  syRenumber(out,R,st.renumbered,now);
+  var orig={};syArr(local&&local.orders).forEach(function(o){orig[kO(o)]=o});
+  // الطلبات: الأحدث تعديلًا، وعند التساوي الأبعد في المراحل
+  var map={},won={};out.orders.forEach(function(o,i){map[kO(o)]=i});
+  syArr(R.orders).forEach(function(ro){var id=kO(ro);if(!id||arch[id])return;
+    if(map[id]===undefined){if(T.o[id])return;out.orders.push(clone(ro));map[id]=out.orders.length-1;st.added++;return}
+    var lo=out.orders[map[id]],ua=+lo._u||0,ub=+ro._u||0,rw=ua!==ub?ub>ua:(SY_RANK[String(ro.status||'new')]||0)>(SY_RANK[String(lo.status||'new')]||0);
+    if(rw){out.orders[map[id]]=clone(ro);won[id]=ro;st.updated++}});
+  // المنتجات والعملاء
+  function recs(name,kf,kt,g,keepStock){var lm={},rm={},rtk={},ltk={};
+    out[name].forEach(function(x){var k=kf(x);if(k&&!lm[k])lm[k]=x;ltk[kt(x)]=1});syArr(R[name]).forEach(function(x){var k=kf(x);if(k&&!rm[k])rm[k]=x;rtk[kt(x)]=1});
+    out[name]=out[name].filter(function(x){var k=kt(x),t=RT[g][k];if(!t||rtk[k])return true;if((+x._u||0)>(+t||0))return true;st.deleted++;return false});
+    out[name]=out[name].map(function(x){var k=kf(x),r=rm[k];if(!r||hv(r)===hv(x)||(+r._u||0)<=(+x._u||0))return x;var n=clone(r);if(keepStock){n.stock=x.stock;if(x.updatedAt&&x.stock!==r.stock)n.updatedAt=x.updatedAt}st.updated++;return n});
+    syArr(R[name]).forEach(function(x){var k=kf(x);if(!k||lm[k]||T[g][kt(x)]&&!ltk[kt(x)])return;if(lm[k]===undefined){out[name].push(clone(x));lm[k]=x;st.added++}})}
+  var nLocalP={};out.products.forEach(function(p){nLocalP[kPT(p)]=1});
+  recs('products',kP,kPT,'p',true);recs('customers',kC,kC,'c',false);
+  // المخزون = رقم الجهاز + ما تغيّر في السحابة منذ آخر تطابق؛ بلا نقطة بداية: من الطلبات التي خُصمت أو أُرجعت في الجهاز الآخر
+  var rS=syStocks(R),bS=base&&base.stocks,adj={};
+  Object.keys(won).forEach(function(id){var l=orig[id],r=won[id];if(!l||syDed(l)===syDed(r))return;
+    if(syDed(r))syItems(r).forEach(function(x){adj[x.k]=(adj[x.k]||0)-x.q});else syItems(l).forEach(function(x){adj[x.k]=(adj[x.k]||0)+x.q})});
+  out.products.forEach(function(p){var k=kPT(p);if(!nLocalP[k])return;var ls=num(p.stock),v;
+    if(bS&&(k in bS)&&(k in rS))v=ls+rS[k]-bS[k];else if(adj[k])v=ls+adj[k];else return;
+    v=Math.max(0,Math.round(v*1000)/1000);if(v!==ls){p.stock=v;p.updatedAt=new Date(now).toISOString();st.stock++}});
+  // باقي حقول البيانات
+  var tl=opt.times&&opt.times.local||{},tr=opt.times&&opt.times.remote||{};
+  var fk={};Object.keys(local||{}).concat(Object.keys(R)).forEach(function(k){if(!SY_RECS[k])fk[k]=1});
+  Object.keys(fk).forEach(function(k){var tk='db.'+k,rn=(tk in tr||tk in tl)?(+tr[tk]||0)>(+tl[tk]||0):undefined;
+    var x=merge3((local||{})[k],R[k],base?(base.f[k]!=null?base.f[k]:'-'):null,base&&base.fs[k],rn);if(x.changed)st.fields++;if(x.v===undefined)delete out[k];else out[k]=x.v});
+  if(Object.keys(T.o).length||Object.keys(T.p).length)out._tomb139={o:T.o,p:T.p};
+  if(Object.keys(T.c).length)out._tomb179={c:T.c};
+  return {db:out,stats:st}}
+
+/* مفاتيح الإعدادات الأخرى: كل مفتاح يأخذ تغيير الجهاز الذي غيّره، وإن غيّره الاثنان فالأحدث */
+function syMergeKeys(lk,rk,bk,tl,tr){var set={};
+  Object.keys(lk).concat(Object.keys(rk)).forEach(function(k){if(k in set)return;var lv=lk[k],rv=rk[k];if(lv===rv)return;
+    var l=lv==null?'-':fnv(lv),r=rv==null?'-':fnv(rv),b=bk?(bk[k]!=null?bk[k]:'-'):null;
+    if(b==null){if(lv==null)set[k]=rv;return}
+    if(l===b){set[k]=rv==null?null:rv;return}
+    if(r===b)return;
+    if((+tr[k]||0)>(+tl[k]||0))set[k]=rv==null?null:rv});
+  return set}
+
+/* ===== lib/archive.js ===== */
+/* ---------- أرشيف الطلبات القديمة (قاعدة الجهاز نفسها التي يستعملها التطبيق الحالي) ----------
+   القراءة متاحة دائمًا؛ الكتابة لا تحدث في التجربة. */
+var ARCH_DB='emd_archive_v67',archP=null;
+function archOpen(){if(archP)return archP;archP=new Promise(function(res,rej){try{var r=indexedDB.open(ARCH_DB,1);
+  r.onupgradeneeded=function(){var d=r.result;if(!d.objectStoreNames.contains('orders')){var s=d.createObjectStore('orders',{keyPath:'k'});s.createIndex('phone','phone');s.createIndex('month','month')}};
+  r.onsuccess=function(){res(r.result)};r.onerror=function(){rej(r.error||new Error('idb'))};r.onblocked=function(){rej(new Error('blocked'))}}catch(e){rej(e)}});archP.catch(function(){});return archP}
+function archAll(){return archOpen().then(function(d){return new Promise(function(res,rej){var out=[],c=d.transaction('orders','readonly').objectStore('orders').openCursor();
+  c.onsuccess=function(){var cur=c.result;if(!cur)return res(out);out.push({order:cur.value.order,archivedAt:cur.value.archivedAt});cur.continue()};c.onerror=function(){rej(c.error)}})}).catch(function(){return []})}
+function archIds(list){var m={};(list||[]).forEach(function(x){var i=x&&x.order&&oid(x.order);if(i)m[i]=1});return m}
+function archTs(v){var t=v?new Date(v).getTime():0;return isFinite(t)?t:0}
+function archRecord(o,at){var its=items(o),od=archTs(o.orderDate)||archTs(o.created)||archTs(o.createdAt)||archTs(o.receivedAt)||archTs(o.shippedAt),dt=od?new Date(od):null,ph=digits(cphone(o));
+  if(ph.indexOf('00968')===0)ph=ph.slice(5);else if(ph.indexOf('968')===0&&ph.length===11)ph=ph.slice(3);
+  return {k:oid(o),order:o,phone:ph,name:String(o.name||''),date:od,month:dt?dt.getFullYear()+'-'+pad(dt.getMonth()+1):'',archivedAt:at||Date.now(),
+    pieces:its.reduce(function(n,x){return n+qty(x)},0),hay:normTxt([oid(o),o.name,o.phone,o.place,o.company].concat(its.map(iname)).join(' '))}}
+function archImport(arr){if(!cloudCanWrite()||!Array.isArray(arr)||!arr.length)return Promise.resolve(0);
+  var main={};db.orders.forEach(function(o){main[oid(o)]=1});
+  var recs=arr.filter(function(x){return x&&x.order&&oid(x.order)&&!main[oid(x.order)]}).map(function(x){return archRecord(x.order,x.archivedAt)});
+  return archOpen().then(function(d){return new Promise(function(res,rej){var t=d.transaction('orders','readwrite'),s=t.objectStore('orders');recs.forEach(function(r){s.put(r)});t.oncomplete=function(){res(recs.length)};t.onerror=function(){rej(t.error)}})}).catch(function(){return 0})}
+
+/* ===== lib/cloud.js ===== */
+/* ---------- الحساب والحفظ في السحابة ----------
+   الخادم والجدول نفسيهما في التطبيق الحالي (emd_vaults وemd_vault_history).
+   في التجربة: تسجيل دخول مستقل (لا يمس جلسة التطبيق الحالي)، والقراءة من السحابة مسموحة،
+   أما الكتابة إلى السحابة فمتوقفة حتى لا تكتب التجربة فوق بياناتك الحقيقية. */
+var CLOUD_SANDBOX=true;   // يصبح false عند النشر
+var CL_URL='https://gpwgckwlcntvesnlptej.supabase.co',CL_KEY='sb_publishable_wklrs_Z4xZmdPJ2nJ0iLiw_UEdPOOQZ';
+var CK=CLOUD_SANDBOX?{session:'emd_rb_cloud_session',meta:'emd_rb_cloud_meta',base:'emd_rb_cloud_base',known:'emd_rb_cloud_known',times:'emd_rb_cloud_times'}
+                    :{session:'emd_v93_session_b',meta:'emd_v93_sync_b',base:'emd_v93_base_rb',known:'emd_v93_known_rb',times:'emd179_times'};
+var CL_LEGACY=['emd_business_local_snapshot_v85','emd_business_last_backup_v287','emd_business_v313_snapshot_v1','emd_inventory_v2_legacy_backup_v356','emd_v303_integrity_guard'];
+var CL_VERSION='R'+(document.title.match(/\d+/)||['1'])[0];
+function cloudCanWrite(){return !CLOUD_SANDBOX||window.__EMD_CLOUD_TEST===true}
+function cJ(k,d){try{var x=JSON.parse(lsGet(k)||'null');return x==null?d:x}catch(e){return d}}
+function cMeta(){return cJ(CK.meta,{})}
+function cSetMeta(p){var m=cMeta();Object.keys(p).forEach(function(k){m[k]=p[k]});lsSet(CK.meta,JSON.stringify(m))}
+function cDel(k){try{LS.removeItem(k)}catch(e){}}
+
+/* ===== البيانات التي تُحفظ: بيانات التطبيق + مفاتيح الإعدادات ===== */
+function clSynced(k){return k&&k.indexOf('emd')===0&&k.indexOf('emd_v66')!==0&&k.indexOf('emd_v93')!==0&&k.indexOf('emd_rb_')!==0&&CL_LEGACY.indexOf(k)<0&&k.indexOf('snooze')<0}
+function clCollect(){var keys={};for(var i=0;i<LS.length;i++){var k=LS.key(i);if(!clSynced(k)||k===LIVE_KEY)continue;var v=lsGet(k);if(v==null)continue;
+  if(k==='emd_business_ai_settings_v3201'){try{var a=JSON.parse(v);if(a&&a.apiKey){a.apiKey='';v=JSON.stringify(a)}}catch(e){}}keys[k]=v}
+  if(CLOUD_SANDBOX){var t=lsGet(CK.times);if(t)keys.emd179_times=t}
+  keys[LIVE_KEY]=JSON.stringify(db);return keys}
+function clHash(keys){var s='';Object.keys(keys).sort().forEach(function(k){s+=k+'\u0001'+keys[k]+'\u0002'});return fnv(s)}
+function clDataHash(keys){return fnv(String(keys[LIVE_KEY]||''))}
+function clCounts(keys){var d=null;try{d=JSON.parse(keys[LIVE_KEY]||'null')}catch(e){}d=d||{};return {orders:(d.orders||[]).length,products:(d.products||[]).length,customers:(d.customers||[]).length}}
+function clCnt(c){c=c||{};return nOrders(c.orders||0)+'، '+(c.products||0)+' منتج، '+(c.customers||0)+' عميل'}
+function clEmpty(c){c=c||{};return !((c.orders||0)+(c.products||0)+(c.customers||0))}
+function clKeyHashes(keys){var h={};Object.keys(keys).forEach(function(k){if(k!==LIVE_KEY&&k!=='emd179_times')h[k]=fnv(keys[k])});return h}
+/* نقطة البداية المشتركة تُحفظ كلما تطابق الجهاز مع السحابة */
+function clSetBase(keys){var d={};try{d=JSON.parse(keys[LIVE_KEY])}catch(e){}var b=syBase(d);b.u=cUid();b.k=clKeyHashes(keys);lsSet(CK.base,JSON.stringify(b))}
+function clBase(){var b=cJ(CK.base,null);return b&&b.u===cUid()?b:null}
+/* وقت آخر تعديل من المستخدم لكل حقل ولكل مفتاح، يسافر مع البيانات ليُعتمد الأحدث */
+var clPrevF=null;
+function clTouchDb(){var t=cJ(CK.times,{}),now=Date.now(),ch=false,f={};Object.keys(db).forEach(function(k){if(!SY_RECS[k])f[k]=hv(db[k])});
+  if(clPrevF)Object.keys(f).concat(Object.keys(clPrevF)).forEach(function(k){if(f[k]!==clPrevF[k]){t['db.'+k]=now;ch=true}});clPrevF=f;if(ch)lsSet(CK.times,JSON.stringify(t))}
+
+/* ===== الاتصال ===== */
+var CL_ERR={invalid_credentials:'البريد الإلكتروني أو كلمة المرور غير صحيحة.',email_not_confirmed:'يجب تأكيد بريدك الإلكتروني أولًا: افتح الرسالة التي وصلتك واضغط الرابط.',user_already_exists:'هذا البريد مسجّل من قبل. سجّل الدخول بدل إنشاء حساب.',email_exists:'هذا البريد مسجّل من قبل. سجّل الدخول بدل إنشاء حساب.',weak_password:'كلمة المرور ضعيفة: اجعلها 8 أحرف أو أكثر وفيها أرقام.',over_email_send_rate_limit:'أُرسلت رسائل كثيرة إلى هذا البريد. انتظر دقيقة ثم أعد المحاولة.',over_request_rate_limit:'محاولات كثيرة. انتظر قليلًا ثم أعد المحاولة.',validation_failed:'تحقق من البريد الإلكتروني وكلمة المرور.',same_password:'يجب أن تختلف كلمة المرور الجديدة عن القديمة.',email_address_invalid:'البريد الإلكتروني غير صحيح.'};
+function clErrText(j,s){j=j||{};var c=j.error_code||j.code||'',m=String(j.msg||j.error_description||j.message||j.error||'');
+  if(CL_ERR[c])return CL_ERR[c];if(/Invalid login/i.test(m))return CL_ERR.invalid_credentials;if(/not confirmed/i.test(m))return CL_ERR.email_not_confirmed;if(/already registered|already exists/i.test(m))return CL_ERR.user_already_exists;
+  if(/Password should|weak/i.test(m))return CL_ERR.weak_password;if(s===429)return CL_ERR.over_request_rate_limit;
+  if(s===401||s===403)return 'انتهت الجلسة. سجّل الدخول مرة أخرى.';return m||('خطأ من الخادم ('+s+')')}
+function clCall(path,o){o=o||{};var h={apikey:CL_KEY,'Content-Type':'application/json'};if(o.token)h.Authorization='Bearer '+o.token;if(o.prefer)h.Prefer=o.prefer;
+  return fetch(CL_URL+path,{method:o.method||'GET',headers:h,body:o.body!=null?JSON.stringify(o.body):undefined}).then(function(r){return r.text().then(function(t){var j=null;try{j=t?JSON.parse(t):null}catch(e){}
+    if(!r.ok){var e=new Error(clErrText(j,r.status));e.status=r.status;e.body=j;throw e}return j})},function(){var e=new Error('لا يوجد اتصال بالإنترنت، أو الخادم لا يستجيب.');e.net=true;throw e})}
+function cSession(){return cJ(CK.session,null)}
+function cSaveSession(j){if(!j||!j.access_token)return null;var s={access_token:j.access_token,refresh_token:j.refresh_token,expires_at:Date.now()+((+j.expires_in||3600)*1000),user:j.user?{id:j.user.id,email:j.user.email}:(cSession()||{}).user||null};lsSet(CK.session,JSON.stringify(s));return s}
+var clRefreshing=null;
+function cToken(){var s=cSession();if(!s)return Promise.reject(Object.assign(new Error('سجّل الدخول أولًا.'),{auth:true}));
+  if(s.expires_at-Date.now()>90000)return Promise.resolve(s.access_token);
+  if(!clRefreshing)clRefreshing=clCall('/auth/v1/token?grant_type=refresh_token',{method:'POST',body:{refresh_token:s.refresh_token}}).then(function(j){clRefreshing=null;return cSaveSession(j).access_token},function(e){clRefreshing=null;if(e.status&&e.status<500){cDel(CK.session);cloudPaint();e.auth=true}throw e});
+  return clRefreshing}
+function cUid(){var s=cSession();return s&&s.user&&s.user.id||''}
+function clSite(){return location.origin+location.pathname}
+var clAuth={
+  signIn:function(em,pw){return clCall('/auth/v1/token?grant_type=password',{method:'POST',body:{email:em,password:pw}}).then(cSaveSession)},
+  signUp:function(em,pw){return clCall('/auth/v1/signup?redirect_to='+encodeURIComponent(clSite()),{method:'POST',body:{email:em,password:pw}}).then(function(j){if(j&&j.access_token){cSaveSession(j);return {session:true}}return {session:false,user:j&&(j.user||j)}})},
+  recover:function(em){return clCall('/auth/v1/recover?redirect_to='+encodeURIComponent(clSite()),{method:'POST',body:{email:em}})},
+  resend:function(em){return clCall('/auth/v1/resend?redirect_to='+encodeURIComponent(clSite()),{method:'POST',body:{type:'signup',email:em}})},
+  setPassword:function(pw){return cToken().then(function(t){return clCall('/auth/v1/user',{method:'PUT',token:t,body:{password:pw}})})},
+  signOut:function(){var s=cSession();cDel(CK.session);cDel(CK.base);cSetMeta({lastHash:null,lastData:null,lastRemote:null,conflict:null});if(s)clCall('/auth/v1/logout',{method:'POST',token:s.access_token}).catch(function(){});cloudPaint()}};
+/* رابط التأكيد أو استرجاع كلمة المرور يعود إلى التطبيق ومعه الجلسة */
+var clLink={recovery:false,confirmed:false,error:''};
+function cloudReadHash(){var h=location.hash||'';if(h.indexOf('access_token=')<0&&h.indexOf('error')<0)return;var p={};
+  h.replace(/^#/,'').split('&').forEach(function(x){var i=x.indexOf('=');if(i>0)p[decodeURIComponent(x.slice(0,i))]=decodeURIComponent(x.slice(i+1).replace(/\+/g,' '))});
+  if(p.access_token){cSaveSession({access_token:p.access_token,refresh_token:p.refresh_token,expires_in:p.expires_in});if(p.type==='recovery')clLink.recovery=true;else clLink.confirmed=true;
+    clCall('/auth/v1/user',{token:p.access_token}).then(function(u){var s=cSession();if(s&&u){s.user={id:u.id,email:u.email};lsSet(CK.session,JSON.stringify(s));cloudPaint()}}).catch(function(){})}
+  else if(p.error||p.error_description)clLink.error=/expired|invalid/i.test(p.error_description||p.error_code||'')?'انتهت صلاحية الرابط أو استُخدم من قبل. اطلب رابطًا جديدًا.':(p.error_description||'تعذّر فتح الرابط.');
+  try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}}
+
+/* ===== الحفظ والدمج ===== */
+var cs={state:'idle',err:'',busy:false,merging:false};
+function cState(s,e){cs.state=s;cs.err=e||'';cloudPaint()}
+function clRemoteMeta(){return cToken().then(function(t){return clCall('/rest/v1/emd_vaults?select=updated_at,counts&user_id=eq.'+cUid(),{token:t})}).then(function(a){return a&&a[0]||null})}
+function clRemoteFull(){return cToken().then(function(t){return clCall('/rest/v1/emd_vaults?select=data,updated_at&user_id=eq.'+cUid(),{token:t})}).then(function(a){var r=a&&a[0];return r&&r.data&&r.data.keys&&r.data.keys[LIVE_KEY]?r:null})}
+function clToday(){var d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()}
+function cloudPush(force){
+  if(cs.busy||!cUid())return Promise.resolve(false);
+  var keys=clCollect(),h=clHash(keys),m=cMeta();if(!force&&h===m.lastHash)return Promise.resolve(false);
+  if(!cloudCanWrite()){cSetMeta({lastDry:Date.now()});cState('dry');return Promise.resolve(false)}
+  cs.busy=true;cState('saving');
+  return archAll().then(function(archive){var c=clCounts(keys),data={v:1,keys:keys,archive:archive},now=new Date().toISOString();c.h=clDataHash(keys);c.active=c.orders;c.archived=archive.length;c.orders=c.active+c.archived;
+    var body={user_id:cUid(),data:data,counts:c,updated_at:now,device:clDevice(),app_version:CL_VERSION};
+    return cToken().then(function(t){
+      /* الحفظ المشروط: لا نكتب فوق نسخة السحابة إلا إن كانت هي آخر نسخة رأيناها */
+      var up=m.lastRemote&&!force?clCall('/rest/v1/emd_vaults?user_id=eq.'+cUid()+'&updated_at=eq.'+encodeURIComponent(m.lastRemote),{method:'PATCH',token:t,prefer:'return=representation',body:body})
+        .then(function(rows){if(rows&&rows.length)return rows;throw Object.assign(new Error('changed'),{changed:true})})
+        :clCall('/rest/v1/emd_vaults?on_conflict=user_id',{method:'POST',token:t,prefer:'resolution=merge-duplicates,return=representation',body:body});
+      return up.then(function(rows){var row=rows&&rows[0]||{updated_at:now};cSetMeta({lastHash:h,lastData:clDataHash(keys),lastRemote:row.updated_at,lastPush:Date.now(),conflict:null});clSetBase(keys);
+        if(m.lastHist!==clToday()&&!clEmpty(c))return clCall('/rest/v1/emd_vault_history',{method:'POST',token:t,prefer:'return=minimal',body:{user_id:cUid(),data:data,counts:c}}).then(function(){cSetMeta({lastHist:clToday()});
+          var cut=new Date(Date.now()-30*864e5).toISOString();return clCall('/rest/v1/emd_vault_history?user_id=eq.'+cUid()+'&created_at=lt.'+encodeURIComponent(cut),{method:'DELETE',token:t}).catch(function(){})}).catch(function(){})})})
+  }).then(function(){cs.busy=false;cState('ok');return true},function(e){cs.busy=false;if(e.changed){cState('idle');return cloudMerge().then(function(){return false})}cState(e.net?'offline':'error',e.message);return false})}
+/* تطبيق نسخة كاملة من السحابة (عند عدم وجود تعديل محلي) */
+function clApply(row,label){var keys=row.data.keys,nd;try{nd=JSON.parse(keys[LIVE_KEY])}catch(e){return Promise.resolve(false)}
+  db=fix(nd);syPrime();lsSet(KEY,JSON.stringify(db));dirty();
+  if(cloudCanWrite()){Object.keys(keys).forEach(function(k){if(k===LIVE_KEY||k==='emd_business_ai_settings_v3201')return;lsSet(k,keys[k])});archImport(row.data.archive)}
+  else if(keys.emd179_times)lsSet(CK.times,keys.emd179_times);
+  var nk=clCollect();cSetMeta({lastRemote:row.updated_at,lastHash:clHash(nk),lastData:clDataHash(nk),conflict:null});clSetBase(nk);clPrevF=null;clTouchDb();
+  render();if(label)toast(label);return Promise.resolve(true)}
+function cloudPull(label){if(!cUid())return Promise.resolve(false);cState('saving');
+  return clRemoteFull().then(function(r){if(!r){cState('ok');return false}return clApply(r,label).then(function(x){cState('ok');return x})}).catch(function(e){cState(e.net?'offline':'error',e.message);return false})}
+/* تعديل هنا وتعديل في جهاز آخر: دمج على مستوى السجل ثم حفظ النتيجة */
+function cloudMerge(){if(cs.merging||!cUid())return Promise.resolve(false);cs.merging=true;cs.busy=true;cState('saving');var row=null;
+  return clRemoteFull().then(function(r){row=r;if(!r)throw new Error('no remote');return archAll()}).then(function(arch){
+    var keys=row.data.keys,remote=JSON.parse(keys[LIVE_KEY]),base=clBase(),tl=cJ(CK.times,{}),tr={};try{tr=JSON.parse(keys.emd179_times||'{}')||{}}catch(e){}
+    syStamp(db,cJ(CK.known,null));
+    var res=syMerge(db,remote,{base:base,archived:archIds(arch),times:{local:tl,remote:tr}});
+    db=fix(res.db);syPrime();lsSet(KEY,JSON.stringify(db));dirty();
+    if(cloudCanWrite()){var set=syMergeKeys(clCollect(),keys,base&&base.k,tl,tr);Object.keys(set).forEach(function(k){if(k===LIVE_KEY||k==='emd179_times')return;if(set[k]==null)cDel(k);else lsSet(k,set[k])})}
+    Object.keys(tr).forEach(function(k){if((+tr[k]||0)>(+tl[k]||0))tl[k]=tr[k]});lsSet(CK.times,JSON.stringify(tl));clPrevF=null;clTouchDb();
+    cSetMeta({lastRemote:row.updated_at,conflict:null});cs.merging=false;cs.busy=false;render();
+    var st=res.stats,n=st.added+st.updated+st.deleted+st.fields;if(st.renumbered.length)toast('☁️ أُنشئ طلب بالرقم نفسه في جهازك الآخر، فتغيّر رقم طلبك: '+st.renumbered.map(function(x){return x.from+' ← '+x.to}).join('، '));else if(n)toast('☁️ دُمج '+n+' تعديلًا من جهازك الآخر');
+    return cloudPush(true).then(function(){return true})})
+  .catch(function(e){cs.merging=false;cs.busy=false;cState(e&&e.net?'offline':'error',e&&e.message||'');return false})}
+/* الفحص: عند الفتح، والعودة إلى التطبيق، وكل 10 ثوانٍ مع الساعة */
+function cloudCheck(){if(!cUid()||cs.busy)return Promise.resolve();var m=cMeta(),keys=clCollect(),h=clHash(keys),lc=clCounts(keys);
+  return clRemoteMeta().then(function(r){
+    if(!r){if(!clEmpty(lc))return cloudPush(true);cState('ok');return}
+    if(r.counts&&r.counts.h&&r.counts.h===clDataHash(keys)){cSetMeta({lastRemote:r.updated_at,lastData:r.counts.h,lastHash:m.lastHash||h});if(m.lastHash&&h!==m.lastHash)return cloudPush();cState(cloudCanWrite()||!m.lastDry?'ok':'dry');return}
+    if(m.lastRemote&&r.updated_at===m.lastRemote){if(h!==m.lastHash)return cloudPush();cState('ok');return}
+    if(m.lastHash&&h===m.lastHash)return cloudPull('☁️ وصل تحديث من جهازك الآخر');
+    if(!m.lastHash&&clEmpty(lc))return cloudPull('☁️ استُرجعت بياناتك من السحابة');
+    return cloudMerge()}).catch(function(e){cState(e.net?'offline':'error',e.message)})}
+var clPushT=0;
+function cloudDirty(){clTouchDb();if(!cUid())return;clearTimeout(clPushT);clPushT=setTimeout(function(){cloudPush()},1500)}
+function cloudTick(){if(!cUid()||document.hidden||cs.busy)return;var a=document.activeElement;if(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName))return;cloudCheck()}
+function clDevice(){var u=navigator.userAgent;return /iPhone|iPad/.test(u)?'iPhone/iPad':/Android/.test(u)?(/Mobile/.test(u)?'جوال أندرويد':'جهاز لوحي أندرويد'):/Windows/.test(u)?'حاسوب Windows':/Mac/.test(u)?'Mac':'جهاز'}
+function clFmt(ts){if(!ts)return '—';var d=new Date(ts);return d.toLocaleDateString('ar-OM-u-nu-latn',{day:'numeric',month:'short'})+' · '+d.toLocaleTimeString('ar-OM-u-nu-latn',{hour:'numeric',minute:'2-digit'})}
+function clAgo(ts){if(!ts)return '';var m=Math.round((Date.now()-new Date(ts).getTime())/60000);if(m<1)return 'الآن';if(m<60)return 'قبل '+m+' د';var h=Math.round(m/60);if(h<24)return 'قبل '+h+' س';return 'قبل '+nDays(Math.round(h/24))}
+function nDays(n){return n===1?'يوم':n===2?'يومين':n<=10?n+' أيام':n+' يومًا'}
+function cloudBoot(){cloudReadHash();cloudPaint();
+  if(clLink.error)setTimeout(function(){cloudSheet('login');cloudMsg('err',clLink.error)},400);
+  else if(clLink.recovery)setTimeout(function(){cloudSheet('newpw')},400);
+  else if(clLink.confirmed)setTimeout(function(){toast('✅ تأكّد بريدك وأنت مسجّل الدخول');cloudCheck()},600);
+  else if(cUid())setTimeout(cloudCheck,1500);
+  document.addEventListener('visibilitychange',function(){if(!cUid())return;if(document.hidden){if(clHash(clCollect())!==cMeta().lastHash)cloudPush()}else cloudCheck()});
+  window.addEventListener('online',function(){if(cUid())cloudCheck()})}
 
 /* ===== screens/home-orders.js ===== */
 /* ---------- 4) العرض ---------- */
@@ -1023,6 +1310,81 @@ function closingTick(){
   openSheet('<div class="sh"><h3>🔔 حان وقت تقفيلة اليوم</h3><button class="x" data-act="close">إغلاق ✕</button></div><p class="note">راجع ملخص يومك وأرسله للمدير.</p><div class="foot"><button class="btn dark" data-act="closing">📊 فتح التقفيلة</button><button class="btn" data-act="close">لاحقًا</button></div>');
 }
 
+/* ===== screens/account.js ===== */
+/* ---------- نافذة الحساب والحفظ في السحابة ---------- */
+var clView='login',clEmail='',clBox=null;
+function cloudPaint(){var b=$('cloudChip');if(!b)return;var s=cSession(),m=cMeta(),t,c;
+  if(!s){t='☁️ الحساب';c='off'}
+  else if(cs.state==='saving'){t='⏳ جارٍ الحفظ…';c=''}
+  else if(cs.state==='dry'){t='☁️ متصل (تجربة)';c='ok'}
+  else if(cs.state==='offline'){t='📴 يُحفظ عند عودة الإنترنت';c='off'}
+  else if(cs.state==='error'){t='⚠️ لم يُحفظ';c='err'}
+  else{t='☁️ محفوظ'+(m.lastPush?' · '+clAgo(m.lastPush):'');c='ok'}
+  if(b.textContent!==t)b.textContent=t;b.className='cchip '+c;
+  var st=document.getElementById('clStatus');if(st)st.innerHTML=clStatusHtml()}
+function clStatusHtml(){var m=cMeta(),c=clCounts(clCollect());
+  return 'آخر حفظ في السحابة: <b>'+(m.lastPush?clFmt(m.lastPush):'لم يتم بعد')+'</b><br>على هذا الجهاز: '+clCnt(c)+(cs.err?'<br><span class="bad">'+esc(cs.err)+'</span>':'')}
+function clPw(id,label,ac){return '<label class="f" for="'+id+'">'+label+'</label><div class="pw"><input class="in" id="'+id+'" type="password" autocomplete="'+ac+'" minlength="8"><button type="button" class="eye" data-eye="'+id+'" aria-label="إظهار كلمة المرور">👁️</button></div>'}
+function clHead(t,sub,noX){return '<div class="sh"><div><h3>'+t+'</h3>'+(sub?'<small>'+sub+'</small>':'')+'</div>'+(noX?'':'<button class="x" data-act="close">إغلاق ✕</button>')+'</div>'}
+var CL_SBX_NOTE='<p class="note amb">🧪 في التجربة: تسجيل الدخول هنا مستقل عن تطبيقك، ويمكنك قراءة نسختك في السحابة وجلبها إلى التجربة، لكن التجربة لا تكتب شيئًا في السحابة.</p>';
+function clHtml(){var v=clView,h='';
+  if(v==='login'||v==='signup'){var su=v==='signup';
+    h=clHead('☁️ حسابك في EMD Business','بحساب واحد تُحفظ بياناتك في السحابة تلقائيًا، وتفتحها من أي جهاز.')+(CLOUD_SANDBOX?CL_SBX_NOTE:'')+
+      '<div class="chips"><button type="button" class="chip'+(su?'':' on')+'" data-cv="login">تسجيل الدخول</button><button type="button" class="chip'+(su?' on':'')+'" data-cv="signup">حساب جديد</button></div>'+
+      '<form id="clForm"><label class="f" for="clEmail">البريد الإلكتروني</label><input class="in" id="clEmail" type="email" inputmode="email" autocomplete="email" placeholder="name@example.com" dir="ltr" value="'+esc(clEmail)+'">'+
+      clPw('clPw','كلمة المرور'+(su?' (8 أحرف أو أكثر)':''),su?'new-password':'current-password')+(su?clPw('clPw2','أعد كتابة كلمة المرور','new-password'):'')+
+      '<div class="foot"><button type="submit" class="btn dark" data-ck="go">'+(su?'إنشاء الحساب':'دخول')+'</button></div></form>'+
+      (su?'':'<button type="button" class="lnk" data-cv="forgot">نسيت كلمة المرور؟</button>')+'<div class="cmsg" id="clMsg"></div>'+
+      '<p class="note">🔒 بياناتك محفوظة في حسابك، ولا يستطيع غيرك الاطلاع عليها.</p>'}
+  else if(v==='sent')h=clHead('📧 أكّد بريدك الإلكتروني','')+'<p class="note">أرسلنا رابط تأكيد إلى <b dir="ltr">'+esc(clEmail)+'</b>. افتح الرسالة واضغط الرابط، فتعود إلى التطبيق وأنت مسجّل الدخول.</p><p class="note">إن لم تصلك فابحث في مجلد الرسائل غير المرغوب فيها، أو أعد الإرسال.</p><div class="list"><button data-ck="resend">📨 إعادة إرسال الرابط</button><button data-cv="login">أكّدت بريدي، أريد تسجيل الدخول</button></div><div class="cmsg" id="clMsg"></div>';
+  else if(v==='forgot')h=clHead('🔑 نسيت كلمة المرور','نرسل إلى بريدك رابطًا تختار منه كلمة مرور جديدة.')+'<form id="clForm"><label class="f" for="clEmail">البريد الإلكتروني</label><input class="in" id="clEmail" type="email" dir="ltr" value="'+esc(clEmail)+'"><div class="foot"><button type="submit" class="btn dark" data-ck="go">أرسل الرابط</button></div></form><button type="button" class="lnk" data-cv="login">العودة إلى تسجيل الدخول</button><div class="cmsg" id="clMsg"></div>';
+  else if(v==='newpw'||v==='chpw')h=clHead('🔑 '+(v==='newpw'?'كلمة مرور جديدة':'تغيير كلمة المرور'),'',v==='newpw')+'<form id="clForm">'+clPw('clPw','كلمة المرور الجديدة','new-password')+clPw('clPw2','أعد كتابتها','new-password')+'<div class="foot"><button type="submit" class="btn dark" data-ck="go">حفظ</button></div></form>'+(v==='chpw'?'<button type="button" class="lnk" data-cv="account">رجوع</button>':'')+'<div class="cmsg" id="clMsg"></div>';
+  else if(v==='account'){var s=cSession()||{};
+    h=clHead('☁️ حسابك','')+(CLOUD_SANDBOX?CL_SBX_NOTE:'')+'<div class="card"><div>الحساب: <b dir="ltr">'+esc(s.user&&s.user.email||'')+'</b></div><div id="clStatus" class="note" style="margin:6px 0 0">'+clStatusHtml()+'</div><div id="clRemote" class="note" style="margin:6px 0 0"></div></div>'+
+      '<div class="list">'+(CLOUD_SANDBOX?'<button data-ck="fetch">⬇️ جلب نسختي من السحابة إلى التجربة</button>':'<button data-ck="now">☁️ احفظ الآن</button>')+
+      '<button data-cv="hist">🕘 النسخ السابقة في السحابة</button><button data-cv="chpw">🔑 تغيير كلمة المرور</button><button data-ck="out">🚪 تسجيل الخروج</button></div>'+
+      '<p class="note">الحفظ تلقائي بعد كل تعديل، وتُحفظ كل يوم نسخة كاملة يمكنك الرجوع إليها لمدة 30 يومًا.</p><div class="cmsg" id="clMsg"></div>'}
+  else if(v==='hist')h=clHead('🕘 النسخ السابقة','اختر نسخة للرجوع إليها.')+'<div class="list" id="clHist"><p class="note">جارٍ التحميل…</p></div><button type="button" class="lnk" data-cv="account">رجوع</button><div class="cmsg" id="clMsg"></div>';
+  return h}
+function cloudMsg(k,t){var e=clBox&&clBox.querySelector('#clMsg');if(e){e.className='cmsg show '+k;e.textContent=t}}
+function clPaintSheet(){if(!clBox||!clBox.parentNode)return;clBox.querySelector('.box').innerHTML=clHtml();
+  if(clView==='hist')clLoadHist();if(clView==='account')clLoadRemote()}
+function cloudSheet(v){clView=v||(cSession()?'account':'login');if(clBox&&clBox.parentNode)closeSheet(clBox);clBox=openSheet(clHtml(),'cloud');
+  clBox.addEventListener('click',clClick);clBox.addEventListener('submit',function(e){e.preventDefault();var g=clBox.querySelector('[data-ck=go]');if(g)g.click()});
+  if(clView==='hist')clLoadHist();if(clView==='account')clLoadRemote()}
+function clVal(id){var e=clBox&&clBox.querySelector('#'+id);return e?String(e.value||'').trim():''}
+function clBusy(on){var g=clBox&&clBox.querySelector('[data-ck=go]');if(!g)return;g.disabled=on;if(on){g.dataset.t=g.textContent;g.textContent='⏳ لحظة…'}else if(g.dataset.t)g.textContent=g.dataset.t}
+function clAfterLogin(){cDel(CK.base);cSetMeta({lastHash:null,lastData:null,lastRemote:null});clView='account';clPaintSheet();cloudPaint();return cloudCheck()}
+function clClick(e){var eye=e.target.closest('[data-eye]');if(eye){var i=clBox.querySelector('#'+eye.dataset.eye);if(i){var sh=i.type==='password';i.type=sh?'text':'password';eye.textContent=sh?'🙈':'👁️'}return}
+  var b=e.target.closest('button');if(!b)return;var v=b.dataset.cv,k=b.dataset.ck;
+  if(v){clEmail=clVal('clEmail')||clEmail;clView=v;clPaintSheet();return}
+  if(k==='go'){e.preventDefault();var vw=clView;
+    if(vw==='login'||vw==='signup'||vw==='forgot'){clEmail=clVal('clEmail').toLowerCase();if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(clEmail)){cloudMsg('err','اكتب بريدًا إلكترونيًا صحيحًا.');return}}
+    if(vw==='login'){var pw=clVal('clPw');if(!pw){cloudMsg('err','اكتب كلمة المرور.');return}clBusy(true);clAuth.signIn(clEmail,pw).then(function(){clBusy(false);toast('✅ تم تسجيل الدخول');return clAfterLogin()}).catch(function(x){clBusy(false);cloudMsg('err',x.message)});return}
+    if(vw==='forgot'){clBusy(true);clAuth.recover(clEmail).then(function(){clBusy(false);cloudMsg('ok','📧 إن كان البريد مسجّلًا فسيصلك رابط خلال دقيقة. افتحه من الجهاز نفسه.')}).catch(function(x){clBusy(false);cloudMsg('err',x.message)});return}
+    var p1=clVal('clPw'),p2=clVal('clPw2');
+    if(p1.length<8){cloudMsg('err','يجب أن تكون كلمة المرور 8 أحرف أو أكثر.');return}if(!/\d/.test(p1)||!/\D/.test(p1)){cloudMsg('err','اجعل كلمة المرور تجمع بين الحروف والأرقام.');return}if(p1!==p2){cloudMsg('err','كلمتا المرور غير متطابقتين.');return}
+    clBusy(true);
+    if(vw==='signup'){clAuth.signUp(clEmail,p1).then(function(r){clBusy(false);if(r.session)return clAfterLogin();if(r.user&&Array.isArray(r.user.identities)&&!r.user.identities.length){cloudMsg('err',CL_ERR.user_already_exists);return}clView='sent';clPaintSheet()}).catch(function(x){clBusy(false);cloudMsg('err',x.message)});return}
+    clAuth.setPassword(p1).then(function(){clBusy(false);if(vw==='newpw'){closeSheet(clBox);cloudCheck();toast('✅ تغيّرت كلمة المرور وأنت مسجّل الدخول')}else cloudMsg('ok','✅ تغيّرت كلمة المرور.')}).catch(function(x){clBusy(false);cloudMsg('err',x.message)});return}
+  if(k==='resend'){clAuth.resend(clEmail).then(function(){cloudMsg('ok','📨 أعدنا إرسال الرابط.')}).catch(function(x){cloudMsg('err',x.message)});return}
+  if(k==='now'){cloudMsg('info','⏳ جارٍ الحفظ…');cloudPush(true).then(function(ok){if(ok)cloudMsg('ok','✅ حُفظت بياناتك في السحابة.');else if(cs.err)cloudMsg('err',cs.err)});return}
+  if(k==='fetch'){if(!confirm('جلب نسختك من السحابة إلى التجربة؟\nتُستبدل بيانات التجربة الحالية، ولا يتغير شيء في تطبيقك أو في السحابة.'))return;cloudMsg('info','⏳ جارٍ الجلب…');
+    cloudPull('☁️ جُلبت نسختك من السحابة إلى التجربة').then(function(ok){meta={source:'cloud',at:new Date().toISOString()};lsSet(META,JSON.stringify(meta));banner();if(ok)closeSheet(clBox);else cloudMsg('err',cs.err||'لا توجد نسخة في السحابة لهذا الحساب.')});return}
+  if(k==='out'){if(!confirm('تسجيل الخروج من حسابك؟\nتبقى بياناتك على هذا الجهاز، ويتوقف الحفظ في السحابة حتى تسجّل الدخول.'))return;var go=function(){clAuth.signOut();closeSheet(clBox);toast('تم تسجيل الخروج')};cloudPush().then(go,go);return}
+  var hid=b.dataset.hist;if(hid){clRestore(hid,b.dataset.label)}}
+function clLoadRemote(){var box=clBox&&clBox.querySelector('#clRemote');if(!box)return;
+  clRemoteMeta().then(function(r){if(!box.isConnected)return;box.innerHTML=r?'في السحابة: '+clCnt(r.counts)+' · آخر تعديل '+esc(clFmt(r.updated_at))+(r.device?' من '+esc(r.device):''):'لا توجد نسخة في السحابة بعد.'}).catch(function(e){if(box.isConnected)box.textContent=e.message})}
+function clLoadHist(){var box=clBox&&clBox.querySelector('#clHist');
+  cToken().then(function(t){return clCall('/rest/v1/emd_vault_history?select=id,created_at,counts&user_id=eq.'+cUid()+'&order=created_at.desc&limit=30',{token:t})}).then(function(a){if(!box)return;
+    if(!a||!a.length){box.innerHTML='<p class="note">لا توجد نسخ سابقة بعد. تُحفظ أول نسخة اليوم.</p>';return}
+    box.innerHTML=a.map(function(r){return '<button data-hist="'+esc(r.id)+'" data-label="'+esc(clFmt(r.created_at))+'">'+esc(clFmt(r.created_at))+' <small class="mute">'+esc(clCnt(r.counts))+'</small></button>'}).join('')})
+  .catch(function(e){if(box)box.innerHTML='<p class="note bad">'+esc(e.message)+'</p>'})}
+function clRestore(id,label){if(!confirm('الرجوع إلى نسخة '+label+'؟'+(CLOUD_SANDBOX?'\nتُستبدل بيانات التجربة فقط.':'\nتُحفظ بياناتك الحالية في النسخ السابقة قبلها.')))return;cloudMsg('info','⏳ جارٍ الاسترجاع…');
+  cToken().then(function(t){return clCall('/rest/v1/emd_vault_history?select=data&id=eq.'+encodeURIComponent(id),{token:t})}).then(function(a){if(!a||!a[0])throw new Error('النسخة غير موجودة.');
+    return clApply({data:a[0].data,updated_at:cMeta().lastRemote},'☁️ رجعتَ إلى نسخة '+label).then(function(){cSetMeta({lastHash:'restored'});if(cloudCanWrite())cloudPush(true);closeSheet(clBox)})})
+  .catch(function(e){cloudMsg('err',e.message)})}
+
 /* ===== screens/products.js ===== */
 function productsHtml(){
   var q=normTxt(state.pq||''),list=db.products.filter(function(p){return !q||normTxt([p.name,p.category,p.code,p.barcode].join(' ')).indexOf(q)>=0});
@@ -1138,11 +1500,11 @@ function settingsSheet(){
   openSheet('<div class="sh"><h3>⚙️ إعدادات التجربة</h3><button class="x" data-act="close">إغلاق ✕</button></div>'+
     '<p class="note">هذه نسخة تجريبية من التطبيق الجديد. مصدر البيانات الحالي: <b>'+esc(srcLabel())+'</b>. تعديلاتك هنا تبقى داخل التجربة فقط ولا تصل إلى تطبيقك الأصلي.</p><div class="list">'+
     (live?'<button data-act="recopy">🔁 إعادة نسخ بياناتي من التطبيق الحالي</button>':'')+
-    '<button data-act="openFile">📂 فتح ملف نسخة احتياطية</button>'+
+    '<button data-act="cloud">☁️ الحساب والحفظ في السحابة</button><button data-act="openFile">📂 فتح ملف نسخة احتياطية</button>'+
     '<button data-act="demo" data-n="40">🧪 بيانات تجريبية صغيرة (40 طلبًا)</button>'+
     '<button data-act="demo" data-n="1500">⚡ بيانات كبيرة لاختبار السرعة (1500 طلب)</button></div>');
 }
-function srcLabel(){var s=meta.source||'';return s==='live'?'نسخة من بيانات تطبيقك':s.indexOf('file:')===0?'ملف '+s.slice(5):s.indexOf('demo')===0?'بيانات تجريبية':'—'}
+function srcLabel(){var s=meta.source||'';return s==='live'?'نسخة من بيانات تطبيقك':s==='cloud'?'نسختك في السحابة':s.indexOf('file:')===0?'ملف '+s.slice(5):s.indexOf('demo')===0?'بيانات تجريبية':'—'}
 function recopy(){
   var live=lsGet(LIVE_KEY);if(!live)return;
   if(!confirm('سيتم استبدال بيانات التجربة بنسخة جديدة من بيانات تطبيقك. تطبيقك نفسه لن يتغير. متابعة؟'))return;
@@ -1225,6 +1587,7 @@ document.addEventListener('click',function(e){
     case 'cWa':{var cc=custByKey(ck(b));if(cc)waOpen({phone:cc.phone,name:cc.name,status:'x',products:[]},true);break}
     case 'cNew':{var cn=custByKey(ck(b));closeSheet();newOrder();if(cn){$('fPhone').value=cn.phone;$('fName').value=cn.name||'';$('fPlace').value=cn.place||'';$('fPlace').dispatchEvent(new Event('input',{bubbles:true}))}break}
     case 'cAll':{var ca=custByKey(ck(b));closeSheet();state.view='orders';state.filter='all';state.q=ca?phoneKey(ca.phone):'';state.limit=30;render();window.scrollTo(0,0);break}
+    case 'cloud':closeSheetIfMenu(b);cloudSheet();break;
     case 'closing':var cs=b.closest('.sheet');if(cs)closeSheet(cs);closingSheet();break;
     case 'prepNow':state.view='prep';state.sel={};render();window.scrollTo(0,0);break;
     case 'moreSheet':moreSheet();break;
@@ -1265,13 +1628,13 @@ function welcome(){
 function boot(){
   if(!db){var live=lsGet(LIVE_KEY);if(load()){}else if(live&&!meta.source){try{adopt(JSON.parse(live),'live')}catch(e){}}}
   if(!db)return welcome();
-  db=fix(db);dirty();banner();
+  db=fix(db);dirty();syPrime();banner();
   var sn=storeName();if(sn)$('storeName').textContent=sn;
   render();
 }
-boot();
-setInterval(function(){if(!$('sheets').children.length)closingTick();if(state.view==='home'&&!$('sheets').children.length){var c=document.querySelector('.clock');if(c){var n=new Date(),h=n.getHours();c.innerHTML=(h%12||12)+':'+pad(n.getMinutes())+' <span>'+(h<12?'ص':'م')+'</span>'}}},30000);
-window.EMDRebuild={db:function(){return db},index:index,total:total,payState:payState,status:status};
+boot();cloudBoot();
+setInterval(function(){cloudTick();if(!$('sheets').children.length)closingTick();if(state.view==='home'&&!$('sheets').children.length){var c=document.querySelector('.clock');if(c){var n=new Date(),h=n.getHours();c.innerHTML=(h%12||12)+':'+pad(n.getMinutes())+' <span>'+(h<12?'ص':'م')+'</span>'}}},10000);
+window.EMDRebuild={db:function(){return db},save:save,cloudCheck:cloudCheck,index:index,total:total,payState:payState,status:status};
 
 })();
 </script>
