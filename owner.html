@@ -143,7 +143,7 @@ body{padding-top:env(safe-area-inset-top)}
   <div id="dash" class="hide">
     <header>
       <h1>لوحة صاحب التطبيق<small id="asof">EMD Business</small></h1>
-      <div class="btns"><button class="b inst hide" id="inst" type="button">📲 ثبّت التطبيق</button><button class="b" id="mfaBtn" type="button">🔐 التحقق الثنائي</button><button class="b" id="refresh" type="button">↻ تحديث</button><button class="b" id="out" type="button">خروج</button></div>
+      <div class="btns"><button class="b inst hide" id="inst" type="button">📲 ثبّت التطبيق</button><button class="b" id="mfaBtn" type="button">🔐 التحقق الثنائي</button><button class="b" id="bkBtn" type="button">💾 نسخة احتياطية</button><button class="b" id="refresh" type="button">↻ تحديث</button><button class="b" id="out" type="button">خروج</button></div>
     </header>
     <nav class="tabs" role="tablist"><button type="button" data-t="stats" class="on">📊 الإحصائيات</button><button type="button" data-t="support">🎫 الدعم<span class="cnt" id="tcount"></span></button><button type="button" data-t="guard">🛡️ الحماية<span class="cnt" id="gcount"></span></button><button type="button" data-t="books">💰 حساباتي</button></nav>
 
@@ -427,6 +427,16 @@ $('mfaBtn').addEventListener('click',function(){var B=$('mfaBody');mmsg('');B.in
       $('mfaOk').addEventListener('click',function(){var c=$('mfaCode').value.replace(/\D/g,'');if(c.length!==6){mmsg('اكتب 6 أرقام.');return}var g=this;g.disabled=true;
         verifyCode(f.id,c).then(function(){B.innerHTML='<p>✅ تم التفعيل. من الآن يُطلب رمز التحقق عند كل دخول جديد إلى لوحة المالك. احتفظ بتطبيق المصادقة على جوالك.</p>';mmsg('')}).catch(function(e){g.disabled=false;mmsg(codeErr(e))})});
     })}).catch(function(e){B.innerHTML='';mmsg(e.message)})});
+/* ===== V232 (EMD-V232): نسخة احتياطية خارجية تنزل إلى جهاز المالك ===== */
+$('bkBtn').addEventListener('click',function(){var g=this,old=g.textContent;if(g.disabled)return;g.disabled=true;g.textContent='⏳ أجهّز النسخة…';
+  Promise.all([rpc('emd_owner_backup'),gcall({action:'backup'})]).then(function(r){
+    var d=new Date(),day=d.toISOString().slice(0,10),doc={app:'EMD Business',kind:'full-backup',made_at:d.toISOString(),accounts:r[0],store:r[1].backup};
+    var name='EMD-backup-'+day+'.json',txt=JSON.stringify(doc),f=null;try{f=new File([txt],name,{type:'application/json'})}catch(e){}
+    var mb=(txt.length/1048576).toFixed(1);
+    if(f&&navigator.canShare&&navigator.canShare({files:[f]})){return navigator.share({files:[f],title:name}).then(function(){alert('✅ تم تجهيز النسخة ('+mb+' ميغابايت). احفظها في Google Drive.')},function(){})}
+    var a=document.createElement('a'),u=URL.createObjectURL(new Blob([txt],{type:'application/json'}));a.href=u;a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(u);a.remove()},4000);
+    alert('✅ نزل الملف '+name+' ('+mb+' ميغابايت). ارفعه إلى Google Drive.');
+  }).catch(function(e){alert('تعذّر تجهيز النسخة: '+(/mfa|not allowed/i.test(e.message)?'سجّل الدخول من جديد برمز التحقق.':e.message))}).then(function(){g.disabled=false;g.textContent=old})});
 if(J(SKEY))gate();else showLogin('');
 })();
 </script>
