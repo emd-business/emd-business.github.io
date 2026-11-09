@@ -16941,6 +16941,29 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 .emd317-open.soft{background:rgba(255,255,255,.12);color:#fff;font-weight:600}
 .emd317-more{display:block;width:100%;border:1px dashed rgba(201,162,74,.45);background:none;color:#e8cf8f;border-radius:12px;padding:9px;font-size:13px;cursor:pointer;font-family:inherit}
 .emd317-empty{text-align:center;padding:34px 12px;color:#9fb0cc;border:1px dashed rgba(255,255,255,.15);border-radius:15px}
+/* الوضع الفاتح */
+.emd317-mode{width:36px;height:36px;border-radius:50%;border:0;background:rgba(255,255,255,.1);color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.emd317-hbtns{display:flex;gap:8px}
+#emdNotifyV317.light .emd317-panel{background:#fff;color:#152033}
+#emdNotifyV317.light .emd317-top{background:#fff;border-bottom-color:#e9edf2}
+#emdNotifyV317.light .emd317-head h2{color:#0f1f3d}#emdNotifyV317.light .emd317-head h2 em{color:#b48a2c}
+#emdNotifyV317.light .emd317-x,#emdNotifyV317.light .emd317-mode{background:#eef1f5;color:#152033}
+#emdNotifyV317.light .emd317-summary{border-color:#ead9a8;background:#fbf7ec}
+#emdNotifyV317.light .emd317-card{border-left-color:#ead9a8}
+#emdNotifyV317.light .emd317-card b{color:#0f1f3d}#emdNotifyV317.light .emd317-card span{color:#6b7686}
+#emdNotifyV317.light .emd317-tab{color:#6b7686}#emdNotifyV317.light .emd317-tab.active{color:#0f1f3d}
+#emdNotifyV317.light .emd317-tab sup{color:#b48a2c}
+#emdNotifyV317.light .emd317-list{background:#f5f6f8}
+#emdNotifyV317.light .emd317-gh b{color:#152033}#emdNotifyV317.light .emd317-gh b i{background:#e6eaf0;color:#6b7686}#emdNotifyV317.light .emd317-gh b i.r{background:#d64545;color:#fff}
+#emdNotifyV317.light .emd317-gh button{color:#2f6bd8}
+#emdNotifyV317.light .emd317-item{background:#fff;border:1px solid #e9edf2}
+#emdNotifyV317.light .emd317-icon{background:#fff4dc}
+#emdNotifyV317.light .emd317-title{color:#152033}#emdNotifyV317.light .emd317-title .nw{background:#c9a24a}
+#emdNotifyV317.light .emd317-detail{color:#6b7686}#emdNotifyV317.light .emd317-meta{color:#98a1af}
+#emdNotifyV317.light .emd317-open{background:#0f1f3d;color:#fff}
+#emdNotifyV317.light .emd317-open.soft{background:#eef1f5;color:#152033}
+#emdNotifyV317.light .emd317-more{border-color:#d9c48f;color:#8a6d22;background:#fff}
+#emdNotifyV317.light .emd317-empty{color:#6b7686;border-color:#dfe4ea;background:#fff}
 @media(max-width:700px){#emdNotifyV317{padding:8px;align-items:flex-end}.emd317-panel{max-height:94vh;border-radius:22px 22px 18px 18px}}
 </style>
 <div id="emdNotifyV317" aria-hidden="true">
@@ -16948,7 +16971,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     <div class="emd317-top">
       <div class="emd317-head">
         <h2>🔔 مركز <em>التنبيهات</em></h2>
-        <button type="button" class="emd317-x" id="emdNotifyCloseV317" aria-label="إغلاق">✕</button>
+        <div class="emd317-hbtns"><button type="button" class="emd317-mode" id="emdNotifyModeV233" aria-label="تبديل الوضع الفاتح والداكن" title="فاتح / داكن">☀️</button><button type="button" class="emd317-x" id="emdNotifyCloseV317" aria-label="إغلاق">✕</button></div>
       </div>
       <div class="emd317-summary" id="emdNotifySummaryV317"></div>
       <div class="emd317-tabs" id="emdNotifyTabsV317"></div>
@@ -17023,7 +17046,8 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   function summary(){var box=document.getElementById('emdNotifySummaryV317');if(!box)return;var a=state.items,high=a.filter(function(x){return x.priority==='high'}).length,nw=a.filter(function(x){return x.unread}).length;box.innerHTML=[['high','عاجل',high],['customer','جديد',nw],['all','الإجمالي',a.length]].map(function(x){return '<button type="button" class="emd317-card" data-filter="'+x[0]+'"><b>'+x[2]+'</b><span>'+esc(x[1])+'</span></button>'}).join('');box.querySelectorAll('[data-filter]').forEach(function(b){b.onclick=function(){state.filter=b.getAttribute('data-filter');render()}})}
   function tabs(){var box=document.getElementById('emdNotifyTabsV317');if(!box)return;var high=state.items.filter(function(x){return x.priority==='high'}).length;var defs=[['all','الكل',state.items.length],['high','عاجل',high]].concat(O33.filter(function(t){return cnt33(t)||state.filter===t}).map(function(t){return [t,T33[t],cnt33(t)]}));box.innerHTML=defs.map(function(d){return '<button type="button" class="emd317-tab '+(state.filter===d[0]?'active':'')+'" data-filter="'+d[0]+'">'+esc(d[1])+'<sup>'+d[2]+'</sup></button>'}).join('');box.querySelectorAll('[data-filter]').forEach(function(b){b.onclick=function(){state.filter=b.getAttribute('data-filter');render();try{b.scrollIntoView({inline:'center',block:'nearest'})}catch(e){}}});var on=box.querySelector('.active');if(on&&on.scrollIntoView&&state.filter!=='all'){try{on.scrollIntoView({inline:'center',block:'nearest'})}catch(e){}}}
   function item33(x){var btn=x.ref&&x.type!=='inventory'?'<button type="button" class="emd317-open'+(String(x.ref).indexOf('store:')===0?'':' soft')+'" data-open="'+esc(x.ref)+'">'+(String(x.ref).indexOf('store:')===0?'فتح الطلب':'فتح')+'</button>':'';return '<div class="emd317-item'+(x.priority==='high'?' urg':'')+'"><div class="emd317-icon">'+x.icon+'</div><div class="emd317-body"><div class="emd317-title">'+(x.unread?'<i class="nw"></i>':'')+esc(ttl33(x.title))+'</div><div class="emd317-detail">'+esc(x.detail)+'</div><div class="emd317-meta">'+esc(x.meta||(x.priority==='high'?'يحتاج انتباهًا':'متابعة'))+'</div></div>'+btn+'</div>'}
-  function render(){build();if(state.filter!==last33){more33={};last33=state.filter;var pn=document.querySelector('#emdNotifyV317 .emd317-panel');if(pn)pn.scrollTop=0}summary();tabs();var box=document.getElementById('emdNotifyListV317');if(!box)return;var f=state.filter,h='';
+  function mode33(set){var m=document.getElementById('emdNotifyV317'),b=document.getElementById('emdNotifyModeV233');var v='dark';try{v=localStorage.getItem('emd233_notify_mode')||'dark'}catch(e){}if(set){v=v==='dark'?'light':'dark';try{localStorage.setItem('emd233_notify_mode',v)}catch(e){}}if(m)m.classList.toggle('light',v==='light');if(b){b.textContent=v==='light'?'🌙':'☀️';b.onclick=function(){mode33(1)}}}
+  function render(){mode33();build();if(state.filter!==last33){more33={};last33=state.filter;var pn=document.querySelector('#emdNotifyV317 .emd317-panel');if(pn)pn.scrollTop=0}summary();tabs();var box=document.getElementById('emdNotifyListV317');if(!box)return;var f=state.filter,h='';
     var types=(f==='all'||f==='high')?O33:[f];
     types.forEach(function(t){var l=state.items.filter(function(x){return x.type===t&&(f!=='high'||x.priority==='high')});if(!l.length)return;var single=(f===t),lim=more33[t]||(single?20:3),uc=l.filter(function(x){return x.priority==='high'}).length;
       h+='<div class="emd317-grp"><div class="emd317-gh"><b>'+esc(G33[t]||t)+'<i class="'+(uc?'r':'')+'">'+l.length+'</i></b>'+(!single&&l.length>3?'<button type="button" data-filter="'+t+'">عرض الكل ‹</button>':'')+'</div>'+l.slice(0,lim).map(item33).join('')+(l.length>lim?'<button type="button" class="emd317-more" data-more="'+t+'" data-lim="'+lim+'">عرض المزيد ('+(l.length-lim)+' متبقية)</button>':'')+'</div>'});
