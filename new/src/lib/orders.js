@@ -20,7 +20,7 @@ function cphone(o){return String(o.phone||o.customerPhone||o.whatsapp||o.custome
 function cplace(o){return String(o.place||o.location||o.deliveryLocation||o.address||'').trim()}
 function odate(o){var t=new Date(o.orderDate||o.created||o.createdAt||o.date||o.timestamp||0);return isNaN(t)||t.getTime()<=0?null:t}
 function firstPos(a){for(var i=0;i<a.length;i++){var v=num(a[i]);if(v>0)return v}return 0}
-function prefix(){var p=String(lsGet('emd_v129_order_prefix')||'EMD').replace(/[^A-Za-z0-9]/g,'').toUpperCase();return p||'EMD'}
+function prefix(){var p=String(POS_LS.getItem('emd_v129_order_prefix')||'EMD').replace(/[^A-Za-z0-9]/g,'').toUpperCase();return p||'EMD'}
 function idsFmt(s){return typeof s==='string'&&s.indexOf('#')>=0?s.replace(/#{1,2}(\d{3,7})(?!\d)/g,function(m,d){return prefix()+'-'+d}):s}
 function onum(o){var r=oid(o).replace(/^#/,'');return /^\d+$/.test(r)?prefix()+'-'+r:r||'—'}
 

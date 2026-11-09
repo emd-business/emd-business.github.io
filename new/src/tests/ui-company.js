@@ -4,7 +4,7 @@ const {chromium}=require('playwright');
 await ctx.route('https://pfkstppvnebagbdckgbu.supabase.co/**',r=>{calls.push(r.request().url());r.fulfill({status:200,contentType:'application/json',body:'{"ok":true}'})});
 const p=await ctx.newPage();p.on('pageerror',e=>errs.push(e.message));p.on('dialog',d=>d.accept());
 await p.goto('http://localhost:8131/index.html');await p.waitForTimeout(300);await p.click('[data-act=demo][data-n="40"]');await p.waitForTimeout(300);
-await p.click('nav#bar [data-act=moreSheet]');await p.click('.sheet [data-act=settings]');await p.waitForTimeout(150);await p.click('.sheet [data-act=modes]');await p.waitForTimeout(500);
+await p.click('nav#bar [data-act=moreSheet]');await p.click('.sheet [data-act=settings]');await p.waitForTimeout(150);await p.click('#setHub [data-act=modes]');await p.waitForTimeout(500);
 await p.click('#emd416 [data-pick=company]');await p.waitForTimeout(150);await p.click('#emd416 [data-a=confirm]');await p.waitForTimeout(2500);
 console.log('after switch: reload/open?',await p.evaluate(()=>[!!window.EMDCoV430,document.body.getAttribute('data-emd416m')]));
 await p.reload();await p.waitForTimeout(2500);

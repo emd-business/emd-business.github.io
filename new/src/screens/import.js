@@ -19,7 +19,7 @@ function doParse(){
   lastMsg=raw;
   loadParser().then(function(P){
     P.setup({prods:function(){return db.products},lk:'emd_rb_learn232',ak:'emd_rb_learn103'});
-    var r=P.parse(raw);
+    var r=P.parse(parseClean(raw)); // تنظيف V120 كما في التطبيق الحالي
     var its=r.items.map(function(x){var p=x.p?product(x.p):null;return x.p?{name:x.p,qty:x.q,unitPrice:catPrice(p),parsed:1}:{name:'',qty:x.q,raw:x.raw,opts:x.opts,parsed:1}});
     var pre={name:r.name,phone:r.phone,place:r.place,company:r.company,method:r.method,paymentMethod:r.pay,note:r.note,products:its,paymentStatus:'unpaid'};
     var c=r.phone&&custByKey(phoneKey(r.phone));

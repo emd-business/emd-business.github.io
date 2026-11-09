@@ -6,7 +6,7 @@ await p.goto('http://localhost:8131/index.html');await p.waitForTimeout(300);awa
 const bar=()=>p.$$eval('nav#bar button',x=>x.map(b=>b.textContent.replace(/\d+$/,'')).join('|'));
 console.log('online bar:',await bar());
 await p.click('nav#bar [data-act=moreSheet]');await p.waitForTimeout(150);await p.click('.sheet [data-act=settings]');await p.waitForTimeout(150);
-await p.click('.sheet [data-act=modes]');await p.waitForTimeout(500);
+await p.click('#setHub [data-act=modes]');await p.waitForTimeout(500);
 console.log('sheet:',await p.$eval('#emd416',x=>x.textContent.slice(0,120)));
 await p.screenshot({path:'/tmp/claude-0/cmp/new-modes-settings.png'});
 await p.click('#emd416 [data-pick=shop]');await p.waitForTimeout(150);await p.screenshot({path:'/tmp/claude-0/cmp/new-modes-confirm.png'});

@@ -86,8 +86,8 @@ function refreshList(){ // تحديث القائمة فقط دون إعادة ب
 
 /* صورة الرئيسية بجانب التحية (مثل V90): صورة من اختيارك، أو شعار المتجر، أو بدون — حسب «المظهر» في التطبيق الحالي */
 var HOMEIMG_KEY=CLOUD_SANDBOX?'emd_rb_v90_homeimg':'emd_v90_homeimg';
-function heroSrc(){var m='custom';try{m=(JSON.parse(lsGet('emd_v89_look')||'{}')||{}).homeImg||'custom'}catch(e){}
-  if(m==='none')return null;if(m==='logo')return lsGet('emd_v89_logo')||'';var v=lsGet(HOMEIMG_KEY);return v!==null?v:(lsGet('emd_v90_homeimg')||'')}
+function heroSrc(){var m='custom';try{m=(JSON.parse(POS_LS.getItem('emd_v89_look')||'{}')||{}).homeImg||'custom'}catch(e){}
+  if(m==='none')return null;if(m==='logo')return POS_LS.getItem('emd_v89_logo')||'';var v=lsGet(HOMEIMG_KEY);return v!==null?v:(lsGet('emd_v90_homeimg')||'')}
 function heroImg(){var s=heroSrc();if(s===null)return '';
   return s&&/^(data:image\/|https:\/\/)/.test(s)?'<button class="himg" data-act="homeImg" aria-label="صورة الرئيسية"><img src="'+esc(s)+'" alt=""></button>':'<button class="himg empty" data-act="homeImg"><span>🖼️</span><small>أضف صورة</small></button>'}
 function homeImgSheet(){var has=!!heroSrc();
