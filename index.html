@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 <html dir="rtl" lang="ar">
-<head><script id="EMD-V226-invopen">window.EMDInvOpenV226=function(){try{var m=document.getElementById('inventoryModal');return !!(m&&m.style.display!=='none'&&getComputedStyle(m).display!=='none')}catch(e){return true}};</script><script id="EMD-V224-lsv">(function(){try{var P=Storage.prototype,s=P.setItem,r=P.removeItem,c=P.clear;window.__emdLSv=0;P.setItem=function(){window.__emdLSv++;return s.apply(this,arguments)};P.removeItem=function(){window.__emdLSv++;return r.apply(this,arguments)};P.clear=function(){window.__emdLSv++;return c.apply(this,arguments)}}catch(e){}})();</script><script id="EMD-V222-errlog">(function(){if(window.EMDErrLog)return;var K='emd_err_log';function L(){try{return JSON.parse(localStorage.getItem(K)||'[]')}catch(e){return []}}
+<head><script id="EMD-V230-frame">/* V230: منع فتح الصفحة داخل إطار موقع آخر */if(window.top!==window.self){document.documentElement.style.visibility="hidden";try{window.top.location.replace(window.self.location.href)}catch(e){}}</script><script id="EMD-V226-invopen">window.EMDInvOpenV226=function(){try{var m=document.getElementById('inventoryModal');return !!(m&&m.style.display!=='none'&&getComputedStyle(m).display!=='none')}catch(e){return true}};</script><script id="EMD-V224-lsv">(function(){try{var P=Storage.prototype,s=P.setItem,r=P.removeItem,c=P.clear;window.__emdLSv=0;P.setItem=function(){window.__emdLSv++;return s.apply(this,arguments)};P.removeItem=function(){window.__emdLSv++;return r.apply(this,arguments)};P.clear=function(){window.__emdLSv++;return c.apply(this,arguments)}}catch(e){}})();</script><script id="EMD-V222-errlog">(function(){if(window.EMDErrLog)return;var K='emd_err_log';function L(){try{return JSON.parse(localStorage.getItem(K)||'[]')}catch(e){return []}}
 function add(m,w){try{m=String(m||'').slice(0,180);if(!m)return;var a=L();var x=a[a.length-1];if(x&&x.m===m){x.n=(x.n||1)+1;x.t=Date.now()}else a.push({t:Date.now(),m:m,w:String(w||'').slice(-60)});localStorage.setItem(K,JSON.stringify(a.slice(-6)))}catch(e){}}
 window.addEventListener('error',function(e){add(e.message||(e.target&&e.target.src?'تعذر تحميل '+e.target.src:''),e.filename?(e.filename.split('/').pop()+':'+e.lineno):'')},true);
 window.addEventListener('unhandledrejection',function(e){var r=e.reason;add(r&&r.message?r.message:r,'promise')});
@@ -16,7 +16,7 @@ window.EMDErrLog={list:function(){var c=Date.now()-3*864e5;return L().filter(fun
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V228</title>
+<title>EMD Business — Standalone V230</title>
 <!-- EMD V158: شاشة افتتاح تغطي التطبيق حتى تكتمل الواجهة الأخيرة، فلا تظهر الأشكال والأزرار القديمة أثناء التحميل -->
 <style id="EMD-V158-boot">
 html.emd-boot{background:#0f172a!important}
@@ -19226,7 +19226,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #emdStandaloneV2Badge{position:fixed;left:10px;bottom:10px;z-index:99999;background:#18202a;color:#fff;
 padding:5px 9px;border-radius:8px;font:11px Tahoma,Arial,sans-serif;opacity:.78;pointer-events:none}
 </style>
-<div id="emdStandaloneV2Badge">EMD Business • V228</div>
+<div id="emdStandaloneV2Badge">EMD Business • V230</div>
 
 
 <!-- EMD Business V6 - بحث العميل أثناء كتابة الرقم -->
@@ -27618,7 +27618,7 @@ function cover(){var W=innerWidth,H=innerHeight,on=false,k=document.body.childre
   document.body.classList.toggle('emd411-covered',on);
   /* رقم النسخة أسفل قائمة «المزيد» (شارة النسخة مخفية على الجوال) */
   var sh=document.getElementById('emd410Sheet');if(sh&&sh.classList.contains('show')){var bx=sh.querySelector('.box');if(bx&&!bx.querySelector('.e141v')){var v=document.createElement('div');v.className='e141v';v.textContent=VER;bx.appendChild(v)}}}
-var VER='EMD Business • V228';
+var VER='EMD Business • V230';
 function boot(){cover();document.addEventListener('emd410open',function(){try{cover()}catch(e){}});setInterval(cover,500)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
@@ -32985,7 +32985,7 @@ body:has(#emd411Store.show) #emd410Bar{display:none!important}
 </style>
 <script id="EMD-V215-receipt">
 (function(){'use strict';
-var FN='https://pfkstppvnebagbdckgbu.supabase.co/functions/v1/store-receipt',KEY='sb_publishable__tfVZiyph-xyB87GzmHrkQ_9DVpPHJ0',C={},Q=[],busy=false,asked={},OCR='https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';
+var FN='https://pfkstppvnebagbdckgbu.supabase.co/functions/v1/store-receipt',KEY='sb_publishable__tfVZiyph-xyB87GzmHrkQ_9DVpPHJ0',C={},Q=[],busy=false,asked={},OCR='https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js',OCR_SRI='sha384-GJqSu7vueQ9qN0E9yLPb3Wtpd7OrgK8KmYzC8T1IysG1bcvxvIO4qtYR/D3A991F';
 /* V215: استخراج رقم الحوالة والمبلغ من نص الإيصال */
 function e215ext(text,total){var A='٠١٢٣٤٥٦٧٨٩',P='۰۱۲۳۴۵۶۷۸۹',s=String(text||'').replace(/[٠-٩۰-۹]/g,function(c){var i=A.indexOf(c);return String(i>-1?i:P.indexOf(c))}).replace(/[٫]/g,'.'),L=s.split(/\r?\n/).map(function(x){return x.trim()}).filter(Boolean);
   var LB=/(reference|\bref\b|txn|transaction|\btrn\b|\butr\b|رقم\s*المرجع|الرقم\s*المرجعي|المرجع|مرجع|رقم\s*العملية|رقم\s*الحوالة|رقم\s*التحويل|رقم\s*المعاملة)/i,TK=/[A-Za-z0-9][A-Za-z0-9\-\/]{4,}[A-Za-z0-9]/g,ref='',how='';
@@ -33015,7 +33015,7 @@ function sand(imgs){return new Promise(function(ok,no){var f=document.createElem
   function fin(e,v){clearTimeout(T);removeEventListener('message',on);try{f.remove()}catch(x){}if(e)no(e);else ok(v)}
   function on(e){if(e.source!==f.contentWindow)return;var d=e.data||{};if(d.t==='ready')f.contentWindow.postMessage({t:'go',imgs:imgs},'*');else if(d.t==='done')fin(null,String(d.text||''));else if(d.t==='err')fin(new Error('ocr'))}
   addEventListener('message',on);
-  f.srcdoc='<!doctype html><meta charset="utf-8"><script src="'+OCR+'"><\/script><script>addEventListener("message",function(e){if(!e.data||e.data.t!=="go")return;var I=e.data.imgs,o="";(function n(i){if(i>=I.length){parent.postMessage({t:"done",text:o},"*");return}Tesseract.recognize(I[i],"ara+eng",{cacheMethod:"none"}).then(function(r){o+=(r.data&&r.data.text||"")+"\\n";n(i+1)}).catch(function(){parent.postMessage({t:"err"},"*")})})(0)});parent.postMessage(window.Tesseract?{t:"ready"}:{t:"err"},"*");<\/script>';
+  f.srcdoc='<!doctype html><meta charset="utf-8"><script src="'+OCR+'" integrity="'+OCR_SRI+'" crossorigin="anonymous"><\/script><script>addEventListener("message",function(e){if(!e.data||e.data.t!=="go")return;var I=e.data.imgs,o="";(function n(i){if(i>=I.length){parent.postMessage({t:"done",text:o},"*");return}Tesseract.recognize(I[i],"ara+eng",{cacheMethod:"none"}).then(function(r){o+=(r.data&&r.data.text||"")+"\\n";n(i+1)}).catch(function(){parent.postMessage({t:"err"},"*")})})(0)});parent.postMessage(window.Tesseract?{t:"ready"}:{t:"err"},"*");<\/script>';
   document.body.appendChild(f)})}
 function shot(src,M){return new Promise(function(ok,no){var im=new Image();im.onload=function(){if(im.naturalWidth>6000||im.naturalHeight>6000){no(new Error('big'));return}var k=Math.min(1,M/Math.max(im.naturalWidth,im.naturalHeight)),c=document.createElement('canvas');c.width=Math.round(im.naturalWidth*k);c.height=Math.round(im.naturalHeight*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);ok(c.toDataURL('image/jpeg',.92))};im.onerror=function(){no(new Error('img'))};im.src=src})}
 function readAll(url){return fetch(url).then(function(r){if(!r.ok)throw new Error('img');return r.blob()}).then(function(b){var u=URL.createObjectURL(b);return shot(u,1600).then(function(a){URL.revokeObjectURL(u);return sand([a]).then(function(t1){if(e215ext(t1,0).ref)return t1;return new Promise(function(ok){setTimeout(ok,50)}).then(function(){return prep(a)}).then(function(c){return sand([c.toDataURL?c.toDataURL('image/jpeg',.9):a]).then(function(t2){return t1+'\n'+t2})})})},function(e){URL.revokeObjectURL(u);throw e})})}
