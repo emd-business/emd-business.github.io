@@ -20,6 +20,9 @@ function index(){
     unpaid+=remaining(o,byName);
     if(s==='waiting'||(s==='new')||(s==='shipped'&&t&&Date.now()-t>5*864e5))alerts++;
   });
+  // مثل شريط المالية في التطبيق الحالي: البيع المباشر يدخل في المبيعات والربح، والمصروفات تُخصم من ربح الشهر
+  var t0=new Date(today+'T00:00:00'),m0=new Date(mon+'-01T00:00:00'),m1=new Date(m0.getFullYear(),m0.getMonth()+1,1),dd=dsSummary(t0,new Date(t0.getTime()+864e5)),dm=dsSummary(m0,m1);
+  sales+=dd.sales;profit+=dm.sales-dm.cost;(Array.isArray(db.expenses)?db.expenses:[]).forEach(function(x){if(String(x&&x.date||'').slice(0,7)===mon)profit-=num(x.amount)});
   IX={byName:byName,reserved:reserved,counts:counts,alerts:alerts,sales:sales,unpaid:unpaid,profit:profit,store:st};
   return IX;
 }

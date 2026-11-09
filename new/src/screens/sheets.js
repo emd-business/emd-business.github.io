@@ -9,8 +9,8 @@ function cardMore(id){
 function moreSheet(){
   openSheet('<div class="sh"><h3>☰ المزيد</h3><button class="x" data-act="close">إغلاق ✕</button></div><div class="list">'+
     '<button data-go="customers">👥 العملاء</button><button data-go="products">📦 المنتجات</button><button data-go="stock">🏭 المخزون</button>'+
-    '<button data-act="store">🛍️ متجري</button><button data-act="direct">🛒 بيع مباشر</button>'+['📊 التقارير'].map(function(x){return '<button data-act="soon" data-what="'+x.replace(/^\S+\s/,'')+'">'+x+'</button>'}).join('')+
-    '</div><p class="note">التقارير تُبنى في المرحلة القادمة.</p>');
+    '<button data-act="store">🛍️ متجري</button><button data-act="direct">🛒 بيع مباشر</button><button data-act="finance">💰 المالية</button>'+
+    '</div>');
 }
 function alertsSheet(){
   var arr=[],now=Date.now();

@@ -364,6 +364,9 @@ function index(){
     unpaid+=remaining(o,byName);
     if(s==='waiting'||(s==='new')||(s==='shipped'&&t&&Date.now()-t>5*864e5))alerts++;
   });
+  // مثل شريط المالية في التطبيق الحالي: البيع المباشر يدخل في المبيعات والربح، والمصروفات تُخصم من ربح الشهر
+  var t0=new Date(today+'T00:00:00'),m0=new Date(mon+'-01T00:00:00'),m1=new Date(m0.getFullYear(),m0.getMonth()+1,1),dd=dsSummary(t0,new Date(t0.getTime()+864e5)),dm=dsSummary(m0,m1);
+  sales+=dd.sales;profit+=dm.sales-dm.cost;(Array.isArray(db.expenses)?db.expenses:[]).forEach(function(x){if(String(x&&x.date||'').slice(0,7)===mon)profit-=num(x.amount)});
   IX={byName:byName,reserved:reserved,counts:counts,alerts:alerts,sales:sales,unpaid:unpaid,profit:profit,store:st};
   return IX;
 }
@@ -380,7 +383,11 @@ function pIndex(p){return db.products.indexOf(p)}
 function subtotal(o,b){return items(o).reduce(function(s,x){return s+itemPrice(x,b)*qty(x)},0)}
 function total(o,b){var m=num(o.total);return m>0?m:Math.max(0,subtotal(o,b)+num(o.deliveryFee)-num(o.discount))}
 function cost(o,b){return items(o).reduce(function(s,x){return s+itemCost(x,b)*qty(x)},0)}
-function payState(o,b){var s=String(o.paymentStatus||'');if(s==='paid'||s==='transfer'||s==='cash')return 'paid';var p=num(o.paidAmount),t=total(o,b);if(t>0&&p>=t-0.0005)return 'paid';if(p>0||s==='partial')return 'partial';return 'unpaid'}
+/* مثل المالية في التطبيق الحالي (V75): عند تفعيل «الطلبات القديمة محصّلة» تُعتبر الطلبات قبل تاريخ التفعيل مدفوعة ما لم يُسجَّل لها دفع */
+var PAY_OLD=null;function payKey(k){var r=typeof CLOUD_SANDBOX!=='undefined'&&CLOUD_SANDBOX?lsGet('emd_rb_'+k.slice(4)):null;return r!==null?r:lsGet(k)}
+function payOld(){if(PAY_OLD===null)PAY_OLD=payKey('emd_v75_legacy_on')==='1'?(payKey('emd_v75_since')||dkey(new Date())):'';return PAY_OLD}
+function legacyPaid(o){var sv=payOld();if(!sv||o.paymentStatus||num(o.paidAmount)>0)return false;var t=odate(o);return !t||dkey(t)<sv}
+function payState(o,b){if(legacyPaid(o))return 'paid';var s=String(o.paymentStatus||'');if(s==='paid'||s==='transfer'||s==='cash')return 'paid';var p=num(o.paidAmount),t=total(o,b);if(t>0&&p>=t-0.0005)return 'paid';if(p>0||s==='partial')return 'partial';return 'unpaid'}
 function paid(o,b){return payState(o,b)==='paid'?total(o,b):Math.min(num(o.paidAmount),total(o,b))}
 function remaining(o,b){return Math.max(0,total(o,b)-paid(o,b))}
 var PAYL={unpaid:'غير مدفوع',partial:'مدفوع جزئيًا',paid:'مدفوع'};
@@ -1021,6 +1028,21 @@ function directLoad(){if(window.EMDDirectV113)return Promise.resolve(window.EMDD
   dsLoading=loadScript('direct.js?v=1').then(function(){if(!window.EMDDirectV113)throw new Error('direct');return window.EMDDirectV113},function(e){dsLoading=null;throw e});return dsLoading}
 function directOpen(tab,id){directLoad().then(function(X){X.open(tab||'new',id)},function(){toast('تعذّر فتح البيع المباشر. تحقّق من الاتصال.')})}
 
+/* ===== lib/finance.js ===== */
+/* ---------- المالية: الملخص، الفواتير، التحصيل، المندوب، المصروفات، الأسعار ----------
+   الواجهة في lazy/money.js (مولَّدة من V75 بـ tools/port-money.py)، وتأخذ الحسابات من هذه المكتبة نفسها. */
+var finLoading=null;
+function finHelpers(){var lk=function(k){return CLOUD_SANDBOX?'emd_rb_'+k.replace(/^emd_/,''):k};
+  return {db:function(){return db},lk:lk,lsGet:lsGet,lsSet:lsSet,save:function(){dirty();save()},after:function(){dirty();render()},
+    total:function(o){return total(o)},paid:function(o){return paid(o)},remaining:function(o){return remaining(o)},payState:function(o){return payState(o)},cost:function(o){return cost(o)},
+    legacyOn:function(){return payKey('emd_v75_legacy_on')==='1'},payReset:function(){PAY_OLD=null;dirty();render()},
+    dsSummary:dsSummary,direct:function(){return window.EMDDirectV113},profile:function(){return window.EMDDirH?EMDDirH.profile():dsHelpers().profile()},
+    accent:dsLook,logoImg:function(){return dsLogo&&dsLogo.complete&&dsLogo.naturalWidth?dsLogo:null},
+    openOrder:function(id){openOrder(id)},editProduct:function(i){state.view='products';render();productSheet(i)}}}
+function financeLoad(){if(window.EMDMoneyV75)return Promise.resolve(window.EMDMoneyV75);if(finLoading)return finLoading;
+  finLoading=directLoad().then(function(){window.EMDMonH=finHelpers();return loadScript('money.js?v=1')}).then(function(){if(!window.EMDMoneyV75)throw new Error('money');return window.EMDMoneyV75},function(e){finLoading=null;throw e});return finLoading}
+function financeOpen(tab){financeLoad().then(function(X){X.open(tab||'sum')},function(){toast('تعذّر فتح المالية. تحقّق من الاتصال.')})}
+
 /* ===== screens/home-orders.js ===== */
 /* ---------- 4) العرض ---------- */
 var state={view:'home',filter:'all',q:'',pinnedOnly:false,limit:30,ptab:'prep',sel:{}};
@@ -1050,7 +1072,7 @@ function homeHtml(){
     return '<button class="stat" data-filter="'+k+'"><b>'+ix.counts[k]+'</b><span><i style="background:'+ST[k].c+'">'+ST[k].i+'</i>'+(k==='new'?'طلبات جديدة':k==='waiting'?'بانتظار المنتجات':k==='ready'?'جاهزة للتجهيز':ST[k].l)+'</span></button>';
   }).join('');
   return '<div class="hero"><div><h2>'+greet+'</h2><div class="clock">'+hh+':'+pad(now.getMinutes())+' <span>'+(h<12?'ص':'م')+'</span></div><div class="date">'+esc(greg)+(hijri?' · '+esc(hijri):'')+'</div></div></div>'+
-    '<div class="money"><div><small>مبيعات اليوم</small><b>'+money(ix.sales)+'</b></div><div><small>غير محصّل</small><b class="gold">'+money(ix.unpaid)+'</b></div><div><small>ربح الشهر</small><b>'+money(ix.profit)+'</b></div></div>'+
+    '<div class="money" data-act="finance" role="button"><div><small>مبيعات اليوم</small><b>'+money(ix.sales)+'</b></div><div><small>غير محصّل</small><b class="gold">'+money(ix.unpaid)+'</b></div><div><small>ربح الشهر</small><b>'+money(ix.profit)+'</b></div></div>'+
     storeHomeCard()+'<div class="stats">'+cards+'</div>'+
     '<div class="quick"><button class="btn dark" data-act="importMsg">🤖 إدخال من رسالة</button><button class="btn" data-act="newOrder">✍️ كتابة طلب يدوي</button><button class="btn" data-act="prepNow">🧑‍💼 ماذا أجهز الآن؟</button><button class="btn" data-act="closing">📊 تقفيلة اليوم</button></div>'+
     '<button class="fold" data-act="soon" data-what="تفاصيل اليوم والتوصيات">▼ تفاصيل اليوم والتوصيات <small>(لوحة اليوم، ما يحتاج انتباهك)</small></button>';
@@ -1307,8 +1329,8 @@ function cardMore(id){
 function moreSheet(){
   openSheet('<div class="sh"><h3>☰ المزيد</h3><button class="x" data-act="close">إغلاق ✕</button></div><div class="list">'+
     '<button data-go="customers">👥 العملاء</button><button data-go="products">📦 المنتجات</button><button data-go="stock">🏭 المخزون</button>'+
-    '<button data-act="store">🛍️ متجري</button><button data-act="direct">🛒 بيع مباشر</button>'+['📊 التقارير'].map(function(x){return '<button data-act="soon" data-what="'+x.replace(/^\S+\s/,'')+'">'+x+'</button>'}).join('')+
-    '</div><p class="note">التقارير تُبنى في المرحلة القادمة.</p>');
+    '<button data-act="store">🛍️ متجري</button><button data-act="direct">🛒 بيع مباشر</button><button data-act="finance">💰 المالية</button>'+
+    '</div>');
 }
 function alertsSheet(){
   var arr=[],now=Date.now();
@@ -1805,6 +1827,7 @@ document.addEventListener('click',function(e){
     case 'push':closeSheetIfMenu(b);pushSheet();break;
     case 'support':closeSheetIfMenu(b);supportOpen();break;
     case 'direct':closeSheetIfMenu(b);directOpen('new');break;
+    case 'finance':closeSheetIfMenu(b);financeOpen('sum');break;
     case 'quickLink':quickOpen();break;
     case 'storeOrders':storeOrdersOpen();break;
     case 'cloud':closeSheetIfMenu(b);cloudSheet();break;
