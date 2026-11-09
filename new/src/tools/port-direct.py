@@ -1,7 +1,7 @@
 # يبني src/lazy/direct.js من «البيع المباشر» V113 في التطبيق الحالي، عبر window.EMDDirH
 import re,sys,os,json
 LIVE=sys.argv[1] if len(sys.argv)>1 else '/home/user/emd-business.github.io/index.html'
-OUT=os.path.join(os.path.dirname(__file__),'..','lazy','direct.js')
+OUT=os.path.join(os.path.dirname(__file__),'..','lazy',sys.argv[2] if len(sys.argv)>2 else 'direct.js')
 h=open(LIVE,encoding='utf8').read()
 def block(tag_id,kind):
   a=h.index('<%s id="%s">'%(kind,tag_id));a=h.index('>',a)+1;b=h.index('</%s>'%kind,a);return h[a:b]
@@ -38,5 +38,7 @@ assert 'setInterval' not in js and 'window.db' not in js and 'window.save' not i
 js=re.sub(r'\bH\.(lk|db|toast|storeName|available|persist|after|restock|profile|accent|logoImg|img)\(',r'DH.\1(',js)
 js=js.replace('var H=window.EMDDirH;','var DH=window.EMDDirH;')
 assert not re.search(r"localStorage\.(setItem|removeItem)\('",js),'ls'
+if 'EMD419' in js:
+  a="function renderProducts(){\n  var el=$('emd113Pl');if(!el)return;";assert js.count(a)==1,'rp';js=js.replace(a,a+"if(window.EMD419)try{EMD419.applyView()}catch(e){}")
 out='/* مُولَّد بـ tools/port-direct.py من V113 — لا تعدّل هنا */\n(function(){var s=document.createElement("style");s.textContent='+json.dumps(css,ensure_ascii=False)+';document.head.appendChild(s)})();\n'+js
 open(OUT,'w',encoding='utf8').write(out);print('direct.js',len(out.encode()),'bytes')

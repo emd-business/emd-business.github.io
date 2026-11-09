@@ -19,6 +19,17 @@ function dsHelpers(){var src=lsGet('emd_v89_logo')||'';if(src&&/^(data:image\/|h
     available:function(n){return available(n)},persist:function(){dirty();saveNow()},after:function(){dirty();render()},restock:function(){dirty();if(promoteWaiting())save()},
     accent:dsLook,logoImg:function(){return dsLogo&&dsLogo.complete&&dsLogo.naturalWidth?dsLogo:null},
     img:function(p){var u=String(p&&(p.image||p.img||p.imageUrl)||'');return /^(data:image\/|https:\/\/)/.test(u)?u:''}}}
+/* أنواع المحل تستعمل البيع المباشر بنسخة التطوير V453 مع نقطة البيع (lazy/pos.js)؛ «بيع أونلاين» يبقى مثل التطبيق الحالي تمامًا */
+var dsVariant='';
+function dsWant(){return mode()==='online'?'live':'pos'}
+function posLs(){function rk(k){return CLOUD_SANDBOX?'emd_rb_'+k:k}
+  return {getItem:function(k){if(k===LIVE_KEY)return null;var v=lsGet(rk(k));return v==null&&CLOUD_SANDBOX?lsGet(k):v},
+    setItem:function(k,v){if(k===LIVE_KEY){dirty();saveNow();return}lsSet(rk(k),String(v))},
+    removeItem:function(k){try{LS.removeItem(rk(k))}catch(e){}}}}
+var POS_LS=posLs();
+function posHelpers(){return {db:function(){return db},ls:POS_LS,
+    alias:{EMDMoneyV75:{total:function(o){return total(o)},paid:function(o){return paid(o)},remaining:function(o){return remaining(o)},payState:function(o){return payState(o)},invoice:function(id){openInvoice(id)}},EMDPrefixV129:{fmt:function(s){return idsFmt(String(s))}}},nat:function(f){try{return /\{\s*\[native code\]\s*\}$/.test(Function.prototype.toString.call(f))}catch(e){return false}}}}
 function directLoad(){if(window.EMDDirectV113)return Promise.resolve(window.EMDDirectV113);if(dsLoading)return dsLoading;window.EMDDirH=dsHelpers();
-  dsLoading=loadScript('direct.js?v=1').then(function(){if(!window.EMDDirectV113)throw new Error('direct');return window.EMDDirectV113},function(e){dsLoading=null;throw e});return dsLoading}
+  var w=dsWant();dsVariant=w;
+  dsLoading=(w==='live'?loadScript('direct.js?v=1'):loadScript('direct453.js?v=1').then(function(){window.EMDPosH=posHelpers();return loadScript('pos.js?v=1')})).then(function(){if(!window.EMDDirectV113)throw new Error('direct');return window.EMDDirectV113},function(e){dsLoading=null;throw e});return dsLoading}
 function directOpen(tab,id){directLoad().then(function(X){X.open(tab||'new',id)},function(){toast('تعذّر فتح البيع المباشر. تحقّق من الاتصال.')})}
