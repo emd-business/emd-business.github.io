@@ -166,7 +166,7 @@ details.more summary{font-weight:800;padding:8px 0;cursor:pointer}
 <nav id="bar">
   <button data-go="home"><span class="ic">🏠</span>الرئيسية</button>
   <button data-go="orders"><span class="ic">📋</span>الطلبات</button>
-  <button data-act="newOrder" class="plus"><span class="ic">＋</span>طلب جديد</button>
+  <button data-act="importMsg" class="plus"><span class="ic">＋</span>طلب جديد</button>
   <button data-act="alerts"><span class="ic">🔔</span>التنبيهات<span class="badge hide" id="alertBadge"></span></button>
   <button data-act="moreSheet"><span class="ic">☰</span>المزيد</button>
 </nav>
@@ -558,9 +558,10 @@ function loadParser(){
   return parserP;
 }
 function importSheet(msg){
-  var d=openSheet('<div class="sh"><div><h3>🤖 إدخال من رسالة</h3><small>ألصق رسالة العميل كما هي، وسأستخرج الاسم والرقم والمكان والمنتجات.</small></div><button class="x" data-act="close">إغلاق ✕</button></div>'+
+  var d=openSheet('<div class="sh"><div><h3>📦 طلب جديد</h3><small>ألصق رسالة العميل كما هي، وسأستخرج الاسم والرقم والمكان والمنتجات.</small></div><button class="x" data-act="close">إغلاق ✕</button></div>'+
     '<textarea class="in msg" id="rawMsg" placeholder="مثال:&#10;ابي ٢ عطر عود ملكي&#10;محمد 99112233&#10;نزوى">'+esc(msg||'')+'</textarea>'+
-    '<div class="foot"><button class="btn dark" data-act="doParse">🔎 تحليل الرسالة</button>'+(navigator.clipboard&&navigator.clipboard.readText?'<button class="btn" data-act="pasteMsg">📋 لصق</button>':'')+'</div>');
+    '<div class="foot"><button class="btn dark" data-act="doParse">🔎 تحليل الرسالة</button>'+(navigator.clipboard&&navigator.clipboard.readText?'<button class="btn" data-act="pasteMsg">📋 لصق</button>':'')+'</div>'+
+    '<button class="btn" data-act="manualOrder" style="width:100%;margin-top:6px">✍️ كتابة طلب يدوي</button>');
   loadParser().catch(function(){});
   setTimeout(function(){var t=$('rawMsg');if(t&&!t.value)t.focus()},60);
   return d;
@@ -795,6 +796,7 @@ document.addEventListener('click',function(e){
     case 'close':closeSheet(b.closest('.sheet'));break;
     case 'newOrder':newOrder();break;
     case 'importMsg':importSheet('');break;
+    case 'manualOrder':closeSheet();newOrder();break;
     case 'doParse':doParse();break;
     case 'pasteMsg':navigator.clipboard.readText().then(function(t){var a=$('rawMsg');if(a&&t){a.value=t;doParse()}}).catch(function(){toast('اسمح بالوصول للحافظة أو ألصق يدويًا')});break;
     case 'backImport':closeSheet();importSheet(lastMsg);break;
