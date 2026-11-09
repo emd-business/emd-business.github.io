@@ -16,3 +16,8 @@ function archImport(arr){if(!cloudCanWrite()||!Array.isArray(arr)||!arr.length)r
   var main={};db.orders.forEach(function(o){main[oid(o)]=1});
   var recs=arr.filter(function(x){return x&&x.order&&oid(x.order)&&!main[oid(x.order)]}).map(function(x){return archRecord(x.order,x.archivedAt)});
   return archOpen().then(function(d){return new Promise(function(res,rej){var t=d.transaction('orders','readwrite'),s=t.objectStore('orders');recs.forEach(function(r){s.put(r)});t.oncomplete=function(){res(recs.length)};t.onerror=function(){rej(t.error)}})}).catch(function(){return 0})}
+/* مثل V130 في التطبيق الحالي: المبيعات والربح تحسب الطلبات المؤرشفة أيضًا (قراءة فقط) */
+var ARCH_LIFE=[],archLast=0;
+function archRefresh(){archLast=Date.now();return archAll().then(function(a){var n=a.map(function(x){return x&&x.order}).filter(Boolean);
+  if(n.length!==ARCH_LIFE.length||JSON.stringify(n.map(oid))!==JSON.stringify(ARCH_LIFE.map(oid))){ARCH_LIFE=n;dirty();if(state.view==='home')render()}})}
+function archTick(){if(!document.hidden&&Date.now()-archLast>6e4)archRefresh()}

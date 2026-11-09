@@ -25,8 +25,8 @@ function homeHtml(){
   var cards=['new','waiting','ready','packing','shipped','received'].map(function(k){
     return '<button class="stat" data-filter="'+k+'"><b>'+ix.counts[k]+'</b><span><i style="background:'+ST[k].c+'">'+ST[k].i+'</i>'+(k==='new'?'طلبات جديدة':k==='waiting'?'بانتظار المنتجات':k==='ready'?'جاهزة للتجهيز':ST[k].l)+'</span></button>';
   }).join('');
-  return '<div class="hero"><div><h2>'+greet+'</h2><div class="clock">'+hh+':'+pad(now.getMinutes())+' <span>'+(h<12?'ص':'م')+'</span></div><div class="date">'+esc(greg)+(hijri?' · '+esc(hijri):'')+'</div></div></div>'+
-    '<div class="money" data-act="finance" role="button"><div><small>مبيعات اليوم</small><b>'+money(ix.sales)+'</b></div><div><small>غير محصّل</small><b class="gold">'+money(ix.unpaid)+'</b></div><div><small>ربح الشهر</small><b>'+money(ix.profit)+'</b></div></div>'+
+  return '<div class="hero"><div><h2>'+greet+'</h2><div class="clock">'+pad(hh)+':'+pad(now.getMinutes())+' <span>'+(h<12?'ص':'م')+'</span></div><div class="date">'+esc(greg)+(hijri?' · '+esc(hijri):'')+'</div></div>'+heroImg()+'</div>'+
+    '<div class="money" data-act="finance" role="button"><div><small>مبيعات اليوم</small><b>'+money(ix.sales)+'</b></div><div><small>غير محصّل</small><b class="gold">'+money(ix.unpaid)+'</b></div><div><small>ربح الشهر</small><b>'+money(ix.profit)+'</b></div><div class="cap">💰 اضغط لفتح المالية · '+CUR+'</div></div>'+
     storeHomeCard()+'<div class="stats">'+cards+'</div>'+
     '<div class="quick"><button class="btn dark" data-act="importMsg">🤖 إدخال من رسالة</button><button class="btn" data-act="newOrder">✍️ كتابة طلب يدوي</button><button class="btn" data-act="prepNow">🧑‍💼 ماذا أجهز الآن؟</button><button class="btn" data-act="closing">📊 تقفيلة اليوم</button></div>'+
     '<button class="fold" data-act="soon" data-what="تفاصيل اليوم والتوصيات">▼ تفاصيل اليوم والتوصيات <small>(لوحة اليوم، ما يحتاج انتباهك)</small></button>';
@@ -82,3 +82,14 @@ function refreshList(){ // تحديث القائمة فقط دون إعادة ب
   var oc=document.querySelector('.chips'),nc=tmp.querySelector('.chips');if(oc&&nc)oc.innerHTML=nc.innerHTML;
   var ot=document.querySelector('.tools'),nt=tmp.querySelector('.tools');if(ot&&nt)ot.innerHTML=nt.innerHTML;
 }
+
+/* صورة الرئيسية بجانب التحية (مثل V90): صورة من اختيارك، أو شعار المتجر، أو بدون — حسب «المظهر» في التطبيق الحالي */
+var HOMEIMG_KEY=CLOUD_SANDBOX?'emd_rb_v90_homeimg':'emd_v90_homeimg';
+function heroSrc(){var m='custom';try{m=(JSON.parse(lsGet('emd_v89_look')||'{}')||{}).homeImg||'custom'}catch(e){}
+  if(m==='none')return null;if(m==='logo')return lsGet('emd_v89_logo')||'';var v=lsGet(HOMEIMG_KEY);return v!==null?v:(lsGet('emd_v90_homeimg')||'')}
+function heroImg(){var s=heroSrc();if(s===null)return '';
+  return s&&/^(data:image\/|https:\/\/)/.test(s)?'<button class="himg" data-act="homeImg" aria-label="صورة الرئيسية"><img src="'+esc(s)+'" alt=""></button>':'<button class="himg empty" data-act="homeImg"><span>🖼️</span><small>أضف صورة</small></button>'}
+function homeImgSheet(){var has=!!heroSrc();
+  if(!has){$('homeImgIn').click();return}
+  openSheet('<div class="sh"><h3>🖼️ صورة الرئيسية</h3><button class="x" data-act="close">إغلاق ✕</button></div><div class="list"><button data-act="homeImgPick">🔄 تغيير الصورة</button><button data-act="homeImgDel" class="red">🗑️ حذف الصورة</button></div>')}
+function homeImgPicked(f){if(!f)return;shrink(f,900,function(url){if(!url){toast('تعذّرت قراءة الصورة');return}lsSet(HOMEIMG_KEY,url);render();toast('✅ تم حفظ صورة الرئيسية')})}

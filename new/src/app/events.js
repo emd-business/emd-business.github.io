@@ -56,6 +56,9 @@ document.addEventListener('click',function(e){
     case 'support':closeSheetIfMenu(b);supportOpen();break;
     case 'direct':closeSheetIfMenu(b);directOpen('new');break;
     case 'finance':closeSheetIfMenu(b);financeOpen('sum');break;
+    case 'homeImg':homeImgSheet();break;
+    case 'homeImgPick':closeSheet(b.closest('.sheet'));$('homeImgIn').click();break;
+    case 'homeImgDel':if(confirm('حذف صورة الرئيسية؟')){lsSet(HOMEIMG_KEY,'');closeSheet(b.closest('.sheet'));render()}break;
     case 'quickLink':quickOpen();break;
     case 'storeOrders':storeOrdersOpen();break;
     case 'cloud':closeSheetIfMenu(b);cloudSheet();break;
@@ -63,7 +66,7 @@ document.addEventListener('click',function(e){
     case 'prepNow':state.view='prep';state.sel={};render();window.scrollTo(0,0);break;
     case 'moreSheet':moreSheet();break;
     case 'alerts':alertsSheet();break;
-    case 'settings':settingsSheet();break;
+    case 'settings':closeSheetIfMenu(b);settingsSheet();break;
     case 'soon':toast('«'+(b.dataset.what||'هذا القسم')+'» يُبنى في المرحلة القادمة');break;
     case 'recopy':recopy();break;
     case 'openFile':$('fileIn').click();break;

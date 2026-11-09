@@ -1,0 +1,13 @@
+const {chromium}=require('playwright');const O='/tmp/claude-0/cmp/';
+(async()=>{const b=await chromium.launch();const ctx=await b.newContext({viewport:{width:400,height:860}});
+await ctx.route('https://**/*',r=>r.request().url().includes('localhost')?r.continue():r.fulfill({status:200,contentType:'application/json',body:'[]'}));
+const l=await ctx.newPage();l.on('dialog',d=>d.accept());
+await l.goto('http://localhost:8132/new/index.html');await l.waitForTimeout(400);await l.click('[data-act=demo][data-n="40"]');await l.waitForTimeout(400);const data=await l.evaluate(()=>JSON.stringify(EMDRebuild.db()));await l.evaluate(d=>{Object.keys(localStorage).forEach(k=>localStorage.removeItem(k));localStorage.setItem('emd_business_v1',d);localStorage.setItem('emd_manager_profile_v41',JSON.stringify({name:'عماد'}));localStorage.setItem('emd_business_profile_v333',JSON.stringify({name:'متجر التجربة'}))},data);
+await l.goto('http://localhost:8132/index.html');await l.waitForTimeout(9000);
+await l.evaluate(()=>{const b=[...document.querySelectorAll('nav button, nav a')].filter(x=>x.offsetParent&&/المزيد/.test(x.textContent)).pop();b.click()});await l.waitForTimeout(700);
+console.log(await l.evaluate(()=>{const s=document.getElementById('emd410Sheet');return s.querySelector('.box').innerText.replace(/\n+/g,' | ')}));
+console.log(await l.evaluate(()=>document.getElementById('emd410Sheet').querySelector('.box').outerHTML.slice(0,1500)));
+await l.evaluate(()=>{const b=document.querySelector('#emd410Sheet .box');b.style.maxHeight='none'});await l.screenshot({path:O+'live-more-full.png',fullPage:true});
+console.log('nav:',await l.evaluate(()=>[...document.querySelectorAll('nav button')].filter(b=>b.offsetParent).map(b=>b.innerText.replace(/\n/g,' ')).join(' | ')));
+console.log('header:',await l.evaluate(()=>{const h=document.querySelector('header');return h?h.innerText.replace(/\n+/g,' | '):''}));
+await b.close()})();

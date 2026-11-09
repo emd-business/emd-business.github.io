@@ -24,7 +24,7 @@ function firstPos(a){for(var i=0;i<a.length;i++){var v=num(a[i]);if(v>0)return v
 function store(){return MH.profile()}
 function storeName(){return String(store().name||'').trim()||'متجري'}
 function waPhone(p){var d=String(p||'').replace(/[٠-٩]/g,function(c){return '٠١٢٣٤٥٦٧٨٩'.indexOf(c)}).replace(/\D/g,'');if(d.indexOf('00')===0)d=d.slice(2);if(d.length===8)d='968'+d;return d}
-function openWa(phone,text){var p=waPhone(phone);window.open('https://wa.me/'+(p||'')+'?text='+encodeURIComponent(text||''),'_blank')}
+function openWa(phone,text){var p=waPhone(phone);window.open('https://wa.me/'+(p||'')+'?text='+MH.enc(text||''),'_blank')}
 function toast(t){var el=$('emd75Toast');if(!el)return;el.textContent=t;el.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(function(){el.style.display='none'},2200)}
 function persist(){MH.save()}
 function canSee(){return true}
@@ -61,7 +61,7 @@ function range(k){var now=new Date(),t0=new Date(now.getFullYear(),now.getMonth(
   return {s:s,e:e,sk:dkey(s),ek:dkey(new Date(e.getTime()-1))}}
 function summary(k){
   var r=range(k),sales=0,col=0,cost=0,noPrice=0,noCost=0,count=0;
-  arr(D().orders).forEach(function(o){
+  arr(MH.allOrders()).forEach(function(o){
     if(cancelled(o))return;var t=odate(o);if(!t||t<r.s||t>=r.e)return;
     count++;var tt=total(o);sales+=tt;col+=paid(o);
     if(tt<=0)noPrice++;var c=orderCost(o);if(tt>0&&c<=0)noCost++;cost+=c;
@@ -110,7 +110,7 @@ function render(){
   pm();$('emd75Tabs').innerHTML=tabsHtml();
   var b=$('emd75Body'),h='';
   if(cur.tab==='sum')h=sumHtml();else if(cur.tab==='due')h=dueHtml();else if(cur.tab==='cour')h=courHtml();else if(cur.tab==='exp')h=expHtml();else if(cur.tab==='led')h=ledHtml();else h=priceHtml();
-  var st=b.scrollTop;b.innerHTML=h;b.scrollTop=st;
+  var st=b.scrollTop;b.innerHTML=MH.ids(h);b.scrollTop=st;
 }
 
 function periodChips(){var P=[['today','اليوم'],['week','آخر 7 أيام'],['month','هذا الشهر'],['lastmonth','الشهر الماضي'],['range','📅 من تاريخ إلى تاريخ']];return '<div class="emd75-chips">'+P.map(function(p){return '<button class="emd75-chip'+(cur.period===p[0]?' on':'')+'" data-a="period" data-v="'+p[0]+'">'+p[1]+'</button>'}).join('')+'</div>'+(cur.period==='range'?'<div class="emd112-bar" style="margin-top:0"><label class="emd112-card"><span>من تاريخ</span><input type="date" id="emd115From" value="'+esc(cur.from||'')+'" style="width:100%;border:0;font:inherit;font-size:16px;font-weight:800;background:transparent"></label><label class="emd112-card"><span>إلى تاريخ</span><input type="date" id="emd115To" value="'+esc(cur.to||'')+'" style="width:100%;border:0;font:inherit;font-size:16px;font-weight:800;background:transparent"></label></div>':'')}

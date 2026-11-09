@@ -17,7 +17,9 @@ rep("if(window.__EMD_V75__)return;window.__EMD_V75__=true;","if(window.EMDMoneyV
 rep("var COUR_KEY='emd_v75_couriers',SINCE_KEY='emd_v75_since',","var COUR_KEY=MH.lk('emd_v75_couriers'),SINCE_KEY=MH.lk('emd_v75_since'),LEG_KEY=MH.lk('emd_v75_legacy_on'),")
 rep("function D(){try{return (typeof db!=='undefined'&&db)?db:window.db}catch(e){return window.db}}","function D(){return MH.db()}")
 rep("function store(){try{var p=window.EMDBusinessProfileV333&&window.EMDBusinessProfileV333.get();return p||{}}catch(e){return {}}}","function store(){return MH.profile()}")
-js=js.replace("(window.EMDEncWaV129||encodeURIComponent)","encodeURIComponent")
+js=js.replace("(window.EMDEncWaV129||encodeURIComponent)","MH.enc")
+# حروف رقم الطلب (V129): العرض EMD-0042 والمخزّن #0042
+rep("var st=b.scrollTop;b.innerHTML=h;","var st=b.scrollTop;b.innerHTML=MH.ids(h);")
 rep("function persist(){try{if(typeof window.save==='function')window.save();else localStorage.setItem('emd_business_v1',JSON.stringify(D()))}catch(e){}}","function persist(){MH.save()}")
 js=re.sub(r"function canSee\(\)\{.*?\n","function canSee(){return true}\n",js,count=1)
 assert 'EMDSecurityV315' not in js,'sec'
@@ -36,7 +38,7 @@ rep("try{localStorage.setItem(COUR_KEY,JSON.stringify(cs))}catch(x){}","MH.lsSet
 rep("function couriers(){try{return JSON.parse(localStorage.getItem(COUR_KEY)||'{}')||{}}catch(e){return {}}}","function couriers(){try{return JSON.parse(MH.lsGet(COUR_KEY)||MH.lsGet('emd_v75_couriers')||'{}')||{}}catch(e){return {}}}")
 # تثبيت الأسعار عند كل حفظ: نموذج الطلب في التطبيق الجديد يحفظ السعر في الطلب أصلًا
 cut("/* تثبيت السعر في الطلب عند الحفظ","/* ===== الحسابات ===== */")
-rep("arr((window.EMDLifetimeV130?EMDLifetimeV130.all():D().orders))","arr(D().orders)")
+rep("arr((window.EMDLifetimeV130?EMDLifetimeV130.all():D().orders))","arr(MH.allOrders())")
 rep("var ds=null;try{ds=window.EMDDirectV113?window.EMDDirectV113.summary(r.s,r.e):null}catch(e){}","var ds=MH.dsSummary(r.s,r.e);")
 js=re.sub(r"\n  try\{if\(window\.EMDLayoutV114\)T=window\.EMDLayoutV114\.sort\('fin',T,function\(t\)\{return t\[0\]\}\)\}catch\(e\)\{\}","",js)
 assert 'EMDLayoutV114' not in js,'layout'
