@@ -72,6 +72,7 @@ document.addEventListener('click',function(e){
     case 'settings':closeSheetIfMenu(b);settingsSheet();break;
     case 'modes':closeSheet();modesOpen();break;
     case 'c438':c438(b.dataset.v);break;
+    case 'posTool':directLoad().then(function(){if(b.dataset.v==='xls')EMDImportV421.open();else EMDBarcodeV439.open()},function(){toast('تعذّر الفتح. تحقّق من الاتصال.')});break;
     case 'posSet':closeSheet();directLoad().then(function(){if(b.dataset.v==='prn'&&window.EMDPrnV444)EMDPrnV444.open();else if(window.EMDInvV443)EMDInvV443.designer(null)},function(){toast('تعذّر الفتح. تحقّق من الاتصال.')});break;
     case 'soon':toast('«'+(b.dataset.what||'هذا القسم')+'» يُبنى في المرحلة القادمة');break;
     case 'recopy':recopy();break;
@@ -84,7 +85,7 @@ var qT=0;
 document.addEventListener('input',function(e){
   var id=e.target.id;
   if(id==='q'){state.q=e.target.value;state.limit=30;clearTimeout(qT);qT=setTimeout(refreshList,180);return}
-  if(id==='pq'||id==='cq'){state[id]=e.target.value;state.limit=30;clearTimeout(qT);qT=setTimeout(function(){var tmp=document.createElement('div');tmp.innerHTML=state.view==='products'?productsHtml():customersHtml();var L=id==='pq'?'#plist':'#clist';$(L.slice(1)).innerHTML=tmp.querySelector(L).innerHTML;var om=document.querySelector('.moreBtn'),nm=tmp.querySelector('.moreBtn');if(om)om.remove();if(nm)$(L.slice(1)).after(nm)},180)}
+  if(id==='pq'||id==='cq'){state[id]=e.target.value;state.limit=30;clearTimeout(qT);qT=setTimeout(function(){var tmp=document.createElement('div');tmp.innerHTML=state.view==='products'?productsHtml():customersHtml();var L=id==='pq'?'#plist':'#clist';$(L.slice(1)).innerHTML=tmp.querySelector(L).innerHTML;if(id==='pq')varPass();var om=document.querySelector('.moreBtn'),nm=tmp.querySelector('.moreBtn');if(om)om.remove();if(nm)$(L.slice(1)).after(nm)},180)}
 });
 $('view').addEventListener('change',function(e){if(e.target.name==='nfm')nfSetMode(e.target.value)});
 $('fileIn').addEventListener('change',function(){

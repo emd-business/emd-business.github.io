@@ -2,12 +2,13 @@ function productsHtml(){
   var q=normTxt(state.pq||''),list=db.products.filter(function(p){return !q||normTxt([p.name,p.category,p.code,p.barcode].join(' ')).indexOf(q)>=0});
   var dm=demand();
   return '<div class="ch" style="margin-top:16px"><div><h2 class="ptitle" style="margin:0">📦 المنتجات</h2><p class="psub">عدد المنتجات: '+db.products.length+'. السعر والتكلفة والصورة.</p></div><button class="btn dark" data-act="addProduct">➕ منتج</button></div>'+
+    (mode()==='online'?'':'<div class="rowb" style="margin:0 0 10px"><button class="btn sm" data-act="posTool" data-v="xls">📥 استيراد من Excel</button><button class="btn sm" data-act="posTool" data-v="bar">🏷️ ملصقات الباركود</button></div>')+
     '<div class="search">🔎<input id="pq" type="search" placeholder="ابحث باسم المنتج أو التصنيف أو الكود" value="'+esc(state.pq||'')+'" autocomplete="off"></div>'+
-    '<div id="plist">'+(list.length?list.map(function(p){var i=pIndex(p),a=available(p.name);
-      return '<div class="card" style="--sc:var(--navy2)"><div class="prow">'+pimg(p)+'<div class="pbody"><h3>'+esc(p.name)+'</h3>'+
+    '<div id="plist"><div id="productsList">'+(list.length?list.map(function(p){var i=pIndex(p),a=available(p.name);
+      return '<div class="card product" style="--sc:var(--navy2)"><div class="prow">'+pimg(p)+'<div class="pbody"><h3><b>'+esc(p.name)+'</b></h3>'+
         '<div class="price">'+money(catPrice(p))+' '+CUR+(catCost(p)?' <small style="color:var(--mute);font-weight:600">· التكلفة '+money(catCost(p))+'</small>':'')+'</div>'+
         '<div class="nums"><span>الفعلي: '+num(p.stock)+'</span><span class="'+(a<=0?'low':'okk')+'">المتاح: '+a+'</span>'+(dm[normTxt(p.name)]?'<span>📈 طُلب: '+dm[normTxt(p.name)]+'</span>':'')+(p.category?'<span>'+esc(p.category)+'</span>':'')+'</div></div></div>'+
-        '<div class="acts" style="margin-top:10px"><button class="btn" data-act="editProduct" data-pi="'+i+'">✏️ تعديل</button><button class="btn" data-act="addStock" data-pi="'+i+'">➕ مخزون</button><button class="btn" data-act="orderProduct" data-pi="'+i+'">✍️ طلب جديد</button></div></div>'}).join(''):'<div class="empty">'+(db.products.length?'لا توجد منتجات مطابقة.':'لا توجد منتجات بعد. اضغط «➕ منتج».')+'</div>')+'</div>';
+        '<div class="acts" style="margin-top:10px"><button class="btn" data-act="editProduct" data-pi="'+i+'">✏️ تعديل</button><button class="btn" data-act="addStock" data-pi="'+i+'">➕ مخزون</button><button class="btn" data-act="orderProduct" data-pi="'+i+'">✍️ طلب جديد</button></div></div>'}).join(''):'<div class="empty">'+(db.products.length?'لا توجد منتجات مطابقة.':'لا توجد منتجات بعد. اضغط «➕ منتج».')+'</div>')+'</div></div>';
 }
 function stockHtml(){
   var low=0,out=0,res=0;
@@ -26,7 +27,7 @@ function productSheet(i,prefillName){
   var d=openSheet('<div class="sh"><h3>'+(p?'✏️ تعديل المنتج':'📦 منتج جديد')+'</h3><button class="x" data-act="close">إغلاق ✕</button></div><form id="pf" novalidate>'+
     f('pName','اسم المنتج <em>*</em>',p?p.name:(prefillName||''),'مثال: عطر ورد 50 مل')+
     '<div class="row"><div>'+f('pPrice','سعر البيع ('+CUR+')',p&&catPrice(p)?money(catPrice(p)):'','0.000','inputmode="decimal"')+'</div><div>'+f('pCost','تكلفة الشراء ('+CUR+')',p&&catCost(p)?money(catCost(p)):'','0.000','inputmode="decimal"')+'</div></div>'+
-    (p?'':f('pStock','الكمية الحالية',0,'0','inputmode="numeric"'))+
+    (p?'':f('pStock','الكمية الحالية',0,'0','inputmode="numeric"'))+(p||mode()==='online'?'':'<button type="button" class="btn e450-open" data-act="variants">🎨 هل لهذا المنتج مقاسات أو ألوان؟</button>')+
     '<label class="f">الصورة</label><div class="imgpick"><span id="pImgPrev">'+pimg({image:img})+'</span><button type="button" class="btn sm" data-act="pickImg">📷 اختيار صورة</button>'+(img?'<button type="button" class="btn sm red" data-act="rmImg">إزالة</button>':'')+'</div><input type="file" id="pImgIn" accept="image/*" class="hide">'+
     '<details class="more"'+(p&&(p.category||minStock(p)||p.code||p.barcode)?' open':'')+'><summary>تفاصيل أكثر (التصنيف، حد التنبيه، الكود)</summary>'+
       f('pCat','التصنيف',p&&p.category,'مثال: عطور')+f('pMin','حد التنبيه عند نقص المخزون',p&&minStock(p)?minStock(p):'','مثال: 3','inputmode="numeric"')+f('pCode','الكود أو الباركود',p&&(p.code||p.barcode||p.sku),'اختياري')+'</details>'+
@@ -34,6 +35,7 @@ function productSheet(i,prefillName){
   var newImg=null,box=d.querySelector('#pf');
   box.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
     if(b.dataset.act==='pickImg')$('pImgIn').click();
+    if(b.dataset.act==='variants'){var seed={name:$('pName').value,price:$('pPrice').value,cost:$('pCost').value,img:newImg||''};closeSheet();directLoad().then(function(){EMD450.open(seed);setTimeout(function(){var x=$('e450Base');if(x&&!x.value)x.focus()},60)},function(){toast('تعذّر الفتح. تحقّق من الاتصال.')})}
     if(b.dataset.act==='rmImg'){newImg='';$('pImgPrev').innerHTML=pimg(null);b.remove()}});
   $('pImgIn').addEventListener('change',function(){var file=this.files&&this.files[0];if(!file)return;shrink(file,480,function(u){newImg=u;$('pImgPrev').innerHTML=pimg({image:u})})});
   box.addEventListener('submit',function(e){e.preventDefault();

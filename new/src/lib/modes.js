@@ -37,6 +37,8 @@ function modesOpen(){modesLoad().then(function(M){M.open('settings')},function()
 /* لوحة البيع في الرئيسية لأنواع المحل؛ تُحمَّل الوحدة أول مرة ثم تُعاد الرسمة */
 function modesHome(){if(mode()==='online')return '';if(!window.EMDDirectV113)directLoad().then(function(){if(state.view==='home')render()},function(){});
   if(window.EMD417)return window.EMD417.homeHtml();modesLoad().then(function(){if(state.view==='home')render()},function(){});return ''}
+/* V450: المنتج الذي له خيارات يظهر بطاقة واحدة في قائمة المنتجات (أنواع المحل) */
+function varPass(){if(mode()==='online')return;if(window.EMD450){try{EMD450.listPass()}catch(e){}}else if(db.products.some(function(p){return p&&p.vg&&p.vo}))directLoad().then(function(){if(state.view==='products')render()},function(){})}
 /* V438: بطاقات الكاشير بدل حالات الطلبات في نوع «محل» */
 function cashCards(){var a=new Date();a.setHours(0,0,0,0);var b=new Date(a.getTime()+864e5),m=dsSummary(a,b),due=0,rc=0,rv=0,held=0,sh=null,cash=0,C=' '+CUR;
   dsList().forEach(function(s){if(!dsVoid(s))due+=Math.max(0,dsNet(s)-dsPaid(s));(s.ops||[]).forEach(function(p){var t=new Date(p.at);if(t>=a&&t<b){rc++;rv+=num(p.value)}})});
