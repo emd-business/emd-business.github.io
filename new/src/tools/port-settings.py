@@ -14,12 +14,15 @@ def html_by_id(i):
 def cut(x,a,b=None,n=1):
   c=x.count(a);assert c==n,(c,a[:70]);return x.replace(a,b if b is not None else '')
 css='';js='';html=''
+def add(name,x):  # db = بيانات التطبيق الجديد، إلا في وحدة تعرّف db محليًا
+  if not re.search(r"(\bvar\s+|,)db\s*[=;,]|function db\(",x):x=re.sub(r"(?<![\w.$'\"])db\b(?!\s*[:(])",'window.db',x)
+  return '/* ---- '+name+' ---- */\n'+x+'\n'
 # بيانات النشاط
 x=block('EMD-V333-business-profile-js','script');css+=block('EMD-V333-business-profile-style','style');html+=html_by_id('emdV333BusinessProfileModal')
 x=cut(x,"function admin(){try{return !!(window.EMDSecurityV315&&window.EMDSecurityV315.hasPermission&&window.EMDSecurityV315.hasPermission('*'))}catch(e){return false}}","function admin(){return RW.EMDPosH.owner()}")
 x=cut(x,"function allowed(){try{if(!window.EMDFeatureManagerV318)return true;return !!(window.EMDFeatureManagerV318.isEnabled('businessProfile')&&window.EMDFeatureManagerV318.isVisible('businessProfile'))}catch(e){return false}}","function allowed(){return true}")
 x=cut(x,"if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();","init();")
-js+='/* ---- V333 ---- */\n'+x+'\n'
+js+=add('V333',x)
 # حروف رقم الطلب: نافذة الإعداد فقط (العرض بالبادئة موجود في التطبيق الجديد: idsFmt)
 x=block('EMD-V129-prefix','script');css+=block('EMD-V129-css','style')
 a=x.index('/* 1) النصوص الظاهرة في الصفحة */');b=x.index('/* 4) الإعداد */');x=x[:a]+x[b:]
@@ -27,29 +30,42 @@ x=cut(x,"setInterval(inject,1500);inject();\n","")
 x=re.sub(r"function inject\(\)\{.*?\n","",x,count=1)
 x=cut(x,"window.EMDEncWaV129=function(t){return encodeURIComponent(fmt(String(t==null?'':t)))};\n","")
 x=cut(x,"window.EMDPrefixV129={get:get,fmt:fmt,open:open};","RW.EMDPrefixV129={get:get,fmt:RW.EMDPosH.idsFmt,open:open};")
-js+='/* ---- V129 ---- */\n'+x+'\n'
+js+=add('V129',x)
 # جمل يتجاهلها التحليل: النافذة (التنظيف نفسه في lib/parseclean.js)
 x=block('EMD-V120-parse','script');css+=block('EMD-V120-css','style')
 a=x.index('function wrap(){var f=window.parse;');b=x.index('/* إدارة الجمل المتجاهلة */');x=x[:a]+x[b:]
 x=re.sub(r"function inject\(\)\{.*?\nsetInterval\(inject,1500\);inject\(\);\n","",x,flags=re.S,count=1)
 x=cut(x,"window.EMDParseCleanV120={clean:clean,open:open};","RW.EMDParseCleanV120={clean:clean,open:open};")
-js+='/* ---- V120 ---- */\n'+x+'\n'
+js+=add('V120',x)
 # رسائل طلب جاهزة للعملاء
 x=block('EMD-V121-templates','script');css+=block('EMD-V121-css','style')
 x=re.sub(r"function inject\(\)\{.*?\n","",x,count=1);x=cut(x,"setInterval(inject,1500);inject();\n","")
-js+='/* ---- V121 ---- */\n'+x+'\n'
+js+=add('V121',x)
 # اقتراح إرسال الفاتورة بعد الاستلام: التطبيق الجديد يستدعي check() بعد كل حفظ
 x=block('EMD-V117-invprompt','script');css+=block('EMD-V117-css','style')
 x=cut(x,"function wrap(){var f=window.save;if(typeof f!=='function'||f.__emd117)return;var g=function(){var r=f.apply(this,arguments);try{check()}catch(e){}return r};g.__emd117=true;window.save=g}\nsetTimeout(function(){snap=take();wrap()},1500);setInterval(wrap,2000);","snap=take();")
 x=re.sub(r"function inject\(\)\{.*?\n.*?\n.*?\n","",x,count=1);x=cut(x,"setInterval(inject,1500);inject();\n","")
 x=cut(x,"try{window.EMDMoneyV75.invoice(oid(o))}catch(e){}","RW.EMDPosH.invoice(oid(o))")
-js+='/* ---- V117 ---- */\n'+x+'\n'
+js+=add('V117',x)
+# النسخ والاستعادة V313 + النسخ الاحتياطي والتخزين V122 + استرجاع الطلبات المفقودة V124
+x=block('emd-v313-backup-js','script');css+=block('emd-v313-backup-css','style');html+=html_by_id('emdBackupV313')
+x=re.sub(r"function addTool\(\)\{.*?\n\}\n","",x,count=1,flags=re.S)
+x=cut(x,"  addTool();setTimeout(addTool,500);setTimeout(addTool,1500);\n","")
+x=cut(x,"if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();","init();")
+js+=add('V313',x)
+x=block('EMD-V122-backup','script');css+=block('EMD-V122-css','style')
+x=re.sub(r"function inject\(\)\{.*?\n","",x,count=1)
+x=cut(x,"setInterval(inject,1500);inject();askPersist();\nsetTimeout(check,4000);setInterval(check,60000);","askPersist();setTimeout(check,4000);RW.__bkTick=check;")
+js+=add('V122',x)
+x=block('EMD-V124-fix','script');css+=block('EMD-V124-css','style')
+x=re.sub(r"function inject\(\)\{.*?\n","",x,count=1)
+x=re.sub(r"setInterval\(inject,1500\);inject\(\);\n?","",x,count=1)
+js+=add('V124',x)
 for j in [js]:
   assert 'setInterval' not in j and 'MutationObserver' not in j
 js=re.sub(r"(?<![\w.$])(window\.)?localStorage\b",'PLS',js)
-js=re.sub(r"(?<![\w.$'\"])db\b(?!\s*[:(])",'window.db',js)
-assert "'emd_business_v1'" not in js
-wrap=("(function(RW){var PH=RW.EMDPosH,PLS=PH.ls;\n"
+wrap=("(function(RW){var PH=RW.EMDSetH,PLS=PH.ls;\n"
   "var window=new Proxy(RW,{get:function(t,k){if(k==='db')return PH.db();if(k==='localStorage')return PLS;if(PH.alias[k]&&!(k in t))return PH.alias[k];var v=t[k];return typeof v==='function'&&PH.nat(v)?v.bind(t):v},set:function(t,k,v){t[k]=v;return true},has:function(t,k){return k in t||!!PH.alias[k]}});\n")
-out='/* مُولَّد بـ tools/port-settings.py من V333 وV129 وV120 وV121 وV117 — لا تعدّل هنا */\n(function(){var s=document.createElement("style");s.textContent='+json.dumps(css,ensure_ascii=False)+';document.head.appendChild(s);var d=document.createElement("div");d.innerHTML='+json.dumps(html,ensure_ascii=False)+';while(d.firstChild)document.body.appendChild(d.firstChild)})();\n'+wrap+js+'})(window);\n'
+out='/* مُولَّد بـ tools/port-settings.py من V333 وV129 وV120 وV121 وV117 وV313 وV122 وV124 — لا تعدّل هنا */\n(function(){var s=document.createElement("style");s.textContent='+json.dumps(css,ensure_ascii=False)+';document.head.appendChild(s);var d=document.createElement("div");d.innerHTML='+json.dumps(html,ensure_ascii=False)+';while(d.firstChild)document.body.appendChild(d.firstChild)})();\n'+wrap+js+'})(window);\n'
+out=out.replace('RW.EMDPosH','RW.EMDSetH')
 open(os.path.join(os.path.dirname(__file__),'..','lazy','settings.js'),'w',encoding='utf8').write(out);print('settings.js',len(out.encode()),'bytes')

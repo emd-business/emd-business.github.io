@@ -1293,7 +1293,12 @@ function parseClean(raw){
 /* ===== lib/setload.js ===== */
 /* ---------- وحدات الإعدادات المنقولة من التطبيق الحالي (lazy/settings.js، مولَّدة بـ tools/port-settings.py) ---------- */
 var SET_P=null;
-function setLoad(){if(window.EMDBusinessProfileV333&&window.EMDOrderTemplatesV121)return Promise.resolve();if(SET_P)return SET_P;window.EMDPosH=window.EMDPosH||posHelpers();
+/* مثل غلاف نقطة البيع، مع قراءة/كتابة «emd_business_v1» = بيانات التطبيق الجديد (النسخ والاستعادة)، وطول التخزين الحقيقي */
+function setHelpers(){var h=posHelpers(),L=h.ls;
+  h.ls={getItem:function(k){return k===LIVE_KEY?JSON.stringify(db):L.getItem(k)},setItem:function(k,v){if(k!==LIVE_KEY)return L.setItem(k,v);var d=JSON.parse(v);db=fix(d);dirty();saveNow();render()},removeItem:function(k){if(k!==LIVE_KEY)L.removeItem(k)},
+    get length(){try{return LS.length}catch(e){return 0}},key:function(i){try{return LS.key(i)}catch(e){return null}}};
+  h.alias.EMDArchiveV67={exportAll:function(){return archAll()}};return h}
+function setLoad(){if(window.EMDBusinessProfileV333&&window.EMDOrderTemplatesV121)return Promise.resolve();if(SET_P)return SET_P;window.EMDSetH=window.EMDSetH||setHelpers();
   SET_P=loadScript('settings.js?v=1').catch(function(e){SET_P=null;throw e});return SET_P}
 function setRun(fn){setLoad().then(fn,function(){toast('تعذّر الفتح. تحقّق من الاتصال.')})}
 /* المدير = كل الصلاحيات (حتى يُنقل نظام الموظفين) */
@@ -2239,9 +2244,9 @@ var SET_I={
  lock:['🔐 قفل التطبيق','كلمة المرور والقفل التلقائي وتسجيل الخروج.',null],
  sec:['🧾 الأدوار وسجل العمليات','الصلاحيات وسجل العمليات المهمة.',null],
  rec:['🛟 رمز استرجاع المدير','رمز يعيد لك رمز المدير إذا نسيته.',null],
- bk:['💾 النسخة الاحتياطية والاستعادة','تصدير نسخة، واستيراد نسخة، ونقطة استعادة.',null],
- bk2:['📊 حالة التخزين والتذكير','آخر نسخة، ونسبة التخزين، وتذكير النسخ.',null],
- lost:['🛟 استرجاع الطلبات المفقودة','البحث في النسخ التلقائية عن طلب اختفى.',null],
+ bk:['💾 النسخة الاحتياطية والاستعادة','تصدير نسخة، واستيراد نسخة، ونقطة استعادة.',function(){setRun(function(){EMDBackupV313.open()})}],
+ bk2:['📊 حالة التخزين والتذكير','آخر نسخة، ونسبة التخزين، وتذكير النسخ.',function(){setRun(function(){EMDBackupReminderV122.open()})}],
+ lost:['🛟 استرجاع الطلبات المفقودة','البحث في النسخ التلقائية عن طلب اختفى.',function(){setRun(function(){EMDRecoverV124.open()})}],
  help:['🆘 المساعدة والدعم','أسئلة شائعة، وإرسال مشكلة أو اقتراح.',function(){setClose();supportOpen()}],
  pwa:['📲 تثبيت التطبيق على الجوال','طريقة إضافة التطبيق إلى الشاشة الرئيسية.',function(){pwaInstall()}]};
 var SET_G={layout:['🎛️ تخصيص الأزرار والرئيسية','شكل الأزرار وترتيبها، والإجراءات السريعة، وبطاقات الرئيسية.',['btn','ord','qa','dash','dord','dpri']],
@@ -2424,7 +2429,7 @@ $('homeImgIn').addEventListener('change',function(){var f=this.files&&this.files
 }
 boot();if(stCfgOn())stLoad().catch(function(){});cloudBoot();storeBoot();puBoot();
 setTimeout(function(){nfLoad().then(nfBadge,function(){})},900);setTimeout(trBoot,2500);setTimeout(function(){setLoad().catch(function(){})},2000);setTimeout(archRefresh,2500);setTimeout(trEnsureAll,3000);
-setInterval(function(){coTick();cloudTick();storeTick();trTick();puTick();supTick();archTick();if(!$('sheets').children.length)closingTick();if(state.view==='home'&&!$('sheets').children.length){var c=document.querySelector('.clock');if(c){var n=new Date(),h=n.getHours();c.innerHTML=pad(h%12||12)+':'+pad(n.getMinutes())+' <span>'+(h<12?'ص':'م')+'</span>'}}},10000);
+setInterval(function(){coTick();if(window.__bkTick)try{__bkTick()}catch(e){}cloudTick();storeTick();trTick();puTick();supTick();archTick();if(!$('sheets').children.length)closingTick();if(state.view==='home'&&!$('sheets').children.length){var c=document.querySelector('.clock');if(c){var n=new Date(),h=n.getHours();c.innerHTML=pad(h%12||12)+':'+pad(n.getMinutes())+' <span>'+(h<12?'ص':'م')+'</span>'}}},10000);
 window.EMDRebuild={db:function(){return db},save:save,cloudCheck:cloudCheck,trPoll:trPoll,render:render,index:index,total:total,payState:payState,status:status};
 
 })();

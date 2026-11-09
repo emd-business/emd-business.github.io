@@ -1,6 +1,11 @@
 /* ---------- وحدات الإعدادات المنقولة من التطبيق الحالي (lazy/settings.js، مولَّدة بـ tools/port-settings.py) ---------- */
 var SET_P=null;
-function setLoad(){if(window.EMDBusinessProfileV333&&window.EMDOrderTemplatesV121)return Promise.resolve();if(SET_P)return SET_P;window.EMDPosH=window.EMDPosH||posHelpers();
+/* مثل غلاف نقطة البيع، مع قراءة/كتابة «emd_business_v1» = بيانات التطبيق الجديد (النسخ والاستعادة)، وطول التخزين الحقيقي */
+function setHelpers(){var h=posHelpers(),L=h.ls;
+  h.ls={getItem:function(k){return k===LIVE_KEY?JSON.stringify(db):L.getItem(k)},setItem:function(k,v){if(k!==LIVE_KEY)return L.setItem(k,v);var d=JSON.parse(v);db=fix(d);dirty();saveNow();render()},removeItem:function(k){if(k!==LIVE_KEY)L.removeItem(k)},
+    get length(){try{return LS.length}catch(e){return 0}},key:function(i){try{return LS.key(i)}catch(e){return null}}};
+  h.alias.EMDArchiveV67={exportAll:function(){return archAll()}};return h}
+function setLoad(){if(window.EMDBusinessProfileV333&&window.EMDOrderTemplatesV121)return Promise.resolve();if(SET_P)return SET_P;window.EMDSetH=window.EMDSetH||setHelpers();
   SET_P=loadScript('settings.js?v=1').catch(function(e){SET_P=null;throw e});return SET_P}
 function setRun(fn){setLoad().then(fn,function(){toast('تعذّر الفتح. تحقّق من الاتصال.')})}
 /* المدير = كل الصلاحيات (حتى يُنقل نظام الموظفين) */
