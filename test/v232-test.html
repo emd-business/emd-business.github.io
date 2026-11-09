@@ -33265,7 +33265,7 @@ function loadA(){var d;try{d=JSON.parse(lsGet(AK)||'{}')||{}}catch(e){d={}}d.ali
 function saveA(d){d.updated=Date.now();lsSet(AK,JSON.stringify(d))}
 
 /* ---------- الكلمات ---------- */
-var QW={'واحد':1,'واحده':1,'وحده':1,'حبه':1,'قطعه':1,'نسخه':1,'علبه':1,'اثنين':2,'اثنتين':2,'ثنتين':2,'حبتين':2,'نسختين':2,'قطعتين':2,'علبتين':2,'ثلاث':3,'ثلاثه':3,'اربع':4,'اربعه':4,'خمس':5,'خمسه':5,'ست':6,'سته':6,'سبع':7,'سبعه':7,'ثمان':8,'ثمانيه':8,'تسع':9,'تسعه':9,'عشر':10,'عشره':10,'عشرين':20,'ثلاثين':30,'اربعين':40,'خمسين':50,'ميه':100,'مية':100,'مائه':100,'دزينه':12,'درزن':12,'دزن':12,'درزينه':12,'دزينتين':24,'درزنين':24};
+var QW={'واحد':1,'واحده':1,'وحده':1,'حبه':1,'قطعه':1,'نسخه':1,'علبه':1,'اثنين':2,'اثنتين':2,'ثنتين':2,'حبتين':2,'نسختين':2,'قطعتين':2,'علبتين':2,'ثلاث':3,'ثلاثه':3,'اربع':4,'اربعه':4,'خمس':5,'خمسه':5,'ست':6,'سته':6,'سبع':7,'سبعه':7,'ثمان':8,'ثمانيه':8,'تسع':9,'تسعه':9,'عشر':10,'عشره':10,'عشرين':20,'ثلاثين':30,'اربعين':40,'خمسين':50,'ميه':100,'مية':100,'مائه':100,'دزينه':12,'درزن':12,'دزن':12,'درزينه':12,'دزينتين':24,'درزنين':24,'زوج':2,'زوجين':4};
 var UNIT1=/^(?:حبه|حبات|حب|قطعه|قطع|نسخه|نسخ|علبه|علب|pcs|pc|piece|pieces)$/;
 var UNITX=/^(?:كرتون|كرتونه|كراتين|باكيت|باكت|بكت|صندوق|كيس|طقم|شده|بندل)$/;
 var STOP={};('و او من في على الى إلى ل لـ عن مع بس فقط كل لو سمحت سمحتي فضلك ممكن ابي ابا ابغي ابغى ابغا اريد أريد بغيت ودي حاب حابه حبيت اطلب أطلب عندكم عندك تطلبين تطلب لي ياليت يا اخوي اختي اخي أخي أختي طلب طلبي طلبيه الطلب طلب جديد السلام عليكم ورحمه الله وبركاته سلام مرحبا مرحباً هلا والله اهلا أهلا صباح مساء الخير هاي hi hello i want need please and the a of x × * + - – — / : عدد العدد الكميه كميه الاسم اسم اسمي واسمي باسم بإسم بأسم الرقم رقم رقمي ورقمي المكان العنوان عنواني التوصيل توصيل والتوصيل الموقع الدفع والدفع طريقه المنتج المنتجات الصنف item qty name phone area address city للمدرسه للبيت هديه انا أنا معك معاك هذا شكرا مشكور مشكورين يعطيك العافيه تسلم ارسل ارسلوا ارسله ولايه ولاية محافظه منطقه الولايه المنطقه شركه الشحن مكتب مندوب ملاحظه ملاحظات المستلم التواصل للتواصل الواتساب واتساب الجوال الهاتف كاش نقدا نقدي نقدًا تحويل بنكي استلام الاستلام عند عنوان التواصل الطلب طريقة مكان الجهه الجهة موبايل تلفون النور order new thanks thank you pls توصلونه وتوصلونه توصلونها توصلوه وصلوه ارسلوه ارسلوها كم سعر بكم').split(/\s+/).forEach(function(w){STOP[N(w)]=1});
@@ -33298,7 +33298,7 @@ function aliasList(){var A=loadA().alias,P=prods();return Object.keys(A).filter(
 var COLORS=/^(?:ابيض|اسود|سوداء|سودا|احمر|حمراء|ازرق|زرقاء|اخضر|خضراء|بيج|رمادي|ذهبي|فضي|وردي|بني|كحلي|عنابي|كبير|صغير|وسط)$/;
 
 /* ---------- تحليل سطر فيه منتجات ---------- */
-function toks(line){return dg(line).replace(/[()\[\]{}]/g,' ').replace(/([×x\*])\s*(\d)/gi,' $1$2').replace(/(\d)\s*([×x\*])(?=\s|$)/gi,'$1 ').replace(/[+،,]/g,' + ').split(/\s+/).filter(Boolean)}
+function toks(line){return dg(line).replace(/[()\[\]{}\/=:：]/g,' ').replace(/(عدد|العدد)(\d)/g,'$1 $2').replace(/(\d)(x|×)(?=\s|$)/gi,'$1').replace(/([×x\*])\s*(\d)/gi,' $1$2').replace(/(\d)\s*([×x\*])(?=\s|$)/gi,'$1 ').replace(/[+،,]/g,' + ').split(/\s+/).filter(Boolean)}
 function numOf(t,units){var n0=tokNorm(t),n=QW[n0]?n0:n0.replace(/^و(?=\S)/,'');var raw=dg(t).replace(/^و/,'');
   var m=raw.match(/^[×x\*]?(\d{1,3})$/i);if(m&&+m[1]>0)return {q:+m[1],u:''};
   if(QW[n])return {q:QW[n],u:''};return null}
@@ -33331,24 +33331,34 @@ function findMentions(line){
   /* «مقاس 54» و«لون 2» ليست كميات */
   for(var zi=0;zi<T.length-1;zi++){if(/^(?:مقاس|المقاس|حجم|size|لون|موديل|رقم)$/.test(tokNorm(T[zi]))&&!used[zi]){used[zi]=3;used[zi+1]=3}}
   /* ٣) الكميات */
-  M.forEach(function(m,k){var next=M[k+1],q=0,cons=[],unit='',base=0;
+  function nn(x){return x==null?'':tokNorm(T[x]).replace(/^و(?=\S{2})/,function(m){return QW[tokNorm(T[x])]?'و':''})}
+  function after(m,k){var a=m.j,t=T[a],r=null;if(!t||used[a])return null;var tn=tokNorm(t);
+    if(/^(?:عدد|العدد|الكميه|كميه)$/.test(tn)&&T[a+1]&&numOf(T[a+1])&&!used[a+1])return {q:numOf(T[a+1]).q,c:[a,a+1]};
+    if(/^(?:نفس|بنفس)$/.test(tn)&&/^(?:العدد|الكميه)$/.test(nn(a+1))&&k>0)return {q:M[k-1].q,c:[a,a+1]};
+    if(/^(?:مثله|مثلها|مثلهم|زيه|زيها)$/.test(tn)&&k>0)return {q:M[k-1].q,c:[a]};
+    if(isWaw(t))return null;
+    var n=numOf(t);if(n){r={q:n.q,c:[a]};if(/^و?نص$/.test(tn)&&T[a+1]){}var u=T[a+1]&&tokNorm(T[a+1]);if(u&&UNIT1.test(u))r.c.push(a+1);else if(u&&UNITX.test(u)){r.unit=u;r.base=n.q;r.c.push(a+1)}return r}
+    if(/^و?نص$/.test(tn)&&T[a+1]&&numOf(T[a+1])&&numOf(T[a+1]).q===12)return {q:6,c:[a,a+1]};
+    if(UNITX.test(tn)){var n2=T[a+1]&&numOf(T[a+1]);return n2&&!isWaw(T[a+1])?{q:n2.q,c:[a,a+1],unit:tn,base:n2.q}:{q:1,c:[a],unit:tn,base:1}}
+    return null}
+  function before(m,k){var b=m.i-1;if(b<0||used[b])return null;var bn=tokNorm(T[b]),bw=bn.replace(/^و(?=\S)/,'');
+    if(/^و?من$/.test(bn)){b--;if(b<0||used[b])return null;bn=tokNorm(T[b]);bw=bn.replace(/^و(?=\S)/,'')}
+    if(k>0&&b<M[k-1].j)return null;
+    if((UNIT1.test(bw)&&!QW[bw])||UNITX.test(bw)){var n=T[b-1]&&!used[b-1]&&numOf(T[b-1]);if(n){var r={q:n.q,c:[b-1,b]};if(UNITX.test(bw)){r.unit=bw;r.base=n.q}if(T[b-2]&&/^و?نص$/.test(tokNorm(T[b-2]))&&n.q===12){r.q=6;r.c.unshift(b-2)}return r}
+      if(UNITX.test(bw))return {q:1,c:[b],unit:bw,base:1};return null}
+    var n3=numOf(T[b]);if(n3){var r3={q:n3.q,c:[b]};if(T[b-1]&&!used[b-1]&&/^و?نص$/.test(tokNorm(T[b-1]))&&n3.q===12){r3.q=6;r3.c.unshift(b-1)}return r3}
+    if(bn==='و'&&T[b-1]&&!used[b-1]&&numOf(T[b-1])&&(k===0||M[k-1].j<b-1))return {q:numOf(T[b-1]).q,c:[b-1,b]};
+    return null}
+  /* إذا جاء العدد قبل المنتج الأول («٢ ورد ٣ مسك») فالأعداد كلها قبل منتجاتها */
+  var preStyle=M.length>1&&!!before(M[0],0)&&!after(M[0],0)||M.length>1&&!!before(M[0],0)&&M[1]&&after(M[0],0)&&after(M[0],0).c[after(M[0],0).c.length-1]===M[1].i-1&&!!before(M[1],1);
+  M.forEach(function(m,k){var q=0,r=null;
     if(m.preq){m.q=m.preq;m.qx=1;return}
-    var a=m.j,t=T[a];
-    if(t&&/^(?:عدد|العدد|الكميه|كميه)$/.test(tokNorm(t))&&T[a+1]&&numOf(T[a+1])){q=numOf(T[a+1]).q;cons=[a,a+1]}
-    else if(t&&!isWaw(t)&&numOf(t)&&!(next&&next.i===a+1&&QW[tokNorm(t)]&&false)){q=numOf(t).q;cons=[a];var u=T[a+1]&&tokNorm(T[a+1]);if(u&&UNIT1.test(u))cons.push(a+1);else if(u&&UNITX.test(u)){unit=u;base=q;cons.push(a+1)}}
-    else if(t&&!isWaw(t)&&UNITX.test(tokNorm(t))){unit=tokNorm(t);base=1;q=1;cons=[a]}
-    if(!q){var b=m.i-1,bt=T[b],bn=bt&&tokNorm(bt);
-      if(bt&&!used[b]&&!m.cb){
-        if(bn&&(UNIT1.test(bn.replace(/^و/,''))||UNITX.test(bn.replace(/^و/,'')))&&T[b-1]&&numOf(T[b-1])&&!isUsedQ(b-1)){q=numOf(T[b-1]).q;cons=[b-1,b];var ub=bn.replace(/^و/,'');if(UNITX.test(ub)){unit=ub;base=q}}
-        else if(numOf(bt)&&!isUsedQ(b)){q=numOf(bt).q;cons=[b]}
-        else if(bn&&UNITX.test(bn.replace(/^و/,''))){unit=bn.replace(/^و/,'');base=1;q=1;cons=[b]}
-        else if(bn&&UNIT1.test(bn.replace(/^و/,''))&&QW[bn.replace(/^و/,'')]){q=QW[bn.replace(/^و/,'')];cons=[b]}
-        else if(bn==='و'&&T[b-1]&&numOf(T[b-1])&&!isUsedQ(b-1)&&k>0&&M[k-1].j<b-1){q=numOf(T[b-1]).q;cons=[b-1,b]}}}
-    /* «نص درزن» */
-    if(cons.length&&T[cons[0]-1]&&tokNorm(T[cons[0]-1])==='نص'&&q===12){q=6;cons.unshift(cons[0]-1)}
+    r=preStyle?(before(m,k)||after(m,k)):(after(m,k)||before(m,k));
+    if(r){r.c.forEach(function(c){used[c]=2});q=r.q}
+    var unit=r&&r.unit||'',base=r&&r.base||0;
     if(unit&&L.units[unit])q=base*L.units[unit];
-    if(!q)q=m.dq||1;else if(m.dq&&q===1)q=m.dq;
-    m.qx=cons.length?1:0;m.q=q;m.unit=unit;m.base=base;cons.forEach(function(c){used[c]=2})});
+    if(!q)q=m.dq||1;else if(m.dq&&q===1&&!(r&&r.c.length))q=m.dq;
+    m.qx=r?1:0;m.q=q;m.unit=unit;m.base=base});
   function isUsedQ(x){return !!used[x]}
   return {T:T,M:M,used:used}}
 
@@ -33362,9 +33372,16 @@ var PLEN=/^(?:muscat|salalah|sohar|nizwa|sur|seeb|barka|ibri|buraimi|qurum|khoud
 function isPlaceStart(s){var w=N(s).split(' ');if(PLEN.test(String(s).trim()))return true;try{var V=window.EMDPlacesV104;if(V){var f=V.find(s,false);if(f&&f.i===0)return true}}catch(e){}
   return PLX.indexOf(w[0].replace(/^(?:لل)/,'ال').replace(/^ل(?=\S{3})/,''))>=0||PLX.indexOf(w[0])>=0}
 var PLX=('الخوض الموالح العذيبه الغبره القرم الخوير روي الحيل المعبيله الانصب غلا الوطيه الحمريه دارسيت حلبان الملده الفليج الحافه السعاده العقر الخويريه الطريف فرق سناو المصنعه العامرات السيب بوشر مطرح مسقط صحار الدهاريز الوادي الكبير').split(' ').map(N);
+var NUMR='(\\d{1,3}|واحد[ةه]?|وحد[ةه]|حب[ةه]|حبتين|اثنين|اثنتين|ثنتين|ثلاث[ةه]?|[اأ]ربع[ةه]?|خمس[ةه]?|ست[ةه]?|سبع[ةه]?|عشر[ةه]?|نسخ[ةه]|قطع[ةه]|نسختين|قطعتين)';
+var ONER='(?:واحد|وحد[ةه]|صنف|نوع|منتج|حب[ةه]|منتج)(?:\\s+منهم|\\s+منها)?';
+var EACH=[new RegExp('(?:^|\\s)(?:و?من\\s+)?كل\\s+'+ONER+'\\s+'+NUMR+'(?:\\s+(?:حب[ةه]|حبات|نسخ[ةه]?|قطع[ةه]?))?\\s*[:：]?'),
+  new RegExp('(?:^|\\s)'+NUMR+'(?:\\s+(?:حبات|نسخ|قطع))?\\s+(?:من|لكل|ل)\\s*(?:كل\\s+)?'+ONER+'\\s*[:：]?'),
+  new RegExp('(?:^|\\s)(?:الاثنين|الاثنتين|الثنتين|الكل|كلهم|كلها|الجميع)\\s+'+NUMR+'(?:\\s+'+NUMR+')?'),
+  new RegExp('(?:^|\\s)'+NUMR+'\\s+\\1(?=\\s|$)')];
+function eachOf(s0){var s1=dg(s0);for(var i=0;i<EACH.length;i++){var m=s1.match(EACH[i]);if(m){var n=numOf(m[1]);if(n&&n.q>0)return {q:n.q,rest:(s1.slice(0,m.index)+' '+s1.slice(m.index+m[0].length)).replace(/\s+/g,' ').trim()}}}return null}
 var PHRX=/(?:\+|00)?(?:968[\s\-]*)?(?<!\d)([279](?:[\s\-]?\d){7})(?!\d)/;
 function pre(raw){
-  var lines=String(raw||'').split(/\r?\n/),out=[],extra=[],info={mentions:[],names:[]},L=loadL();
+  var lines=String(raw||'').split(/\r?\n/),out=[],extra=[],info={mentions:[],names:[]},L=loadL(),gEach=0;
   /* افصل السطر الطويل الذي يجمع عدة معلومات */
   var L2=[];lines.forEach(function(l){var t=dg(stripWA(l));var k=(t.match(new RegExp(SPLITK.source,'g'))||[]).length;
     if(k>=1&&t.length>20){t.split(SPLITK).forEach(function(x){L2.push(x.replace(/^و(?=(?:اسمي|رقمي|الرقم|التوصيل|العنوان|الدفع|المكان|الاسم))/,''))})}else L2.push(l)});
@@ -33379,6 +33396,8 @@ function pre(raw){
     var t=stripWA(l0).trim();if(!t){out.push(l0);return}
     var bare=t.replace(/^[^\p{L}\p{N}]+/u,'');
     if(GREET.test(N(bare)))return;
+    var sm=bare.match(/^(?:و?(?:ب?نفس)\s+(?:الشي|الشيء|العدد|الكميه|الكمية)|و?مثله|و?مثلها|و?زيه|و?زيها)\s+(.+)$/),same=0;if(sm&&info.mentions.length){same=info.mentions[info.mentions.length-1].q;bare=sm[1]}
+    var le=same,ec=eachOf(bare);if(ec){if(!ec.rest||!findMentions(ec.rest).M.length){gEach=ec.q;if(!ec.rest||!N(ec.rest).split(' ').some(function(w){return !STOP[w]}))return;bare=ec.rest}else{le=ec.q;bare=ec.rest}}
     var g2=bare.match(/^(?:السلام عليكم|سلام عليكم|مرحبا|مساء الخير|صباح الخير)(?:\s+(?:ورحمة الله|ورحمه الله|وبركاته|اخوي|اختي))*[\s،,.!]+(?=\S)/);if(g2&&depth<3){proc(bare.slice(g2[0].length),depth+1);return}
     var lab0=bare.match(/^(?:الجهه|الجهة|اسم|الاسم الكريم|اسم العميل|اسم الزبون)\s*[:：]\s*(.+)$/);if(lab0){out.push('الاسم: '+lab0[1].trim());info.names.push(lab0[1].trim());return}
     var lab1=bare.match(/^(?:رقم|موبايل|تلفون)\s*[:：]\s*(.+)$/);if(lab1){out.push('الرقم: '+lab1[1].trim());return}
@@ -33408,6 +33427,7 @@ function pre(raw){
     /* المنتجات */
     var fm=findMentions(bare);
     if(fm.M.length&&!/^(?:الاسم|اسمي|الرقم|رقمي|العنوان|المكان|اسم المستلم|رقم التواصل)(?:\s|[:：\/])/.test(bare)){
+      if(le)fm.M.forEach(function(m){if(!m.qx&&!m.dq){m.q=le;m.qx=1;m.each=1}});
       var leftTok=fm.T.filter(function(x,ix){return !fm.used[ix]||fm.used[ix]===3});
       var nums=fm.T.filter(function(x,ix){return !fm.used[ix]&&(/^\d{1,3}$/.test(dg(x))||QW[tokNorm(x)]&&!/^(?:حبه|قطعه|نسخه|علبه)$/.test(tokNorm(x)))});
       if(fm.M.length===1&&!fm.M[0].qx&&nums.length===1){fm.M[0].q=numOf(nums[0]).q;fm.M[0].qx=1;leftTok.splice(leftTok.indexOf(nums[0]),1)}
@@ -33418,7 +33438,7 @@ function pre(raw){
       if(restN.length){
         var SZ=/(?:^|\s)(?:مقاس|لون|حجم|size|color)\s*[:：]?\s*\S+/gi,sz=rest2.match(SZ);if(sz){extra.push('📝 تفاصيل: '+sz.map(function(x){return x.trim()}).join('، '));rest2=rest2.replace(SZ,' ').replace(/\s+/g,' ').trim()}
         var lb2=rest2.replace(/^(?:(?:ابي|ابغى|ابغي|ابا|اريد|ممكن|بغيت|حاب|اطلب|لو سمحت|عندكم|تطلبين|لي)\s+)+/,'').trim();
-        var ea=lb2.match(/(?:^|\s)كل\s+(?:واحد|وحده)\s+(\S+)(?:\s+(?:حبه|حبات|نسخه|نسخ))?/);if(ea){var ev=/^\d+$/.test(dg(ea[1]))?+dg(ea[1]):QW[N(ea[1])];if(ev){fm.M.forEach(function(m){if(!m.qx&&!m.dq){m.q=ev;m.qx=1;m.each=1}});lb2=lb2.replace(ea[0],' ').trim()}}
+        /* (كل واحد …) عولجت في بداية السطر */
         if(lb2&&N(lb2).split(' ').some(function(w){return !STOP[w]&&!STOP[w.replace(/^و/,'')]})){
           var lbp=lb2.replace(/^(?:لل)(?=\S{3})/,'ال').replace(/^(?:ل|من\s+|في\s+|الى\s+|إلى\s+)(?=\S{3})/,'');
           if(PHRX.test(dg(lb2))||NAMEK.test(lb2)||/(?:^|\s)(?:و?رقمي|و?الرقم|العنوان|المكان|التوصيل)(?:\s|[:：]|$)/.test(lb2))proc(lb2,depth+1);
@@ -33427,25 +33447,27 @@ function pre(raw){
               if(c2&&isPlaceStart(c2)){var rest3=ws.slice(z+((/^(?:الى|إلى|في)$/.test(w))?2:1)).join(' ');placeOut(c2+(rest3&&isPlaceStart(c2+' '+rest3)?'':''));var pre3=ws.slice(0,z).join(' ');if(pre3&&N(pre3).split(' ').some(function(x){return !STOP[x]}))extra.push('📝 تفاصيل: '+pre3);return true}}return false})()){}
           else if(lb2.split(/\s+/).some(function(x){return numOf(x)}))out.push(lb2);
           else extra.push('📝 تفاصيل: '+lb2)}}
-      var ml=fm.M.map(function(m){info.mentions.push(m);return m.qx||m.dq||!m.p?(m.p||m.raw)+' × '+m.q:m.p+'⁣'});out.splice.apply(out,[mark,0].concat(ml));
+      fm.M.forEach(function(m){info.mentions.push(m)});out.splice.apply(out,[mark,0].concat(fm.M));
       return}
     var tq=dg(bare).match(/^(?:(?:i want|i need|ابي|ابغى|ابغي|ابا|اريد|ممكن)\s+)?(.*[a-z\u0621-\u064A].*?)\s+[×x\*]?(\d{1,3})$/i);
     if(tq&&/[a-z]/i.test(bare)&&!/[:：]/.test(bare)&&!PHRX.test(dg(bare))&&+tq[2]>0){var nm2=tq[1].replace(/^(?:hi|hello)\s*[,،]?\s*(?:i want|i need)?\s*/i,'').trim();out.push(nm2+' × '+tq[2]);info.mentions.push({p:null,raw:nm2,q:+tq[2],qx:1,eng:1});return}
     out.push(l0)}
   L2.forEach(function(l){proc(l,0)});
-  /* نفس المنتج مكرر في سطرين ← كمية واحدة مجمّعة */
-  var seen={};info.mentions=info.mentions.filter(function(m){if(!m.p)return true;var o=seen[m.p];if(!o){seen[m.p]=m;return true}
-    o.q=(o.q||1)+(m.q||1);o.qx=1;var dropped=false;out=out.filter(function(l){if(!dropped&&(l===m.p+'⁣'||l===m.p+' × '+m.q)&&out.indexOf(l)!==out.lastIndexOf(l)){dropped=true;return false}return true});
-    out=out.map(function(l){return l===o.p+'⁣'||new RegExp('^'+o.p.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+' × \\d+$').test(l)?o.p+' × '+o.q:l});return false});
+  /* «العود ٢ والمسك ٣» بعد ذكر المنتجات: كمية لمنتج ذُكر من قبل */
+  info.mentions.forEach(function(m,k){if(m.p||m.eng)return;var rt=tokNorm(m.raw).split(' ').map(stripAl);
+    var prev=info.mentions.filter(function(o,j){return j!==k&&o.p&&!o.drop&&rt.every(function(t){return N(o.p).split(' ').map(stripAl).indexOf(t)>=0})});
+    var uniq=prev.filter(function(o,j){return prev.findIndex(function(x){return x.p===o.p})===j});
+    if(uniq.length===1&&m.qx){uniq[0].q=m.q;uniq[0].qx=1;uniq[0].upd=1;m.drop=1}});
+  /* نفس المنتج مكرر ← كمية واحدة مجمّعة */
+  var seen={};info.mentions.forEach(function(m){if(!m.p||m.drop)return;var o=seen[m.p];if(!o){seen[m.p]=m;return}o.q=(o.q||1)+(m.q||1);o.qx=1;m.drop=1});
   /* لا يوجد اسم صريح: أقصر سطر يشبه الاسم (ليس منتجًا ولا مكانًا ولا تحية) */
   if(!info.names.length&&!out.some(function(l){return /^الاسم\s*[:：]/.test(l)})){
-    var cand=out.filter(function(l){var t=dg(l.replace(/⁣/g,'')).trim();if(!t||/[:：×\d]/.test(t)||t.split(/\s+/).length>4)return false;var n=N(t);if(GREET.test(n)||STOP[n]||isPlaceStart(t)||findMentions(t).M.length||/^(?:انا|أنا|معك|معاك|ابي|ابغى|اريد)\s/.test(n))return false;
+    var cand=out.filter(function(l){if(typeof l!=='string')return false;var t=dg(l).trim();if(!t||/[:：×\d]/.test(t)||t.split(/\s+/).length>4)return false;var n=N(t);if(GREET.test(n)||STOP[n]||isPlaceStart(t)||findMentions(t).M.length||/^(?:انا|أنا|معك|معاك|ابي|ابغى|اريد)\s/.test(n))return false;
       return n.split(' ').some(function(w){return !STOP[w]})});
     if(cand.length){var nmc=cand[0].trim();out=out.map(function(l){return l===cand[0]?'الاسم: '+nmc:l});info.names.push(nmc)}}
-  /* «كل واحد حبه / كل واحد 2» */
-  var each=null;out=out.filter(function(l){var m=N(l).match(/^كل\s+(?:واحد|وحده|صنف|منتج)\s+(\S+)(?:\s+(?:حبه|حبات|نسخه))?$/);if(m){var v=/^\d+$/.test(m[1])?+m[1]:QW[m[1]];if(v){each=v;return false}}return true});
-  out=out.map(function(l){return /⁣$/.test(l)?l.slice(0,-1)+(each?' × '+each:''):l});
-  if(each)info.mentions.forEach(function(m){if(!m.qx&&!m.dq){m.q=each;m.each=1}});
+  if(gEach)info.mentions.forEach(function(m){if(!m.qx&&!m.dq&&!m.each){m.q=gEach;m.qx=1;m.each=1}});
+  info.mentions=info.mentions.filter(function(m){return !m.drop});
+  out=out.filter(function(l){return !(typeof l==='object'&&l.drop)}).map(function(l){if(typeof l!=='object')return l;return l.qx||l.dq||!l.p?(l.p||l.raw)+' × '+l.q:l.p});
   return {text:out.join('\n'),extra:extra,info:info}}
 
 /* ---------- بعد التحليل ---------- */
