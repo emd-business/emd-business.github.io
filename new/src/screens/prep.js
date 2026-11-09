@@ -104,7 +104,7 @@ function shipSheet(ids){
     if(ok===1&&one&&cphone(os[0]))openSheet('<div class="sh"><h3>🚚 تم شحن '+esc(onum(os[0]))+'</h3><button class="x" data-act="close">إغلاق ✕</button></div><p class="note">هل تريد إبلاغ العميل بأن طلبه شُحن؟</p><div class="foot"><button class="btn dark" data-act="waSend" data-id="'+esc(oid(os[0]))+'">💬 إرسال إشعار الشحن</button><button class="btn" data-act="close">لاحقًا</button></div>');
   });
 }
-function afterFlow(){if(state.view==='prep')refreshPrep();else if(state.view==='orders')refreshList();else render();var b=$('alertBadge'),ix=index();b.textContent=ix.alerts;b.classList.toggle('hide',!ix.alerts)}
+function afterFlow(){if(state.view==='prep')refreshPrep();else if(state.view==='orders')refreshList();else render();nfBadge()}
 /* الخطوة التالية للطلب من أي مكان (البطاقة، التفاصيل، النقل) */
 function advanceOrder(o){
   var s=status(o);

@@ -68,7 +68,7 @@ document.addEventListener('click',function(e){
     case 'closing':var cs=b.closest('.sheet');if(cs)closeSheet(cs);closingSheet();break;
     case 'prepNow':state.view='prep';state.sel={};render();window.scrollTo(0,0);break;
     case 'moreSheet':moreSheet();break;
-    case 'alerts':alertsSheet();break;
+    case 'alerts':nfOpen();break;
     case 'settings':closeSheetIfMenu(b);settingsSheet();break;
     case 'modes':closeSheet();modesOpen();break;
     case 'c438':c438(b.dataset.v);break;

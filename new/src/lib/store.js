@@ -33,7 +33,7 @@ function save(){ // حفظ واحد مؤجل قليلًا بدل عشرات عم
   clearTimeout(saveT);
   saveT=setTimeout(saveNow,120);
 }
-function saveNow(){saveT=0;var known=syStamp(db,cJ(CK.known,null));lsSet(KEY,JSON.stringify(db));lsSet(CK.known,JSON.stringify(known));cloudDirty();trBoot()}
+function saveNow(){saveT=0;if(typeof stockReconcile==='function'&&stockReconcile())setTimeout(function(){try{render()}catch(e){}},0);var known=syStamp(db,cJ(CK.known,null));lsSet(KEY,JSON.stringify(db));lsSet(CK.known,JSON.stringify(known));cloudDirty();trBoot()}
 window.addEventListener('pagehide',function(){if(saveT){clearTimeout(saveT);saveNow()}});
 
 var PIN_KEY='emd_rb_pins_v1'; // تثبيت التجربة منفصل عن تثبيت التطبيق الأصلي
