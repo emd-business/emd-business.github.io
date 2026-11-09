@@ -178,7 +178,7 @@ details.more summary{font-weight:800;padding:8px 0;cursor:pointer}
 <div class="wrap">
   <header>
     <div class="brand"><img src="logo.svg" alt=""><div><h1>EMD Business</h1><small id="storeName">إدارة الطلبات والمخزون</small></div></div>
-    <div class="hbtns"><button id="cloudChip" class="cchip off" data-act="cloud">☁️ الحساب</button><button data-act="settings">⚙️ الإعدادات</button></div>
+    <div class="hbtns"><button id="cloudChip" class="cchip off" data-act="cloud">☁️ الحساب</button><button data-act="settings">⚙️ الإعدادات</button><button id="emd101Chip" class="emd101-chip" data-act="support">🆘 مساعدة</button></div>
   </header>
   <main id="view"></main>
 </div>
@@ -982,6 +982,19 @@ function puPaint(force){if(!puBox||!puBox.isConnected)return;var c=puCfg(),p=puP
   var on=c.on&&p==='granted',b=puBox.querySelector('#puMain');b.textContent=on?'إيقاف الإشعارات على هذا الجهاز':'🔔 تفعيل الإشعارات';b.style.display=(s==='ios'||s==='unsupported'||s==='denied')?'none':'';b.disabled=s==='busy';
   [].forEach.call(puBox.querySelectorAll('[data-puk]'),function(i){i.checked=c.k[i.dataset.puk]!==false;i.disabled=!on})}
 
+/* ===== lib/support.js ===== */
+/* ---------- المساعدة والدعم: أسئلة شائعة، وإرسال بلاغ لفريق التطبيق، وقراءة الردود ----------
+   الملف lazy/support.js مولَّد من V101 (tools/port-support.py). في التجربة: قراءة البلاغات والردود مسموحة، والإرسال ممنوع. */
+var supLoading=null,supLast=0;
+function supHelpers(){return {api:function(){return {url:CL_URL,key:CL_KEY,version:'new',token:cToken,uid:cUid,device:function(){return CLOUD_SANDBOX?'تجربة التطبيق الجديد':'التطبيق الجديد'}}},
+  session:function(){try{return cSession()}catch(e){return null}},db:function(){return db||{}},sizeKb:function(){try{return Math.round(JSON.stringify(db).length/1024)}catch(e){return 0}},
+  canWrite:cloudCanWrite,lk:function(k){return CLOUD_SANDBOX?'emd_rb_'+k.replace(/^emd_/,''):k}}}
+function supLoad(){if(window.EMD101)return Promise.resolve(window.EMD101);if(supLoading)return supLoading;window.EMDSupH=supHelpers();
+  supLoading=loadScript('support.js?v=1').then(function(){if(!window.EMD101)throw new Error('support');return window.EMD101},function(e){supLoading=null;throw e});return supLoading}
+function supportOpen(){supLoad().then(function(X){X.open('home')},function(){toast('تعذّر فتح المساعدة. تحقّق من الاتصال.')})}
+/* الردود الجديدة: فحص كل 30 دقيقة لمن سجّل الدخول، وأول فحص بعد 6 ثوانٍ من الفتح */
+function supTick(){if(document.hidden||!cUid())return;var n=Date.now();if(supLast&&n-supLast<18e5)return;if(!supLast&&performance.now()<6000)return;supLast=n;supLoad().then(function(X){X.loadMine()},function(){})}
+
 /* ===== screens/home-orders.js ===== */
 /* ---------- 4) العرض ---------- */
 var state={view:'home',filter:'all',q:'',pinnedOnly:false,limit:30,ptab:'prep',sel:{}};
@@ -1674,7 +1687,7 @@ function settingsSheet(){
   openSheet('<div class="sh"><h3>⚙️ إعدادات التجربة</h3><button class="x" data-act="close">إغلاق ✕</button></div>'+
     '<p class="note">هذه نسخة تجريبية من التطبيق الجديد. مصدر البيانات الحالي: <b>'+esc(srcLabel())+'</b>. تعديلاتك هنا تبقى داخل التجربة فقط ولا تصل إلى تطبيقك الأصلي.</p><div class="list">'+
     (live?'<button data-act="recopy">🔁 إعادة نسخ بياناتي من التطبيق الحالي</button>':'')+
-    '<button data-act="cloud">☁️ الحساب والحفظ في السحابة</button><button data-act="push">🔔 الإشعارات</button><button data-act="openFile">📂 فتح ملف نسخة احتياطية</button>'+
+    '<button data-act="cloud">☁️ الحساب والحفظ في السحابة</button><button data-act="push">🔔 الإشعارات</button><button data-act="support">🆘 المساعدة والدعم</button><button data-act="openFile">📂 فتح ملف نسخة احتياطية</button>'+
     '<button data-act="demo" data-n="40">🧪 بيانات تجريبية صغيرة (40 طلبًا)</button>'+
     '<button data-act="demo" data-n="1500">⚡ بيانات كبيرة لاختبار السرعة (1500 طلب)</button></div>');
 }
@@ -1763,6 +1776,7 @@ document.addEventListener('click',function(e){
     case 'cAll':{var ca=custByKey(ck(b));closeSheet();state.view='orders';state.filter='all';state.q=ca?phoneKey(ca.phone):'';state.limit=30;render();window.scrollTo(0,0);break}
     case 'store':closeSheetIfMenu(b);storeOpen();break;
     case 'push':closeSheetIfMenu(b);pushSheet();break;
+    case 'support':closeSheetIfMenu(b);supportOpen();break;
     case 'quickLink':quickOpen();break;
     case 'storeOrders':storeOrdersOpen();break;
     case 'cloud':closeSheetIfMenu(b);cloudSheet();break;
@@ -1812,7 +1826,7 @@ function boot(){
 }
 boot();cloudBoot();storeBoot();puBoot();
 setTimeout(trBoot,2500);
-setInterval(function(){cloudTick();storeTick();trTick();puTick();if(!$('sheets').children.length)closingTick();if(state.view==='home'&&!$('sheets').children.length){var c=document.querySelector('.clock');if(c){var n=new Date(),h=n.getHours();c.innerHTML=(h%12||12)+':'+pad(n.getMinutes())+' <span>'+(h<12?'ص':'م')+'</span>'}}},10000);
+setInterval(function(){cloudTick();storeTick();trTick();puTick();supTick();if(!$('sheets').children.length)closingTick();if(state.view==='home'&&!$('sheets').children.length){var c=document.querySelector('.clock');if(c){var n=new Date(),h=n.getHours();c.innerHTML=(h%12||12)+':'+pad(n.getMinutes())+' <span>'+(h<12?'ص':'م')+'</span>'}}},10000);
 window.EMDRebuild={db:function(){return db},save:save,cloudCheck:cloudCheck,trPoll:trPoll,render:render,index:index,total:total,payState:payState,status:status};
 
 })();

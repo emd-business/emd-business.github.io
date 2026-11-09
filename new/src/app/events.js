@@ -53,6 +53,7 @@ document.addEventListener('click',function(e){
     case 'cAll':{var ca=custByKey(ck(b));closeSheet();state.view='orders';state.filter='all';state.q=ca?phoneKey(ca.phone):'';state.limit=30;render();window.scrollTo(0,0);break}
     case 'store':closeSheetIfMenu(b);storeOpen();break;
     case 'push':closeSheetIfMenu(b);pushSheet();break;
+    case 'support':closeSheetIfMenu(b);supportOpen();break;
     case 'quickLink':quickOpen();break;
     case 'storeOrders':storeOrdersOpen();break;
     case 'cloud':closeSheetIfMenu(b);cloudSheet();break;
