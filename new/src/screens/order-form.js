@@ -22,7 +22,8 @@ function formHtml(o,isNew){
     f('fPayM','💰 طريقة الدفع',o&&o.paymentMethod,'مثال: عند الاستلام','list="payList"')+'<datalist id="payList"><option value="عند الاستلام"><option value="تحويل بنكي"><option value="نقدًا"></datalist>'+
     '<div class="row"><div>'+f('fTransfer','💳 رقم التحويل',o&&o.transfer,'اختياري')+'</div><div>'+f('fBenef','👤 اسم المستفيد',o&&o.beneficiary,'اختياري')+'</div></div>'+
     f('fDue','📅 الموعد المطلوب',o&&o.due,'','type="date"')+
-    '<label class="f" for="fNote">📝 الملاحظات</label><textarea class="in" id="fNote" rows="2">'+esc(o&&(o.note||o.notes)||'')+'</textarea>';
+    '<label class="f" for="fNote">📝 الملاحظات</label><textarea class="in" id="fNote" rows="2">'+esc(o&&(o.note||o.notes)||'')+'</textarea>'+
+    (o?'<label class="chk"><input type="checkbox" id="fNotify"'+(o.notifyOnAvailable?' checked':'')+'> <span><b>🔔 أخبر العميل عند توفر المنتج</b><br><small class="mute">للطلبات التي تنتظر وصول صنف. عند توفر الكمية يظهر الطلب في «📊 مركز الأداء» لإرسال الإشعار.</small></span></label>':'');
   var hasExtras=o&&(o.company||o.paymentMethod||o.method||o.orderSource||o.transfer||o.beneficiary||o.due||o.note);
   return f('fPhone','📱 رقم العميل <em>*</em>',o&&cphone(o),'مثال: 99999999','inputmode="tel" autocomplete="off"')+'<div id="sugg"></div>'+
     f('fName','👤 اسم العميل',o&&cname(o),'مثال: محمد')+
@@ -71,7 +72,7 @@ function collect(box,o){
   var pay=(box.querySelector('#paySeg .on')||{}).dataset;pay=pay?pay.pay:'unpaid';
   o.name=$('fName').value.trim();o.phone=phone;o.place=place;
   o.company=$('fCompany').value.trim();o.method=$('fMethod').value;o.orderSource=$('fSource').value;
-  o.paymentMethod=$('fPayM').value.trim();o.transfer=$('fTransfer').value.trim();o.beneficiary=$('fBenef').value.trim();o.due=$('fDue').value;o.note=$('fNote').value.trim();
+  o.paymentMethod=$('fPayM').value.trim();o.transfer=$('fTransfer').value.trim();o.beneficiary=$('fBenef').value.trim();o.due=$('fDue').value;o.note=$('fNote').value.trim();if($('fNotify')){o.notifyOnAvailable=$('fNotify').checked;o.notifyStatus=o.notifyOnAvailable?(o.notifyStatus==='sent_manual'?'sent_manual':'waiting'):'none'}
   o.products=its;if(o.items&&o.products!==o.items)delete o.items;
   o.deliveryFee=num($('fFee').value);o.discount=num($('fDisc').value);
   o.subtotal=its.reduce(function(s,x){return s+x.unitPrice*x.qty},0);
@@ -100,7 +101,7 @@ function newOrder(pre,st){
     o.status='new';o.history=[{status:'new',at:now,by:'rebuild'}];
     db.orders.unshift(o);dirty();
     o.status=shortage(o).length?'waiting':'ready';o.history.push({status:o.status,at:now,by:'rebuild'});
-    upsertCustomer(o);save();
+    upsertCustomer(o);trEnsureAll();save();
     closeSheet(d);toast('✅ تم حفظ الطلب '+onum(o));
     afterSave(o);
   });

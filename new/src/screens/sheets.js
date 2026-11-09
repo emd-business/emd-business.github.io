@@ -9,7 +9,7 @@ function cardMore(id){
 function moreSheet(){ // مثل «كل الصفحات» في التطبيق الحالي (V410)
   function g(a){return '<div class="grid3">'+a.map(function(x){return '<button '+x[0]+'><i>'+x[1]+'</i>'+x[2]+'</button>'}).join('')+'</div>'}
   openSheet('<div class="sh"><div><h3>كل الصفحات</h3><small>اختر الصفحة التي تريدها.</small></div><button class="x" data-act="close">إغلاق ✕</button></div>'+
-    g([['data-act="finance"','💰','المالية'],['data-go="customers"','👤','العملاء'],['data-go="products"','📦','المنتجات'],['data-go="stock"','🏭','المخزن'],['data-act="direct"','🛒','بيع مباشر']])+
+    g([['data-act="finance"','💰','المالية'],['data-act="track"','🔗','التتبع'],['data-go="customers"','👤','العملاء'],['data-go="products"','📦','المنتجات'],['data-go="stock"','🏭','المخزن'],['data-act="direct"','🛒','بيع مباشر'],['data-go="perf"','📊','الأداء']])+
     '<div class="msec">أدوات</div>'+g([['data-act="store"','🛍️','متجري'],['data-act="settings"','⚙️','الإعدادات'],['data-act="support"','🆘','المساعدة']])+
     '<div class="mver">EMD Business • النسخة الجديدة (تجربة)</div>');
 }

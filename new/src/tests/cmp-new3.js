@@ -1,0 +1,10 @@
+const {chromium}=require('playwright');const O='/tmp/claude-0/cmp/';
+(async()=>{const b=await chromium.launch();const ctx=await b.newContext({viewport:{width:400,height:860}});const errs=[];
+await ctx.route('https://**/*',r=>r.request().url().includes('localhost')?r.continue():r.fulfill({status:200,contentType:'application/json',body:'[]'}));
+const n=await ctx.newPage();n.on('pageerror',e=>errs.push(e.message));n.on('dialog',d=>d.accept());
+await n.goto('http://localhost:8132/new/index.html');await n.waitForTimeout(400);await n.click('[data-act=demo][data-n="40"]');await n.waitForTimeout(3500);
+await n.click('[data-act=dayFold]');await n.waitForTimeout(300);await n.screenshot({path:O+'new-fold-full.png',fullPage:true});await n.click('[data-act=dayFold]');
+await n.click('nav#bar [data-act=moreSheet]');await n.waitForTimeout(200);await n.click('.sheet [data-go=perf]');await n.waitForTimeout(300);await n.screenshot({path:O+'new-perf.png',fullPage:true});
+await n.click('nav#bar [data-act=moreSheet]');await n.waitForTimeout(200);await n.click('.sheet [data-act=track]');await n.waitForTimeout(400);await n.screenshot({path:O+'new-track.png'});
+console.log('tracking numbers:',await n.evaluate(()=>EMDRebuild.db().orders.slice(0,2).map(o=>o.customerTrackingNumber+' '+(o.trackingToken||'').slice(0,8))));
+console.log('errs',errs);await b.close()})();

@@ -24,6 +24,7 @@ screens/import.js
 screens/sheets.js
 screens/prep.js
 screens/closing.js
+screens/insights.js
 screens/account.js
 screens/products.js
 screens/customers.js
