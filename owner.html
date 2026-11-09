@@ -131,14 +131,19 @@ body{padding-top:env(safe-area-inset-top)}
       <label for="pw">كلمة السر</label><div class="pw"><input id="pw" type="password" autocomplete="current-password"><button type="button" class="eye" id="eye" aria-label="إظهار كلمة السر">👁️</button></div>
       <button type="submit" class="b primary go" id="go">دخول</button>
     </form>
+    <form id="mf" class="hide" novalidate><!-- EMD-V231 --><p>افتح تطبيق المصادقة واكتب الرمز المكوّن من 6 أرقام.</p><label for="mc">رمز التحقق</label><input id="mc" inputmode="numeric" autocomplete="one-time-code" maxlength="6" dir="ltr" style="letter-spacing:6px;text-align:center;font-size:22px"><button type="submit" class="b primary go" id="mgo">تأكيد</button><button type="button" class="b" id="mback" style="margin-top:8px;width:100%">رجوع</button></form>
     <div class="msg" id="lmsg"></div>
     <button type="button" class="b inst hide" id="inst2" style="margin-top:12px;width:100%">📲 ثبّت لوحة المالك كتطبيق على جوالك</button>
   </div>
 
+<div id="mfaBox" class="hide" style="position:fixed;inset:0;z-index:99;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px">
+<div style="background:var(--card);color:var(--text);border-radius:16px;padding:18px;max-width:380px;width:100%;max-height:92vh;overflow:auto">
+<h3 style="margin:0 0 8px">🔐 التحقق الثنائي</h3><div id="mfaBody"></div><div class="msg" id="mfaMsg"></div>
+<button type="button" class="b" id="mfaClose" style="margin-top:10px;width:100%">إغلاق</button></div></div>
   <div id="dash" class="hide">
     <header>
       <h1>لوحة صاحب التطبيق<small id="asof">EMD Business</small></h1>
-      <div class="btns"><button class="b inst hide" id="inst" type="button">📲 ثبّت التطبيق</button><button class="b" id="refresh" type="button">↻ تحديث</button><button class="b" id="out" type="button">خروج</button></div>
+      <div class="btns"><button class="b inst hide" id="inst" type="button">📲 ثبّت التطبيق</button><button class="b" id="mfaBtn" type="button">🔐 التحقق الثنائي</button><button class="b" id="refresh" type="button">↻ تحديث</button><button class="b" id="out" type="button">خروج</button></div>
     </header>
     <nav class="tabs" role="tablist"><button type="button" data-t="stats" class="on">📊 الإحصائيات</button><button type="button" data-t="support">🎫 الدعم<span class="cnt" id="tcount"></span></button><button type="button" data-t="guard">🛡️ الحماية<span class="cnt" id="gcount"></span></button><button type="button" data-t="books">💰 حساباتي</button></nav>
 
@@ -384,12 +389,45 @@ function load(){
 }
 function showLogin(m){$('dash').classList.add('hide');$('loginBox').classList.remove('hide');var s=J(SKEY);if(s&&s.user)$('em').value=s.user.email||'';var x=$('lmsg');x.className='msg'+(m?' show err':'');x.textContent=m||''}
 $('lf').addEventListener('submit',function(e){e.preventDefault();var em=$('em').value.trim().toLowerCase(),pw=$('pw').value;if(!em||!pw)return;var g=$('go');g.disabled=true;g.textContent='⏳ لحظة…';
-  call('/auth/v1/token?grant_type=password',{method:'POST',body:{email:em,password:pw}}).then(function(j){save(j);g.disabled=false;g.textContent='دخول';return load()}).catch(function(err){g.disabled=false;g.textContent='دخول';var x=$('lmsg');x.className='msg show err';x.textContent=/Invalid login/i.test(err.message)?'الإيميل أو كلمة السر غلط.':/not confirmed/i.test(err.message)?'أكّد إيميلك أول.':err.message})});
+  call('/auth/v1/token?grant_type=password',{method:'POST',body:{email:em,password:pw}}).then(function(j){save(j);g.disabled=false;g.textContent='دخول';$('pw').value='';return gate()}).catch(function(err){g.disabled=false;g.textContent='دخول';var x=$('lmsg');x.className='msg show err';x.textContent=/Invalid login/i.test(err.message)?'الإيميل أو كلمة السر غلط.':/not confirmed/i.test(err.message)?'أكّد إيميلك أول.':err.message})});
 $('eye').addEventListener('click',function(){var i=$('pw'),sh=i.type==='password';i.type=sh?'text':'password';this.textContent=sh?'🙈':'👁️'});
 $('refresh').addEventListener('click',load);
 $('out').addEventListener('click',function(){setS(null);showLogin('')});
 window.__OWNAPI={gcall:gcall,token:token,data:function(){return DATA},tk:function(){return TK},redraw:function(){try{bkFillStores();bkDraw()}catch(e){}}};
-if(J(SKEY))load();else showLogin('');
+/* ===== V231: التحقق الثنائي ===== */
+function aal(t){try{var p=t.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');return JSON.parse(decodeURIComponent(escape(atob(p+'='.repeat((4-p.length%4)%4))))).aal||''}catch(e){return ''}}
+function factors(){return token().then(function(t){return call('/auth/v1/user',{token:t})}).then(function(u){return (u&&u.factors)||[]})}
+function verified(fs){for(var i=0;i<fs.length;i++)if(fs[i].factor_type==='totp'&&fs[i].status==='verified')return fs[i].id;return ''}
+var MFID='';
+function showMfa(fid,m){MFID=fid;$('dash').classList.add('hide');$('loginBox').classList.remove('hide');$('lf').classList.add('hide');$('mf').classList.remove('hide');$('mc').value='';var x=$('lmsg');x.className='msg'+(m?' show err':'');x.textContent=m||'';setTimeout(function(){try{$('mc').focus()}catch(e){}},50)}
+function hideMfa(){$('mf').classList.add('hide');$('lf').classList.remove('hide')}
+function gate(){return token().then(function(t){if(aal(t)==='aal2')return '';return factors().then(verified)}).then(function(fid){if(fid){showMfa(fid);return}hideMfa();return load()}).catch(function(e){hideMfa();showLogin(e.auth?'':e.message)})}
+function verifyCode(fid,code){return token().then(function(t){return call('/auth/v1/factors/'+fid+'/challenge',{method:'POST',token:t,body:{}}).then(function(c){return call('/auth/v1/factors/'+fid+'/verify',{method:'POST',token:t,body:{challenge_id:c.id,code:code}})})}).then(function(j){if(j&&j.access_token)save(j);return j})}
+function codeErr(e){return /invalid|expired/i.test(e.message)?'الرمز غير صحيح أو انتهت مدته. اكتب الرمز الظاهر الآن.':e.message}
+$('mf').addEventListener('submit',function(e){e.preventDefault();var c=$('mc').value.replace(/\D/g,'');if(c.length!==6)return;var g=$('mgo');g.disabled=true;g.textContent='⏳ لحظة…';
+  verifyCode(MFID,c).then(function(){g.disabled=false;g.textContent='تأكيد';hideMfa();return load()}).catch(function(err){g.disabled=false;g.textContent='تأكيد';showMfa(MFID,codeErr(err))})});
+$('mback').addEventListener('click',function(){setS(null);hideMfa();showLogin('')});
+function mmsg(m,ok){var x=$('mfaMsg');x.className='msg'+(m?' show '+(ok?'ok':'err'):'');x.textContent=m||''}
+$('mfaClose').addEventListener('click',function(){$('mfaBox').classList.add('hide')});
+$('mfaBtn').addEventListener('click',function(){var B=$('mfaBody');mmsg('');B.innerHTML='<p>⏳ لحظة…</p>';$('mfaBox').classList.remove('hide');
+  factors().then(function(fs){
+    if(verified(fs)){B.innerHTML='<p>✅ التحقق الثنائي مفعّل على حسابك. عند كل دخول جديد يُطلب منك رمز من تطبيق المصادقة بعد كلمة السر.</p>';return}
+    var old=fs.filter(function(f){return f.status!=='verified'});
+    return token().then(function(t){return Promise.all(old.map(function(f){return call('/auth/v1/factors/'+f.id,{method:'DELETE',token:t}).catch(function(){})})).then(function(){
+      return call('/auth/v1/factors',{method:'POST',token:t,body:{factor_type:'totp',friendly_name:'EMD Owner '+Date.now()}})})}).then(function(f){
+      var tp=f.totp||{};
+      B.innerHTML='<p>1. ثبّت تطبيق مصادقة مثل Google Authenticator أو Microsoft Authenticator.</p>'+
+        '<p>2. إذا كنت على الجوال اضغط الزر، وإذا كنت على الكمبيوتر امسح الرمز بكاميرا الجوال:</p>'+
+        '<a class="b primary" id="mfaUri" style="display:block;text-align:center;text-decoration:none;margin:6px 0">📲 أضف الحساب إلى تطبيق المصادقة</a>'+
+        '<div style="text-align:center;background:#fff;border-radius:10px;padding:8px;margin:8px 0"><img id="mfaQr" alt="رمز QR" style="width:180px;height:180px"></div>'+
+        '<p style="font-size:13px">أو اكتب هذا المفتاح يدويًّا في التطبيق:<br><code id="mfaSec" dir="ltr" style="user-select:all;word-break:break-all"></code></p>'+
+        '<label for="mfaCode">3. اكتب الرمز الظاهر في التطبيق</label><input id="mfaCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" dir="ltr" style="letter-spacing:6px;text-align:center;font-size:22px;width:100%">'+
+        '<button type="button" class="b primary" id="mfaOk" style="width:100%;margin-top:8px">تفعيل</button>';
+      $('mfaUri').href=tp.uri||'#';$('mfaQr').src=tp.qr_code||'';$('mfaSec').textContent=tp.secret||'';
+      $('mfaOk').addEventListener('click',function(){var c=$('mfaCode').value.replace(/\D/g,'');if(c.length!==6){mmsg('اكتب 6 أرقام.');return}var g=this;g.disabled=true;
+        verifyCode(f.id,c).then(function(){B.innerHTML='<p>✅ تم التفعيل. من الآن يُطلب رمز التحقق عند كل دخول جديد إلى لوحة المالك. احتفظ بتطبيق المصادقة على جوالك.</p>';mmsg('')}).catch(function(e){g.disabled=false;mmsg(codeErr(e))})});
+    })}).catch(function(e){B.innerHTML='';mmsg(e.message)})});
+if(J(SKEY))gate();else showLogin('');
 })();
 </script>
 <script id="EMD-owner-pwa">
