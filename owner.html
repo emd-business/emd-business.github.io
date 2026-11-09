@@ -428,15 +428,19 @@ $('mfaBtn').addEventListener('click',function(){var B=$('mfaBody');mmsg('');B.in
         verifyCode(f.id,c).then(function(){B.innerHTML='<p>✅ تم التفعيل. من الآن يُطلب رمز التحقق عند كل دخول جديد إلى لوحة المالك. احتفظ بتطبيق المصادقة على جوالك.</p>';mmsg('')}).catch(function(e){g.disabled=false;mmsg(codeErr(e))})});
     })}).catch(function(e){B.innerHTML='';mmsg(e.message)})});
 /* ===== V232 (EMD-V232): نسخة احتياطية خارجية تنزل إلى جهاز المالك ===== */
-$('bkBtn').addEventListener('click',function(){var g=this,old=g.textContent;if(g.disabled)return;g.disabled=true;g.textContent='⏳ أجهّز النسخة…';
+var BKF=null,BKT='',BKN='',BKO='💾 نسخة احتياطية';
+function bkDown(){var a=document.createElement('a'),u=URL.createObjectURL(new Blob([BKT],{type:'application/json'}));a.href=u;a.download=BKN;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(u);a.remove()},4000)}
+function bkReset(){BKF=null;BKT='';var g=$('bkBtn');g.textContent=BKO;g.classList.remove('primary');g.disabled=false}
+$('bkBtn').addEventListener('click',function(){var g=this;if(g.disabled)return;
+  if(BKT){/* الضغطة الثانية: الجوال يسمح بقائمة المشاركة فقط مباشرة بعد ضغطة */
+    if(BKF&&navigator.canShare&&navigator.canShare({files:[BKF]})){navigator.share({files:[BKF],title:BKN}).then(bkReset,function(e){if(e&&e.name==='AbortError')return;bkDown();bkReset()})}
+    else{bkDown();bkReset()}return}
+  g.disabled=true;g.textContent='⏳ أجهّز النسخة…';
   Promise.all([rpc('emd_owner_backup'),gcall({action:'backup'})]).then(function(r){
-    var d=new Date(),day=d.toISOString().slice(0,10),doc={app:'EMD Business',kind:'full-backup',made_at:d.toISOString(),accounts:r[0],store:r[1].backup};
-    var name='EMD-backup-'+day+'.json',txt=JSON.stringify(doc),f=null;try{f=new File([txt],name,{type:'application/json'})}catch(e){}
-    var mb=(txt.length/1048576).toFixed(1);
-    if(f&&navigator.canShare&&navigator.canShare({files:[f]})){return navigator.share({files:[f],title:name}).then(function(){alert('✅ تم تجهيز النسخة ('+mb+' ميغابايت). احفظها في Google Drive.')},function(){})}
-    var a=document.createElement('a'),u=URL.createObjectURL(new Blob([txt],{type:'application/json'}));a.href=u;a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(u);a.remove()},4000);
-    alert('✅ نزل الملف '+name+' ('+mb+' ميغابايت). ارفعه إلى Google Drive.');
-  }).catch(function(e){alert('تعذّر تجهيز النسخة: '+(/mfa|not allowed/i.test(e.message)?'سجّل الدخول من جديد برمز التحقق.':e.message))}).then(function(){g.disabled=false;g.textContent=old})});
+    var d=new Date(),doc={app:'EMD Business',kind:'full-backup',made_at:d.toISOString(),accounts:r[0],store:r[1].backup};
+    BKN='EMD-backup-'+d.toISOString().slice(0,10)+'.json';BKT=JSON.stringify(doc);try{BKF=new File([BKT],BKN,{type:'application/json'})}catch(e){BKF=null}
+    g.disabled=false;g.classList.add('primary');g.textContent='📤 احفظ النسخة الآن ('+(BKT.length/1048576).toFixed(1)+' م.ب)';
+  }).catch(function(e){bkReset();alert('تعذّر تجهيز النسخة: '+(/mfa|not allowed/i.test(e.message)?'سجّل الدخول من جديد برمز التحقق.':e.message))})});
 if(J(SKEY))gate();else showLogin('');
 })();
 </script>
