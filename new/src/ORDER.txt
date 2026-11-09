@@ -16,6 +16,7 @@ lib/storeapi.js
 lib/track.js
 lib/push.js
 lib/support.js
+lib/direct.js
 screens/home-orders.js
 screens/order-form.js
 screens/import.js

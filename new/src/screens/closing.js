@@ -14,6 +14,7 @@ function closingReport(dk){
     if(dayOf(o.shippedAt)===dk)r.shipped++;
     if(dayOf(o.receivedAt)===dk)r.received++});
   db.products.forEach(function(p){var a=available(p.name);if(a!==null&&a<=3)r.low.push(p.name+' ('+Math.max(0,a)+')')});
+  r.ds=dsDay(dk);
   return r;
 }
 function closingText(r){
@@ -22,7 +23,7 @@ function closingText(r){
   var t='📊 تقفيلة '+(storeName()||'المتجر')+' — '+dl+'\n\n'+
     '📦 طلبات اليوم: '+r.newO+'\n💰 مبيعات اليوم: '+money(r.sales)+' '+CUR+'\n✅ المحصّل اليوم: '+money(r.paidToday)+' '+CUR+'\n⏳ إجمالي غير المحصّل: '+money(r.due)+' '+CUR+'\n\n'+
     '🚚 شُحن اليوم: '+r.shipped+'\n📬 استلمها العملاء: '+r.received+(r.cancelled?'\n❌ ملغى: '+r.cancelled:'')+'\n\n'+
-    '🟢 جاهز للتجهيز: '+r.ready+'\n🛠️ قيد التجهيز: '+r.packing+'\n⏳ بانتظار المنتجات: '+r.waiting;
+    '🟢 جاهز للتجهيز: '+r.ready+'\n🛠️ قيد التجهيز: '+r.packing+'\n⏳ بانتظار المنتجات: '+r.waiting+(r.ds.count?'\n\n🛍️ البيع المباشر اليوم: '+r.ds.count+' فاتورة — '+money(r.ds.sales)+' '+CUR:'');
   if(top.length)t+='\n\n🏆 الأكثر طلبًا اليوم:\n'+top.map(function(n){return '• '+n+' × '+r.prods[n]}).join('\n');
   if(r.low.length)t+='\n\n⚠️ مخزون قليل: '+r.low.slice(0,6).join('، ');
   return t+'\n\n— EMD Business';

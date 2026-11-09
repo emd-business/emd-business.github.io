@@ -54,6 +54,7 @@ document.addEventListener('click',function(e){
     case 'store':closeSheetIfMenu(b);storeOpen();break;
     case 'push':closeSheetIfMenu(b);pushSheet();break;
     case 'support':closeSheetIfMenu(b);supportOpen();break;
+    case 'direct':closeSheetIfMenu(b);directOpen('new');break;
     case 'quickLink':quickOpen();break;
     case 'storeOrders':storeOrdersOpen();break;
     case 'cloud':closeSheetIfMenu(b);cloudSheet();break;
