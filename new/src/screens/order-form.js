@@ -95,7 +95,7 @@ function newOrder(pre,st){
   setTimeout(function(){var f=$('fPhone');if(f&&!f.value)f.focus()},60);
   box.addEventListener('submit',function(e){
     e.preventDefault();
-    var o=collect(box,{});if(!o)return;
+    if(stDeny('create'))return;var o=collect(box,{});if(!o)return;var who=stWho();if(who)o.createdBy=who;
     if(st){o.orderSource=o.orderSource||'واتساب';learnImport(box,st,o)}
     o.id=nextId();var now=new Date().toISOString();o.created=now;o.orderDate=now;
     o.status='new';o.history=[{status:'new',at:now,by:'rebuild'}];
@@ -123,7 +123,7 @@ function openOrder(id){
     (s!=='cancelled'?'<button class="btn red" type="button" data-act="cancelOrder" data-id="'+esc(id)+'" style="width:100%;margin-top:4px">❌ إلغاء الطلب</button>':'')+'</form>');
   var box=d.querySelector('#frm');bindForm(box,o);
   box.addEventListener('submit',function(e){
-    e.preventDefault();
+    e.preventDefault();if(stDeny('edit'))return;
     var before=JSON.stringify(o);
     if(!collect(box,o))return;
     var to=$('fStatus').value;

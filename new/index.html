@@ -32,7 +32,7 @@ header{padding:14px 0 8px}
 .brand img{width:42px;height:42px;border-radius:11px}
 .brand h1{margin:0;font-size:22px;font-weight:900;letter-spacing:-.3px}
 .brand small{display:block;color:var(--mute);font-size:12px;font-weight:600}
-.hbtns{display:flex;gap:8px;margin-top:10px}
+.hbtns{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}.hbtns button{white-space:nowrap}
 .hbtns button{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:8px 14px;font-weight:700;font-size:14.5px}
 
 /* الرئيسية */
@@ -1166,7 +1166,7 @@ function posLs(){var SB=function(){return typeof CLOUD_SANDBOX==='undefined'||CL
     removeItem:function(k){try{LS.removeItem(rk(k))}catch(e){}}}}
 var POS_LS=posLs();
 function dsMgr(){try{var m=JSON.parse(POS_LS.getItem('emd_manager_profile_v41')||'null');return (m&&m.name)||'المدير'}catch(e){return 'المدير'}}
-function posHelpers(){return {db:function(){return db},ls:POS_LS,coBlock:function(){return !cloudCanWrite()},owner:function(){return stOwner()},idsFmt:idsFmt,invoice:function(id){openInvoice(id)},
+function posHelpers(){return {db:function(){return db},ls:POS_LS,coBlock:function(){return !cloudCanWrite()},owner:function(){return stOwner()},permFor:stPermFor,viewGuard:stViewGuard,closing:function(){closingSheet()},idsFmt:idsFmt,invoice:function(id){openInvoice(id)},
     alias:{save:function(){dirty();saveNow()},render:function(){dirty();render()},renderProducts:function(){dirty();if(state.view==='products')render()},toast:toast,EMDBusinessProfileV333:{get:function(){return dsHelpers().profile()}},EMDLookV89:{accentHex:dsLook,logoImg:function(){return dsLogo&&dsLogo.complete&&dsLogo.naturalWidth?dsLogo:null}},EMDMoneyV75:{total:function(o){return total(o)},paid:function(o){return paid(o)},remaining:function(o){return remaining(o)},payState:function(o){return payState(o)},invoice:function(id){openInvoice(id)}},EMDStaffV108:{who:function(){return {id:'owner',name:dsMgr(),owner:true}},can:function(){return true}},EMDCloudV93:{api:{uid:function(){return cUid()},token:function(){return cToken()}}},EMDPrefixV129:{fmt:function(s){return idsFmt(String(s))}}},nat:function(f){try{return /\{\s*\[native code\]\s*\}$/.test(Function.prototype.toString.call(f))}catch(e){return false}}}}
 function directLoad(){if(window.EMDDirectV113)return Promise.resolve(window.EMDDirectV113);if(dsLoading)return dsLoading;window.EMDDirH=dsHelpers();
   var w=dsWant();dsVariant=w;
@@ -1308,6 +1308,23 @@ function pwaInstall(){
   if(PWA_EV){var e=PWA_EV;PWA_EV=null;try{e.prompt()}catch(x){}return}
   if(/iphone|ipad|ipod/i.test(navigator.userAgent)){toast('📱 على آيفون: اضغط زر المشاركة في Safari ثم «إضافة إلى الشاشة الرئيسية».');return}
   toast('من قائمة المتصفح (⋮) اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية».')}
+/* ---------- الموظفون والصلاحيات (V108 + V111 في lazy/staff.js، مولَّدة بـ tools/port-staff.py) ---------- */
+var ST_P=null;
+function stCfgOn(){try{var c=JSON.parse(POS_LS.getItem('emd_v108_staff')||'null');return !!(c&&c.enabled)}catch(e){return false}}
+function stLoad(){if(window.EMDStaffV108)return Promise.resolve(window.EMDStaffV108);if(ST_P)return ST_P;window.EMDPosH=window.EMDPosH||posHelpers();
+  ST_P=loadScript('staff.js?v=1').then(function(){return window.EMDStaffV108},function(e){ST_P=null;throw e});return ST_P}
+function stCan(p){try{return !window.EMDStaffV108||!EMDStaffV108.on()||EMDStaffV108.can(p)}catch(e){return true}}
+function stDeny(p){if(stCan(p))return false;toast('🔒 ليست لديك صلاحية لهذا الإجراء.');return true}
+function stWho(){try{var w=window.EMDStaffV108&&EMDStaffV108.on()&&EMDStaffV108.who();return w?{id:w.id,name:w.name}:null}catch(e){return null}}
+function stTick(){try{if(window.__stTick)window.__stTick();if(window.__stHide)window.__stHide()}catch(e){}}
+/* الصلاحية التي يحتاجها كل زر في التطبيق الجديد (مقابل permFor في V108) */
+var ST_ACT={newOrder:'create',importMsg:'create',manualOrder:'create',doParse:'create',pasteMsg:'create',orderProduct:'create',
+  cancelOrder:'delete',advance:'status',setSt:'status',packOpen:'status',shipOpen:'status',recvOne:'status',bulkStart:'status',bulkFinish:'status',bulkRecv:'status',
+  finance:'finance',addProduct:'products',addStock:'products',quickEdit:'products',editProduct:'products',delProduct:'products',pImg:'products',
+  cEdit:'customers',cNew:'customers',settings:'settings',cloud:'settings',recopy:'settings',openFile:'settings',modes:'settings',posSet:'settings',closing:'closing'};
+var ST_GO={customers:'customers',perf:'finance'};
+function stPermFor(el){if(el.closest('#emd108Lock,.emd108-banner,[data-emd108-skip]'))return '';var a=el.getAttribute('data-act'),g=el.getAttribute('data-go');return (a&&ST_ACT[a])||(g&&ST_GO[g])||''}
+function stViewGuard(can){var v={customers:'customers',perf:'finance'}[state.view];if(v&&!can(v)){state.view='home';render()}}
 
 /* ===== screens/home-orders.js ===== */
 /* ---------- 4) العرض ---------- */
@@ -1318,7 +1335,7 @@ function hay(o){var h=HAY.get(o);if(h==null){h=normTxt([oid(o),onum(o),cname(o),
 function render(){
   var v=$('view');
   document.querySelectorAll('nav#bar [data-go]').forEach(function(b){b.classList.toggle('on',b.dataset.go===state.view)});
-  renderBar();nfBadge();
+  renderBar();nfBadge();stTick();
   if(state.view==='home'){v.innerHTML=homeHtml();if(window.EMDCoV430&&mode()==='company')try{EMDCoV430._chip()}catch(e){}}
   else if(state.view==='products'){v.innerHTML=productsHtml();varPass()}
   else if(state.view==='stock')v.innerHTML=stockHtml();
@@ -1505,7 +1522,7 @@ function newOrder(pre,st){
   setTimeout(function(){var f=$('fPhone');if(f&&!f.value)f.focus()},60);
   box.addEventListener('submit',function(e){
     e.preventDefault();
-    var o=collect(box,{});if(!o)return;
+    if(stDeny('create'))return;var o=collect(box,{});if(!o)return;var who=stWho();if(who)o.createdBy=who;
     if(st){o.orderSource=o.orderSource||'واتساب';learnImport(box,st,o)}
     o.id=nextId();var now=new Date().toISOString();o.created=now;o.orderDate=now;
     o.status='new';o.history=[{status:'new',at:now,by:'rebuild'}];
@@ -1533,7 +1550,7 @@ function openOrder(id){
     (s!=='cancelled'?'<button class="btn red" type="button" data-act="cancelOrder" data-id="'+esc(id)+'" style="width:100%;margin-top:4px">❌ إلغاء الطلب</button>':'')+'</form>');
   var box=d.querySelector('#frm');bindForm(box,o);
   box.addEventListener('submit',function(e){
-    e.preventDefault();
+    e.preventDefault();if(stDeny('edit'))return;
     var before=JSON.stringify(o);
     if(!collect(box,o))return;
     var to=$('fStatus').value;
@@ -2218,7 +2235,7 @@ var SET_I={
  dash:['📊 بطاقات الرئيسية','إظهار بطاقات حالات الطلبات أو إخفاؤها.',null],
  dord:['↕️ ترتيب بطاقات الرئيسية','ترتيب بطاقات حالات الطلبات.',null],
  dpri:['🎯 إبراز الحالات المهمة','تمييز البطاقات التي فيها طلبات تحتاج انتباهك.',null],
- staff:['👥 الموظفون','إظهار زر الموظفين وإدارة الموظفين وصلاحياتهم.',null],
+ staff:['👥 الموظفون','إظهار زر الموظفين وإدارة الموظفين وصلاحياتهم.',function(){stLoad().then(function(){EMDStaffHideV111.open()},function(){toast('تعذّر الفتح. تحقّق من الاتصال.')})}],
  lock:['🔐 قفل التطبيق','كلمة المرور والقفل التلقائي وتسجيل الخروج.',null],
  sec:['🧾 الأدوار وسجل العمليات','الصلاحيات وسجل العمليات المهمة.',null],
  rec:['🛟 رمز استرجاع المدير','رمز يعيد لك رمز المدير إذا نسيته.',null],
@@ -2250,7 +2267,7 @@ function settingsSheet(){setClose();
     var b=e.target.closest('[data-si],[data-sg]');if(b){e.stopPropagation();if(b.hasAttribute('data-sg'))return setGroup(b.getAttribute('data-sg'));setRunItem(b.getAttribute('data-si'))}
     else if(e.target.closest('[data-act]'))setTimeout(setClose,0)});
 }
-function setRunItem(k){var f=SET_I[k]&&SET_I[k][2];if(!f){toast('⏳ هذه الأداة تُنقل إلى النسخة الجديدة قريبًا.');return}f()}
+function setRunItem(k){var f=SET_I[k]&&SET_I[k][2];if(!f){toast('⏳ هذه الأداة تُنقل إلى النسخة الجديدة قريبًا.');return}if(k!=='invp'&&k!=='pwa')setClose();f()}
 function setGroup(g){var x=SET_G[g],o=document.createElement('div');o.id='e445G';o.className='show';
   o.innerHTML='<div class="w"><div class="h"><b>'+esc(x[0])+'</b><button type="button" class="x" data-gx="1">✕</button></div>'+x[2].map(setItem).join('')+'</div>';
   document.body.appendChild(o);o.addEventListener('click',function(e){if(e.target===o||e.target.closest('[data-gx]'))return o.remove();var b=e.target.closest('[data-si]');if(b){o.remove();setRunItem(b.getAttribute('data-si'))}})}
@@ -2405,7 +2422,7 @@ function boot(){
 $('homeImgIn').addEventListener('change',function(){var f=this.files&&this.files[0];this.value='';homeImgPicked(f)});
   render();setTimeout(modesFirstRun,1500);
 }
-boot();cloudBoot();storeBoot();puBoot();
+boot();if(stCfgOn())stLoad().catch(function(){});cloudBoot();storeBoot();puBoot();
 setTimeout(function(){nfLoad().then(nfBadge,function(){})},900);setTimeout(trBoot,2500);setTimeout(function(){setLoad().catch(function(){})},2000);setTimeout(archRefresh,2500);setTimeout(trEnsureAll,3000);
 setInterval(function(){coTick();cloudTick();storeTick();trTick();puTick();supTick();archTick();if(!$('sheets').children.length)closingTick();if(state.view==='home'&&!$('sheets').children.length){var c=document.querySelector('.clock');if(c){var n=new Date(),h=n.getHours();c.innerHTML=pad(h%12||12)+':'+pad(n.getMinutes())+' <span>'+(h<12?'ص':'م')+'</span>'}}},10000);
 window.EMDRebuild={db:function(){return db},save:save,cloudCheck:cloudCheck,trPoll:trPoll,render:render,index:index,total:total,payState:payState,status:status};

@@ -1,0 +1,22 @@
+const {chromium}=require('playwright');const O='/tmp/claude-0/cmp/';
+(async()=>{const b=await chromium.launch();const ctx=await b.newContext({viewport:{width:400,height:860}});const errs=[];
+const n=await ctx.newPage();n.on('pageerror',e=>errs.push(e.message));n.on('dialog',d=>d.accept());await n.goto('http://localhost:8133/new/index.html');await n.waitForTimeout(300);await n.click('[data-act=demo][data-n="40"]');await n.waitForTimeout(2600);
+await n.evaluate(()=>document.querySelectorAll('.rc-alert').forEach(x=>x.remove()));
+const set=()=>n.evaluate(()=>{const b=document.createElement('button');b.dataset.act='settings';document.body.appendChild(b);b.click();b.remove()});
+await set();await n.click('[data-si=staff]');await n.waitForTimeout(800);await n.screenshot({path:O+'n-st1.png'});
+await n.click('#emd111Op');await n.waitForTimeout(400);
+await n.fill('#emd108OP','1234');await n.click('[data-k=setowner]');await n.waitForTimeout(400);
+await n.click('[data-k=add]');await n.waitForTimeout(200);await n.fill('#emd108N','سالم');await n.fill('#emd108P','5555');
+await n.evaluate(()=>{document.querySelectorAll('[data-perm]').forEach(x=>x.checked=x.dataset.perm==='status')});await n.click('[data-k=saveemp]');await n.waitForTimeout(300);
+await n.check('[data-k=en]');await n.waitForTimeout(400);await n.screenshot({path:O+'n-st2.png'});
+await n.click('.emd93-x');await n.waitForTimeout(200);
+await n.waitForTimeout(100);console.log('chip',await n.$eval('#emd108Chip',x=>x.textContent+' vis='+(x.offsetParent!==null)));
+console.log('keys',await n.evaluate(()=>Object.keys(localStorage).filter(k=>/108|111/.test(k))));
+// تبديل إلى الموظف
+await n.evaluate(()=>{sessionStorage.removeItem('emd_v108_who')});await n.reload();await n.waitForTimeout(1500);await n.screenshot({path:O+'n-st3.png'});
+await n.click('#emd108Lock [data-u^=st_]');await n.waitForTimeout(200);for(const d of '5555')await n.click('#emd108Lock [data-n="'+d+'"]');await n.waitForTimeout(800);
+console.log('who',await n.evaluate(()=>JSON.stringify(EMDStaffV108.who())));
+await n.waitForTimeout(2600);console.log('newOrder hidden',await n.$eval('nav#bar [data-act=importMsg]',x=>getComputedStyle(x).display));
+await n.evaluate(()=>{const b=document.createElement('button');b.dataset.act='settings';document.body.appendChild(b);b.click();b.remove()});await n.waitForTimeout(300);console.log('settings blocked',await n.evaluate(()=>!document.getElementById('setHub')));
+console.log('live untouched',await n.evaluate(()=>localStorage.getItem('emd_v108_staff')));
+console.log(errs);await b.close()})();

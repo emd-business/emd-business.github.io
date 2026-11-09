@@ -19,7 +19,7 @@ var SET_I={
  dash:['📊 بطاقات الرئيسية','إظهار بطاقات حالات الطلبات أو إخفاؤها.',null],
  dord:['↕️ ترتيب بطاقات الرئيسية','ترتيب بطاقات حالات الطلبات.',null],
  dpri:['🎯 إبراز الحالات المهمة','تمييز البطاقات التي فيها طلبات تحتاج انتباهك.',null],
- staff:['👥 الموظفون','إظهار زر الموظفين وإدارة الموظفين وصلاحياتهم.',null],
+ staff:['👥 الموظفون','إظهار زر الموظفين وإدارة الموظفين وصلاحياتهم.',function(){stLoad().then(function(){EMDStaffHideV111.open()},function(){toast('تعذّر الفتح. تحقّق من الاتصال.')})}],
  lock:['🔐 قفل التطبيق','كلمة المرور والقفل التلقائي وتسجيل الخروج.',null],
  sec:['🧾 الأدوار وسجل العمليات','الصلاحيات وسجل العمليات المهمة.',null],
  rec:['🛟 رمز استرجاع المدير','رمز يعيد لك رمز المدير إذا نسيته.',null],
@@ -51,7 +51,7 @@ function settingsSheet(){setClose();
     var b=e.target.closest('[data-si],[data-sg]');if(b){e.stopPropagation();if(b.hasAttribute('data-sg'))return setGroup(b.getAttribute('data-sg'));setRunItem(b.getAttribute('data-si'))}
     else if(e.target.closest('[data-act]'))setTimeout(setClose,0)});
 }
-function setRunItem(k){var f=SET_I[k]&&SET_I[k][2];if(!f){toast('⏳ هذه الأداة تُنقل إلى النسخة الجديدة قريبًا.');return}f()}
+function setRunItem(k){var f=SET_I[k]&&SET_I[k][2];if(!f){toast('⏳ هذه الأداة تُنقل إلى النسخة الجديدة قريبًا.');return}if(k!=='invp'&&k!=='pwa')setClose();f()}
 function setGroup(g){var x=SET_G[g],o=document.createElement('div');o.id='e445G';o.className='show';
   o.innerHTML='<div class="w"><div class="h"><b>'+esc(x[0])+'</b><button type="button" class="x" data-gx="1">✕</button></div>'+x[2].map(setItem).join('')+'</div>';
   document.body.appendChild(o);o.addEventListener('click',function(e){if(e.target===o||e.target.closest('[data-gx]'))return o.remove();var b=e.target.closest('[data-si]');if(b){o.remove();setRunItem(b.getAttribute('data-si'))}})}

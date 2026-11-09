@@ -15,3 +15,20 @@ function pwaInstall(){
   if(PWA_EV){var e=PWA_EV;PWA_EV=null;try{e.prompt()}catch(x){}return}
   if(/iphone|ipad|ipod/i.test(navigator.userAgent)){toast('📱 على آيفون: اضغط زر المشاركة في Safari ثم «إضافة إلى الشاشة الرئيسية».');return}
   toast('من قائمة المتصفح (⋮) اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية».')}
+/* ---------- الموظفون والصلاحيات (V108 + V111 في lazy/staff.js، مولَّدة بـ tools/port-staff.py) ---------- */
+var ST_P=null;
+function stCfgOn(){try{var c=JSON.parse(POS_LS.getItem('emd_v108_staff')||'null');return !!(c&&c.enabled)}catch(e){return false}}
+function stLoad(){if(window.EMDStaffV108)return Promise.resolve(window.EMDStaffV108);if(ST_P)return ST_P;window.EMDPosH=window.EMDPosH||posHelpers();
+  ST_P=loadScript('staff.js?v=1').then(function(){return window.EMDStaffV108},function(e){ST_P=null;throw e});return ST_P}
+function stCan(p){try{return !window.EMDStaffV108||!EMDStaffV108.on()||EMDStaffV108.can(p)}catch(e){return true}}
+function stDeny(p){if(stCan(p))return false;toast('🔒 ليست لديك صلاحية لهذا الإجراء.');return true}
+function stWho(){try{var w=window.EMDStaffV108&&EMDStaffV108.on()&&EMDStaffV108.who();return w?{id:w.id,name:w.name}:null}catch(e){return null}}
+function stTick(){try{if(window.__stTick)window.__stTick();if(window.__stHide)window.__stHide()}catch(e){}}
+/* الصلاحية التي يحتاجها كل زر في التطبيق الجديد (مقابل permFor في V108) */
+var ST_ACT={newOrder:'create',importMsg:'create',manualOrder:'create',doParse:'create',pasteMsg:'create',orderProduct:'create',
+  cancelOrder:'delete',advance:'status',setSt:'status',packOpen:'status',shipOpen:'status',recvOne:'status',bulkStart:'status',bulkFinish:'status',bulkRecv:'status',
+  finance:'finance',addProduct:'products',addStock:'products',quickEdit:'products',editProduct:'products',delProduct:'products',pImg:'products',
+  cEdit:'customers',cNew:'customers',settings:'settings',cloud:'settings',recopy:'settings',openFile:'settings',modes:'settings',posSet:'settings',closing:'closing'};
+var ST_GO={customers:'customers',perf:'finance'};
+function stPermFor(el){if(el.closest('#emd108Lock,.emd108-banner,[data-emd108-skip]'))return '';var a=el.getAttribute('data-act'),g=el.getAttribute('data-go');return (a&&ST_ACT[a])||(g&&ST_GO[g])||''}
+function stViewGuard(can){var v={customers:'customers',perf:'finance'}[state.view];if(v&&!can(v)){state.view='home';render()}}
