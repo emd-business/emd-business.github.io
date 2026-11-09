@@ -29,6 +29,7 @@ screens/closing.js
 screens/insights.js
 screens/account.js
 screens/products.js
+screens/quickedit.js
 screens/customers.js
 screens/settings.js
 app/events.js

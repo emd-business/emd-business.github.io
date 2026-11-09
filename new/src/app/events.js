@@ -39,7 +39,10 @@ document.addEventListener('click',function(e){
     case 'pinnedOnly':state.pinnedOnly=!state.pinnedOnly;state.limit=30;refreshList();break;
     case 'clearQ':state.q='';state.limit=30;render();break;
     case 'showMore':state.limit+=30;if(state.view==='orders')refreshList();else render();break;
-    case 'addProduct':productSheet(null);break;
+    case 'addProduct':addProductSheet();break;
+    case 'pImg':pImgSheet(+b.dataset.pi);break;
+    case 'pSmart':pSmart(+b.dataset.pi);break;
+    case 'quickEdit':qeOpen();break;
     case 'editProduct':productSheet(+b.dataset.pi);break;
     case 'delProduct':{var pp=db.products[+b.dataset.pi];if(pp&&confirm('هل تريد حذف المنتج «'+pp.name+'»؟ الطلبات السابقة لا تتأثر.')){db.products.splice(+b.dataset.pi,1);save();closeSheet(b.closest('.sheet'));toast('🗑️ حُذف المنتج');render()}break}
     case 'addStock':addStockSheet(+b.dataset.pi);break;

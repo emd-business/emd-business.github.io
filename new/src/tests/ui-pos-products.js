@@ -5,8 +5,8 @@ await p.goto('http://localhost:8131/index.html');await p.waitForTimeout(300);awa
 await p.evaluate(()=>{localStorage.setItem('emd_rb_emd416_mode','shop');localStorage.setItem('emd_rb_emd416_asked','1')});await p.reload();await p.waitForTimeout(1500);
 await p.click('nav#bar [data-go=products]');await p.waitForTimeout(300);
 console.log('tools:',await p.$$eval('[data-act=posTool]',x=>x.map(b=>b.textContent).join(' | ')));
-await p.click('[data-act=addProduct]');await p.waitForTimeout(200);await p.fill('#pName','قميص قطني');await p.fill('#pPrice','8');
-await p.click('[data-act=variants]');await p.waitForTimeout(900);
+await p.click('[data-act=addProduct]');await p.waitForTimeout(200);await p.fill('#emd81Name','قميص قطني');await p.fill('#emd81Sale','8');
+await p.click('.emd81-ov [data-k=var]');await p.waitForTimeout(900);
 console.log('editor:',await p.evaluate(()=>!!document.querySelector('#e450E.show')));
 // خاصيتان: اللون والمقاس
 await p.evaluate(()=>{const q=s=>document.querySelector(s);[...document.querySelectorAll('#e450E [data-k=attr]')].filter(b=>/اللون|المقاس/.test(b.textContent)).forEach(b=>{b.click()})});await p.waitForTimeout(200);

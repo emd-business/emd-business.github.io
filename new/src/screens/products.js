@@ -1,15 +1,18 @@
-function productsHtml(){
-  var q=normTxt(state.pq||''),list=db.products.filter(function(p){return !q||normTxt([p.name,p.category,p.code,p.barcode].join(' ')).indexOf(q)>=0});
-  var dm=demand();
-  return '<div class="ch" style="margin-top:16px"><div><h2 class="ptitle" style="margin:0">📦 المنتجات</h2><p class="psub">عدد المنتجات: '+db.products.length+'. السعر والتكلفة والصورة.</p></div><button class="btn dark" data-act="addProduct">➕ منتج</button></div>'+
+function productsHtml(){ // مثل صفحة المنتجات في التطبيق الحالي (V127 + V52/V81 + V224)
+  var st=pStats();
+  return '<div class="card pcard"><div class="prow0"><h2>📦 المنتجات</h2><span class="qe-hb"><button class="btn" data-act="quickEdit">✏️ تعديل سريع</button><button class="btn dark" data-act="addProduct">➕ منتج</button></span></div>'+
     (mode()==='online'?'':'<div class="rowb" style="margin:0 0 10px"><button class="btn sm" data-act="posTool" data-v="xls">📥 استيراد من Excel</button><button class="btn sm" data-act="posTool" data-v="bar">🏷️ ملصقات الباركود</button></div>')+
-    '<div class="search">🔎<input id="pq" type="search" placeholder="ابحث باسم المنتج أو التصنيف أو الكود" value="'+esc(state.pq||'')+'" autocomplete="off"></div>'+
-    '<div id="plist"><div id="productsList">'+(list.length?list.map(function(p){var i=pIndex(p),a=available(p.name);
-      return '<div class="card product" style="--sc:var(--navy2)"><div class="prow">'+pimg(p)+'<div class="pbody"><h3><b>'+esc(p.name)+'</b></h3>'+
-        '<div class="price">'+money(catPrice(p))+' '+CUR+(catCost(p)?' <small style="color:var(--mute);font-weight:600">· التكلفة '+money(catCost(p))+'</small>':'')+'</div>'+
-        '<div class="nums"><span>الفعلي: '+num(p.stock)+'</span><span class="'+(a<=0?'low':'okk')+'">المتاح: '+a+'</span>'+(dm[normTxt(p.name)]?'<span>📈 طُلب: '+dm[normTxt(p.name)]+'</span>':'')+(p.category?'<span>'+esc(p.category)+'</span>':'')+'</div></div></div>'+
-        '<div class="acts" style="margin-top:10px"><button class="btn" data-act="editProduct" data-pi="'+i+'">✏️ تعديل</button><button class="btn" data-act="addStock" data-pi="'+i+'">➕ مخزون</button><button class="btn" data-act="orderProduct" data-pi="'+i+'">✍️ طلب جديد</button></div></div>'}).join(''):'<div class="empty">'+(db.products.length?'لا توجد منتجات مطابقة.':'لا توجد منتجات بعد. اضغط «➕ منتج».')+'</div>')+'</div></div>';
+    '<div id="productsList">'+(db.products.length?db.products.map(function(p,i){var s=st(p),u=String(p.image||p.img||p.imageUrl||'');u=/^data:image\/|^https:\/\//.test(u)?u:'';
+      return '<div class="product"><div class="pimg52" data-act="pImg" data-pi="'+i+'">'+(u?'<img class="pim52" loading="lazy" src="'+esc(u)+'" alt="">':'<div class="pph52">📦</div>')+'</div>'+
+        '<span class="ptx">📦 <b>'+esc(p.name)+'</b><br><span class="muted">فعلي: '+s.stock+' · 🔒 محجوز: '+s.reserved+' · 🟢 متاح: '+s.available+'</span><div class="smrow"><span class="smchip">📈 مطلوب: '+s.total+'</span>'+(s.waiting?'<span class="smchip">⏳ انتظار: '+s.waiting+'</span>':'')+'</div></span>'+
+        '<span class="pbt"><button class="btn" data-act="addStock" data-pi="'+i+'">➕ مخزون</button><button class="smact" data-act="orderProduct" data-pi="'+i+'">✍️ طلب جديد</button><button class="smact" data-act="pSmart" data-pi="'+i+'">🧠 تحليل</button></span></div>'}).join(''):'<div class="empty">لا توجد منتجات بعد.</div>')+'</div></div>';
 }
+/* أرقام البطاقة كما يحسبها التطبيق الحالي (V127): المطلوب = كل الكميات في الطلبات، والمحجوز = الجديدة/الجاهزة/قيد التجهيز غير المخصومة */
+function pStats(){var m={};db.orders.forEach(function(o){var s=String(o.status||'new'),act=['new','ready','packing'].indexOf(s)>=0&&o.stockDeducted!==true;
+    items(o).forEach(function(x){var k=String(x.name||''),q=Number(x.qty)||0,r=m[k]||(m[k]={t:0,a:0,w:0});r.t+=q;if(act)r.a+=q;if(o.status==='waiting')r.w+=q})});
+  return function(p){var r=m[p.name]||{t:0,a:0,w:0},stk=Number(p.stock)||0,res=Math.max(0,r.a);return {total:r.t,waiting:r.w,reserved:res,available:Math.max(0,stk-res),stock:stk}}}
+function pSmart(i){var p=db.products[i];if(!p)return;var s=pStats()(p);
+  alert('📦 '+p.name+'\n\n🏬 المخزون الفعلي: '+s.stock+'\n🔒 المحجوز: '+s.reserved+'\n🟢 المتاح: '+s.available+'\n⏳ مطلوب للطلبات المنتظرة: '+s.waiting+'\n📈 إجمالي الكمية المطلوبة: '+s.total)}
 function stockHtml(){
   var low=0,out=0,res=0;
   var rows=db.products.map(function(p){var a=available(p.name),r=index().reserved[normTxt(p.name)]||0;res+=r;if(a<=0)out++;else if(a<=minStock(p))low++;return {p:p,a:a,r:r}});
@@ -57,17 +60,47 @@ function productSheet(i,prefillName){
     save();closeSheet(d);if(!p)toast('✅ أُضيف المنتج');else if(!(old&&normTxt(old)!==normTxt(name)))toast('💾 تم الحفظ');render()});
 }
 function shrink(file,max,cb){var r=new FileReader();r.onload=function(){var im=new Image();im.onload=function(){var k=Math.min(1,max/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);cb(c.toDataURL('image/jpeg',.82))};im.onerror=function(){toast('تعذر قراءة الصورة')};im.src=r.result};r.readAsDataURL(file)}
+/* ➕ مخزون: نافذة V60 في التطبيق الحالي */
 function addStockSheet(i){
-  var p=db.products[i];if(!p)return;
-  var d=openSheet('<div class="sh"><div><h3>➕ إضافة مخزون</h3><small>'+esc(p.name)+' · الحالي: '+num(p.stock)+'</small></div><button class="x" data-act="close">إغلاق ✕</button></div><form id="sf" novalidate>'+
-    '<div class="seg" id="sMode"><button type="button" class="on" data-m="add">إضافة كمية</button><button type="button" data-m="set">تعديل الكمية الفعلية</button></div>'+
-    '<label class="f" for="sQty" id="sLbl">الكمية المضافة</label><input class="in" id="sQty" inputmode="numeric" placeholder="0">'+
-    '<div class="foot"><button class="btn green" type="submit">💾 حفظ</button><button class="btn" type="button" data-act="close">إلغاء</button></div></form>');
-  var mode='add',box=d.querySelector('#sf');setTimeout(function(){var f=$('sQty');if(f)f.focus()},60);
-  box.addEventListener('click',function(e){var b=e.target.closest('[data-m]');if(!b)return;mode=b.dataset.m;box.querySelectorAll('[data-m]').forEach(function(x){x.classList.toggle('on',x===b)});$('sLbl').textContent=mode==='add'?'الكمية المضافة':'الكمية الفعلية الآن'});
-  box.addEventListener('submit',function(e){e.preventDefault();var v=Math.round(num($('sQty').value));
-    if(mode==='add'){if(v<=0){toast('اكتب كمية أكبر من صفر.');return}p.stock=num(p.stock)+v}else{if(v<0||$('sQty').value.trim()===''){toast('اكتب الكمية الفعلية.');return}p.stock=v}
-    p.updatedAt=new Date().toISOString();dirty();
-    var n=promoteWaiting();save();closeSheet(d);
-    toast('💾 المخزون الآن '+p.stock+(n?' · أصبح '+n+' من الطلبات المنتظرة جاهزًا للتجهيز':''));render()});
+  var p=db.products[i];if(!p)return;var old=$('emdV60Ask');if(old)old.remove();
+  var o=document.createElement('div');o.id='emdV60Ask';o.className='v60';
+  o.innerHTML='<div class="v60b"><h3>➕ إضافة كمية — '+esc(p.name)+'</h3><label>كمية الإضافة</label><input id="v60q" type="number" min="0" inputmode="numeric" value="0"><div class="v60a"><button type="button" class="ok">حفظ</button><button type="button" class="no">إلغاء</button></div></div>';
+  document.body.appendChild(o);var q=$('v60q');q.focus();
+  var close=function(){o.remove()};o.querySelector('.no').onclick=close;
+  o.querySelector('.ok').onclick=function(){var n=Math.max(0,+digits(q.value)||0);p.stock=(+p.stock||0)+n;p.updatedAt=new Date().toISOString();dirty();promoteWaiting();save();close();render()};
+  o.addEventListener('keydown',function(e){if(e.key==='Enter')o.querySelector('.ok').click()});
+}
+/* صورة المنتج وإضافة منتج: نوافذ V81 في التطبيق الحالي (الصورة 320 بكسل JPEG) */
+function v81Compress(file,cb){if(!file||!/^image\//.test(file.type||'image/')){alert('اختر صورة.');return}
+  var r=new FileReader();r.onload=function(e){var im=new Image();im.onload=function(){var sc=Math.min(1,320/Math.max(im.width,im.height)),c=document.createElement('canvas');
+    c.width=Math.max(1,Math.round(im.width*sc));c.height=Math.max(1,Math.round(im.height*sc));var x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);
+    var k=0.72,out=c.toDataURL('image/jpeg',k);while(out.length>60000&&k>0.4){k-=0.08;out=c.toDataURL('image/jpeg',k)}cb(out)};im.onerror=function(){alert('تعذّر قراءة الصورة.')};im.src=e.target.result};r.readAsDataURL(file)}
+function v81Pick(cb){var i=document.createElement('input');i.type='file';i.accept='image/*';i.style.display='none';document.body.appendChild(i);i.onchange=function(){var f=i.files&&i.files[0];i.remove();if(f)v81Compress(f,cb)};i.click()}
+function v81Sheet(h){var o=document.createElement('div');o.className='emd81-ov';o.innerHTML='<div class="emd81-box">'+h+'</div>';document.body.appendChild(o);o.addEventListener('click',function(e){if(e.target===o)o.remove()});return o}
+function pImgSheet(i){var p=db.products[i];if(!p)return;var u=String(p.image||'');
+  var o=v81Sheet('<h3>🖼️ صورة المنتج — '+esc(p.name)+'</h3><div class="emd81-prev" data-k="pick">'+(u?'<img src="'+esc(u)+'" alt="">':'📷')+'</div>'+
+    '<div class="emd81-a"><button class="emd81-b full" data-k="pick">'+(u?'🔄 تغيير الصورة':'📷 إضافة صورة')+'</button>'+(u?'<button class="emd81-b red" data-k="del">🗑️ حذف الصورة</button>':'')+'<button class="emd81-b ghost'+(u?'':' full')+'" data-k="x">إغلاق</button></div>'+
+    '<div class="emd81-note">الصورة اختيارية، وتظهر في المنتجات والأسعار وتفاصيل الطلب.</div>');
+  o.addEventListener('click',function(e){var b=e.target.closest('[data-k]');if(!b)return;var k=b.getAttribute('data-k');
+    if(k==='x'){o.remove();return}
+    if(k==='del'){if(!confirm('حذف صورة «'+p.name+'»؟'))return;p.image='';p.updatedAt=new Date().toISOString();save();o.remove();render();return}
+    if(k==='pick')v81Pick(function(url){p.image=url;p.updatedAt=new Date().toISOString();save();o.remove();render()})});
+}
+function addProductSheet(){var img='';
+  var o=v81Sheet('<h3>📦 إضافة منتج</h3><div class="emd81-prev" data-k="pick" id="emd81Prev">📷<span style="font-size:13px;color:#64748b;margin-right:6px">صورة (اختياري)</span></div>'+
+    '<div class="emd81-g"><label class="full">اسم المنتج *<input id="emd81Name" autocomplete="off"></label><label>الكمية الحالية<input id="emd81Stock" inputmode="numeric" value="0"></label>'+
+    '<label>سعر البيع ('+CUR+')<input id="emd81Sale" inputmode="decimal" placeholder="اختياري"></label><label class="full">تكلفة الشراء ('+CUR+')<input id="emd81Cost" inputmode="decimal" placeholder="اختياري — لحساب الربح"></label></div>'+
+    (mode()==='online'?'':'<button type="button" class="btn e450-open" data-k="var" style="width:100%;margin-top:10px">🎨 هل لهذا المنتج مقاسات أو ألوان؟</button>')+
+    '<div class="emd81-a"><button class="emd81-b" data-k="ok">💾 حفظ</button><button class="emd81-b ghost" data-k="x">إلغاء</button></div>');
+  setTimeout(function(){var n=$('emd81Name');if(n)n.focus()},50);
+  o.addEventListener('click',function(e){var b=e.target.closest('[data-k]');if(!b)return;var k=b.getAttribute('data-k');
+    if(k==='x'){o.remove();return}
+    if(k==='pick'){v81Pick(function(url){img=url;$('emd81Prev').innerHTML='<img src="'+url+'" alt="">'});return}
+    if(k==='var'){var seed={name:$('emd81Name').value,price:$('emd81Sale').value,cost:$('emd81Cost').value,img:img};o.remove();directLoad().then(function(){EMD450.open(seed);setTimeout(function(){var x=$('e450Base');if(x&&!x.value)x.focus()},60)},function(){toast('تعذّر الفتح. تحقّق من الاتصال.')});return}
+    if(k==='ok'){var name=($('emd81Name').value||'').trim();if(!name){alert('اسم المنتج مطلوب');return}
+      if(db.products.some(function(p){return normTxt(p.name)===normTxt(name)})){alert('يوجد منتج بنفس الاسم.');return}
+      var p={name:name,stock:Math.max(0,Math.round(num($('emd81Stock').value)))},sv=num($('emd81Sale').value),c=num($('emd81Cost').value),t=new Date().toISOString();
+      if(sv>0){p.salePrice=sv;p.unitPrice=sv;p.price=sv;p.defaultPrice=sv}if(c>0){p.costPrice=c;p.purchasePrice=c}if(img)p.image=img;p.createdAt=t;p.updatedAt=t;
+      db.products.push(p);save();o.remove();render()}});
+  o.addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target.tagName==='INPUT'){var ok=o.querySelector('[data-k=ok]');ok&&ok.click()}});
 }
