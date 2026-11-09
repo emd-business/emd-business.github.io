@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>مركز التنبيهات — تصاميم إضافية</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap">
+<style>
+:root{--navy:#0f1f3d;--navy2:#1b2f57;--gold:#c9a24a;--gold2:#e8cf8f;--ink:#152033;--mut:#6b7686;--line:#e9edf2;--bg:#f5f6f8;--red:#d64545;--green:#1f9d6b;--amber:#d98a1c;--blue:#2f6bd8}
+*{box-sizing:border-box}
+html,body{margin:0;background:#cfd5de;font-family:"IBM Plex Sans Arabic",Tahoma,sans-serif;color:var(--ink)}
+button{font-family:inherit;cursor:pointer}
+/* شريط اختيار التصميم */
+.pick{position:sticky;top:0;z-index:50;background:var(--navy);color:#fff;padding:10px 12px 12px}
+.pick h1{margin:0 0 8px;font-size:15px;font-weight:700}.pick h1 span{color:var(--gold2)}
+.pick .row{display:flex;gap:6px}
+.pick button{flex:1;border:1px solid rgba(255,255,255,.18);background:transparent;color:#dfe6f3;border-radius:10px;padding:8px 4px;font-size:13px;line-height:1.3}
+.pick button b{display:block;font-size:14px;color:#fff}
+.pick button.on{background:var(--gold);border-color:var(--gold);color:var(--navy)}.pick button.on b{color:var(--navy)}
+.note{max-width:480px;margin:10px auto 0;padding:0 14px;font-size:12.5px;color:#3a4558;line-height:1.8}
+/* الإطار */
+.stage{max-width:480px;margin:10px auto 30px;padding:0 10px}
+.sheet{background:#fff;border-radius:24px;overflow:hidden;box-shadow:0 20px 60px rgba(15,31,61,.25);min-height:80vh;display:flex;flex-direction:column}
+.d{display:none}.d.on{display:flex;flex-direction:column;flex:1}
+.empty{text-align:center;color:var(--mut);padding:40px 10px;font-size:14px}
+
+.ic{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-size:18px;flex:0 0 auto}
+.t-customer{background:#fff4dc}.t-late{background:#fde8e8}.t-prep{background:#e8f0fd}.t-ready{background:#e2f6ee}.t-stock{background:#fff0e0}.t-inventory{background:#fde8e8}.t-delivery{background:#eee9fd}.t-problem{background:#fde8e8}
+.tx{flex:1;min-width:0}.tx b{display:block;font-size:14px;font-weight:700}.tx span{display:block;font-size:12.5px;color:var(--mut);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.go{border:0;background:var(--navy);color:#fff;border-radius:10px;padding:7px 12px;font-size:12.5px;flex:0 0 auto}.go.soft{background:#eef1f5;color:var(--ink)}
+.x{width:36px;height:36px;border-radius:50%;border:0;background:#eef1f5;color:var(--ink);font-size:18px;flex:0 0 auto}
+
+/* ===== ٤ مهام اليوم ===== */
+.m-top{padding:16px;display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.m-top h2{margin:0;font-size:19px}.m-top small{display:block;color:var(--mut);font-size:12.5px;margin-top:3px}
+.m-prog{margin:0 16px;background:#eef1f5;height:8px;border-radius:99px;overflow:hidden}.m-prog i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),#e3c06b);border-radius:99px;transition:width .3s}
+.m-pl{display:flex;justify-content:space-between;margin:6px 16px 0;font-size:12px;color:var(--mut)}
+.m-list{padding:14px 14px 22px;display:grid;gap:10px}
+.task{border:1px solid var(--line);border-radius:18px;background:#fff;overflow:hidden}
+.task-h{display:flex;align-items:center;gap:12px;padding:13px}
+.task-h .num{min-width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:19px;font-weight:700}
+.task.hot .num{background:var(--red);color:#fff}.task.warm .num{background:var(--gold);color:var(--navy)}.task.calm .num{background:#eef1f5;color:var(--navy)}
+.task.done{opacity:.55}.task.done .num{background:var(--green);color:#fff}
+.task-h .tx b{white-space:normal}
+.task-h .go{padding:9px 14px}
+.focus{border-top:1px solid var(--line);background:#fafbfc;padding:14px}
+.focus .fc{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;gap:12px;align-items:center}
+.focus .nav{display:flex;gap:8px;margin-top:10px}
+.focus .nav button{flex:1;border:0;border-radius:11px;padding:10px;font-size:13.5px}
+.focus .nav .n1{background:var(--navy);color:#fff}.focus .nav .n2{background:#eef1f5;color:var(--ink)}
+.focus .pos{font-size:12px;color:var(--mut);margin-bottom:8px;display:flex;justify-content:space-between}
+
+/* ===== ٥ الكحلي الفاخر ===== */
+#d-e{background:#0c1830;color:#e9eef7}
+.l-top{padding:18px 16px 0;position:sticky;top:0;background:#0c1830;z-index:5}
+.l-hrow{display:flex;justify-content:space-between;align-items:center}
+.l-hrow h2{margin:0;font-size:20px;letter-spacing:.2px}.l-hrow h2 em{font-style:normal;color:var(--gold)}
+.l-hrow .x{background:rgba(255,255,255,.08);color:#fff}
+.l-stats{display:flex;margin-top:14px;border:1px solid rgba(201,162,74,.35);border-radius:14px;overflow:hidden}
+.l-stats div{flex:1;text-align:center;padding:9px 4px;border-left:1px solid rgba(201,162,74,.25)}.l-stats div:last-child{border-left:0}
+.l-stats b{display:block;font-size:19px;color:var(--gold2)}.l-stats small{font-size:11.5px;color:#9fb0cc}
+.l-tabs{display:flex;gap:18px;overflow-x:auto;margin-top:12px;border-bottom:1px solid rgba(255,255,255,.08);scrollbar-width:none}.l-tabs::-webkit-scrollbar{display:none}
+.l-tabs button{flex:0 0 auto;border:0;background:none;color:#8fa0bd;padding:10px 0;font-size:14px;border-bottom:2px solid transparent}
+.l-tabs button.on{color:#fff;border-color:var(--gold);font-weight:700}
+.l-tabs sup{color:var(--gold2);font-size:11px;margin-right:3px}
+.l-body{padding:6px 16px 22px}
+.acc{border-bottom:1px solid rgba(255,255,255,.07)}
+.acc-h{width:100%;display:flex;align-items:center;gap:12px;padding:14px 0;border:0;background:none;color:inherit;text-align:right}
+.acc-h .ic{background:rgba(201,162,74,.12)}
+.acc-h .tx span{color:#8fa0bd}
+.acc-h .cnt{min-width:30px;height:26px;border-radius:99px;background:rgba(255,255,255,.08);display:grid;place-items:center;font-size:12.5px;padding:0 8px}
+.acc-h .cnt.r{background:var(--red);color:#fff}
+.acc-h .ch{color:var(--gold);transition:transform .2s}.acc.open .ch{transform:rotate(-90deg)}
+.acc-b{display:none;padding:0 0 10px}.acc.open .acc-b{display:block}
+.li{display:flex;align-items:center;gap:10px;padding:10px 12px;margin-bottom:6px;border-radius:12px;background:rgba(255,255,255,.04)}
+.li .tx b{font-size:13.5px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.li .tx span{color:#8fa0bd}
+.li .go{background:var(--gold);color:var(--navy);font-weight:700}
+.li .new{width:7px;height:7px;border-radius:50%;background:var(--gold2);flex:0 0 auto}
+.l-more{width:100%;border:1px dashed rgba(201,162,74,.4);background:none;color:var(--gold2);border-radius:12px;padding:9px;font-size:13px}
+
+/* ===== ٦ الملخص المكتوب ===== */
+.s-top{padding:16px 16px 0;display:flex;justify-content:space-between;align-items:center}
+.s-top h2{margin:0;font-size:19px}
+.brief{margin:12px 14px 0;padding:16px;border-radius:18px;background:#fbf7ec;border:1px solid #efe2bf;line-height:2.15;font-size:15px}
+.brief .hi{font-size:13px;color:#8a6d22;font-weight:700;display:block;margin-bottom:2px}
+.brief a{display:inline;padding:2px 8px;border-radius:8px;background:#fff;border:1px solid #ead9a8;color:var(--navy);font-weight:700;text-decoration:none;white-space:nowrap;cursor:pointer}
+.brief a.r{background:#fdecec;border-color:#f3c2c2;color:#a32a2a}
+.brief a.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.cols-h{display:flex;justify-content:space-between;align-items:center;margin:16px 16px 8px;font-size:13px;color:var(--mut)}
+.cols-h b{color:var(--ink);font-size:14px}
+.cols{display:flex;gap:10px;overflow-x:auto;padding:0 14px 22px;scroll-snap-type:x mandatory;scrollbar-width:none}.cols::-webkit-scrollbar{display:none}
+.col{flex:0 0 82%;scroll-snap-align:start;background:var(--bg);border-radius:18px;padding:10px;max-height:62vh;overflow:auto}
+.col-h{display:flex;align-items:center;gap:8px;padding:4px 4px 10px;font-weight:700;font-size:14px;position:sticky;top:-10px;background:var(--bg)}
+.col-h em{font-style:normal;margin-right:auto;background:#fff;border-radius:99px;padding:1px 9px;font-size:12px;color:var(--mut)}
+.col .it{display:flex;gap:10px;align-items:center;background:#fff;border-radius:13px;padding:10px;margin-bottom:7px}
+.col .it .tx b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.col .it .ic{width:34px;height:34px;font-size:16px}
+.dots{display:flex;justify-content:center;gap:5px;margin-top:-12px;padding-bottom:16px}.dots i{width:6px;height:6px;border-radius:50%;background:#d5dbe3}.dots i.on{background:var(--gold);width:16px;border-radius:4px}
+</style>
+</head>
+<body>
+<div class="pick">
+  <h1>🔔 مركز التنبيهات — <span>تصاميم إضافية</span></h1>
+  <div class="row">
+    <button data-d="d" class="on"><b>٤</b>مهام اليوم</button>
+    <button data-d="e"><b>٥</b>الكحلي الفاخر</button>
+    <button data-d="f"><b>٦</b>الملخص المكتوب</button>
+  </div>
+</div>
+<p class="note" id="note"></p>
+<div class="stage"><div class="sheet">
+  <section class="d on" id="d-d"></section>
+  <section class="d" id="d-e"></section>
+  <section class="d" id="d-f"></section>
+</div></div>
+<script>
+/* بيانات تجريبية تحاكي صورة عماد: 87 تنبيهًا، 56 عاجلًا */
+var names=['عماد','سالم','مريم','خالد','فاطمة','يوسف','نورة','أحمد','هند','سعيد','ريم','علي','ليلى','حمد'];
+var IT=[],n=0;function nm(){return names[(n++)%names.length]}
+function push(o){o.id=IT.length;IT.push(o)}
+var now=Date.now(),H=3600e3;
+push({type:'customer',icon:'🛍️',title:'طلب جديد من المتجر',detail:nm()+' · 76.000 ر.ع · صنف واحد',urg:1,unread:1,at:now-0.3*H,open:'فتح الطلب'});
+push({type:'customer',icon:'🛍️',title:'طلب جديد من المتجر',detail:nm()+' · 21.200 ر.ع · صنفان',urg:1,unread:1,at:now-0.9*H,open:'فتح الطلب'});
+push({type:'customer',icon:'⭐',title:'تقييم جديد ★★★★★',detail:'#EMD-0207 — '+nm()+' · «خدمة ممتازة»',at:now-5*H,open:'فتح'});
+push({type:'customer',icon:'📬',title:'العميل أكّد الاستلام',detail:'#EMD-0199 — '+nm(),at:now-26*H,open:'فتح'});
+push({type:'customer',icon:'🛍️',title:'طلب جديد من المتجر',detail:nm()+' · 9.500 ر.ع · صنف واحد',at:now-30*H,open:'فتح الطلب'});
+for(var i=0;i<3;i++)push({type:'stock',icon:'⏳',title:'طلب بانتظار توفر المنتجات',detail:'#EMD-0'+(180+i)+' — '+nm(),urg:1,at:now-(8+i*9)*H,open:'فتح'});
+for(i=0;i<10;i++)push({type:'ready',icon:'🟢',title:'طلب جاهز للتسليم',detail:'#EMD-0'+(150+i)+' — '+nm(),urg:1,at:now-(3+i*4)*H,open:'فتح'});
+for(i=0;i<28;i++)push({type:'prep',icon:'📦',title:'طلب قيد التجهيز',detail:'#EMD-0'+(100+i)+' — '+nm(),at:now-(2+i*3)*H,open:'فتح'});
+for(i=0;i<41;i++)push({type:'late',icon:'⏰',title:'طلب مفتوح منذ أكثر من 48 ساعة',detail:'#EMD-00'+(10+i)+' — '+nm(),urg:1,at:now-(50+i*7)*H,open:'فتح'});
+var TYPES=[['customer','العملاء','👥'],['late','متأخر','⏰'],['ready','جاهز','🟢'],['prep','التجهيز','📦'],['stock','بانتظار المنتجات','⏳'],['inventory','نقص المخزون','🔴'],['delivery','التوصيل','🚚'],['problem','مشاكل','⚠️']];
+var GROUP={customer:'جديد من العملاء',late:'طلبات متأخرة (أكثر من ٤٨ ساعة)',ready:'جاهزة للتسليم',stock:'بانتظار توفر المنتجات',prep:'قيد التجهيز',inventory:'نقص المخزون',delivery:'تحتاج متابعة تسليم',problem:'تحتاج تدخلًا'};
+function cnt(t){return IT.filter(function(x){return x.type===t}).length}
+var URG=IT.filter(function(x){return x.urg}).length;
+function ago(t){var h=(now-t)/H;if(h<1)return 'قبل '+Math.max(1,Math.round(h*60))+' د';if(h<24)return 'قبل '+Math.round(h)+' س';var d=Math.floor(h/24);return d===1?'أمس':'قبل '+d+' أيام'}
+function ar(x){return String(x).replace(/\d/g,function(d){return '٠١٢٣٤٥٦٧٨٩'[d]})}
+function row(x,cls){return '<div class="'+(cls||'it')+'">'+(x.urg?'<i class="urg"></i>':'')+'<div class="ic t-'+x.type+'">'+x.icon+'</div><div class="tx"><b>'+x.title+'</b><span>'+x.detail+' · '+ago(x.at)+'</span></div><button class="go'+(x.open==='فتح الطلب'?'':' soft')+'">'+x.open+'</button></div>'}
+
+function li(x,cls){return '<div class="'+cls+'"><div class="ic t-'+x.type+'">'+x.icon+'</div><div class="tx"><b>'+x.title+'</b><span>'+x.detail+' · '+ago(x.at)+'</span></div><button class="go'+(x.open==='فتح الطلب'?'':' soft')+'">'+x.open+'</button></div>'}
+var ACT={customer:'راجع طلبات العملاء الجديدة',late:'تابع الطلبات المتأخرة',ready:'سلّم الطلبات الجاهزة',stock:'وفّر المنتجات للطلبات المنتظرة',prep:'أكمل تجهيز الطلبات',inventory:'أعد تعبئة المخزون',delivery:'تابع التوصيل',problem:'عالج الطلبات المتعثرة'};
+var HEAT={customer:'hot',late:'hot',stock:'warm',ready:'warm',prep:'calm',inventory:'hot',delivery:'calm',problem:'hot'};
+var ORDER=['customer','late','ready','stock','prep','inventory','delivery','problem'];
+
+/* ---------- ٤ مهام اليوم ---------- */
+var D={open:'',pos:0,done:{}};
+function rD(){
+  var ts=ORDER.filter(function(t){return cnt(t)});
+  var total=IT.length,dn=0;ts.forEach(function(t){if(D.done[t])dn+=cnt(t)});
+  var h='<div class="m-top"><div><h2>🔔 مهامك الآن</h2><small>'+ar(ts.length)+' مهام تجمع '+ar(total)+' تنبيهًا، رتّبناها من الأهم</small></div><button class="x">✕</button></div>'+
+  '<div class="m-prog"><i style="width:'+Math.round(dn/total*100)+'%"></i></div><div class="m-pl"><span>أنجزت '+ar(dn)+' من '+ar(total)+'</span><span>'+ar(Math.round(dn/total*100))+'٪</span></div><div class="m-list">';
+  ts.forEach(function(t){
+    var l=IT.filter(function(x){return x.type===t}),op=D.open===t;
+    h+='<div class="task '+(D.done[t]?'done':HEAT[t])+'"><div class="task-h"><div class="num">'+(D.done[t]?'✓':ar(l.length))+'</div><div class="tx"><b>'+ACT[t]+'</b><span>'+GROUP[t]+'</span></div><button class="go'+(op?' soft':'')+'" data-o="'+t+'">'+(op?'إغلاق':'ابدأ ‹')+'</button></div>';
+    if(op){var x=l[D.pos];h+='<div class="focus"><div class="pos"><span>التنبيه '+ar(D.pos+1)+' من '+ar(l.length)+'</span><span>'+ago(x.at)+'</span></div><div class="fc"><div class="ic t-'+x.type+'">'+x.icon+'</div><div class="tx"><b>'+x.title+'</b><span>'+x.detail+'</span></div></div><div class="nav"><button class="n1">'+x.open+'</button>'+(D.pos<l.length-1?'<button class="n2" data-n="1">التالي ‹</button>':'<button class="n2" data-fin="'+t+'">تم ✓</button>')+'</div></div>'}
+    h+='</div>';
+  });
+  document.getElementById('d-d').innerHTML=h+'</div>';
+}
+document.getElementById('d-d').onclick=function(e){var b=e.target.closest('[data-o],[data-n],[data-fin]');if(!b)return;if(b.dataset.o){D.open=D.open===b.dataset.o?'':b.dataset.o;D.pos=0}else if(b.dataset.n){D.pos++}else{D.done[b.dataset.fin]=1;D.open=''}rD()};
+
+/* ---------- ٥ الكحلي الفاخر ---------- */
+var E={f:'all',open:{customer:1},lim:{}};
+function rE(){
+  var tabs=[['all','الكل',IT.length],['urg','العاجل',URG]].concat(ORDER.filter(function(t){return cnt(t)}).map(function(t){return [t,TYPES.filter(function(z){return z[0]===t})[0][1],cnt(t)]}));
+  var unread=IT.filter(function(x){return x.unread}).length;
+  var h='<div class="l-top"><div class="l-hrow"><h2>مركز <em>التنبيهات</em></h2><button class="x">✕</button></div><div class="l-stats"><div><b>'+ar(URG)+'</b><small>عاجل</small></div><div><b>'+ar(unread)+'</b><small>جديد</small></div><div><b>'+ar(IT.length)+'</b><small>الإجمالي</small></div></div><div class="l-tabs">'+tabs.map(function(t){return '<button class="'+(E.f===t[0]?'on':'')+'" data-f="'+t[0]+'">'+t[1]+'<sup>'+ar(t[2])+'</sup></button>'}).join('')+'</div></div><div class="l-body">';
+  ORDER.forEach(function(t){
+    if(E.f!=='all'&&E.f!=='urg'&&E.f!==t)return;
+    var l=IT.filter(function(x){return x.type===t&&(E.f!=='urg'||x.urg)});if(!l.length)return;
+    var op=E.open[t]||E.f===t,lim=E.lim[t]||5,uc=l.filter(function(x){return x.urg}).length;
+    h+='<div class="acc'+(op?' open':'')+'"><button class="acc-h" data-a="'+t+'"><div class="ic">'+l[0].icon+'</div><div class="tx"><b>'+GROUP[t]+'</b><span>'+l[0].detail.split(' · ')[0]+(l.length>1?' وغيرها':'')+'</span></div><span class="cnt'+(uc?' r':'')+'">'+ar(l.length)+'</span><span class="ch">‹</span></button><div class="acc-b">'+l.slice(0,lim).map(function(x){return '<div class="li">'+(x.unread?'<i class="new"></i>':'')+'<div class="tx"><b>'+x.title+'</b><span>'+x.detail+' · '+ago(x.at)+'</span></div><button class="go">'+x.open+'</button></div>'}).join('')+(l.length>lim?'<button class="l-more" data-m="'+t+'">عرض المزيد ('+ar(l.length-lim)+')</button>':'')+'</div></div>';
+  });
+  document.getElementById('d-e').innerHTML=h+'</div>';
+}
+document.getElementById('d-e').onclick=function(e){var b=e.target.closest('[data-f],[data-a],[data-m]');if(!b)return;if(b.dataset.f){E.f=b.dataset.f}else if(b.dataset.a){E.open[b.dataset.a]=!E.open[b.dataset.a]}else{E.lim[b.dataset.m]=(E.lim[b.dataset.m]||5)+10}rE()};
+
+/* ---------- ٦ الملخص المكتوب ---------- */
+var F={c:0};
+function lk(t,txt,r){return '<a data-c="'+t+'" class="'+(r?'r':'')+'">'+txt+'</a>'}
+function rF(){
+  var hr=new Date().getHours(),greet=hr<12?'صباح الخير ☀️':'مساء الخير 🌙';
+  var store=IT.filter(function(x){return x.icon==='🛍️'&&x.unread}).length;
+  var h='<div class="s-top"><h2>🔔 مركز التنبيهات</h2><button class="x">✕</button></div><div class="brief"><span class="hi">'+greet+'، هذا ملخص متجرك الآن:</span>'+
+  'وصلك '+lk('customer','طلبان جديدان من المتجر')+' و'+lk('customer','تقييم ⭐⭐⭐⭐⭐')+'. '+
+  'لديك '+lk('late',ar(cnt('late'))+' طلبًا متأخرًا',1)+' تجاوزت ٤٨ ساعة، و'+lk('ready',ar(cnt('ready'))+' طلبات جاهزة')+' تنتظر التسليم. '+
+  'قيد التجهيز '+lk('prep',ar(cnt('prep'))+' طلبًا')+'، و'+lk('stock',ar(cnt('stock'))+' طلبات')+' تنتظر توفر المنتجات.</div>';
+  var ts=ORDER.filter(function(t){return cnt(t)});
+  h+='<div class="cols-h"><b>اسحب بين الأقسام ‹ ›</b><span>'+ar(IT.length)+' تنبيهًا</span></div><div class="cols" id="cols">'+ts.map(function(t){var l=IT.filter(function(x){return x.type===t});return '<div class="col" data-t="'+t+'"><div class="col-h">'+l[0].icon+' '+GROUP[t]+'<em>'+ar(l.length)+'</em></div>'+l.map(function(x){return li(x,'it')}).join('')+'</div>'}).join('')+'</div><div class="dots">'+ts.map(function(t,i){return '<i class="'+(i===F.c?'on':'')+'"></i>'}).join('')+'</div>';
+  var el=document.getElementById('d-f');el.innerHTML=h;
+  var cols=el.querySelector('#cols');cols.onscroll=function(){var w=cols.firstChild.offsetWidth+10,i=Math.round(Math.abs(cols.scrollLeft)/w);if(i!==F.c){F.c=i;el.querySelectorAll('.dots i').forEach(function(d,j){d.classList.toggle('on',j===i)})}};
+}
+document.getElementById('d-f').onclick=function(e){var a=e.target.closest('[data-c]');if(!a)return;var c=document.querySelector('#d-f .col[data-t="'+a.dataset.c+'"]');if(c)c.scrollIntoView({behavior:'smooth',inline:'start',block:'nearest'});document.querySelectorAll('#d-f .brief a').forEach(function(x){x.classList.toggle('on',x===a)})};
+
+var NOTES={
+ d:'<b>٤ مهام اليوم:</b> بدل قائمة طويلة، تتحول التنبيهات إلى مهام مرتبة من الأهم (أحمر ثم ذهبي ثم رمادي). تضغط «ابدأ» فيعرض لك تنبيهًا واحدًا في كل مرة مع زر «التالي»، وشريط ذهبي يبين كم أنجزت.',
+ e:'<b>٥ الكحلي الفاخر:</b> واجهة داكنة بهوية EMD الكحلية والذهبية. ثلاثة أرقام صغيرة فقط في الأعلى، وتبويبات بخط ذهبي تُسحب جانبيًا، وكل قسم مطوي يفتح عند الضغط، مع «عرض المزيد».',
+ f:'<b>٦ الملخص المكتوب:</b> أول ما تفتح تقرأ جملة واضحة عن حال متجرك، وكل رقم فيها زر يأخذك لقسمه. تحتها أعمدة تسحبها يمينًا ويسارًا، كل عمود قسم كامل.'};
+function show(d){document.querySelectorAll('.pick button').forEach(function(b){b.classList.toggle('on',b.dataset.d===d)});document.querySelectorAll('.d').forEach(function(s){s.classList.toggle('on',s.id==='d-'+d)});document.getElementById('note').innerHTML=NOTES[d];scrollTo(0,0)}
+document.querySelectorAll('.pick button').forEach(function(b){b.onclick=function(){show(b.dataset.d)}});
+rD();rE();rF();show('d');
+</script>
+</body>
+</html>
