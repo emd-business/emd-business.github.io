@@ -21,15 +21,16 @@ function dsHelpers(){var src=lsGet('emd_v89_logo')||'';if(src&&/^(data:image\/|h
     img:function(p){var u=String(p&&(p.image||p.img||p.imageUrl)||'');return /^(data:image\/|https:\/\/)/.test(u)?u:''}}}
 /* أنواع المحل تستعمل البيع المباشر بنسخة التطوير V453 مع نقطة البيع (lazy/pos.js)؛ «بيع أونلاين» يبقى مثل التطبيق الحالي تمامًا */
 var dsVariant='';
-function dsWant(){return mode()==='online'?'live':'pos'}
+function dsWant(){var m=mode();return m==='online'?'live':m==='company'?'co':'pos'}
 function posLs(){function rk(k){return CLOUD_SANDBOX?'emd_rb_'+k:k}
   return {getItem:function(k){if(k===LIVE_KEY)return null;var v=lsGet(rk(k));return v==null&&CLOUD_SANDBOX?lsGet(k):v},
     setItem:function(k,v){if(k===LIVE_KEY){dirty();saveNow();return}lsSet(rk(k),String(v))},
     removeItem:function(k){try{LS.removeItem(rk(k))}catch(e){}}}}
 var POS_LS=posLs();
-function posHelpers(){return {db:function(){return db},ls:POS_LS,
-    alias:{save:function(){dirty();saveNow()},render:function(){dirty();render()},renderProducts:function(){dirty();if(state.view==='products')render()},toast:toast,EMDBusinessProfileV333:{get:function(){return dsHelpers().profile()}},EMDLookV89:{accentHex:dsLook,logoImg:function(){return dsLogo&&dsLogo.complete&&dsLogo.naturalWidth?dsLogo:null}},EMDMoneyV75:{total:function(o){return total(o)},paid:function(o){return paid(o)},remaining:function(o){return remaining(o)},payState:function(o){return payState(o)},invoice:function(id){openInvoice(id)}},EMDPrefixV129:{fmt:function(s){return idsFmt(String(s))}}},nat:function(f){try{return /\{\s*\[native code\]\s*\}$/.test(Function.prototype.toString.call(f))}catch(e){return false}}}}
+function dsMgr(){try{var m=JSON.parse(POS_LS.getItem('emd_manager_profile_v41')||'null');return (m&&m.name)||'المدير'}catch(e){return 'المدير'}}
+function posHelpers(){return {db:function(){return db},ls:POS_LS,coBlock:function(){return !cloudCanWrite()},
+    alias:{save:function(){dirty();saveNow()},render:function(){dirty();render()},renderProducts:function(){dirty();if(state.view==='products')render()},toast:toast,EMDBusinessProfileV333:{get:function(){return dsHelpers().profile()}},EMDLookV89:{accentHex:dsLook,logoImg:function(){return dsLogo&&dsLogo.complete&&dsLogo.naturalWidth?dsLogo:null}},EMDMoneyV75:{total:function(o){return total(o)},paid:function(o){return paid(o)},remaining:function(o){return remaining(o)},payState:function(o){return payState(o)},invoice:function(id){openInvoice(id)}},EMDStaffV108:{who:function(){return {id:'owner',name:dsMgr(),owner:true}},can:function(){return true}},EMDCloudV93:{api:{uid:function(){return cUid()},token:function(){return cToken()}}},EMDPrefixV129:{fmt:function(s){return idsFmt(String(s))}}},nat:function(f){try{return /\{\s*\[native code\]\s*\}$/.test(Function.prototype.toString.call(f))}catch(e){return false}}}}
 function directLoad(){if(window.EMDDirectV113)return Promise.resolve(window.EMDDirectV113);if(dsLoading)return dsLoading;window.EMDDirH=dsHelpers();
   var w=dsWant();dsVariant=w;
-  dsLoading=(w==='live'?loadScript('direct.js?v=1'):loadScript('direct453.js?v=1').then(function(){return loadScript('qrcode.js?v=1').catch(function(){})}).then(function(){window.EMDPosH=posHelpers();return loadScript('pos.js?v=1')})).then(function(){if(!window.EMDDirectV113)throw new Error('direct');return window.EMDDirectV113},function(e){dsLoading=null;throw e});return dsLoading}
+  dsLoading=(w==='live'?loadScript('direct.js?v=1'):loadScript('direct453.js?v=1').then(function(){return loadScript('qrcode.js?v=1').catch(function(){})}).then(function(){window.EMDPosH=posHelpers();return loadScript('pos.js?v=1')}).then(function(){if(w==='co')return loadScript('company.js?v=1')})).then(function(){if(!window.EMDDirectV113)throw new Error('direct');return window.EMDDirectV113},function(e){dsLoading=null;throw e});return dsLoading}
 function directOpen(tab,id){directLoad().then(function(X){X.open(tab||'new',id)},function(){toast('تعذّر فتح البيع المباشر. تحقّق من الاتصال.')})}

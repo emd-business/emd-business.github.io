@@ -7,7 +7,7 @@ function render(){
   var v=$('view');
   document.querySelectorAll('nav#bar [data-go]').forEach(function(b){b.classList.toggle('on',b.dataset.go===state.view)});
   renderBar();var ix=index(),b=$('alertBadge');if(b){b.textContent=ix.alerts;b.classList.toggle('hide',!ix.alerts)}
-  if(state.view==='home')v.innerHTML=homeHtml();
+  if(state.view==='home'){v.innerHTML=homeHtml();if(window.EMDCoV430&&mode()==='company')try{EMDCoV430._chip()}catch(e){}}
   else if(state.view==='products'){v.innerHTML=productsHtml();varPass()}
   else if(state.view==='stock')v.innerHTML=stockHtml();
   else if(state.view==='customers')v.innerHTML=customersHtml();

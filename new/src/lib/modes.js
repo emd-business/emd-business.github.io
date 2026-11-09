@@ -26,7 +26,7 @@ var modesP=null;
 function modesHelpers(){return {db:function(){return db},toast:toast,
   ls:function(k,v){return mdLs(k,v)},
   changed:function(){barSig='';renderBar();render();if(window.EMDDirectV113&&dsVariant&&dsVariant!==dsWant()){toast('🔄 يُعاد فتح التطبيق لتطبيق نوع النشاط…');setTimeout(function(){location.reload()},900)}},
-  company:function(sub){toast('🏢 لوحة الفروع والمخازن تُضاف في الخطوة القادمة.');if(window.EMDModesV416)window.EMDModesV416.openCo()},
+  company:function(sub){coOpen(sub)},
   dsSummary:dsSummary,dsVoid:dsVoid,
   low:function(){return db.products.filter(function(p){if(!p||p.stock==null)return false;var a=available(p.name),mn=minStock(p);return mn>0?a<=mn:a<=2})},
   img:function(p){var u=String(p&&(p.image||p.img||p.imageUrl)||'');return /^(data:image\/|https:\/\/)/.test(u)?u:''},
@@ -39,6 +39,9 @@ function modesHome(){if(mode()==='online')return '';if(!window.EMDDirectV113)dir
   if(window.EMD417)return window.EMD417.homeHtml();modesLoad().then(function(){if(state.view==='home')render()},function(){});return ''}
 /* V450: المنتج الذي له خيارات يظهر بطاقة واحدة في قائمة المنتجات (أنواع المحل) */
 function varPass(){if(mode()==='online')return;if(window.EMD450){try{EMD450.listPass()}catch(e){}}else if(db.products.some(function(p){return p&&p.vg&&p.vo}))directLoad().then(function(){if(state.view==='products')render()},function(){})}
+/* V430: الفروع والمخازن (نوع «شركة») */
+function coOpen(sub){directLoad().then(function(){if(window.EMDCoV430)EMDCoV430.open(sub);else toast('افتح التطبيق من جديد لتطبيق نوع «شركة».')},function(){toast('تعذّر الفتح. تحقّق من الاتصال.')})}
+function coTick(){if(mode()!=='company'||!window.__coTick)return;try{window.__coTick()}catch(e){}}
 /* V438: بطاقات الكاشير بدل حالات الطلبات في نوع «محل» */
 function cashCards(){var a=new Date();a.setHours(0,0,0,0);var b=new Date(a.getTime()+864e5),m=dsSummary(a,b),due=0,rc=0,rv=0,held=0,sh=null,cash=0,C=' '+CUR;
   dsList().forEach(function(s){if(!dsVoid(s))due+=Math.max(0,dsNet(s)-dsPaid(s));(s.ops||[]).forEach(function(p){var t=new Date(p.at);if(t>=a&&t<b){rc++;rv+=num(p.value)}})});
