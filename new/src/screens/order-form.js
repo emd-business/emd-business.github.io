@@ -79,6 +79,7 @@ function collect(box,o){
   if(pay==='paid'){o.paymentStatus='paid';o.paidAmount=o.total}
   else if(pay==='partial'){o.paymentStatus='partial';o.paidAmount=Math.min(o.total,num($('fPaid').value))}
   else{o.paymentStatus='unpaid';o.paidAmount=0}
+  if(o.paymentStatus!=='unpaid'&&!o.paidAt)o.paidAt=new Date().toISOString();
   o.remaining=Math.max(0,o.total-o.paidAmount);
   o.updatedAt=new Date().toISOString();
   return o;
@@ -105,7 +106,7 @@ function newOrder(pre,st){
   });
 }
 function afterSave(o){
-  var d=openSheet('<div class="sh"><h3>✅ تم حفظ الطلب</h3><button class="x" data-act="close">إغلاق ✕</button></div><p class="note">الطلب '+esc(onum(o))+' للعميل '+esc(cname(o)||cphone(o))+'. الحالة: '+ST[status(o)].l+'.</p><div class="foot"><button class="btn dark" data-act="waSend" data-id="'+esc(oid(o))+'">💬 إرسال تأكيد واتساب</button><button class="btn" data-act="close">لاحقًا</button></div>');
+  var d=openSheet('<div class="sh"><h3>✅ تم حفظ الطلب</h3><button class="x" data-act="close">إغلاق ✕</button></div><p class="note">الطلب '+esc(onum(o))+' للعميل '+esc(cname(o)||cphone(o))+'. الحالة: '+ST[status(o)].l+'.</p><div class="foot"><button class="btn dark" data-act="waSend" data-id="'+esc(oid(o))+'">💬 إرسال تأكيد واتساب</button><button class="btn" data-act="close">لاحقًا</button></div><button class="btn sm" data-act="invoice" data-id="'+esc(oid(o))+'" style="margin-top:6px">🧾 الفاتورة</button>');
   render();
 }
 function openOrder(id){
@@ -117,6 +118,7 @@ function openOrder(id){
     '<form id="frm" novalidate><label class="f" for="fStatus">🔄 حالة الطلب</label><select class="in" id="fStatus">'+opts+'</select>'+formHtml(o,false)+
     (hist?'<div class="hist"><b>سجل الطلب</b>'+hist+'</div>':'')+
     '<div class="foot"><button class="btn green" type="submit">💾 حفظ التعديلات</button><button class="btn" type="button" data-act="waSend" data-id="'+esc(id)+'">💬</button><button class="btn" type="button" data-act="copyNum" data-id="'+esc(id)+'">📋</button></div>'+
+    '<div class="foot" style="margin-top:4px"><button class="btn" type="button" data-act="label" data-id="'+esc(id)+'">🏷️ ملصق الشحن</button><button class="btn" type="button" data-act="invoice" data-id="'+esc(id)+'">🧾 الفاتورة</button></div>'+
     (s!=='cancelled'?'<button class="btn red" type="button" data-act="cancelOrder" data-id="'+esc(id)+'" style="width:100%;margin-top:4px">❌ إلغاء الطلب</button>':'')+'</form>');
   var box=d.querySelector('#frm');bindForm(box,o);
   box.addEventListener('submit',function(e){
@@ -124,7 +126,9 @@ function openOrder(id){
     var before=JSON.stringify(o);
     if(!collect(box,o))return;
     var to=$('fStatus').value;
-    if(to!==status(o)&&!setStatus(o,to,true)){var old=JSON.parse(before);Object.keys(o).forEach(function(k){delete o[k]});Object.assign(o,old);dirty();return}
+    var later=(to==='shipped'||to==='received'||to==='packing')&&to!==status(o)?to:'';
+    if(!later&&to!==status(o)&&!setStatus(o,to,true)){var old=JSON.parse(before);Object.keys(o).forEach(function(k){delete o[k]});Object.assign(o,old);dirty();return}
     upsertCustomer(o);save();closeSheet(d);toast('💾 تم حفظ التعديلات');render();
+    if(later)moveOrder(o,later);
   });
 }

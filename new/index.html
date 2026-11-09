@@ -129,11 +129,24 @@ label.f em{color:var(--bad);font-style:normal}
 .left{margin:4px 0 10px;padding:10px 12px;border-radius:12px;background:#fffbeb;border:1px solid #fcd34d;color:#78350f;font-size:13px;font-weight:700;line-height:1.8}
 .left b{background:#fef3c7;border-radius:6px;padding:1px 6px;margin:0 2px;display:inline-block}
 .left small{display:block;font-weight:600;color:#a16207}
+.cltxt{white-space:pre-wrap;background:#f8fafc;border:1px solid var(--line);border-radius:12px;padding:10px;font:inherit;font-size:13px;margin:8px 0;max-height:40vh;overflow:auto}
 .okbar{margin:4px 0 10px;padding:9px 12px;border-radius:12px;background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;font-size:13px;font-weight:700}
 textarea.msg{min-height:190px;font-size:15px;line-height:1.7}
 .seg{display:flex;gap:6px;flex-wrap:wrap}
 .seg button{flex:1;border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 6px;font-weight:800;font-size:14px}
 .seg button.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.ptabs{margin:4px 0 12px}.ptabs small{opacity:.75;font-weight:700}
+.kpis.k4{grid-template-columns:1fr 1fr}.kpis.k4 .kpi b{font-size:20px}
+details.pick{background:#fff;border:1px solid var(--line);border-radius:15px;padding:10px 12px;margin-bottom:10px}details.pick summary{font-weight:800;cursor:pointer}
+details.pick table{width:100%;border-collapse:collapse;margin-top:8px;font-size:14px}details.pick td,details.pick th{border-bottom:1px solid var(--line);padding:7px 4px;text-align:right}
+.chk{display:flex;align-items:center;gap:8px;cursor:pointer}.chk input{width:20px;height:20px;accent-color:var(--navy)}
+.card.sel{outline:2px solid var(--gold,#d4a017)}
+.prog{height:7px;border-radius:9px;background:#eef2f7;overflow:hidden;margin:8px 0 2px}.prog span{display:block;height:100%;background:var(--ok,#16a34a)}.prog.big{height:11px}
+.lbpv img{width:100%;max-width:340px;display:block;margin:10px auto;border:1px solid var(--line);border-radius:8px;background:#fff}
+.invpv{border:1px solid var(--line);border-radius:12px;padding:12px;font-size:13px;overflow:auto;max-height:52vh;margin-bottom:8px}.invpv h1{font-size:18px;margin:0}.invpv .ih{display:flex;justify-content:space-between;border-bottom:3px solid var(--navy);padding-bottom:8px}.invpv .it{text-align:left}.invpv .it b{color:#b8860b;font-size:18px}.invpv .cust{display:grid;gap:3px;margin:10px 0;padding:8px;background:#f8fafc;border-radius:8px}.invpv table{width:100%;border-collapse:collapse;margin:6px 0}.invpv td,.invpv th{border:1px solid var(--line);padding:5px;text-align:right}.invpv th{background:#f1f5f9}.invpv .tot{width:70%;margin-inline-start:auto}.invpv .tot .g td{background:var(--navy);color:#fff}.invpv .thanks{text-align:center;color:var(--mute)}.invpv .muted{color:var(--mute)}
+.packl{margin:10px 0}.pk{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:8px;cursor:pointer}.pk input{width:24px;height:24px;accent-color:var(--ok,#16a34a)}.pk span{display:flex;flex-direction:column}.pk small{color:var(--mute)}.pk.done{background:#ecfdf5;border-color:#a7f3d0}
+.selbar{position:sticky;bottom:calc(74px + env(safe-area-inset-bottom));z-index:20;display:flex;flex-wrap:wrap;gap:6px;align-items:center;background:#0f172a;color:#fff;border-radius:16px;padding:10px;margin-top:10px;box-shadow:0 10px 30px rgba(0,0,0,.25)}.selbar .btn{flex:1;min-width:110px}.selbar b{width:100%}
+.tools.center{justify-content:center;margin-top:12px}.sub{margin:16px 0 8px;font-size:16px}.late{color:var(--bad)}.mute{color:var(--mute)}
 .sum{background:var(--soft);border-radius:13px;padding:10px 12px;margin-top:10px;font-weight:700;font-size:14px}
 .sum div{display:flex;justify-content:space-between;padding:2px 0}
 .sum .t{font-size:17px;font-weight:900}
@@ -239,6 +252,7 @@ function phoneKey(p){var d=digits(p).replace(/\D/g,'');if(d.indexOf('00968')===0
 function pad(n){return (n<10?'0':'')+n}
 function dkey(t){return t.getFullYear()+'-'+pad(t.getMonth()+1)+'-'+pad(t.getDate())}
 var CUR='ر.ع';
+function nOrders(n){return n===1?'طلب واحد':n===2?'طلبان':n>=3&&n<=10?n+' طلبات':n+' طلبًا'}
 
 /* ===== lib/ui.js ===== */
 function toast(t){var el=$('toast');el.textContent=t;el.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(function(){el.style.display='none'},2400)}
@@ -248,6 +262,7 @@ function openSheet(html,cls){
   d.addEventListener('click',function(e){if(e.target===d)closeSheet(d)});
   $('sheets').appendChild(d);document.body.style.overflow='hidden';return d;
 }
+function closeSheetIfMenu(b){var s=b.closest('.sheet');if(s&&s.querySelector('.list'))closeSheet(s)}
 function closeSheet(d){d=d||$('sheets').lastElementChild;if(d)d.remove();if(!$('sheets').children.length)document.body.style.overflow=''}
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSheet()});
 
@@ -397,19 +412,119 @@ function customersIndex(){
 function custByKey(k){customersIndex();return CX.map[k]}
 
 /* ===== lib/wa.js ===== */
-function waText(o){
-  var s=status(o),n=cname(o),num=onum(o);
-  var hi='مرحبًا'+(n?' '+n:'')+'،\n';
-  var body={new:'استلمنا طلبك '+num+' وسنبدأ في تجهيزه قريبًا.',waiting:'طلبك '+num+' بانتظار توفر بعض المنتجات، وسنبلغك فور توفرها.',ready:'طلبك '+num+' مؤكد وجاهز للتجهيز.',packing:'نعمل الآن على تجهيز طلبك '+num+'.',shipped:'تم شحن طلبك '+num+(o.company?' مع '+o.company:'')+'.',received:'نتمنى أن يكون طلبك '+num+' قد نال رضاك. شكرًا لثقتك.',cancelled:'تم إلغاء طلبك '+num+'.'}[s];
-  var lines=items(o).map(function(x){return '• '+iname(x)+' × '+qty(x)}).join('\n');
-  var tot=total(o),rem=remaining(o);
-  return hi+body+'\n\n'+lines+'\n\nالإجمالي: '+money(tot)+' '+CUR+(rem>0&&rem<tot?'\nالمتبقي: '+money(rem)+' '+CUR:'');
+/* رسائل واتساب حسب حالة الطلب (نفس أنواع التطبيق الحالي ومتغيراته)
+   القوالب التي عدّلها التاجر في التطبيق الحالي تُقرأ ولا تُعدَّل؛ تعديلات التجربة تُحفظ في مفتاح منفصل */
+var WA_LIVE_KEY='emd_whatsapp_templates_v189',WA_KEY='emd_rb_wa_templates';
+var WA_TYPES=[
+  {k:'new_order',t:'✅ تأكيد الطلب',st:['new','waiting','ready'],d:'مرحبًا {name} 🌷\n\nاستلمنا طلبك رقم #{order} ✅\nالمنتجات: {items}\n\nسنبدأ تجهيزه ونبلغك فور شحنه.'},
+  {k:'preparing',t:'🛠️ قيد التجهيز',st:['packing'],d:'مرحبًا {name} 🌷\n\nطلبك رقم #{order} قيد التجهيز الآن 🛠️\nالمنتجات: {items}\n\nسنبلغك فور شحنه.'},
+  {k:'shipped',t:'🚚 تم الشحن',st:['shipped'],d:'مرحبًا {name} 🌷\n\nتم شحن طلبك رقم #{order} بنجاح 🚚\nالمنتجات: {items}\nشركة التوصيل: {company}'},
+  {k:'received',t:'📬 تأكيد الاستلام',st:['received'],d:'مرحبًا {name} 🌷\n\nنتمنى أن يكون طلبك رقم #{order} قد وصلك بخير 📬\nيسعدنا تأكيدك للاستلام وتقييم تجربتك.'}
+];
+function waSaved(key){try{var x=JSON.parse(lsGet(key)||'{}');return x&&typeof x==='object'?x:{}}catch(e){return {}}}
+function waTypeFor(o){var s=status(o);for(var i=0;i<WA_TYPES.length;i++)if(WA_TYPES[i].st.indexOf(s)>=0)return WA_TYPES[i].k;return 'new_order'}
+function waTemplate(k){
+  var a=waSaved(WA_KEY)[k]||waSaved(WA_LIVE_KEY)[k];
+  if(a&&typeof a==='object'&&a.enabled!==false&&String(a.text||'').trim())return String(a.text).replace(/\\n/g,'\n');
+  for(var i=0;i<WA_TYPES.length;i++)if(WA_TYPES[i].k===k)return WA_TYPES[i].d;return WA_TYPES[0].d;
 }
-function waOpen(o,plain){var p=digits(cphone(o)).replace(/\D/g,'');if(p.indexOf('00')===0)p=p.slice(2);if(p.length===8)p='968'+p;window.open('https://wa.me/'+p+'?text='+encodeURIComponent(plain?('مرحبًا'+(cname(o)?' '+cname(o):'')+'،\n'):waText(o)),'_blank')}
+function waLink(o){return String(o.trackingUrl||o.tracking_url||'')}
+function waFill(t,o){
+  var its=items(o),first=its[0]||null,nm=oid(o).replace(/^#+/,''),link=waLink(o),sn=storeName();
+  var list=its.map(function(x){return iname(x)+' × '+qty(x)}).join('، ')||'—';
+  var map={name:cname(o)||'عميلنا العزيز',order:nm,items:list,company:o.company||o.deliveryCompany||'—',method:o.method||o.deliveryMethod||'—',place:cplace(o)||'—',link:link,store:sn,
+    'اسم العميل':cname(o)||'عميلنا العزيز','رقم الطلب':nm,'المنتج':first?iname(first):list,'الكمية':first?qty(first):1,'المكان':cplace(o)||'—','شركة الشحن':o.company||'—','طريقة التوصيل':o.method||o.deliveryMethod||'—','الرابط':link};
+  return String(t).replace(/\{([^{}]+)\}/g,function(m,k){return Object.prototype.hasOwnProperty.call(map,k)?String(map[k]):m});
+}
+function waText(o,k){
+  k=k||waTypeFor(o);var txt=waFill(waTemplate(k),o),link=waLink(o),sn=storeName();
+  if(link&&txt.indexOf(link)<0)txt+='\n\n🔗 '+(k==='received'?'أكّد الاستلام وقيّمنا':'تابع طلبك')+':\n'+link;
+  if(sn&&txt.indexOf(sn)<0)txt+='\n\nشكرًا لثقتك بنا 🤍\n'+sn;else if(!sn&&!/شكر/.test(txt))txt+='\n\nشكرًا لثقتك بنا 🤍';
+  return txt;
+}
+function waPhone(p){p=digits(p).replace(/\D/g,'');if(p.indexOf('00')===0)p=p.slice(2);if(p.length===8)p='968'+p;return p}
+function waOpen(o,plain,text){window.open('https://wa.me/'+waPhone(cphone(o))+'?text='+encodeURIComponent(text||(plain?('مرحبًا'+(cname(o)?' '+cname(o):'')+'،\n'):waText(o))),'_blank')}
+function waSheet(o){
+  if(!waPhone(cphone(o))){toast('لا يوجد رقم للعميل');return}
+  var k=waTypeFor(o),edited=false;
+  var d=openSheet('<div class="sh"><div><h3>💬 رسالة واتساب</h3><small>'+esc(onum(o))+' · '+esc(cname(o)||cphone(o))+'</small></div><button class="x" data-act="close">إغلاق ✕</button></div>'+
+    '<div class="chips" id="waChips"></div><textarea class="in msg" id="waTa"></textarea>'+
+    '<label class="chk" style="margin:8px 0"><input type="checkbox" id="waKeep"> احفظ تعديلي رسالةً دائمة لهذا النوع</label>'+
+    '<div class="foot"><button class="btn green" id="waGo">💬 إرسال في واتساب</button><button class="btn" data-act="close">إلغاء</button></div>');
+  function paint(){d.querySelector('#waChips').innerHTML=WA_TYPES.map(function(t){return '<button type="button" class="chip'+(t.k===k?' on':'')+'" data-wk="'+t.k+'">'+t.t+'</button>'}).join('');$('waTa').value=waText(o,k);edited=false}
+  d.addEventListener('click',function(e){var c=e.target.closest('[data-wk]');if(c){if(edited&&!confirm('تغيير نوع الرسالة يلغي تعديلك. هل تريد المتابعة؟'))return;k=c.dataset.wk;paint();return}
+    if(e.target.id==='waGo'){var txt=$('waTa').value;
+      if($('waKeep').checked){var s=waSaved(WA_KEY);s[k]={enabled:true,text:txt};lsSet(WA_KEY,JSON.stringify(s));toast('💾 حُفظت الرسالة لهذا النوع')}
+      if(!Array.isArray(o.waLog))o.waLog=[];o.waLog.push({k:k,at:new Date().toISOString()});save();
+      waOpen(o,false,txt);closeSheet(d)}});
+  d.addEventListener('input',function(e){if(e.target.id==='waTa')edited=true});
+  paint();
+}
+
+/* ===== lib/flow.js ===== */
+/* دورة الطلب بعد الاعتماد: التجهيز ← الشحن ← الاستلام (نفس قواعد التطبيق الحالي)
+   - لا يُشحن طلب قبل اكتمال قائمة تجهيزه (packed)
+   - الشحن يحتاج شركة التوصيل، ويُخصم المخزون عند الشحن (setStatus)
+   - الاستلام فقط لطلب مشحون */
+function nowIso(){return new Date().toISOString()}
+function addEvent(o,text){if(!Array.isArray(o.events))o.events=[];o.events.push({at:nowIso(),text:text})}
+function packList(o){var c=Array.isArray(o.packingChecks)?o.packingChecks:[];return items(o).map(function(x,i){return {i:i,name:iname(x),q:qty(x),done:!!c[i]}})}
+function packDone(o){var l=packList(o);return l.length>0&&l.every(function(x){return x.done})}
+function setPackItem(o,i,on){if(!Array.isArray(o.packingChecks))o.packingChecks=[];o.packingChecks[i]=!!on;if(!on)o.packed=false;o.updatedAt=nowIso();save()}
+function finishPacking(o){ // يكمل كل الأصناف ويعلّم الطلب «تم تجهيزه»
+  if(!items(o).length)return false;
+  o.packingChecks=items(o).map(function(){return true});
+  if(status(o)==='ready')setStatus(o,'packing',true);
+  if(o.packed!==true){o.packed=true;o.packedAt=o.packedAt||nowIso();addEvent(o,'✅ اكتمل تجهيز الطلب')}
+  o.updatedAt=nowIso();dirty();save();return true;
+}
+function shipOrder(o,info){ // info: {company, method, tracking}
+  if(o.packed!==true)return 'أكمل تجهيز الطلب أولًا.';
+  var c=String(info.company||'').trim();if(!c)return 'اكتب شركة التوصيل.';
+  var prev={company:o.company,method:o.method,deliveryMethod:o.deliveryMethod,tracking:o.tracking};
+  o.company=c;if(info.method){o.method=info.method;o.deliveryMethod=info.method}
+  if(info.tracking!=null)o.tracking=String(info.tracking).trim();
+  if(!setStatus(o,'shipped',true)){Object.assign(o,prev);return 'تم إلغاء الشحن.'}
+  o.handedToCourierAt=o.handedToCourierAt||nowIso();
+  addEvent(o,'🚚 تم الشحن · '+c+(o.tracking?' · التتبع: '+o.tracking:''));save();return '';
+}
+function receiveOrder(o){
+  if(status(o)!=='shipped')return 'هذا الطلب لم يُشحن بعد.';
+  setStatus(o,'received',true);o.receiveConfirmed=true;addEvent(o,'📬 تم تأكيد استلام الطلب');save();return '';
+}
+function daysSince(iso){var t=new Date(iso||0).getTime();return t?Math.floor((Date.now()-t)/864e5):null}
+
+/* ===== lib/print.js ===== */
+/* الطباعة: صفحة مستقلة داخل إطار مخفي، فتعمل داخل التطبيق المثبّت ولا تمنعها النوافذ المنبثقة */
+function printDoc(title,body,css){
+  var old=document.getElementById('printFrame');if(old)old.remove();
+  var f=document.createElement('iframe');f.id='printFrame';f.setAttribute('aria-hidden','true');
+  f.style.cssText='position:fixed;width:0;height:0;border:0;left:-9999px;bottom:0';document.body.appendChild(f);
+  var d=f.contentDocument;d.open();
+  d.write('<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>'+esc(title)+'</title><style>'+
+    'body{font-family:Tahoma,Arial,sans-serif;color:#111;margin:14mm;font-size:13px}h1{font-size:20px;margin:0 0 4px}.muted{color:#666}'+
+    'table{width:100%;border-collapse:collapse;margin:10px 0}th,td{border:1px solid #bbb;padding:6px 8px;text-align:right;vertical-align:top}th{background:#f1f5f9}'+
+    '.sign{margin-top:30px;display:flex;justify-content:space-between}.sign div{border-top:1px solid #333;width:40%;padding-top:6px;text-align:center}'+
+    '.pb{page-break-after:always}@page{margin:10mm}'+(css||'')+'</style></head><body>'+body+'</body></html>');
+  d.close();
+  setTimeout(function(){try{f.contentWindow.focus();f.contentWindow.print()}catch(e){toast('تعذّرت الطباعة على هذا الجهاز')}},250);
+}
+function printHead(title,sub){var sn=storeName();return '<h1>'+esc(title)+'</h1><div class="muted">'+(sn?esc(sn)+' · ':'')+esc(sub||'')+' · '+new Date().toLocaleString('ar',{dateStyle:'medium',timeStyle:'short'})+'</div>'}
+/* الملصق والفاتورة في ملف منفصل يُحمَّل عند أول استعمال */
+var docsP=null;
+function loadScript(src){return new Promise(function(ok,no){var s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=no;document.head.appendChild(s)})}
+function withDocs(cb){
+  if(!docsP)docsP=loadScript('qrcode.js?v=1').catch(function(){}).then(function(){return loadScript('docs.js?v=1')}).then(function(){
+    window.EMDDocs.setup({prefix:prefix,oid:oid,cname:cname,cphone:cphone,cplace:cplace,items:items,qty:qty,iname:iname,itemPrice:itemPrice,subtotal:subtotal,total:total,paid:paid,remaining:remaining,money:money,odate:odate,
+      storeName:storeName,toast:toast,printDoc:printDoc,openSheet:openSheet,esc:esc,nOrders:nOrders,waOpen:waOpen});return window.EMDDocs});
+  docsP.then(cb).catch(function(){docsP=null;toast('تعذّر تحميل أداة الطباعة. تحقّق من الاتصال وحاول مجددًا.')});
+}
+function openLabels(ids){var os=ids.map(findOrder).filter(Boolean);if(!os.length){toast('حدّد طلبًا واحدًا على الأقل');return}withDocs(function(D){D.labels(os)})}
+function openInvoice(id){var o=findOrder(id);if(o)withDocs(function(D){D.invoice(o)})}
 
 /* ===== screens/home-orders.js ===== */
 /* ---------- 4) العرض ---------- */
-var state={view:'home',filter:'all',q:'',pinnedOnly:false,limit:30};
+var state={view:'home',filter:'all',q:'',pinnedOnly:false,limit:30,ptab:'prep',sel:{}};
 var HAY=new WeakMap();
 function hay(o){var h=HAY.get(o);if(h==null){h=normTxt([oid(o),onum(o),cname(o),cphone(o),cplace(o),o.company||'',o.note||'',items(o).map(iname).join(' ')].join(' '));HAY.set(o,h)}return h}
 
@@ -421,6 +536,7 @@ function render(){
   else if(state.view==='products')v.innerHTML=productsHtml();
   else if(state.view==='stock')v.innerHTML=stockHtml();
   else if(state.view==='customers')v.innerHTML=customersHtml();
+  else if(state.view==='prep')v.innerHTML=prepHtml();
   else v.innerHTML=ordersHtml();
   if(state.view==='orders'){var s=$('q');if(s&&document.activeElement!==s&&state.focusQ){s.focus();state.focusQ=false}}
 }
@@ -437,7 +553,7 @@ function homeHtml(){
   return '<div class="hero"><div><h2>'+greet+'</h2><div class="clock">'+hh+':'+pad(now.getMinutes())+' <span>'+(h<12?'ص':'م')+'</span></div><div class="date">'+esc(greg)+(hijri?' · '+esc(hijri):'')+'</div></div></div>'+
     '<div class="money"><div><small>مبيعات اليوم</small><b>'+money(ix.sales)+'</b></div><div><small>غير محصّل</small><b class="gold">'+money(ix.unpaid)+'</b></div><div><small>ربح الشهر</small><b>'+money(ix.profit)+'</b></div></div>'+
     '<div class="stats">'+cards+'</div>'+
-    '<div class="quick"><button class="btn dark" data-act="importMsg">🤖 إدخال من رسالة</button><button class="btn" data-act="newOrder">✍️ كتابة طلب يدوي</button><button class="btn" data-act="prepNow">🧑‍💼 ماذا أجهز الآن؟</button><button class="btn" data-act="soon" data-what="تقفيلة اليوم">📊 تقفيلة اليوم</button></div>'+
+    '<div class="quick"><button class="btn dark" data-act="importMsg">🤖 إدخال من رسالة</button><button class="btn" data-act="newOrder">✍️ كتابة طلب يدوي</button><button class="btn" data-act="prepNow">🧑‍💼 ماذا أجهز الآن؟</button><button class="btn" data-act="closing">📊 تقفيلة اليوم</button></div>'+
     '<button class="fold" data-act="soon" data-what="تفاصيل اليوم والتوصيات">▼ تفاصيل اليوم والتوصيات <small>(لوحة اليوم، ما يحتاج انتباهك)</small></button>';
 }
 
@@ -573,6 +689,7 @@ function collect(box,o){
   if(pay==='paid'){o.paymentStatus='paid';o.paidAmount=o.total}
   else if(pay==='partial'){o.paymentStatus='partial';o.paidAmount=Math.min(o.total,num($('fPaid').value))}
   else{o.paymentStatus='unpaid';o.paidAmount=0}
+  if(o.paymentStatus!=='unpaid'&&!o.paidAt)o.paidAt=new Date().toISOString();
   o.remaining=Math.max(0,o.total-o.paidAmount);
   o.updatedAt=new Date().toISOString();
   return o;
@@ -599,7 +716,7 @@ function newOrder(pre,st){
   });
 }
 function afterSave(o){
-  var d=openSheet('<div class="sh"><h3>✅ تم حفظ الطلب</h3><button class="x" data-act="close">إغلاق ✕</button></div><p class="note">الطلب '+esc(onum(o))+' للعميل '+esc(cname(o)||cphone(o))+'. الحالة: '+ST[status(o)].l+'.</p><div class="foot"><button class="btn dark" data-act="waSend" data-id="'+esc(oid(o))+'">💬 إرسال تأكيد واتساب</button><button class="btn" data-act="close">لاحقًا</button></div>');
+  var d=openSheet('<div class="sh"><h3>✅ تم حفظ الطلب</h3><button class="x" data-act="close">إغلاق ✕</button></div><p class="note">الطلب '+esc(onum(o))+' للعميل '+esc(cname(o)||cphone(o))+'. الحالة: '+ST[status(o)].l+'.</p><div class="foot"><button class="btn dark" data-act="waSend" data-id="'+esc(oid(o))+'">💬 إرسال تأكيد واتساب</button><button class="btn" data-act="close">لاحقًا</button></div><button class="btn sm" data-act="invoice" data-id="'+esc(oid(o))+'" style="margin-top:6px">🧾 الفاتورة</button>');
   render();
 }
 function openOrder(id){
@@ -611,6 +728,7 @@ function openOrder(id){
     '<form id="frm" novalidate><label class="f" for="fStatus">🔄 حالة الطلب</label><select class="in" id="fStatus">'+opts+'</select>'+formHtml(o,false)+
     (hist?'<div class="hist"><b>سجل الطلب</b>'+hist+'</div>':'')+
     '<div class="foot"><button class="btn green" type="submit">💾 حفظ التعديلات</button><button class="btn" type="button" data-act="waSend" data-id="'+esc(id)+'">💬</button><button class="btn" type="button" data-act="copyNum" data-id="'+esc(id)+'">📋</button></div>'+
+    '<div class="foot" style="margin-top:4px"><button class="btn" type="button" data-act="label" data-id="'+esc(id)+'">🏷️ ملصق الشحن</button><button class="btn" type="button" data-act="invoice" data-id="'+esc(id)+'">🧾 الفاتورة</button></div>'+
     (s!=='cancelled'?'<button class="btn red" type="button" data-act="cancelOrder" data-id="'+esc(id)+'" style="width:100%;margin-top:4px">❌ إلغاء الطلب</button>':'')+'</form>');
   var box=d.querySelector('#frm');bindForm(box,o);
   box.addEventListener('submit',function(e){
@@ -618,8 +736,10 @@ function openOrder(id){
     var before=JSON.stringify(o);
     if(!collect(box,o))return;
     var to=$('fStatus').value;
-    if(to!==status(o)&&!setStatus(o,to,true)){var old=JSON.parse(before);Object.keys(o).forEach(function(k){delete o[k]});Object.assign(o,old);dirty();return}
+    var later=(to==='shipped'||to==='received'||to==='packing')&&to!==status(o)?to:'';
+    if(!later&&to!==status(o)&&!setStatus(o,to,true)){var old=JSON.parse(before);Object.keys(o).forEach(function(k){delete o[k]});Object.assign(o,old);dirty();return}
     upsertCustomer(o);save();closeSheet(d);toast('💾 تم حفظ التعديلات');render();
+    if(later)moveOrder(o,later);
   });
 }
 
@@ -681,6 +801,7 @@ function cardMore(id){
   openSheet('<div class="sh"><h3>'+esc(onum(o))+'</h3><button class="x" data-act="close">إغلاق ✕</button></div><div class="list">'+
     '<button data-act="togglePin" data-id="'+esc(id)+'">'+(pin?'📌 إلغاء التثبيت':'📌 تثبيت الطلب في الأعلى')+'</button>'+
     FLOW.filter(function(k){return k!==status(o)}).map(function(k){return '<button data-act="setSt" data-st="'+k+'" data-id="'+esc(id)+'">'+ST[k].i+' نقل إلى: '+ST[k].l+'</button>'}).join('')+
+    '<button data-act="label" data-id="'+esc(id)+'">🏷️ ملصق الشحن</button><button data-act="invoice" data-id="'+esc(id)+'">🧾 الفاتورة</button>'+
     '<button data-act="copyNum" data-id="'+esc(id)+'">📋 نسخ رقم الطلب</button></div>');
 }
 function moreSheet(){
@@ -702,6 +823,205 @@ function alertsSheet(){
 
 
 /* ---------- 4ب) المنتجات والمخزون والعملاء ---------- */
+
+/* ===== screens/prep.js ===== */
+/* ماذا أجهز الآن؟ — شاشة واحدة بثلاثة تبويبات: التجهيز، الشحن، الاستلام
+   (تجمع مركز التجهيز، قائمة التجهيز، كشف التجهيز، التجهيز الجماعي، كشف تسليم الشركات، تأكيد الاستلام) */
+var LATE_DAYS=3;
+function byOld(a,b){var x=odate(a),y=odate(b);return (x?x.getTime():0)-(y?y.getTime():0)}
+function prepLists(){
+  var r={ready:[],packing:[],toShip:[],shipped:[],shippedToday:[],waiting:0,fresh:0},today=dkey(new Date());
+  db.orders.forEach(function(o){var s=status(o);
+    if(s==='ready')r.ready.push(o);else if(s==='packing'){r.packing.push(o);if(o.packed===true)r.toShip.push(o)}
+    else if(s==='shipped'){r.shipped.push(o);var t=new Date(o.shippedAt||0);if(!isNaN(t)&&dkey(t)===today)r.shippedToday.push(o)}
+    else if(s==='waiting')r.waiting++;else if(s==='new')r.fresh++});
+  r.ready.sort(byOld);r.packing.sort(byOld);r.toShip.sort(byOld);
+  r.shipped.sort(function(a,b){return new Date(a.shippedAt||0)-new Date(b.shippedAt||0)});
+  return r;
+}
+function pickTotals(list){ // قائمة السحب: مجموع كل منتج في الطلبات المختارة
+  var m={},order=[];list.forEach(function(o){if(o.packed===true)return;items(o).forEach(function(x){var k=normTxt(iname(x));if(!m[k]){m[k]={name:iname(x),q:0,n:0};order.push(k)}m[k].q+=qty(x);m[k].n++})});
+  return order.map(function(k){return m[k]}).sort(function(a,b){return b.q-a.q});
+}
+function selIds(){return Object.keys(state.sel||{})}
+function prepCard(o,mode){
+  var id=oid(o),its=items(o),n=0;its.forEach(function(x){n+=qty(x)});var sel=!!(state.sel||{})[id];
+  var pl=packList(o),done=pl.filter(function(x){return x.done}).length;
+  var extra='';
+  if(mode==='packing')extra='<div class="prog"><span style="width:'+(pl.length?Math.round(done/pl.length*100):0)+'%"></span></div><small class="mute">'+(o.packed===true?'✅ اكتمل التجهيز':'التقدم: '+done+' / '+pl.length)+'</small>';
+  if(mode==='shipped'){var dd=daysSince(o.shippedAt);extra='<div class="meta">🚚 '+esc(o.company||'—')+(o.tracking?' · '+esc(o.tracking):'')+(dd!=null?' · <b class="'+(dd>=LATE_DAYS?'late':'')+'">منذ '+(dd===0?'اليوم':dd===1?'يوم':dd===2?'يومين':dd<=10?dd+' أيام':dd+' يومًا')+'</b>':'')+'</div>'}
+  var act=mode==='ready'?'<button class="btn dark" data-act="packOpen" data-id="'+esc(id)+'">🛠️ ابدأ التجهيز</button>'
+    :mode==='packing'?(o.packed===true?'<button class="btn dark" data-act="shipOpen" data-id="'+esc(id)+'">🚚 شحن</button>':'<button class="btn dark" data-act="packOpen" data-id="'+esc(id)+'">📋 أكمل التجهيز</button>')
+    :'<button class="btn dark" data-act="recvOne" data-id="'+esc(id)+'">📬 تم الاستلام</button>';
+  return '<div class="card pc'+(sel?' sel':'')+'" style="--sc:'+ST[status(o)].c+'" data-id="'+esc(id)+'">'+
+    '<div class="ch"><label class="chk"><input type="checkbox" data-act="selOne" data-id="'+esc(id)+'"'+(sel?' checked':'')+'><b>'+esc(onum(o))+' — '+esc(cname(o)||'بدون اسم')+'</b></label><span class="pill">📦 '+n+'</span></div>'+
+    '<div class="tags">'+its.map(function(x){return '<span class="tag">'+esc(iname(x))+' × '+qty(x)+'</span>'}).join('')+'</div>'+
+    '<div class="meta">📱 '+esc(cphone(o)||'—')+(cplace(o)?' · 📍 '+esc(cplace(o)):'')+(mode!=='shipped'&&o.company?' · 🚚 '+esc(o.company):'')+'</div>'+extra+
+    '<div class="acts">'+act+(mode!=='ready'?'<button class="btn" data-act="label" data-id="'+esc(id)+'">🏷️</button>':'')+'<button class="btn" data-act="open" data-id="'+esc(id)+'">📋 التفاصيل</button><button class="btn" data-act="wa" data-id="'+esc(id)+'">💬</button></div></div>';
+}
+function prepHtml(){
+  var L=prepLists(),tab=state.ptab||'prep',sel=selIds();
+  var tabs=[['prep','🛠️ التجهيز',L.ready.length+L.packing.length-L.toShip.length],['ship','🚚 الشحن',L.toShip.length],['recv','📬 الاستلام',L.shipped.length]];
+  var h='<h2 class="ptitle">🧑‍💼 ماذا أجهز الآن؟</h2><div class="seg ptabs">'+tabs.map(function(t){return '<button data-act="ptab" data-t="'+t[0]+'" class="'+(tab===t[0]?'on':'')+'">'+t[1]+' <small>'+t[2]+'</small></button>'}).join('')+'</div>';
+  if(tab==='prep'){
+    var list=L.ready.concat(L.packing.filter(function(o){return o.packed!==true}));
+    h+='<div class="kpis k4"><div class="kpi"><b>'+L.ready.length+'</b><span>🟢 جاهز للتجهيز</span></div><div class="kpi"><b>'+(L.packing.length-L.toShip.length)+'</b><span>🛠️ قيد التجهيز</span></div><div class="kpi"><b>'+L.waiting+'</b><span>⏳ ينتظر المنتج</span></div><div class="kpi"><b>'+L.fresh+'</b><span>🆕 جديد يحتاج اعتمادًا</span></div></div>';
+    var pk=pickTotals(list);
+    if(pk.length)h+='<details class="pick"><summary>📋 قائمة السحب (المنتجات: '+pk.length+'، القطع: '+pk.reduce(function(s,x){return s+x.q},0)+')</summary><table><tr><th>المنتج</th><th>المطلوب</th><th>المخزون</th></tr>'+pk.map(function(x){var p=product(x.name);return '<tr><td>'+esc(x.name)+' <small class="mute">('+nOrders(x.n)+')</small></td><td><b>'+x.q+'</b></td><td>'+(p?num(p.stock):'—')+'</td></tr>'}).join('')+'</table></details>';
+    h+=list.length?list.map(function(o){return prepCard(o,status(o))}).join(''):'<div class="empty">🎉 لا توجد طلبات تنتظر التجهيز الآن.</div>';
+  }else if(tab==='ship'){
+    h+=L.toShip.length?'<h3 class="sub">جاهزة للتسليم لشركة التوصيل</h3>'+L.toShip.map(function(o){return prepCard(o,'packing')}).join(''):'<div class="empty">لا توجد طلبات مجهّزة تنتظر الشحن.</div>';
+    var byC={};L.shippedToday.forEach(function(o){var c=o.company||'غير محددة';(byC[c]=byC[c]||[]).push(o)});
+    var cs=Object.keys(byC);
+    if(cs.length)h+='<h3 class="sub">شُحنت اليوم</h3>'+cs.map(function(c){return '<div class="card" style="--sc:var(--s-shipped)"><div class="ch"><b>🚚 '+esc(c)+'</b><span class="pill">'+nOrders(byC[c].length)+'</span></div><div class="meta">'+byC[c].map(function(o){return esc(onum(o))}).join('، ')+'</div><div class="acts"><button class="btn" data-act="printHand" data-c="'+esc(c)+'">🖨️ كشف التسليم</button></div></div>'}).join('');
+  }else{
+    var late=L.shipped.filter(function(o){var d=daysSince(o.shippedAt);return d!=null&&d>=LATE_DAYS}).length;
+    if(late)h+='<div class="left">⏰ '+(late===1?'طلب واحد مضى':nOrders(late)+' مضى')+' على شحنها '+LATE_DAYS+' أيام أو أكثر دون تأكيد استلام.</div>';
+    h+=L.shipped.length?L.shipped.map(function(o){return prepCard(o,'shipped')}).join(''):'<div class="empty">لا توجد طلبات مشحونة تنتظر تأكيد الاستلام.</div>';
+  }
+  if(sel.length){
+    var b=tab==='prep'?'<button class="btn" data-act="bulkStart">🛠️ بدء التجهيز</button><button class="btn" data-act="bulkFinish">✅ إنهاء التجهيز</button><button class="btn" data-act="printPrep">🖨️ كشف التجهيز</button><button class="btn" data-act="label">🏷️ الملصقات</button>'
+      :tab==='ship'?'<button class="btn dark" data-act="shipOpen">🚚 شحن المحدد</button><button class="btn" data-act="label">🏷️ الملصقات</button>'
+      :'<button class="btn dark" data-act="bulkRecv">📬 تأكيد الاستلام</button>';
+    h+='<div class="selbar"><b>المحدد: '+sel.length+'</b>'+b+'<button class="btn" data-act="selNone">إلغاء التحديد</button></div>';
+  }else{
+    var all=tab==='prep'?'selAllPrep':tab==='ship'?'selAllShip':'selAllRecv';
+    h+='<div class="tools center"><button class="btn sm" data-act="'+all+'">☑️ تحديد الكل</button>'+(tab==='prep'?'<button class="btn sm" data-act="printPrepAll">🖨️ طباعة كشف التجهيز</button>':'')+'</div>';
+  }
+  return h;
+}
+function refreshPrep(){if(state.view==='prep')$('view').innerHTML=prepHtml()}
+/* قائمة تجهيز الطلب: تحديد كل صنف بعد وضعه */
+function packSheet(id){
+  var o=findOrder(id);if(!o)return;
+  if(status(o)==='ready')setStatus(o,'packing',true);
+  var d=openSheet('<div class="sh"><div><h3>🛠️ تجهيز الطلب</h3><small>'+esc(onum(o))+' · '+esc(cname(o)||'بدون اسم')+'</small></div><button class="x" data-act="close">إغلاق ✕</button></div><div id="packBody"></div>');
+  function paint(){var pl=packList(o),done=pl.filter(function(x){return x.done}).length,ok=done===pl.length&&pl.length>0;
+    d.querySelector('#packBody').innerHTML='<p class="note">حدّد كل صنف بعد وضعه داخل الطلب.</p><div class="prog big"><span style="width:'+(pl.length?Math.round(done/pl.length*100):0)+'%"></span></div><b>التقدم: '+done+' / '+pl.length+'</b>'+
+      '<div class="packl">'+pl.map(function(x){return '<label class="pk'+(x.done?' done':'')+'"><input type="checkbox" data-pi="'+x.i+'"'+(x.done?' checked':'')+'><span><b>'+esc(x.name)+'</b><small>الكمية: '+x.q+'</small></span></label>'}).join('')+'</div>'+
+      '<div class="foot"><button class="btn green" data-pk="ship"'+(ok?'':' disabled')+'>🚚 تم التجهيز — شحن الآن</button><button class="btn" data-pk="done"'+(ok?'':' disabled')+'>✅ تم التجهيز</button></div>'+
+      '<button class="btn sm" data-pk="all" style="margin-top:6px">☑️ تحديد الكل</button>'}
+  d.addEventListener('change',function(e){var i=e.target.dataset.pi;if(i==null)return;setPackItem(o,+i,e.target.checked);paint()});
+  d.addEventListener('click',function(e){var b=e.target.closest('[data-pk]');if(!b||b.disabled)return;var k=b.dataset.pk;
+    if(k==='all'){packList(o).forEach(function(x){setPackItem(o,x.i,true)});paint();return}
+    finishPacking(o);closeSheet(d);toast('✅ اكتمل تجهيز '+onum(o));
+    if(k==='ship')shipSheet([oid(o)]);else afterFlow()});
+  paint();
+}
+/* الشحن: شركة التوصيل مطلوبة، وطريقة التوصيل ورقم التتبع اختياريان */
+function shipSheet(ids){
+  var os=ids.map(findOrder).filter(Boolean);if(!os.length)return;
+  var notPacked=os.filter(function(o){return o.packed!==true});
+  if(notPacked.length){if(os.length===1){packSheet(oid(os[0]));return}toast('لم يكتمل تجهيز '+nOrders(notPacked.length)+'، أكمله أولًا');return}
+  var o1=os[0],comp=companies(),one=os.length===1;
+  var d=openSheet('<div class="sh"><div><h3>🚚 شحن '+(one?'الطلب':nOrders(os.length))+'</h3><small>'+esc(one?onum(o1)+' · '+(cname(o1)||cphone(o1)):os.map(onum).join('، '))+'</small></div><button class="x" data-act="close">إغلاق ✕</button></div>'+
+    '<form id="shf" novalidate><label class="f" for="sCo">🚚 شركة التوصيل <em>*</em></label><input class="in" id="sCo" list="sCoL" value="'+esc(o1.company||'')+'" placeholder="مثال: أسياد"><datalist id="sCoL">'+comp.map(function(c){return '<option value="'+esc(c)+'">'}).join('')+'</datalist>'+
+    (comp.length?'<div class="chips">'+comp.slice(0,6).map(function(c){return '<button type="button" class="chip" data-co="'+esc(c)+'">'+esc(c)+'</button>'}).join('')+'</div>':'')+
+    '<label class="f" for="sMe">📦 طريقة التوصيل</label><select class="in" id="sMe">'+['مندوب','مكتب','توصيل للمنزل','استلام من الفرع'].map(function(m){return '<option'+((o1.method||o1.deliveryMethod||'مندوب')===m?' selected':'')+'>'+m+'</option>'}).join('')+'</select>'+
+    (one?'<label class="f" for="sTr">🔢 رقم التتبع <small class="mute">(اختياري)</small></label><input class="in" id="sTr" value="'+esc(o1.tracking||'')+'">':'')+
+    '<div class="foot"><button class="btn green" type="submit">🚚 تأكيد الشحن</button><button class="btn" type="button" data-act="close">إلغاء</button></div></form>');
+  d.addEventListener('click',function(e){var c=e.target.closest('[data-co]');if(c)$('sCo').value=c.dataset.co});
+  d.querySelector('#shf').addEventListener('submit',function(e){e.preventDefault();
+    var info={company:$('sCo').value,method:$('sMe').value,tracking:one?$('sTr').value:null},ok=0,err='';
+    if(!String(info.company).trim()){toast('اكتب شركة التوصيل');return}
+    os.forEach(function(o){var r=shipOrder(o,info);if(r)err=r;else ok++});
+    closeSheet(d);state.sel={};
+    toast(ok?'🚚 تم شحن '+(ok===1?onum(os[0]):nOrders(ok))+(err?' · '+err:''):err);
+    afterFlow();
+    if(ok===1&&one&&cphone(os[0]))openSheet('<div class="sh"><h3>🚚 تم شحن '+esc(onum(os[0]))+'</h3><button class="x" data-act="close">إغلاق ✕</button></div><p class="note">هل تريد إبلاغ العميل بأن طلبه شُحن؟</p><div class="foot"><button class="btn dark" data-act="waSend" data-id="'+esc(oid(os[0]))+'">💬 إرسال إشعار الشحن</button><button class="btn" data-act="close">لاحقًا</button></div>');
+  });
+}
+function afterFlow(){if(state.view==='prep')refreshPrep();else if(state.view==='orders')refreshList();else render();var b=$('alertBadge'),ix=index();b.textContent=ix.alerts;b.classList.toggle('hide',!ix.alerts)}
+/* الخطوة التالية للطلب من أي مكان (البطاقة، التفاصيل، النقل) */
+function advanceOrder(o){
+  var s=status(o);
+  if(s==='new'||s==='waiting'){if(s==='waiting'&&shortage(o).length){toast('⏳ المنتجات غير متوفرة بعد');return}setStatus(o,'ready');afterFlow();return}
+  if(s==='ready'){packSheet(oid(o));return}
+  if(s==='packing'){if(o.packed===true)shipSheet([oid(o)]);else packSheet(oid(o));return}
+  if(s==='shipped'){if(confirm('تأكيد استلام العميل للطلب '+onum(o)+'؟')){receiveOrder(o);toast('📬 تم تأكيد الاستلام');afterFlow()}}
+}
+function moveOrder(o,to){
+  var s=status(o);if(s===to)return;
+  if(to==='shipped'){advanceToShip(o);return}
+  if(to==='received'){if(s!=='shipped'){toast('يُؤكَّد الاستلام بعد شحن الطلب');return}receiveOrder(o);afterFlow();return}
+  if(to==='packing'&&s!=='packing'){setStatus(o,'packing');packSheet(oid(o));return}
+  if(setStatus(o,to))afterFlow();
+}
+function advanceToShip(o){var s=status(o);if(s==='shipped'||s==='received')return;if(s!=='packing'&&s!=='ready'){if(!confirm('هذا الطلب لم يُعتمد بعد. هل تريد تجهيزه وشحنه؟'))return}packSheet(oid(o))}
+/* الطباعة */
+function printPrep(ids){
+  var os=(ids&&ids.length?ids.map(findOrder).filter(Boolean):prepLists().ready.concat(prepLists().packing));
+  if(!os.length){toast('لا توجد طلبات للطباعة');return}
+  var pk=pickTotals(os.map(function(o){return o.packed===true?Object.assign({},o,{packed:false}):o}));
+  printDoc('كشف التجهيز',printHead('📋 كشف التجهيز','عدد الطلبات: '+os.length)+
+    '<h3>مجموع المنتجات</h3><table><tr><th>#</th><th>المنتج</th><th>الكمية</th><th>✓</th></tr>'+pk.map(function(x,i){return '<tr><td>'+(i+1)+'</td><td>'+esc(x.name)+'</td><td><b>'+x.q+'</b></td><td></td></tr>'}).join('')+'</table>'+
+    '<h3>الطلبات</h3><table><tr><th>الطلب</th><th>العميل</th><th>المكان</th><th>المنتجات</th><th>✓</th></tr>'+os.map(function(o){return '<tr><td>'+esc(onum(o))+'</td><td>'+esc(cname(o)||'—')+'<br><small>'+esc(cphone(o))+'</small></td><td>'+esc(cplace(o)||'—')+'</td><td>'+items(o).map(function(x){return esc(iname(x))+' × '+qty(x)}).join('<br>')+'</td><td></td></tr>'}).join('')+'</table>');
+}
+function printHandover(company){
+  var os=prepLists().shippedToday.filter(function(o){return (o.company||'غير محددة')===company});if(!os.length)return;
+  var cod=0;os.forEach(function(o){cod+=remaining(o)});
+  printDoc('كشف التسليم',printHead('🚚 كشف تسليم: '+company,'عدد الطلبات: '+os.length+' · مبالغ التحصيل: '+money(cod)+' '+CUR)+
+    '<table><tr><th>#</th><th>الطلب</th><th>العميل</th><th>الهاتف</th><th>المكان</th><th>القطع</th><th>التحصيل</th></tr>'+os.map(function(o,i){var n=0;items(o).forEach(function(x){n+=qty(x)});return '<tr><td>'+(i+1)+'</td><td>'+esc(onum(o))+'</td><td>'+esc(cname(o)||'—')+'</td><td>'+esc(cphone(o))+'</td><td>'+esc(cplace(o)||'—')+'</td><td>'+n+'</td><td>'+(remaining(o)?money(remaining(o)):'مدفوع')+'</td></tr>'}).join('')+'</table>'+
+    '<div class="sign"><div>توقيع المستلم من '+esc(company)+'</div><div>توقيع المتجر</div></div>');
+}
+
+/* ===== screens/closing.js ===== */
+/* تقفيلة اليوم: ملخص اليوم، إرساله للمدير بواتساب أو بالبريد، وتذكير يومي بوقت محدد
+   الإعدادات تُقرأ من التطبيق الحالي مرة واحدة (emd_v108_close) وتُحفظ في مفتاح التجربة */
+var CLOSE_KEY='emd_rb_close',CLOSINGS_KEY='emd_rb_closings';
+function closeCfg(){var c;try{c=JSON.parse(lsGet(CLOSE_KEY)||lsGet('emd_v108_close')||'{}')||{}}catch(e){c={}}if(c.enabled==null)c.enabled=true;c.time=c.time||'22:00';c.wa=c.wa||'';c.email=c.email||'';return c}
+function closeSave(c){lsSet(CLOSE_KEY,JSON.stringify(c))}
+function closings(){try{var a=JSON.parse(lsGet(CLOSINGS_KEY)||'[]');return Array.isArray(a)?a:[]}catch(e){return []}}
+function dayOf(v){var t=new Date(v||0);return isNaN(t)||t.getTime()<=0?'':dkey(t)}
+function closingReport(dk){
+  var r={dk:dk,newO:0,sales:0,paidToday:0,shipped:0,received:0,cancelled:0,prods:{},due:index().unpaid,ready:0,packing:0,waiting:0,low:[]};
+  db.orders.forEach(function(o){var s=status(o),od=dayOf(o.orderDate||o.created||o.createdAt||o.date);
+    if(s==='ready')r.ready++;else if(s==='packing')r.packing++;else if(s==='waiting')r.waiting++;
+    if(od===dk){if(s==='cancelled')r.cancelled++;else{r.newO++;r.sales+=total(o);items(o).forEach(function(x){r.prods[iname(x)]=(r.prods[iname(x)]||0)+qty(x)})}}
+    if(s!=='cancelled'&&dayOf(o.paidAt)===dk)r.paidToday+=paid(o);
+    if(dayOf(o.shippedAt)===dk)r.shipped++;
+    if(dayOf(o.receivedAt)===dk)r.received++});
+  db.products.forEach(function(p){var a=available(p.name);if(a!==null&&a<=3)r.low.push(p.name+' ('+Math.max(0,a)+')')});
+  return r;
+}
+function closingText(r){
+  var top=Object.keys(r.prods).sort(function(a,b){return r.prods[b]-r.prods[a]}).slice(0,5);
+  var dl=new Date(r.dk+'T12:00:00').toLocaleDateString('ar-OM',{weekday:'long',day:'numeric',month:'long'});
+  var t='📊 تقفيلة '+(storeName()||'المتجر')+' — '+dl+'\n\n'+
+    '📦 طلبات اليوم: '+r.newO+'\n💰 مبيعات اليوم: '+money(r.sales)+' '+CUR+'\n✅ المحصّل اليوم: '+money(r.paidToday)+' '+CUR+'\n⏳ إجمالي غير المحصّل: '+money(r.due)+' '+CUR+'\n\n'+
+    '🚚 شُحن اليوم: '+r.shipped+'\n📬 استلمها العملاء: '+r.received+(r.cancelled?'\n❌ ملغى: '+r.cancelled:'')+'\n\n'+
+    '🟢 جاهز للتجهيز: '+r.ready+'\n🛠️ قيد التجهيز: '+r.packing+'\n⏳ بانتظار المنتجات: '+r.waiting;
+  if(top.length)t+='\n\n🏆 الأكثر طلبًا اليوم:\n'+top.map(function(n){return '• '+n+' × '+r.prods[n]}).join('\n');
+  if(r.low.length)t+='\n\n⚠️ مخزون قليل: '+r.low.slice(0,6).join('، ');
+  return t+'\n\n— EMD Business';
+}
+function closingSheet(){
+  var C=closeCfg(),today=dkey(new Date()),r=closingReport(today),txt=closingText(r),done=closings().filter(function(x){return x.dk===today})[0];
+  var d=openSheet('<div class="sh"><div><h3>📊 تقفيلة اليوم</h3><small>ملخص يومك، وترسله للمدير بضغطة.</small></div><button class="x" data-act="close">إغلاق ✕</button></div>'+
+    '<div class="kpis"><div class="kpi"><b>'+r.newO+'</b><span>طلبات اليوم</span></div><div class="kpi"><b>'+money(r.sales)+'</b><span>مبيعات اليوم</span></div><div class="kpi"><b>'+money(r.paidToday)+'</b><span>المحصّل اليوم</span></div><div class="kpi"><b>'+money(r.due)+'</b><span>غير المحصّل</span></div></div>'+
+    '<pre class="cltxt">'+esc(txt)+'</pre>'+
+    (done?'<div class="okbar">✅ تم تقفيل اليوم — '+new Date(done.at).toLocaleTimeString('ar-OM',{hour:'2-digit',minute:'2-digit'})+'</div>':'')+
+    '<div class="foot"><button class="btn green" data-cl="wa">💬 أرسل واتساب</button><button class="btn" data-cl="mail">✉️ أرسل بريدًا</button></div>'+
+    '<div class="foot" style="margin-top:4px"><button class="btn" data-cl="copy">📋 نسخ</button>'+(done?'':'<button class="btn dark" data-cl="done">🔒 تقفيل اليوم</button>')+'</div>'+
+    '<details class="more"><summary>⚙️ إعدادات التقفيلة</summary>'+
+    '<label class="chk" style="margin:8px 0"><input type="checkbox" data-cc="enabled"'+(C.enabled?' checked':'')+'> 🔔 تذكير التقفيلة كل يوم</label>'+
+    '<label class="f">وقت التقفيلة</label><input class="in" type="time" data-cc="time" value="'+esc(C.time)+'">'+
+    '<label class="f">واتساب المدير</label><input class="in" data-cc="wa" inputmode="tel" placeholder="مثال: 99999999" value="'+esc(C.wa)+'">'+
+    '<label class="f">بريد المدير</label><input class="in" data-cc="email" type="email" placeholder="name@example.com" value="'+esc(C.email)+'"></details>');
+  d.addEventListener('change',function(e){var k=e.target.dataset.cc;if(!k)return;var c=closeCfg();c[k]=e.target.type==='checkbox'?e.target.checked:e.target.value.trim();closeSave(c);toast('💾 حُفظ')});
+  d.addEventListener('click',function(e){var b=e.target.closest('[data-cl]');if(!b)return;var k=b.dataset.cl,c=closeCfg();
+    if(k==='wa'){var p=waPhone(c.wa);window.open('https://wa.me/'+(p||'')+'?text='+encodeURIComponent(txt),'_blank')}
+    else if(k==='mail'){location.href='mailto:'+encodeURIComponent(c.email)+'?subject='+encodeURIComponent('تقفيلة '+(storeName()||'المتجر')+' — '+today)+'&body='+encodeURIComponent(txt)}
+    else if(k==='copy'){if(navigator.clipboard)navigator.clipboard.writeText(txt).then(function(){toast('📋 نُسخ الملخص')})}
+    else if(k==='done'){var a=closings().filter(function(x){return x.dk!==today});a.push({dk:today,at:new Date().toISOString(),newO:r.newO,sales:r.sales,paidToday:r.paidToday});lsSet(CLOSINGS_KEY,JSON.stringify(a.slice(-120)));closeSheet(d);toast('🔒 تم تقفيل اليوم');closingSheet()}});
+}
+/* التذكير: يُفحص مع تحديث الساعة (لا مؤقت إضافي) */
+function closingTick(){
+  var c=closeCfg();if(!c.enabled)return;var n=new Date(),today=dkey(n),hm=pad(n.getHours())+':'+pad(n.getMinutes());
+  if(hm<c.time||c.reminded===today||closings().some(function(x){return x.dk===today}))return;
+  c.reminded=today;closeSave(c);
+  openSheet('<div class="sh"><h3>🔔 حان وقت تقفيلة اليوم</h3><button class="x" data-act="close">إغلاق ✕</button></div><p class="note">راجع ملخص يومك وأرسله للمدير.</p><div class="foot"><button class="btn dark" data-act="closing">📊 فتح التقفيلة</button><button class="btn" data-act="close">لاحقًا</button></div>');
+}
 
 /* ===== screens/products.js ===== */
 function productsHtml(){
@@ -868,11 +1188,26 @@ document.addEventListener('click',function(e){
     case 'backImport':closeSheet();importSheet(lastMsg);break;
     case 'open':openOrder(id);break;
     case 'openFromAlert':closeSheet();openOrder(id);break;
-    case 'advance':{var o=findOrder(id),nx=o&&NEXT[status(o)];if(nx&&setStatus(o,nx[0]))refreshList();break}
-    case 'wa':case 'waSend':{var o2=findOrder(id);if(o2)waOpen(o2);break}
+    case 'advance':{var o=findOrder(id);if(o)advanceOrder(o);break}
+    case 'wa':case 'waSend':{var o2=findOrder(id);if(o2)waSheet(o2);if(act==='waSend'&&b.closest('.sheet')&&!b.closest('form'))closeSheet(b.closest('.sheet'));break}
     case 'cardMore':cardMore(id);break;
     case 'togglePin':setPin(id,!pinned()[id]);closeSheet();refreshList();break;
-    case 'setSt':{var o3=findOrder(id);closeSheet();if(o3&&setStatus(o3,b.dataset.st))refreshList();break}
+    case 'setSt':{var o3=findOrder(id);closeSheet();if(o3)moveOrder(o3,b.dataset.st);break}
+    case 'ptab':state.ptab=b.dataset.t;state.sel={};refreshPrep();window.scrollTo(0,0);break;
+    case 'selOne':{state.sel=state.sel||{};if(b.checked)state.sel[id]=1;else delete state.sel[id];refreshPrep();break}
+    case 'selNone':state.sel={};refreshPrep();break;
+    case 'selAllPrep':case 'selAllShip':case 'selAllRecv':{var LL=prepLists(),arr=act==='selAllPrep'?LL.ready.concat(LL.packing.filter(function(x){return x.packed!==true})):act==='selAllShip'?LL.toShip:LL.shipped;state.sel={};arr.forEach(function(x){state.sel[oid(x)]=1});refreshPrep();break}
+    case 'packOpen':packSheet(id);break;
+    case 'shipOpen':shipSheet(id?[id]:selIds());break;
+    case 'recvOne':{var o6=findOrder(id);if(o6&&confirm('تأكيد استلام العميل للطلب '+onum(o6)+'؟')){receiveOrder(o6);toast('📬 تم تأكيد الاستلام');afterFlow()}break}
+    case 'bulkStart':{var n1=0;selIds().forEach(function(k){var x=findOrder(k);if(x&&status(x)==='ready'&&setStatus(x,'packing',true))n1++});state.sel={};toast('🛠️ بدأ تجهيز '+nOrders(n1));afterFlow();break}
+    case 'bulkFinish':{var ids2=selIds();if(!confirm('هل اكتمل تجهيز '+nOrders(ids2.length)+'؟ تأكد أن كل الأصناف وُضعت.'))break;var n2=0;ids2.forEach(function(k){var x=findOrder(k);if(x&&finishPacking(x))n2++});state.sel={};toast('✅ اكتمل تجهيز '+nOrders(n2)+'، وتجدها في تبويب الشحن');afterFlow();break}
+    case 'bulkRecv':{var ids3=selIds();if(!confirm('تأكيد استلام '+nOrders(ids3.length)+'؟'))break;var n3=0;ids3.forEach(function(k){var x=findOrder(k);if(x&&!receiveOrder(x))n3++});state.sel={};toast('📬 تم تأكيد استلام '+nOrders(n3));afterFlow();break}
+    case 'printPrep':printPrep(selIds());break;
+    case 'printPrepAll':printPrep(null);break;
+    case 'printHand':printHandover(b.dataset.c);break;
+    case 'label':closeSheetIfMenu(b);openLabels(id?[id]:selIds());break;
+    case 'invoice':closeSheetIfMenu(b);openInvoice(id);break;
     case 'copyNum':{var o4=findOrder(id);if(o4&&navigator.clipboard)navigator.clipboard.writeText(onum(o4)).then(function(){toast('📋 نُسخ '+onum(o4))});break}
     case 'cancelOrder':{var o5=findOrder(id);if(o5&&confirm('هل تريد إلغاء الطلب '+onum(o5)+'؟')){closeSheet();setStatus(o5,'cancelled');render()}break}
     case 'pinnedOnly':state.pinnedOnly=!state.pinnedOnly;state.limit=30;refreshList();break;
@@ -890,7 +1225,8 @@ document.addEventListener('click',function(e){
     case 'cWa':{var cc=custByKey(ck(b));if(cc)waOpen({phone:cc.phone,name:cc.name,status:'x',products:[]},true);break}
     case 'cNew':{var cn=custByKey(ck(b));closeSheet();newOrder();if(cn){$('fPhone').value=cn.phone;$('fName').value=cn.name||'';$('fPlace').value=cn.place||'';$('fPlace').dispatchEvent(new Event('input',{bubbles:true}))}break}
     case 'cAll':{var ca=custByKey(ck(b));closeSheet();state.view='orders';state.filter='all';state.q=ca?phoneKey(ca.phone):'';state.limit=30;render();window.scrollTo(0,0);break}
-    case 'prepNow':state.view='orders';state.filter='prep';state.limit=30;render();window.scrollTo(0,0);break;
+    case 'closing':var cs=b.closest('.sheet');if(cs)closeSheet(cs);closingSheet();break;
+    case 'prepNow':state.view='prep';state.sel={};render();window.scrollTo(0,0);break;
     case 'moreSheet':moreSheet();break;
     case 'alerts':alertsSheet();break;
     case 'settings':settingsSheet();break;
@@ -912,7 +1248,7 @@ $('fileIn').addEventListener('change',function(){
   r.onload=function(){try{var raw=JSON.parse(r.result),d=raw&&raw.data&&raw.data.orders?raw.data:raw;
     if(raw&&raw.keys&&raw.keys[LIVE_KEY]){d=raw.keys[LIVE_KEY];if(typeof d==='string')d=JSON.parse(d)}
     if(!d||!Array.isArray(d.orders))throw 0;
-    closeSheet();adopt(d,'file:'+f.name);boot();toast('📂 فُتحت النسخة: '+d.orders.length+' طلب');
+    closeSheet();adopt(d,'file:'+f.name);boot();toast('📂 فُتحت النسخة، عدد الطلبات: '+d.orders.length);
   }catch(e){toast('تعذر قراءة الملف. اختر ملف نسخة احتياطية من EMD Business.')}};
   r.readAsText(f);this.value='';
 });
@@ -934,7 +1270,7 @@ function boot(){
   render();
 }
 boot();
-setInterval(function(){if(state.view==='home'&&!$('sheets').children.length){var c=document.querySelector('.clock');if(c){var n=new Date(),h=n.getHours();c.innerHTML=(h%12||12)+':'+pad(n.getMinutes())+' <span>'+(h<12?'ص':'م')+'</span>'}}},30000);
+setInterval(function(){if(!$('sheets').children.length)closingTick();if(state.view==='home'&&!$('sheets').children.length){var c=document.querySelector('.clock');if(c){var n=new Date(),h=n.getHours();c.innerHTML=(h%12||12)+':'+pad(n.getMinutes())+' <span>'+(h<12?'ص':'م')+'</span>'}}},30000);
 window.EMDRebuild={db:function(){return db},index:index,total:total,payState:payState,status:status};
 
 })();

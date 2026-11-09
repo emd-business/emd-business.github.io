@@ -3,6 +3,7 @@ function cardMore(id){
   openSheet('<div class="sh"><h3>'+esc(onum(o))+'</h3><button class="x" data-act="close">إغلاق ✕</button></div><div class="list">'+
     '<button data-act="togglePin" data-id="'+esc(id)+'">'+(pin?'📌 إلغاء التثبيت':'📌 تثبيت الطلب في الأعلى')+'</button>'+
     FLOW.filter(function(k){return k!==status(o)}).map(function(k){return '<button data-act="setSt" data-st="'+k+'" data-id="'+esc(id)+'">'+ST[k].i+' نقل إلى: '+ST[k].l+'</button>'}).join('')+
+    '<button data-act="label" data-id="'+esc(id)+'">🏷️ ملصق الشحن</button><button data-act="invoice" data-id="'+esc(id)+'">🧾 الفاتورة</button>'+
     '<button data-act="copyNum" data-id="'+esc(id)+'">📋 نسخ رقم الطلب</button></div>');
 }
 function moreSheet(){

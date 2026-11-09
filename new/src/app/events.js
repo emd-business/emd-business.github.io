@@ -14,11 +14,26 @@ document.addEventListener('click',function(e){
     case 'backImport':closeSheet();importSheet(lastMsg);break;
     case 'open':openOrder(id);break;
     case 'openFromAlert':closeSheet();openOrder(id);break;
-    case 'advance':{var o=findOrder(id),nx=o&&NEXT[status(o)];if(nx&&setStatus(o,nx[0]))refreshList();break}
-    case 'wa':case 'waSend':{var o2=findOrder(id);if(o2)waOpen(o2);break}
+    case 'advance':{var o=findOrder(id);if(o)advanceOrder(o);break}
+    case 'wa':case 'waSend':{var o2=findOrder(id);if(o2)waSheet(o2);if(act==='waSend'&&b.closest('.sheet')&&!b.closest('form'))closeSheet(b.closest('.sheet'));break}
     case 'cardMore':cardMore(id);break;
     case 'togglePin':setPin(id,!pinned()[id]);closeSheet();refreshList();break;
-    case 'setSt':{var o3=findOrder(id);closeSheet();if(o3&&setStatus(o3,b.dataset.st))refreshList();break}
+    case 'setSt':{var o3=findOrder(id);closeSheet();if(o3)moveOrder(o3,b.dataset.st);break}
+    case 'ptab':state.ptab=b.dataset.t;state.sel={};refreshPrep();window.scrollTo(0,0);break;
+    case 'selOne':{state.sel=state.sel||{};if(b.checked)state.sel[id]=1;else delete state.sel[id];refreshPrep();break}
+    case 'selNone':state.sel={};refreshPrep();break;
+    case 'selAllPrep':case 'selAllShip':case 'selAllRecv':{var LL=prepLists(),arr=act==='selAllPrep'?LL.ready.concat(LL.packing.filter(function(x){return x.packed!==true})):act==='selAllShip'?LL.toShip:LL.shipped;state.sel={};arr.forEach(function(x){state.sel[oid(x)]=1});refreshPrep();break}
+    case 'packOpen':packSheet(id);break;
+    case 'shipOpen':shipSheet(id?[id]:selIds());break;
+    case 'recvOne':{var o6=findOrder(id);if(o6&&confirm('تأكيد استلام العميل للطلب '+onum(o6)+'؟')){receiveOrder(o6);toast('📬 تم تأكيد الاستلام');afterFlow()}break}
+    case 'bulkStart':{var n1=0;selIds().forEach(function(k){var x=findOrder(k);if(x&&status(x)==='ready'&&setStatus(x,'packing',true))n1++});state.sel={};toast('🛠️ بدأ تجهيز '+nOrders(n1));afterFlow();break}
+    case 'bulkFinish':{var ids2=selIds();if(!confirm('هل اكتمل تجهيز '+nOrders(ids2.length)+'؟ تأكد أن كل الأصناف وُضعت.'))break;var n2=0;ids2.forEach(function(k){var x=findOrder(k);if(x&&finishPacking(x))n2++});state.sel={};toast('✅ اكتمل تجهيز '+nOrders(n2)+'، وتجدها في تبويب الشحن');afterFlow();break}
+    case 'bulkRecv':{var ids3=selIds();if(!confirm('تأكيد استلام '+nOrders(ids3.length)+'؟'))break;var n3=0;ids3.forEach(function(k){var x=findOrder(k);if(x&&!receiveOrder(x))n3++});state.sel={};toast('📬 تم تأكيد استلام '+nOrders(n3));afterFlow();break}
+    case 'printPrep':printPrep(selIds());break;
+    case 'printPrepAll':printPrep(null);break;
+    case 'printHand':printHandover(b.dataset.c);break;
+    case 'label':closeSheetIfMenu(b);openLabels(id?[id]:selIds());break;
+    case 'invoice':closeSheetIfMenu(b);openInvoice(id);break;
     case 'copyNum':{var o4=findOrder(id);if(o4&&navigator.clipboard)navigator.clipboard.writeText(onum(o4)).then(function(){toast('📋 نُسخ '+onum(o4))});break}
     case 'cancelOrder':{var o5=findOrder(id);if(o5&&confirm('هل تريد إلغاء الطلب '+onum(o5)+'؟')){closeSheet();setStatus(o5,'cancelled');render()}break}
     case 'pinnedOnly':state.pinnedOnly=!state.pinnedOnly;state.limit=30;refreshList();break;
@@ -36,7 +51,8 @@ document.addEventListener('click',function(e){
     case 'cWa':{var cc=custByKey(ck(b));if(cc)waOpen({phone:cc.phone,name:cc.name,status:'x',products:[]},true);break}
     case 'cNew':{var cn=custByKey(ck(b));closeSheet();newOrder();if(cn){$('fPhone').value=cn.phone;$('fName').value=cn.name||'';$('fPlace').value=cn.place||'';$('fPlace').dispatchEvent(new Event('input',{bubbles:true}))}break}
     case 'cAll':{var ca=custByKey(ck(b));closeSheet();state.view='orders';state.filter='all';state.q=ca?phoneKey(ca.phone):'';state.limit=30;render();window.scrollTo(0,0);break}
-    case 'prepNow':state.view='orders';state.filter='prep';state.limit=30;render();window.scrollTo(0,0);break;
+    case 'closing':var cs=b.closest('.sheet');if(cs)closeSheet(cs);closingSheet();break;
+    case 'prepNow':state.view='prep';state.sel={};render();window.scrollTo(0,0);break;
     case 'moreSheet':moreSheet();break;
     case 'alerts':alertsSheet();break;
     case 'settings':settingsSheet();break;
@@ -58,7 +74,7 @@ $('fileIn').addEventListener('change',function(){
   r.onload=function(){try{var raw=JSON.parse(r.result),d=raw&&raw.data&&raw.data.orders?raw.data:raw;
     if(raw&&raw.keys&&raw.keys[LIVE_KEY]){d=raw.keys[LIVE_KEY];if(typeof d==='string')d=JSON.parse(d)}
     if(!d||!Array.isArray(d.orders))throw 0;
-    closeSheet();adopt(d,'file:'+f.name);boot();toast('📂 فُتحت النسخة: '+d.orders.length+' طلب');
+    closeSheet();adopt(d,'file:'+f.name);boot();toast('📂 فُتحت النسخة، عدد الطلبات: '+d.orders.length);
   }catch(e){toast('تعذر قراءة الملف. اختر ملف نسخة احتياطية من EMD Business.')}};
   r.readAsText(f);this.value='';
 });

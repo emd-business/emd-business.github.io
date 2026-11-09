@@ -29,7 +29,6 @@ assert shell.count('/*@@APP@@*/')==1
 html=shell.replace('/*@@APP@@*/','(function(){\n\n'+'\n'.join(parts))
 os.makedirs(out,exist_ok=True)
 open(os.path.join(out,'index.html'),'w',encoding='utf-8').write(html)
-for x in ['parse.js','logo.svg']:
-  s=os.path.join(H,'static',x)
-  if os.path.exists(s):shutil.copy(s,os.path.join(out,x))
+for x in os.listdir(os.path.join(H,'static')):shutil.copy(os.path.join(H,'static',x),os.path.join(out,x))
+for x in os.listdir(os.path.join(H,'lazy')):shutil.copy(os.path.join(H,'lazy',x),os.path.join(out,x))
 print('built',os.path.join(out,'index.html'),len(html),'bytes,',len([k for k in defs if not k.startswith('var ')]),'functions in',len(files),'files')

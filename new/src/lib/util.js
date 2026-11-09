@@ -9,3 +9,4 @@ function phoneKey(p){var d=digits(p).replace(/\D/g,'');if(d.indexOf('00968')===0
 function pad(n){return (n<10?'0':'')+n}
 function dkey(t){return t.getFullYear()+'-'+pad(t.getMonth()+1)+'-'+pad(t.getDate())}
 var CUR='ر.ع';
+function nOrders(n){return n===1?'طلب واحد':n===2?'طلبان':n>=3&&n<=10?n+' طلبات':n+' طلبًا'}

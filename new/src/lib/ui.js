@@ -5,5 +5,6 @@ function openSheet(html,cls){
   d.addEventListener('click',function(e){if(e.target===d)closeSheet(d)});
   $('sheets').appendChild(d);document.body.style.overflow='hidden';return d;
 }
+function closeSheetIfMenu(b){var s=b.closest('.sheet');if(s&&s.querySelector('.list'))closeSheet(s)}
 function closeSheet(d){d=d||$('sheets').lastElementChild;if(d)d.remove();if(!$('sheets').children.length)document.body.style.overflow=''}
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSheet()});

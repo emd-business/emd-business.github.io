@@ -7,10 +7,14 @@ lib/money.js
 lib/stock.js
 lib/customers.js
 lib/wa.js
+lib/flow.js
+lib/print.js
 screens/home-orders.js
 screens/order-form.js
 screens/import.js
 screens/sheets.js
+screens/prep.js
+screens/closing.js
 screens/products.js
 screens/customers.js
 screens/settings.js

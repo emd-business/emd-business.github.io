@@ -1,0 +1,20 @@
+// اختبار ملصق الشحن (المقاسات، QR، الباركود) والفاتورة
+const {chromium}=require('playwright');
+(async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:400,height:860}});const errs=[];p.on('pageerror',e=>errs.push(e.message));p.on('dialog',d=>d.accept());
+await p.goto('http://localhost:8131/index.html');await p.waitForTimeout(400);await p.click('[data-act=demo][data-n="40"]');await p.waitForTimeout(400);
+await p.evaluate(()=>{const o=EMDRebuild.db().orders[0];o.trackingUrl='https://track.example/abc123';o.company='أسياد'});
+await p.click('nav#bar [data-go=orders]');await p.waitForTimeout(200);
+await p.click('.card [data-act=cardMore] >> nth=0');await p.click('.sheet [data-act=label]');await p.waitForTimeout(1500);
+const n1=await p.$$eval('#lbPv img',x=>x.length);console.log('label preview imgs',n1);
+await p.screenshot({path:'/tmp/label.png'});
+const dataUrl=await p.$eval('#lbPv img',i=>i.src);require('fs').writeFileSync('/tmp/label-100x100.png',Buffer.from(dataUrl.split(',')[1],'base64'));
+await p.selectOption('#lbSize','50x30');await p.waitForTimeout(800);const d2=await p.$eval('#lbPv img',i=>i.src);require('fs').writeFileSync('/tmp/label-50x30.png',Buffer.from(d2.split(',')[1],'base64'));
+await p.selectOption('#lbSize','100x150');await p.waitForTimeout(800);const d3=await p.$eval('#lbPv img',i=>i.src);require('fs').writeFileSync('/tmp/label-100x150.png',Buffer.from(d3.split(',')[1],'base64'));
+console.log('cfg',await p.evaluate(()=>localStorage.getItem('emd_rb_label')),'live cfg untouched',await p.evaluate(()=>localStorage.getItem('emd418_label')));
+await p.click('[data-lb=print]');await p.waitForTimeout(500);console.log('print frame imgs',await p.evaluate(()=>document.getElementById('printFrame').contentDocument.images.length));
+await p.evaluate(()=>document.querySelectorAll('.sheet').forEach(s=>s.remove()));
+await p.click('.card [data-act=open] >> nth=0');await p.waitForTimeout(200);await p.click('.sheet [data-act=invoice]');await p.waitForTimeout(600);
+console.log('invoice',JSON.stringify(await p.evaluate(()=>document.querySelector('.invpv').innerText.slice(0,200))));
+await p.screenshot({path:'/tmp/invoice.png'});
+await p.click('[data-iv=receipt]');await p.waitForTimeout(500);console.log('receipt css',await p.evaluate(()=>/80mm/.test(document.getElementById('printFrame').contentDocument.head.innerHTML)));
+console.log('errs',errs);await b.close()})();
