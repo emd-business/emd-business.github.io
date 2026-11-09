@@ -3,7 +3,7 @@ function settingsSheet(){
   var live=lsGet(LIVE_KEY);
   openSheet('<div class="sh"><h3>⚙️ إعدادات التجربة</h3><button class="x" data-act="close">إغلاق ✕</button></div>'+
     '<p class="note">هذه نسخة تجريبية من التطبيق الجديد. مصدر البيانات الحالي: <b>'+esc(srcLabel())+'</b>. تعديلاتك هنا تبقى داخل التجربة فقط ولا تصل إلى تطبيقك الأصلي.</p><div class="list">'+
-    '<button data-act="modes">🧭 نوع النشاط <small class="note">الحالي: '+MODE_NAME[mode()]+'</small></button>'+(live?'<button data-act="recopy">🔁 إعادة نسخ بياناتي من التطبيق الحالي</button>':'')+
+    '<button data-act="modes">🧭 نوع النشاط <small class="note">الحالي: '+MODE_NAME[mode()]+'</small></button>'+(mode()==='online'?'':'<button data-act="posSet" data-v="prn">🖨️ الطابعات <small class="note">الاتصال بالطابعة، وتحديد طابعة كل عمل ومقاسه.</small></button><button data-act="posSet" data-v="inv">🧾 تصميم الفاتورة <small class="note">القالب واللون والحقول وطريقة الإرسال.</small></button>')+(live?'<button data-act="recopy">🔁 إعادة نسخ بياناتي من التطبيق الحالي</button>':'')+
     '<button data-act="cloud">☁️ الحساب والحفظ في السحابة</button><button data-act="push">🔔 الإشعارات</button><button data-act="support">🆘 المساعدة والدعم</button><button data-act="openFile">📂 فتح ملف نسخة احتياطية</button>'+
     '<button data-act="demo" data-n="40">🧪 بيانات تجريبية صغيرة (40 طلبًا)</button>'+
     '<button data-act="demo" data-n="1500">⚡ بيانات كبيرة لاختبار السرعة (1500 طلب)</button></div>');

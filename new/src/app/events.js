@@ -72,6 +72,7 @@ document.addEventListener('click',function(e){
     case 'settings':closeSheetIfMenu(b);settingsSheet();break;
     case 'modes':closeSheet();modesOpen();break;
     case 'c438':c438(b.dataset.v);break;
+    case 'posSet':closeSheet();directLoad().then(function(){if(b.dataset.v==='prn'&&window.EMDPrnV444)EMDPrnV444.open();else if(window.EMDInvV443)EMDInvV443.designer(null)},function(){toast('تعذّر الفتح. تحقّق من الاتصال.')});break;
     case 'soon':toast('«'+(b.dataset.what||'هذا القسم')+'» يُبنى في المرحلة القادمة');break;
     case 'recopy':recopy();break;
     case 'openFile':$('fileIn').click();break;

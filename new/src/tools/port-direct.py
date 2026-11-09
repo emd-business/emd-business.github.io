@@ -39,6 +39,7 @@ js=re.sub(r'\bH\.(lk|db|toast|storeName|available|persist|after|restock|profile|
 js=js.replace('var H=window.EMDDirH;','var DH=window.EMDDirH;')
 assert not re.search(r"localStorage\.(setItem|removeItem)\('",js),'ls'
 if 'EMD419' in js:
+  a="function render(){\n  if(!S.open)return;";assert js.count(a)==1,'render';js=js.replace(a,a+"(window.__posHooks||[]).forEach(function(f){try{f()}catch(e){}});")
   a="function renderProducts(){\n  var el=$('emd113Pl');if(!el)return;";assert js.count(a)==1,'rp';js=js.replace(a,a+"if(window.EMD419)try{EMD419.applyView()}catch(e){}")
 out='/* مُولَّد بـ tools/port-direct.py من V113 — لا تعدّل هنا */\n(function(){var s=document.createElement("style");s.textContent='+json.dumps(css,ensure_ascii=False)+';document.head.appendChild(s)})();\n'+js
 open(OUT,'w',encoding='utf8').write(out);print('direct.js',len(out.encode()),'bytes')

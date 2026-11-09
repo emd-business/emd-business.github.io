@@ -270,7 +270,7 @@ function open(tab,detailId){
 function close(){S.open=false;var ov=$('emd113Ov');if(ov)ov.classList.remove('show');saveDraft()}
 function tabsSync(){[].forEach.call(document.querySelectorAll('#emd113Ov .emd113-tab'),function(b){b.classList.toggle('on',b.getAttribute('data-v')===S.tab)})}
 function render(){
-  if(!S.open)return;tabsSync();if(window.EMD449)EMD449.sync(S);
+  if(!S.open)return;(window.__posHooks||[]).forEach(function(f){try{f()}catch(e){}});tabsSync();if(window.EMD449)EMD449.sync(S);
   if(S.done)return renderDone();
   if(S.tab==='shift'&&window.EMD420){$('emd113Ft').style.display='none';return EMD420.renderShift($('emd113Body'))}
   if(S.tab==='cust'&&window.EMDLoyV434){$('emd113Ft').style.display='none';return EMDLoyV434.renderTab($('emd113Body'))}
