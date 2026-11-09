@@ -7067,7 +7067,18 @@ function q173send(){if(QB)return;var m=q173miss();if(m){q173err(m[0],m[1]);retur
       $('qkErr').textContent=(key?T.ar[key]:T.ar.errNet);
       if(key==='errGone'||key==='errOut')rpc('emd_store_get',{p_slug:SLUG}).then(function(j){if(j){ST=j;P=(j.products||[]).filter(function(p){return p&&p.key&&p.name});for(var k in QS.c)if(!item(k)||!item(k).in_stock)delete QS.c[k];q173paint()}}).catch(function(){})})},wait)}
 /* V221: الطلب عبر الدالة المحمية من الطلبات الوهمية */
-function rpcOrder(b){return rpc('emd_store_order2',b).then(function(r){if(r&&r.error_code)throw new Error(r.error_code);return r})}
+function rpcOrder(b){return ts229().then(function(tk){var x=Object.assign({},b,{ts:tk});return fetch(API+'/functions/v1/store-order',{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify(x)})}).then(function(r){return r.json().catch(function(){return {error_code:'net'}})}).then(function(r){if(!r||r.error_code)throw new Error((r&&r.error_code)||'net');return r})}
+/* V229: فحص Cloudflare Turnstile الصامت: يُطلب عند تأكيد الطلب فقط، ولا يظهر للزبون شيء */
+var TS229={id:null,wait:null};
+function ts229load(){if(window.turnstile)return Promise.resolve(window.turnstile);if(TS229.p)return TS229.p;TS229.p=new Promise(function(ok,no){var sc=document.createElement('script');sc.src='https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';sc.async=true;sc.onload=function(){var n=0,t=setInterval(function(){if(window.turnstile){clearInterval(t);ok(window.turnstile)}else if(++n>50){clearInterval(t);no(new Error('bot_check'))}},100)};sc.onerror=function(){TS229.p=null;no(new Error('bot_check'))};document.head.appendChild(sc)});return TS229.p}
+function ts229(){return ts229load().then(function(T){return new Promise(function(ok,no){var done=false,fin=function(f,v){if(done)return;done=true;clearTimeout(tm);f(v)},tm=setTimeout(function(){fin(no,new Error('bot_check'))},20000);
+  TS229.wait={ok:function(t){fin(ok,t)},no:function(){fin(no,new Error('bot_check'))}};
+  if(TS229.id===null){var el=document.createElement('div');el.id='ts229';el.style.cssText='position:fixed;bottom:0;left:0;z-index:2147483647';document.body.appendChild(el);
+    TS229.id=T.render(el,{sitekey:'0x4AAAAAAF5QiHlOhXRIw2Ih',execution:'execute',appearance:'interaction-only',language:'ar',callback:function(t){TS229.wait&&TS229.wait.ok(t)},'error-callback':function(){TS229.wait&&TS229.wait.no()},'expired-callback':function(){}})}
+  else{try{T.reset(TS229.id)}catch(e){}}
+  T.execute(TS229.id)})})}
+ERRS.bot_check='errBot';T.ar.errBot='تعذّر التحقق من الطلب. تأكد من الاتصال بالإنترنت ثم اضغط «تأكيد الطلب» مرة أخرى.';T.en.errBot='We could not verify the order. Check your connection and tap confirm again.';
+setTimeout(function(){ts229load().catch(function(){})},2500);
 /* V215: إيصال التحويل في رابط الطلب السريع */
 function qrNeed(){return QS.pay==='bank'&&!!B.bankInfo&&!(QS.del&&q173nf())&&!!$('qkRf')}
 function qrUp(){return QS.pay==='bank'&&!!QS.rc}
