@@ -1,0 +1,64 @@
+/* ---------- 6) الأحداث (مستمع واحد للصفحة كلها) ---------- */
+document.addEventListener('click',function(e){
+  var b=e.target.closest('[data-go],[data-act],[data-filter]');if(!b)return;
+  var card=b.closest('.card'),id=b.dataset.id||(card&&card.dataset.id),act=b.dataset.act;
+  if(b.dataset.go){if(b.closest('.sheet'))closeSheet(b.closest('.sheet'));state.view=b.dataset.go;state.limit=30;state.pq='';state.cq='';render();window.scrollTo(0,0);return}
+  if(b.dataset.filter){state.view='orders';state.filter=b.dataset.filter;state.limit=30;render();if(!b.classList.contains('chip'))window.scrollTo(0,0);return}
+  switch(act){
+    case 'close':closeSheet(b.closest('.sheet'));break;
+    case 'newOrder':newOrder();break;
+    case 'importMsg':importSheet('');break;
+    case 'manualOrder':closeSheet();newOrder();break;
+    case 'doParse':doParse();break;
+    case 'pasteMsg':navigator.clipboard.readText().then(function(t){var a=$('rawMsg');if(a&&t){a.value=t;doParse()}}).catch(function(){toast('اسمح بالوصول للحافظة أو ألصق يدويًا')});break;
+    case 'backImport':closeSheet();importSheet(lastMsg);break;
+    case 'open':openOrder(id);break;
+    case 'openFromAlert':closeSheet();openOrder(id);break;
+    case 'advance':{var o=findOrder(id),nx=o&&NEXT[status(o)];if(nx&&setStatus(o,nx[0]))refreshList();break}
+    case 'wa':case 'waSend':{var o2=findOrder(id);if(o2)waOpen(o2);break}
+    case 'cardMore':cardMore(id);break;
+    case 'togglePin':setPin(id,!pinned()[id]);closeSheet();refreshList();break;
+    case 'setSt':{var o3=findOrder(id);closeSheet();if(o3&&setStatus(o3,b.dataset.st))refreshList();break}
+    case 'copyNum':{var o4=findOrder(id);if(o4&&navigator.clipboard)navigator.clipboard.writeText(onum(o4)).then(function(){toast('📋 نُسخ '+onum(o4))});break}
+    case 'cancelOrder':{var o5=findOrder(id);if(o5&&confirm('هل تريد إلغاء الطلب '+onum(o5)+'؟')){closeSheet();setStatus(o5,'cancelled');render()}break}
+    case 'pinnedOnly':state.pinnedOnly=!state.pinnedOnly;state.limit=30;refreshList();break;
+    case 'clearQ':state.q='';state.limit=30;render();break;
+    case 'showMore':state.limit+=30;if(state.view==='orders')refreshList();else render();break;
+    case 'addProduct':productSheet(null);break;
+    case 'editProduct':productSheet(+b.dataset.pi);break;
+    case 'delProduct':{var pp=db.products[+b.dataset.pi];if(pp&&confirm('هل تريد حذف المنتج «'+pp.name+'»؟ الطلبات السابقة لا تتأثر.')){db.products.splice(+b.dataset.pi,1);save();closeSheet(b.closest('.sheet'));toast('🗑️ حُذف المنتج');render()}break}
+    case 'addStock':addStockSheet(+b.dataset.pi);break;
+    case 'orderProduct':{var pq=db.products[+b.dataset.pi];newOrder();if(pq){var sl=document.querySelector('#items select');sl.value=pq.name;sl.dispatchEvent(new Event('change',{bubbles:true}))}break}
+    case 'stockLow':state.stockLow=!state.stockLow;render();break;
+    case 'csort':state.csort=b.dataset.s;state.limit=30;render();break;
+    case 'cProfile':customerProfile(ck(b));break;
+    case 'cEdit':customerEdit(ck(b));break;
+    case 'cWa':{var cc=custByKey(ck(b));if(cc)waOpen({phone:cc.phone,name:cc.name,status:'x',products:[]},true);break}
+    case 'cNew':{var cn=custByKey(ck(b));closeSheet();newOrder();if(cn){$('fPhone').value=cn.phone;$('fName').value=cn.name||'';$('fPlace').value=cn.place||'';$('fPlace').dispatchEvent(new Event('input',{bubbles:true}))}break}
+    case 'cAll':{var ca=custByKey(ck(b));closeSheet();state.view='orders';state.filter='all';state.q=ca?phoneKey(ca.phone):'';state.limit=30;render();window.scrollTo(0,0);break}
+    case 'prepNow':state.view='orders';state.filter='prep';state.limit=30;render();window.scrollTo(0,0);break;
+    case 'moreSheet':moreSheet();break;
+    case 'alerts':alertsSheet();break;
+    case 'settings':settingsSheet();break;
+    case 'soon':toast('«'+(b.dataset.what||'هذا القسم')+'» يُبنى في المرحلة القادمة');break;
+    case 'recopy':recopy();break;
+    case 'openFile':$('fileIn').click();break;
+    case 'demo':closeSheet();adopt(demo(+b.dataset.n||40),'demo'+(b.dataset.n||40));boot();break;
+  }
+});
+function ck(b){var c=b.closest('[data-ck]');return b.dataset.ck||(c&&c.dataset.ck)}
+var qT=0;
+document.addEventListener('input',function(e){
+  var id=e.target.id;
+  if(id==='q'){state.q=e.target.value;state.limit=30;clearTimeout(qT);qT=setTimeout(refreshList,180);return}
+  if(id==='pq'||id==='cq'){state[id]=e.target.value;state.limit=30;clearTimeout(qT);qT=setTimeout(function(){var tmp=document.createElement('div');tmp.innerHTML=state.view==='products'?productsHtml():customersHtml();var L=id==='pq'?'#plist':'#clist';$(L.slice(1)).innerHTML=tmp.querySelector(L).innerHTML;var om=document.querySelector('.moreBtn'),nm=tmp.querySelector('.moreBtn');if(om)om.remove();if(nm)$(L.slice(1)).after(nm)},180)}
+});
+$('fileIn').addEventListener('change',function(){
+  var f=this.files&&this.files[0];if(!f)return;var r=new FileReader();
+  r.onload=function(){try{var raw=JSON.parse(r.result),d=raw&&raw.data&&raw.data.orders?raw.data:raw;
+    if(raw&&raw.keys&&raw.keys[LIVE_KEY]){d=raw.keys[LIVE_KEY];if(typeof d==='string')d=JSON.parse(d)}
+    if(!d||!Array.isArray(d.orders))throw 0;
+    closeSheet();adopt(d,'file:'+f.name);boot();toast('📂 فُتحت النسخة: '+d.orders.length+' طلب');
+  }catch(e){toast('تعذر قراءة الملف. اختر ملف نسخة احتياطية من EMD Business.')}};
+  r.readAsText(f);this.value='';
+});

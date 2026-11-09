@@ -183,6 +183,7 @@ details.more summary{font-weight:800;padding:8px 0;cursor:pointer}
 'use strict';
 (function(){
 
+/* ===== lib/store.js ===== */
 /* ---------- 1) التخزين ---------- */
 var LIVE_KEY='emd_business_v1';        // بيانات التطبيق الحالي (قراءة فقط هنا)
 var KEY='emd_rb_sandbox_v1';           // نسخة التجربة
@@ -220,6 +221,13 @@ function save(){ // حفظ واحد مؤجل قليلًا بدل عشرات عم
 }
 window.addEventListener('pagehide',function(){if(saveT){clearTimeout(saveT);lsSet(KEY,JSON.stringify(db))}});
 
+var PIN_KEY='emd_rb_pins_v1'; // تثبيت التجربة منفصل عن تثبيت التطبيق الأصلي
+function pinned(){try{var a=JSON.parse(lsGet(PIN_KEY)||'[]');var m={};(Array.isArray(a)?a:[]).forEach(function(x){m[String(x)]=1});return m}catch(e){return {}}}
+function setPin(id,on){var m=pinned();if(on)m[id]=1;else delete m[id];lsSet(PIN_KEY,JSON.stringify(Object.keys(m)));dirty()}
+function companies(){try{var a=JSON.parse(lsGet('emd_v79_companies')||'[]');return Array.isArray(a)?a.map(function(x){return typeof x==='string'?x:(x&&x.name)||''}).filter(Boolean):[]}catch(e){return []}}
+function storeName(){try{var p=JSON.parse(lsGet('emd_business_profile_v333')||'{}');return String(p.name||'').trim()}catch(e){return ''}}
+
+/* ===== lib/util.js ===== */
 /* ---------- 2) أدوات عامة ---------- */
 function $(id){return document.getElementById(id)}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
@@ -228,11 +236,22 @@ function num(v){var x=parseFloat(digits(v).replace(/٫/g,'.').replace(/[,،\s]/g
 function money(x){return (Math.round((x||0)*1000)/1000).toFixed(3)}
 function normTxt(s){return digits(s).replace(/ـ/g,'').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي').toLowerCase().replace(/\s+/g,' ').trim()}
 function phoneKey(p){var d=digits(p).replace(/\D/g,'');if(d.indexOf('00968')===0)d=d.slice(5);else if(d.indexOf('968')===0&&d.length===11)d=d.slice(3);return d.slice(-8)}
-function toast(t){var el=$('toast');el.textContent=t;el.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(function(){el.style.display='none'},2400)}
 function pad(n){return (n<10?'0':'')+n}
 function dkey(t){return t.getFullYear()+'-'+pad(t.getMonth()+1)+'-'+pad(t.getDate())}
 var CUR='ر.ع';
 
+/* ===== lib/ui.js ===== */
+function toast(t){var el=$('toast');el.textContent=t;el.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(function(){el.style.display='none'},2400)}
+/* ---------- 5) النوافذ ---------- */
+function openSheet(html,cls){
+  var d=document.createElement('div');d.className='sheet '+(cls||'');d.innerHTML='<div class="box">'+html+'</div>';
+  d.addEventListener('click',function(e){if(e.target===d)closeSheet(d)});
+  $('sheets').appendChild(d);document.body.style.overflow='hidden';return d;
+}
+function closeSheet(d){d=d||$('sheets').lastElementChild;if(d)d.remove();if(!$('sheets').children.length)document.body.style.overflow=''}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSheet()});
+
+/* ===== lib/orders.js ===== */
 /* ---------- 3) نموذج الطلب (متوافق مع بيانات التطبيق الحالي) ---------- */
 var ST={
   new:{l:'جديد',s:'جديدة',i:'🆕',c:'var(--s-new)'},
@@ -258,60 +277,8 @@ function firstPos(a){for(var i=0;i<a.length;i++){var v=num(a[i]);if(v>0)return v
 function prefix(){var p=String(lsGet('emd_v129_order_prefix')||'EMD').replace(/[^A-Za-z0-9]/g,'').toUpperCase();return p||'EMD'}
 function onum(o){var r=oid(o).replace(/^#/,'');return /^\d+$/.test(r)?prefix()+'-'+r:r||'—'}
 
-/* فهرس المنتجات: يُبنى مرة واحدة بعد كل تغيير */
-var IX=null;
-function dirty(){IX=null;HAY=new WeakMap()}
-function index(){
-  if(IX)return IX;
-  var byName={},reserved={},counts={all:0,pinned:0},alerts=0,today=dkey(new Date()),mon=today.slice(0,7);
-  var sales=0,unpaid=0,profit=0;
-  Object.keys(ST).forEach(function(k){counts[k]=0});
-  db.products.forEach(function(p){var k=normTxt(p.name);if(k)byName[k]=p});
-  var pins=pinned();
-  db.orders.forEach(function(o){
-    var s=status(o);counts[s]++;if(s!=='cancelled')counts.all++;
-    if(pins[oid(o)])counts.pinned++;
-    if((s==='new'||s==='ready'||s==='packing')&&o.stockDeducted!==true){
-      items(o).forEach(function(x){var k=normTxt(iname(x));reserved[k]=(reserved[k]||0)+qty(x)});
-    }
-    if(s==='cancelled')return;
-    var t=odate(o),tot=total(o,byName);
-    if(t){var dk=dkey(t);if(dk===today)sales+=tot;if(dk.slice(0,7)===mon)profit+=tot-cost(o,byName)}
-    unpaid+=remaining(o,byName);
-    if(s==='waiting'||(s==='new')||(s==='shipped'&&t&&Date.now()-t>5*864e5))alerts++;
-  });
-  IX={byName:byName,reserved:reserved,counts:counts,alerts:alerts,sales:sales,unpaid:unpaid,profit:profit};
-  return IX;
-}
-function product(name,byName){return (byName||index().byName)[normTxt(name)]||null}
-function catPrice(p){return p?firstPos([p.salePrice,p.unitPrice,p.price,p.defaultPrice]):0}
-function catCost(p){return p?firstPos([p.costPrice,p.purchasePrice,p.cost,p.purchaseCost]):0}
-function itemPrice(x,b){return firstPos([x.unitPrice,x.salePrice,x.price])||catPrice(product(iname(x),b))}
-function itemCost(x,b){return firstPos([x.cost,x.purchaseCost,x.costPrice])||catCost(product(iname(x),b))}
-function subtotal(o,b){return items(o).reduce(function(s,x){return s+itemPrice(x,b)*qty(x)},0)}
-function total(o,b){var m=num(o.total);return m>0?m:Math.max(0,subtotal(o,b)+num(o.deliveryFee)-num(o.discount))}
-function cost(o,b){return items(o).reduce(function(s,x){return s+itemCost(x,b)*qty(x)},0)}
-function payState(o,b){var s=String(o.paymentStatus||'');if(s==='paid'||s==='transfer'||s==='cash')return 'paid';var p=num(o.paidAmount),t=total(o,b);if(t>0&&p>=t-0.0005)return 'paid';if(p>0||s==='partial')return 'partial';return 'unpaid'}
-function paid(o,b){return payState(o,b)==='paid'?total(o,b):Math.min(num(o.paidAmount),total(o,b))}
-function remaining(o,b){return Math.max(0,total(o,b)-paid(o,b))}
-var PAYL={unpaid:'غير مدفوع',partial:'مدفوع جزئيًا',paid:'مدفوع'};
-function available(name,excludeOrder){
-  var p=product(name);if(!p)return null;
-  var res=index().reserved[normTxt(name)]||0;
-  if(excludeOrder&&(['new','ready','packing'].indexOf(status(excludeOrder))>=0)&&excludeOrder.stockDeducted!==true){
-    items(excludeOrder).forEach(function(x){if(normTxt(iname(x))===normTxt(name))res-=qty(x)});
-  }
-  return Math.max(0,num(p.stock))-res;
-}
-function shortage(o){
-  var out=[];items(o).forEach(function(x){var a=available(iname(x),o);if(a===null)out.push({name:iname(x),missing:true});else if(a<qty(x))out.push({name:iname(x),need:qty(x),have:Math.max(0,a)})});return out;
-}
-var PIN_KEY='emd_rb_pins_v1'; // تثبيت التجربة منفصل عن تثبيت التطبيق الأصلي
-function pinned(){try{var a=JSON.parse(lsGet(PIN_KEY)||'[]');var m={};(Array.isArray(a)?a:[]).forEach(function(x){m[String(x)]=1});return m}catch(e){return {}}}
-function setPin(id,on){var m=pinned();if(on)m[id]=1;else delete m[id];lsSet(PIN_KEY,JSON.stringify(Object.keys(m)));dirty()}
 function findOrder(id){for(var i=0;i<db.orders.length;i++)if(oid(db.orders[i])===id)return db.orders[i];return null}
 function nextId(){var max=0;db.orders.forEach(function(o){var r=oid(o).replace(/^#/,'');if(/^\d+$/.test(r))max=Math.max(max,+r)});db.orderSeq=max+2;return '#'+String(max+1).padStart(4,'0')}
-function companies(){try{var a=JSON.parse(lsGet('emd_v79_companies')||'[]');return Array.isArray(a)?a.map(function(x){return typeof x==='string'?x:(x&&x.name)||''}).filter(Boolean):[]}catch(e){return []}}
 
 /* تغيير الحالة مع ربط المخزون (نفس قواعد التطبيق الحالي: الخصم عند الشحن، والإرجاع عند الإلغاء) */
 function setStatus(o,to,silent){
@@ -352,6 +319,95 @@ function upsertCustomer(o){
   if(c.orders.indexOf(oid(o))<0)c.orders.unshift(oid(o));
 }
 
+/* ===== lib/products.js ===== */
+/* فهرس المنتجات: يُبنى مرة واحدة بعد كل تغيير */
+var IX=null;
+function dirty(){IX=null;HAY=new WeakMap()}
+function index(){
+  if(IX)return IX;
+  var byName={},reserved={},counts={all:0,pinned:0},alerts=0,today=dkey(new Date()),mon=today.slice(0,7);
+  var sales=0,unpaid=0,profit=0;
+  Object.keys(ST).forEach(function(k){counts[k]=0});
+  db.products.forEach(function(p){var k=normTxt(p.name);if(k)byName[k]=p});
+  var pins=pinned();
+  db.orders.forEach(function(o){
+    var s=status(o);counts[s]++;if(s!=='cancelled')counts.all++;
+    if(pins[oid(o)])counts.pinned++;
+    if((s==='new'||s==='ready'||s==='packing')&&o.stockDeducted!==true){
+      items(o).forEach(function(x){var k=normTxt(iname(x));reserved[k]=(reserved[k]||0)+qty(x)});
+    }
+    if(s==='cancelled')return;
+    var t=odate(o),tot=total(o,byName);
+    if(t){var dk=dkey(t);if(dk===today)sales+=tot;if(dk.slice(0,7)===mon)profit+=tot-cost(o,byName)}
+    unpaid+=remaining(o,byName);
+    if(s==='waiting'||(s==='new')||(s==='shipped'&&t&&Date.now()-t>5*864e5))alerts++;
+  });
+  IX={byName:byName,reserved:reserved,counts:counts,alerts:alerts,sales:sales,unpaid:unpaid,profit:profit};
+  return IX;
+}
+function product(name,byName){return (byName||index().byName)[normTxt(name)]||null}
+function catPrice(p){return p?firstPos([p.salePrice,p.unitPrice,p.price,p.defaultPrice]):0}
+function catCost(p){return p?firstPos([p.costPrice,p.purchasePrice,p.cost,p.purchaseCost]):0}
+function itemPrice(x,b){return firstPos([x.unitPrice,x.salePrice,x.price])||catPrice(product(iname(x),b))}
+function itemCost(x,b){return firstPos([x.cost,x.purchaseCost,x.costPrice])||catCost(product(iname(x),b))}
+function pimg(p){var u=String(p&&(p.image||p.img||p.imageUrl)||'');return u&&(/^data:image\//.test(u)||/^https:\/\//.test(u))?'<img class="thumb" loading="lazy" src="'+esc(u)+'" alt="">':'<div class="thumb">📦</div>'}
+function minStock(p){return num(p.minStock!=null?p.minStock:(p.lowStock!=null?p.lowStock:p.alertAt))}
+function pIndex(p){return db.products.indexOf(p)}
+
+/* ===== lib/money.js ===== */
+function subtotal(o,b){return items(o).reduce(function(s,x){return s+itemPrice(x,b)*qty(x)},0)}
+function total(o,b){var m=num(o.total);return m>0?m:Math.max(0,subtotal(o,b)+num(o.deliveryFee)-num(o.discount))}
+function cost(o,b){return items(o).reduce(function(s,x){return s+itemCost(x,b)*qty(x)},0)}
+function payState(o,b){var s=String(o.paymentStatus||'');if(s==='paid'||s==='transfer'||s==='cash')return 'paid';var p=num(o.paidAmount),t=total(o,b);if(t>0&&p>=t-0.0005)return 'paid';if(p>0||s==='partial')return 'partial';return 'unpaid'}
+function paid(o,b){return payState(o,b)==='paid'?total(o,b):Math.min(num(o.paidAmount),total(o,b))}
+function remaining(o,b){return Math.max(0,total(o,b)-paid(o,b))}
+var PAYL={unpaid:'غير مدفوع',partial:'مدفوع جزئيًا',paid:'مدفوع'};
+
+/* ===== lib/stock.js ===== */
+function available(name,excludeOrder){
+  var p=product(name);if(!p)return null;
+  var res=index().reserved[normTxt(name)]||0;
+  if(excludeOrder&&(['new','ready','packing'].indexOf(status(excludeOrder))>=0)&&excludeOrder.stockDeducted!==true){
+    items(excludeOrder).forEach(function(x){if(normTxt(iname(x))===normTxt(name))res-=qty(x)});
+  }
+  return Math.max(0,num(p.stock))-res;
+}
+function shortage(o){
+  var out=[];items(o).forEach(function(x){var a=available(iname(x),o);if(a===null)out.push({name:iname(x),missing:true});else if(a<qty(x))out.push({name:iname(x),need:qty(x),have:Math.max(0,a)})});return out;
+}
+function demand(){ // كم مرة طُلب كل منتج في الطلبات غير الملغاة
+  var m={};db.orders.forEach(function(o){if(status(o)==='cancelled')return;items(o).forEach(function(x){var k=normTxt(iname(x));m[k]=(m[k]||0)+qty(x)})});return m}
+function promoteWaiting(){ // الطلبات المنتظرة التي توفرت منتجاتها تصبح جاهزة، الأقدم أولًا
+  var w=db.orders.filter(function(o){return status(o)==='waiting'}).sort(function(a,b){var x=odate(a),y=odate(b);return (x?x.getTime():0)-(y?y.getTime():0)}),n=0;
+  w.forEach(function(o){if(!shortage(o).length){o.status='ready';if(!Array.isArray(o.history))o.history=[];o.history.push({status:'ready',at:new Date().toISOString(),by:'rebuild-stock'});n++;dirty()}});
+  return n;
+}
+
+/* ===== lib/customers.js ===== */
+/* العملاء: من سجل العملاء ومن الطلبات، مجمّعون برقم الهاتف */
+var CX=null;
+function customersIndex(){
+  if(CX&&CX.ix===IX)return CX.list;
+  var m={},list=[];
+  db.customers.forEach(function(c,ci){var k=phoneKey(c.phone);if(!k)return;if(!m[k]){m[k]={k:k,name:c.name||'',phone:c.phone,place:c.place||'',ci:ci,orders:[],last:0};list.push(m[k])}});
+  db.orders.forEach(function(o){var k=phoneKey(cphone(o));if(!k)return;var c=m[k];if(!c){c=m[k]={k:k,name:cname(o),phone:cphone(o),place:cplace(o),ci:-1,orders:[],last:0};list.push(c)}
+    c.orders.push(o);var t=odate(o);t=t?t.getTime():0;if(t>=c.last){c.last=t;if(cname(o))c.name=c.name||cname(o);if(cplace(o)&&c.ci<0)c.place=cplace(o)}});
+  index();CX={ix:IX,list:list,map:m};return list;
+}
+function custByKey(k){customersIndex();return CX.map[k]}
+
+/* ===== lib/wa.js ===== */
+function waText(o){
+  var s=status(o),n=cname(o),num=onum(o);
+  var hi='مرحبًا'+(n?' '+n:'')+'،\n';
+  var body={new:'استلمنا طلبك '+num+' وسنبدأ في تجهيزه قريبًا.',waiting:'طلبك '+num+' بانتظار توفر بعض المنتجات، وسنبلغك فور توفرها.',ready:'طلبك '+num+' مؤكد وجاهز للتجهيز.',packing:'نعمل الآن على تجهيز طلبك '+num+'.',shipped:'تم شحن طلبك '+num+(o.company?' مع '+o.company:'')+'.',received:'نتمنى أن يكون طلبك '+num+' قد نال رضاك. شكرًا لثقتك.',cancelled:'تم إلغاء طلبك '+num+'.'}[s];
+  var lines=items(o).map(function(x){return '• '+iname(x)+' × '+qty(x)}).join('\n');
+  var tot=total(o),rem=remaining(o);
+  return hi+body+'\n\n'+lines+'\n\nالإجمالي: '+money(tot)+' '+CUR+(rem>0&&rem<tot?'\nالمتبقي: '+money(rem)+' '+CUR:'');
+}
+function waOpen(o,plain){var p=digits(cphone(o)).replace(/\D/g,'');if(p.indexOf('00')===0)p=p.slice(2);if(p.length===8)p='968'+p;window.open('https://wa.me/'+p+'?text='+encodeURIComponent(plain?('مرحبًا'+(cname(o)?' '+cname(o):'')+'،\n'):waText(o)),'_blank')}
+
+/* ===== screens/home-orders.js ===== */
 /* ---------- 4) العرض ---------- */
 var state={view:'home',filter:'all',q:'',pinnedOnly:false,limit:30};
 var HAY=new WeakMap();
@@ -435,15 +491,7 @@ function refreshList(){ // تحديث القائمة فقط دون إعادة ب
   var ot=document.querySelector('.tools'),nt=tmp.querySelector('.tools');if(ot&&nt)ot.innerHTML=nt.innerHTML;
 }
 
-/* ---------- 5) النوافذ ---------- */
-function openSheet(html,cls){
-  var d=document.createElement('div');d.className='sheet '+(cls||'');d.innerHTML='<div class="box">'+html+'</div>';
-  d.addEventListener('click',function(e){if(e.target===d)closeSheet(d)});
-  $('sheets').appendChild(d);document.body.style.overflow='hidden';return d;
-}
-function closeSheet(d){d=d||$('sheets').lastElementChild;if(d)d.remove();if(!$('sheets').children.length)document.body.style.overflow=''}
-document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSheet()});
-
+/* ===== screens/order-form.js ===== */
 function itemRow(x){
   var opts='<option value="">— اختر الصنف —</option>'+db.products.map(function(p){var nm=String(p.name||'');return '<option'+(x&&x.name&&normTxt(nm)===normTxt(iname(x))?' selected':'')+'>'+esc(nm)+'</option>'}).join('');
   if(x&&x.name&&!product(iname(x)))opts+='<option selected>'+esc(iname(x))+'</option>';
@@ -550,6 +598,32 @@ function newOrder(pre,st){
     afterSave(o);
   });
 }
+function afterSave(o){
+  var d=openSheet('<div class="sh"><h3>✅ تم حفظ الطلب</h3><button class="x" data-act="close">إغلاق ✕</button></div><p class="note">الطلب '+esc(onum(o))+' للعميل '+esc(cname(o)||cphone(o))+'. الحالة: '+ST[status(o)].l+'.</p><div class="foot"><button class="btn dark" data-act="waSend" data-id="'+esc(oid(o))+'">💬 إرسال تأكيد واتساب</button><button class="btn" data-act="close">لاحقًا</button></div>');
+  render();
+}
+function openOrder(id){
+  var o=findOrder(id);if(!o)return;
+  var s=status(o),t=odate(o);
+  var opts=FLOW.concat(['cancelled']).map(function(k){return '<option value="'+k+'"'+(k===s?' selected':'')+'>'+ST[k].i+' '+ST[k].l+'</option>'}).join('');
+  var hist=(Array.isArray(o.history)?o.history.slice(-6).reverse():[]).map(function(h){var st=ST[h.status]||{l:h.status,i:'•'};var at=new Date(h.at);return '<div>'+st.i+' '+esc(st.l)+(isNaN(at)?'':' — '+at.toLocaleString('ar',{dateStyle:'short',timeStyle:'short'}))+'</div>'}).join('');
+  var d=openSheet('<div class="sh"><div><h3>📋 تفاصيل الطلب</h3><small>'+esc(onum(o))+(t?' — '+t.toLocaleString('ar',{dateStyle:'medium',timeStyle:'short'}):'')+'</small></div><button class="x" data-act="close">إغلاق ✕</button></div>'+
+    '<form id="frm" novalidate><label class="f" for="fStatus">🔄 حالة الطلب</label><select class="in" id="fStatus">'+opts+'</select>'+formHtml(o,false)+
+    (hist?'<div class="hist"><b>سجل الطلب</b>'+hist+'</div>':'')+
+    '<div class="foot"><button class="btn green" type="submit">💾 حفظ التعديلات</button><button class="btn" type="button" data-act="waSend" data-id="'+esc(id)+'">💬</button><button class="btn" type="button" data-act="copyNum" data-id="'+esc(id)+'">📋</button></div>'+
+    (s!=='cancelled'?'<button class="btn red" type="button" data-act="cancelOrder" data-id="'+esc(id)+'" style="width:100%;margin-top:4px">❌ إلغاء الطلب</button>':'')+'</form>');
+  var box=d.querySelector('#frm');bindForm(box,o);
+  box.addEventListener('submit',function(e){
+    e.preventDefault();
+    var before=JSON.stringify(o);
+    if(!collect(box,o))return;
+    var to=$('fStatus').value;
+    if(to!==status(o)&&!setStatus(o,to,true)){var old=JSON.parse(before);Object.keys(o).forEach(function(k){delete o[k]});Object.assign(o,old);dirty();return}
+    upsertCustomer(o);save();closeSheet(d);toast('💾 تم حفظ التعديلات');render();
+  });
+}
+
+/* ===== screens/import.js ===== */
 /* ---------- إدخال الطلب من رسالة ---------- */
 var parserP=null,lastMsg='';
 function loadParser(){
@@ -600,39 +674,8 @@ function learnImport(box,st,o){
     if(out&&out.length)setTimeout(function(){toast('🧠 تعلّمتُ: '+out.join('، '))},2600);
   }catch(e){}
 }
-function afterSave(o){
-  var d=openSheet('<div class="sh"><h3>✅ تم حفظ الطلب</h3><button class="x" data-act="close">إغلاق ✕</button></div><p class="note">الطلب '+esc(onum(o))+' للعميل '+esc(cname(o)||cphone(o))+'. الحالة: '+ST[status(o)].l+'.</p><div class="foot"><button class="btn dark" data-act="waSend" data-id="'+esc(oid(o))+'">💬 إرسال تأكيد واتساب</button><button class="btn" data-act="close">لاحقًا</button></div>');
-  render();
-}
-function openOrder(id){
-  var o=findOrder(id);if(!o)return;
-  var s=status(o),t=odate(o);
-  var opts=FLOW.concat(['cancelled']).map(function(k){return '<option value="'+k+'"'+(k===s?' selected':'')+'>'+ST[k].i+' '+ST[k].l+'</option>'}).join('');
-  var hist=(Array.isArray(o.history)?o.history.slice(-6).reverse():[]).map(function(h){var st=ST[h.status]||{l:h.status,i:'•'};var at=new Date(h.at);return '<div>'+st.i+' '+esc(st.l)+(isNaN(at)?'':' — '+at.toLocaleString('ar',{dateStyle:'short',timeStyle:'short'}))+'</div>'}).join('');
-  var d=openSheet('<div class="sh"><div><h3>📋 تفاصيل الطلب</h3><small>'+esc(onum(o))+(t?' — '+t.toLocaleString('ar',{dateStyle:'medium',timeStyle:'short'}):'')+'</small></div><button class="x" data-act="close">إغلاق ✕</button></div>'+
-    '<form id="frm" novalidate><label class="f" for="fStatus">🔄 حالة الطلب</label><select class="in" id="fStatus">'+opts+'</select>'+formHtml(o,false)+
-    (hist?'<div class="hist"><b>سجل الطلب</b>'+hist+'</div>':'')+
-    '<div class="foot"><button class="btn green" type="submit">💾 حفظ التعديلات</button><button class="btn" type="button" data-act="waSend" data-id="'+esc(id)+'">💬</button><button class="btn" type="button" data-act="copyNum" data-id="'+esc(id)+'">📋</button></div>'+
-    (s!=='cancelled'?'<button class="btn red" type="button" data-act="cancelOrder" data-id="'+esc(id)+'" style="width:100%;margin-top:4px">❌ إلغاء الطلب</button>':'')+'</form>');
-  var box=d.querySelector('#frm');bindForm(box,o);
-  box.addEventListener('submit',function(e){
-    e.preventDefault();
-    var before=JSON.stringify(o);
-    if(!collect(box,o))return;
-    var to=$('fStatus').value;
-    if(to!==status(o)&&!setStatus(o,to,true)){var old=JSON.parse(before);Object.keys(o).forEach(function(k){delete o[k]});Object.assign(o,old);dirty();return}
-    upsertCustomer(o);save();closeSheet(d);toast('💾 تم حفظ التعديلات');render();
-  });
-}
-function waText(o){
-  var s=status(o),n=cname(o),num=onum(o);
-  var hi='مرحبًا'+(n?' '+n:'')+'،\n';
-  var body={new:'استلمنا طلبك '+num+' وسنبدأ في تجهيزه قريبًا.',waiting:'طلبك '+num+' بانتظار توفر بعض المنتجات، وسنبلغك فور توفرها.',ready:'طلبك '+num+' مؤكد وجاهز للتجهيز.',packing:'نعمل الآن على تجهيز طلبك '+num+'.',shipped:'تم شحن طلبك '+num+(o.company?' مع '+o.company:'')+'.',received:'نتمنى أن يكون طلبك '+num+' قد نال رضاك. شكرًا لثقتك.',cancelled:'تم إلغاء طلبك '+num+'.'}[s];
-  var lines=items(o).map(function(x){return '• '+iname(x)+' × '+qty(x)}).join('\n');
-  var tot=total(o),rem=remaining(o);
-  return hi+body+'\n\n'+lines+'\n\nالإجمالي: '+money(tot)+' '+CUR+(rem>0&&rem<tot?'\nالمتبقي: '+money(rem)+' '+CUR:'');
-}
-function waOpen(o,plain){var p=digits(cphone(o)).replace(/\D/g,'');if(p.indexOf('00')===0)p=p.slice(2);if(p.length===8)p='968'+p;window.open('https://wa.me/'+p+'?text='+encodeURIComponent(plain?('مرحبًا'+(cname(o)?' '+cname(o):'')+'،\n'):waText(o)),'_blank')}
+
+/* ===== screens/sheets.js ===== */
 function cardMore(id){
   var o=findOrder(id);if(!o)return;var pin=pinned()[id];
   openSheet('<div class="sh"><h3>'+esc(onum(o))+'</h3><button class="x" data-act="close">إغلاق ✕</button></div><div class="list">'+
@@ -659,11 +702,8 @@ function alertsSheet(){
 
 
 /* ---------- 4ب) المنتجات والمخزون والعملاء ---------- */
-function pimg(p){var u=String(p&&(p.image||p.img||p.imageUrl)||'');return u&&(/^data:image\//.test(u)||/^https:\/\//.test(u))?'<img class="thumb" loading="lazy" src="'+esc(u)+'" alt="">':'<div class="thumb">📦</div>'}
-function minStock(p){return num(p.minStock!=null?p.minStock:(p.lowStock!=null?p.lowStock:p.alertAt))}
-function pIndex(p){return db.products.indexOf(p)}
-function demand(){ // كم مرة طُلب كل منتج في الطلبات غير الملغاة
-  var m={};db.orders.forEach(function(o){if(status(o)==='cancelled')return;items(o).forEach(function(x){var k=normTxt(iname(x));m[k]=(m[k]||0)+qty(x)})});return m}
+
+/* ===== screens/products.js ===== */
 function productsHtml(){
   var q=normTxt(state.pq||''),list=db.products.filter(function(p){return !q||normTxt([p.name,p.category,p.code,p.barcode].join(' ')).indexOf(q)>=0});
   var dm=demand();
@@ -735,22 +775,8 @@ function addStockSheet(i){
     var n=promoteWaiting();save();closeSheet(d);
     toast('💾 المخزون الآن '+p.stock+(n?' · أصبح '+n+' من الطلبات المنتظرة جاهزًا للتجهيز':''));render()});
 }
-function promoteWaiting(){ // الطلبات المنتظرة التي توفرت منتجاتها تصبح جاهزة، الأقدم أولًا
-  var w=db.orders.filter(function(o){return status(o)==='waiting'}).sort(function(a,b){var x=odate(a),y=odate(b);return (x?x.getTime():0)-(y?y.getTime():0)}),n=0;
-  w.forEach(function(o){if(!shortage(o).length){o.status='ready';if(!Array.isArray(o.history))o.history=[];o.history.push({status:'ready',at:new Date().toISOString(),by:'rebuild-stock'});n++;dirty()}});
-  return n;
-}
 
-/* العملاء: من سجل العملاء ومن الطلبات، مجمّعون برقم الهاتف */
-var CX=null;
-function customersIndex(){
-  if(CX&&CX.ix===IX)return CX.list;
-  var m={},list=[];
-  db.customers.forEach(function(c,ci){var k=phoneKey(c.phone);if(!k)return;if(!m[k]){m[k]={k:k,name:c.name||'',phone:c.phone,place:c.place||'',ci:ci,orders:[],last:0};list.push(m[k])}});
-  db.orders.forEach(function(o){var k=phoneKey(cphone(o));if(!k)return;var c=m[k];if(!c){c=m[k]={k:k,name:cname(o),phone:cphone(o),place:cplace(o),ci:-1,orders:[],last:0};list.push(c)}
-    c.orders.push(o);var t=odate(o);t=t?t.getTime():0;if(t>=c.last){c.last=t;if(cname(o))c.name=c.name||cname(o);if(cplace(o)&&c.ci<0)c.place=cplace(o)}});
-  index();CX={ix:IX,list:list,map:m};return list;
-}
+/* ===== screens/customers.js ===== */
 function customersHtml(){
   var list=customersIndex().slice(),q=normTxt(state.cq||''),act=0,rep=0,ords=0;
   list.forEach(function(c){ords+=c.orders.length;if(c.orders.length>1)rep++;c.orders.forEach(function(o){if(['new','waiting','ready','packing'].indexOf(status(o))>=0)act++})});
@@ -768,7 +794,6 @@ function customersHtml(){
         '<div class="acts"><button class="btn" data-act="cProfile">📋 الملف</button><button class="btn" data-act="cNew">✍️ طلب جديد</button><button class="btn" data-act="cWa">💬 واتساب</button><button class="btn more" data-act="cEdit" aria-label="تعديل">✏️</button></div></div>'}).join(''):'<div class="empty">لا يوجد عملاء مطابقون.</div>')+'</div>'+
     (list.length>shown.length?'<button class="btn moreBtn" data-act="showMore">عرض المزيد ('+(list.length-shown.length)+')</button>':'');
 }
-function custByKey(k){customersIndex();return CX.map[k]}
 function customerProfile(k){
   var c=custByKey(k);if(!c)return;
   var os=c.orders.slice().sort(function(a,b){var x=odate(a),y=odate(b);return (y?y.getTime():0)-(x?x.getTime():0)}),spent=0,due=0;
@@ -786,6 +811,47 @@ function customerEdit(k){
     rec.name=$('cName').value.trim();rec.place=$('cPlace').value.trim();rec.updatedAt=new Date().toISOString();save();closeSheet(d);toast('💾 تم الحفظ');render()});
 }
 
+/* ===== screens/settings.js ===== */
+/* ---------- 7) الإعدادات والتجربة ---------- */
+function settingsSheet(){
+  var live=lsGet(LIVE_KEY);
+  openSheet('<div class="sh"><h3>⚙️ إعدادات التجربة</h3><button class="x" data-act="close">إغلاق ✕</button></div>'+
+    '<p class="note">هذه نسخة تجريبية من التطبيق الجديد. مصدر البيانات الحالي: <b>'+esc(srcLabel())+'</b>. تعديلاتك هنا تبقى داخل التجربة فقط ولا تصل إلى تطبيقك الأصلي.</p><div class="list">'+
+    (live?'<button data-act="recopy">🔁 إعادة نسخ بياناتي من التطبيق الحالي</button>':'')+
+    '<button data-act="openFile">📂 فتح ملف نسخة احتياطية</button>'+
+    '<button data-act="demo" data-n="40">🧪 بيانات تجريبية صغيرة (40 طلبًا)</button>'+
+    '<button data-act="demo" data-n="1500">⚡ بيانات كبيرة لاختبار السرعة (1500 طلب)</button></div>');
+}
+function srcLabel(){var s=meta.source||'';return s==='live'?'نسخة من بيانات تطبيقك':s.indexOf('file:')===0?'ملف '+s.slice(5):s.indexOf('demo')===0?'بيانات تجريبية':'—'}
+function recopy(){
+  var live=lsGet(LIVE_KEY);if(!live)return;
+  if(!confirm('سيتم استبدال بيانات التجربة بنسخة جديدة من بيانات تطبيقك. تطبيقك نفسه لن يتغير. متابعة؟'))return;
+  try{closeSheet();adopt(JSON.parse(live),'live');boot();toast('🔁 نُسخت بياناتك إلى التجربة')}catch(e){toast('تعذر قراءة بيانات التطبيق')}
+}
+function banner(){
+  $('sbx').innerHTML='<span>🧪 <b>نسخة تجريبية من التطبيق الجديد</b> · '+esc(srcLabel())+' · عدد الطلبات: '+db.orders.length+'. تعديلاتك هنا لا تصل إلى تطبيقك.</span><button data-act="settings">تغيير البيانات</button>';
+}
+
+/* بيانات تجريبية */
+function demo(n){
+  var P=[['عطر ليالي مسقط 100 مل',38,18],['دهن عود ملكي 12 مل',45,25],['عطر ورد طائفي 50 مل',29,13],['مسك أبيض 6 مل',8,3],['بخور مروكي فاخر',15,6],['مبخرة نحاسية',17.5,8],['طقم هدية عطر وبخور',55,28],['معطر مفارش 250 مل',7.5,3],['شموع معطرة',12,5],['ساعة كلاسيك ذهبية',64,35]];
+  var products=P.map(function(x,i){return {name:x[0],salePrice:x[1],costPrice:x[2],stock:[40,20,30,90,60,10,8,50,0,5][i]*Math.max(1,Math.round(n/40)),category:''}});
+  var names=['مريم الحارثية','سالم البلوشي','فاطمة الكندية','خالد العامري','عائشة الهنائية','يوسف الرواحي','أحمد الشكيلي','نورة السيابية','علي المعمري','هدى الزدجالية'];
+  var places=['مسقط - الخوير','السيب - الموالح','نزوى - فرق','صحار - فلج القبائل','بوشر - العذيبة','صلالة - السعادة'];
+  var sts=['new','waiting','ready','ready','packing','shipped','received','received','received','received'];
+  var orders=[],now=Date.now(),seed=7;function rnd(m){seed=(seed*9301+49297)%233280;return Math.floor(seed/233280*m)}
+  for(var i=0;i<n;i++){
+    var its=[],k=1+rnd(3);for(var j=0;j<k;j++){var p=P[rnd(P.length)];its.push({name:p[0],qty:1+rnd(3),unitPrice:p[1]})}
+    var sub=its.reduce(function(s,x){return s+x.qty*x.unitPrice},0),st=i<12?sts[i%sts.length]:(i<n*0.15?sts[rnd(6)]:'received');
+    var at=new Date(now-(i*(n>100?0.6:6)+rnd(5))*36e5).toISOString(),pay=st==='received'||rnd(3)===0?'paid':'unpaid';
+    var c=rnd(names.length);
+    orders.push({id:'#'+String(n-i).padStart(4,'0'),name:names[c],phone:'9'+(1000000+c*7919%8999999),place:places[c%places.length],company:rnd(2)?'جيناكم':'',products:its,subtotal:sub,total:sub,deliveryFee:0,paymentStatus:pay,paidAmount:pay==='paid'?sub:0,status:st,stockDeducted:st==='shipped'||st==='received',created:at,orderDate:at,history:[{status:st,at:at}]});
+  }
+  var customers=names.map(function(nm,c){return {name:nm,phone:'9'+(1000000+c*7919%8999999),place:places[c%places.length],orders:[]}});
+  return {orders:orders,products:products,customers:customers,orderSeq:n+1};
+}
+
+/* ===== app/events.js ===== */
 /* ---------- 6) الأحداث (مستمع واحد للصفحة كلها) ---------- */
 document.addEventListener('click',function(e){
   var b=e.target.closest('[data-go],[data-act],[data-filter]');if(!b)return;
@@ -851,46 +917,7 @@ $('fileIn').addEventListener('change',function(){
   r.readAsText(f);this.value='';
 });
 
-/* ---------- 7) الإعدادات والتجربة ---------- */
-function settingsSheet(){
-  var live=lsGet(LIVE_KEY);
-  openSheet('<div class="sh"><h3>⚙️ إعدادات التجربة</h3><button class="x" data-act="close">إغلاق ✕</button></div>'+
-    '<p class="note">هذه نسخة تجريبية من التطبيق الجديد. مصدر البيانات الحالي: <b>'+esc(srcLabel())+'</b>. تعديلاتك هنا تبقى داخل التجربة فقط ولا تصل إلى تطبيقك الأصلي.</p><div class="list">'+
-    (live?'<button data-act="recopy">🔁 إعادة نسخ بياناتي من التطبيق الحالي</button>':'')+
-    '<button data-act="openFile">📂 فتح ملف نسخة احتياطية</button>'+
-    '<button data-act="demo" data-n="40">🧪 بيانات تجريبية صغيرة (40 طلبًا)</button>'+
-    '<button data-act="demo" data-n="1500">⚡ بيانات كبيرة لاختبار السرعة (1500 طلب)</button></div>');
-}
-function srcLabel(){var s=meta.source||'';return s==='live'?'نسخة من بيانات تطبيقك':s.indexOf('file:')===0?'ملف '+s.slice(5):s.indexOf('demo')===0?'بيانات تجريبية':'—'}
-function recopy(){
-  var live=lsGet(LIVE_KEY);if(!live)return;
-  if(!confirm('سيتم استبدال بيانات التجربة بنسخة جديدة من بيانات تطبيقك. تطبيقك نفسه لن يتغير. متابعة؟'))return;
-  try{closeSheet();adopt(JSON.parse(live),'live');boot();toast('🔁 نُسخت بياناتك إلى التجربة')}catch(e){toast('تعذر قراءة بيانات التطبيق')}
-}
-function banner(){
-  $('sbx').innerHTML='<span>🧪 <b>نسخة تجريبية من التطبيق الجديد</b> · '+esc(srcLabel())+' · عدد الطلبات: '+db.orders.length+'. تعديلاتك هنا لا تصل إلى تطبيقك.</span><button data-act="settings">تغيير البيانات</button>';
-}
-function storeName(){try{var p=JSON.parse(lsGet('emd_business_profile_v333')||'{}');return String(p.name||'').trim()}catch(e){return ''}}
-
-/* بيانات تجريبية */
-function demo(n){
-  var P=[['عطر ليالي مسقط 100 مل',38,18],['دهن عود ملكي 12 مل',45,25],['عطر ورد طائفي 50 مل',29,13],['مسك أبيض 6 مل',8,3],['بخور مروكي فاخر',15,6],['مبخرة نحاسية',17.5,8],['طقم هدية عطر وبخور',55,28],['معطر مفارش 250 مل',7.5,3],['شموع معطرة',12,5],['ساعة كلاسيك ذهبية',64,35]];
-  var products=P.map(function(x,i){return {name:x[0],salePrice:x[1],costPrice:x[2],stock:[40,20,30,90,60,10,8,50,0,5][i]*Math.max(1,Math.round(n/40)),category:''}});
-  var names=['مريم الحارثية','سالم البلوشي','فاطمة الكندية','خالد العامري','عائشة الهنائية','يوسف الرواحي','أحمد الشكيلي','نورة السيابية','علي المعمري','هدى الزدجالية'];
-  var places=['مسقط - الخوير','السيب - الموالح','نزوى - فرق','صحار - فلج القبائل','بوشر - العذيبة','صلالة - السعادة'];
-  var sts=['new','waiting','ready','ready','packing','shipped','received','received','received','received'];
-  var orders=[],now=Date.now(),seed=7;function rnd(m){seed=(seed*9301+49297)%233280;return Math.floor(seed/233280*m)}
-  for(var i=0;i<n;i++){
-    var its=[],k=1+rnd(3);for(var j=0;j<k;j++){var p=P[rnd(P.length)];its.push({name:p[0],qty:1+rnd(3),unitPrice:p[1]})}
-    var sub=its.reduce(function(s,x){return s+x.qty*x.unitPrice},0),st=i<12?sts[i%sts.length]:(i<n*0.15?sts[rnd(6)]:'received');
-    var at=new Date(now-(i*(n>100?0.6:6)+rnd(5))*36e5).toISOString(),pay=st==='received'||rnd(3)===0?'paid':'unpaid';
-    var c=rnd(names.length);
-    orders.push({id:'#'+String(n-i).padStart(4,'0'),name:names[c],phone:'9'+(1000000+c*7919%8999999),place:places[c%places.length],company:rnd(2)?'جيناكم':'',products:its,subtotal:sub,total:sub,deliveryFee:0,paymentStatus:pay,paidAmount:pay==='paid'?sub:0,status:st,stockDeducted:st==='shipped'||st==='received',created:at,orderDate:at,history:[{status:st,at:at}]});
-  }
-  var customers=names.map(function(nm,c){return {name:nm,phone:'9'+(1000000+c*7919%8999999),place:places[c%places.length],orders:[]}});
-  return {orders:orders,products:products,customers:customers,orderSeq:n+1};
-}
-
+/* ===== app/boot.js ===== */
 /* ---------- 8) التشغيل ---------- */
 function welcome(){
   var live=lsGet(LIVE_KEY);
@@ -909,6 +936,7 @@ function boot(){
 boot();
 setInterval(function(){if(state.view==='home'&&!$('sheets').children.length){var c=document.querySelector('.clock');if(c){var n=new Date(),h=n.getHours();c.innerHTML=(h%12||12)+':'+pad(n.getMinutes())+' <span>'+(h<12?'ص':'م')+'</span>'}}},30000);
 window.EMDRebuild={db:function(){return db},index:index,total:total,payState:payState,status:status};
+
 })();
 </script>
 </body>

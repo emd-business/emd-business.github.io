@@ -1,0 +1,30 @@
+const {chromium}=require('playwright');
+(async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:400,height:860}});const errs=[];p.on('pageerror',e=>errs.push(e.message));
+await p.goto('http://localhost:8131/index.html');await p.waitForTimeout(600);
+await p.click('[data-act=demo][data-n="40"]');await p.waitForTimeout(500);
+const prods=await p.evaluate(()=>EMDRebuild.db().products.map(x=>x.name));console.log('prods',prods.slice(0,8).join(' | '));
+const n0=await p.evaluate(()=>EMDRebuild.db().orders.length);
+await p.click('[data-act=importMsg]');await p.waitForTimeout(300);
+const msg='السلام عليكم\nابي '+prods[0]+' ٢ و '+prods[1]+' واحد\nام سالم\n99112233\nالخوض قرب المسجد\nالدفع عند الاستلام';
+await p.fill('#rawMsg',msg);await p.click('[data-act=doParse]');await p.waitForTimeout(700);
+const v=await p.evaluate(()=>({name:document.getElementById('fName').value,phone:document.getElementById('fPhone').value,place:document.getElementById('fPlace').value,pay:document.getElementById('fPayM').value,note:document.getElementById('fNote').value,items:[...document.querySelectorAll('#items .it')].map(r=>r.querySelector('[data-k=name]').value+'×'+r.querySelector('[data-k=qty]').value+'@'+r.querySelector('[data-k=price]').value),bar:document.querySelector('.sheet:last-child .okbar, .sheet:last-child .left')?.textContent,sum:document.getElementById('sumBox').textContent}));
+console.log(JSON.stringify(v));
+await p.screenshot({path:'/tmp/imp1.png'});
+await p.click('#frm button[type=submit]');await p.waitForTimeout(600);
+const n1=await p.evaluate(()=>EMDRebuild.db().orders.length);const o=await p.evaluate(()=>EMDRebuild.db().orders[0]);console.log('saved',n1-n0,o.id,o.name,o.place,o.paymentMethod,o.orderSource,o.status,JSON.stringify(o.products));
+await p.click('.sheet [data-act=close]').catch(()=>{});await p.waitForTimeout(200);
+// unknown word → learn
+await p.click('[data-act=importMsg]');await p.waitForTimeout(200);
+await p.fill('#rawMsg','ابي كريم الشعر 3\nخالد 92223344\nصحار');await p.click('[data-act=doParse]');await p.waitForTimeout(600);
+console.log('left:',await p.evaluate(()=>[...document.querySelectorAll('.sheet:last-child .left')].map(x=>x.textContent).join(' || ')));
+await p.click('#frm [data-act=addItem]');await p.evaluate(n=>{const ss=[...document.querySelectorAll('#items select')];const s=ss[ss.length-1];s.value=n;s.dispatchEvent(new Event('change',{bubbles:true}));const q=s.closest('.it').querySelector('[data-k=qty]');q.value='3';q.dispatchEvent(new Event('input',{bubbles:true}))},prods[2]);
+// remove empty first row if any
+await p.evaluate(()=>{document.querySelectorAll('#items .it').forEach(r=>{if(!r.querySelector('select').value&&document.querySelectorAll('#items .it').length>1)r.remove()})});
+await p.click('#frm button[type=submit]');await p.waitForTimeout(3000);
+console.log('toast:',await p.textContent('#toast'));
+console.log('learn:',await p.evaluate(()=>localStorage.getItem('emd_rb_learn103')));
+await p.click('.sheet [data-act=close]').catch(()=>{});
+await p.click('[data-act=importMsg]');await p.fill('#rawMsg','ابي كريم الشعر 2\nسالم 92223355\nصحار');await p.click('[data-act=doParse]');await p.waitForTimeout(600);
+console.log('relearned:',await p.evaluate(()=>[...document.querySelectorAll('#items .it')].map(r=>r.querySelector('[data-k=name]').value+'×'+r.querySelector('[data-k=qty]').value).join(',')));
+const keys=await p.evaluate(()=>Object.keys(localStorage));console.log('keys',keys.join(','));
+console.log('errs',errs);await b.close()})();

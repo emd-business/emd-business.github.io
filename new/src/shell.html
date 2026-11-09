@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0f172a">
+<title>EMD Business — النسخة الجديدة (تجربة)</title>
+<link rel="icon" href="logo.svg">
+<style>
+:root{
+  --bg:#f5f7fb;--card:#fff;--ink:#17212b;--mute:#64748b;--line:#e6eaf0;--soft:#f1f4f8;
+  --navy:#0f172a;--navy2:#1e3a8a;--gold:#f5b301;--ok:#16a34a;--bad:#dc2626;
+  --r:17px;--sh:0 10px 30px rgba(20,32,45,.06);
+  --s-new:#2563eb;--s-waiting:#d97706;--s-ready:#16a34a;--s-packing:#7c3aed;--s-shipped:#0891b2;--s-received:#64748b;--s-cancelled:#dc2626;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif;font-size:16px}
+body{padding-bottom:calc(86px + env(safe-area-inset-bottom))}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+.wrap{max-width:760px;margin:0 auto;padding:0 12px}
+.hide{display:none!important}
+
+/* شريط التجربة */
+#sbx{background:#fff7e6;border-bottom:1px solid #f6d58f;color:#7a4b00;font-size:13px;padding:8px 12px;display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+#sbx b{font-weight:800}
+#sbx button{background:#fff;border:1px solid #f0c66b;border-radius:10px;padding:5px 10px;font-size:12.5px;font-weight:700}
+
+/* الرأس */
+header{padding:14px 0 8px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand img{width:42px;height:42px;border-radius:11px}
+.brand h1{margin:0;font-size:22px;font-weight:900;letter-spacing:-.3px}
+.brand small{display:block;color:var(--mute);font-size:12px;font-weight:600}
+.hbtns{display:flex;gap:8px;margin-top:10px}
+.hbtns button{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:8px 14px;font-weight:700;font-size:14.5px}
+
+/* الرئيسية */
+.hero{display:flex;justify-content:space-between;align-items:flex-start;margin:16px 0 12px}
+.hero h2{margin:0;font-size:24px;font-weight:900}
+.clock{font-size:34px;font-weight:900;margin-top:4px;direction:ltr;text-align:right}
+.clock span{font-size:16px;color:var(--mute)}
+.date{color:var(--mute);font-size:13px;font-weight:600}
+.money{background:var(--navy);color:#fff;border-radius:18px;padding:14px 10px;display:grid;grid-template-columns:repeat(3,1fr);text-align:center;margin-bottom:12px}
+.money div+div{border-inline-start:1px solid rgba(255,255,255,.15)}
+.money small{display:block;font-size:12px;color:#cbd5e1}
+.money b{font-size:19px;font-weight:900}
+.money .gold{color:var(--gold)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);border:1px solid var(--line);padding:14px;text-align:right}
+.stat b{display:block;font-size:30px;font-weight:900;text-align:left}
+.stat span{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px}
+.stat i{width:24px;height:24px;border-radius:7px;display:inline-grid;place-items:center;font-style:normal;font-size:13px;color:#fff}
+.quick{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.btn{border-radius:13px;padding:11px 15px;font-weight:800;font-size:15px;background:var(--soft);border:1px solid var(--line)}
+.btn.dark{background:var(--navy);color:#fff;border-color:var(--navy)}
+.btn.green{background:var(--ok);color:#fff;border-color:var(--ok)}
+.btn.red{background:#fff;color:var(--bad);border-color:#f3c4c4}
+.btn.sm{padding:7px 11px;font-size:13.5px;border-radius:11px}
+.fold{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-weight:800;width:100%;text-align:right}
+.fold small{color:var(--mute);font-weight:600}
+
+/* الطلبات */
+.ptitle{font-size:24px;font-weight:900;margin:16px 0 2px}
+.psub{color:var(--mute);font-size:13px;margin:0 0 12px}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0}
+.chip{background:#fff;border:1px solid var(--line);border-radius:12px;padding:7px 11px;font-weight:800;font-size:14px}
+.chip.on{background:#fff3e6;border-color:#f6b77a}
+.search{display:flex;gap:8px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:0 12px;margin-bottom:8px}
+.search input{border:0;outline:0;flex:1;padding:12px 0;background:transparent}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);border:1px solid var(--line);border-inline-start:5px solid var(--sc,#94a3b8);padding:14px;margin-bottom:12px;content-visibility:auto;contain-intrinsic-size:260px}
+.ch{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.ch h3{margin:0;font-size:17px;font-weight:900}
+.pill{background:var(--soft);border-radius:999px;padding:4px 10px;font-size:12.5px;font-weight:700;white-space:nowrap}
+.meta{color:var(--mute);font-size:13.5px;margin:4px 0 8px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-start}
+.tag{background:var(--soft);border:1px solid var(--line);border-radius:9px;padding:4px 8px;font-size:12.5px;font-weight:700}
+.tag.warn{background:#fff1f1;border-color:#f5c2c2;color:#9f1d1d}
+.next{background:#fff7ec;border:1px solid #f8d3a6;color:#9a4b00;border-radius:12px;padding:8px 10px;font-size:13px;font-weight:700;margin:10px 0}
+.acts{display:flex;flex-wrap:wrap;gap:7px}
+.acts .btn{flex:1 1 auto}
+.acts .more{flex:0 0 46px}
+.pin{color:var(--gold)}
+.prow{display:flex;gap:12px;align-items:flex-start}
+.thumb{width:64px;height:64px;border-radius:14px;object-fit:cover;background:var(--soft);flex:0 0 64px;display:grid;place-items:center;font-size:26px}
+.pbody{flex:1;min-width:0}
+.pbody h3{margin:0 0 4px;font-size:16px;font-weight:900}
+.nums{display:flex;flex-wrap:wrap;gap:6px;font-size:12.5px}
+.nums span{background:var(--soft);border-radius:8px;padding:3px 8px;font-weight:700}
+.nums .low{background:#fff1f1;color:#9f1d1d}
+.nums .okk{background:#ecfdf3;color:#166534}
+.price{font-weight:900;font-size:15px;margin:2px 0 6px}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:15px;padding:12px}
+.kpi b{display:block;font-size:24px;font-weight:900}
+.kpi span{color:var(--mute);font-size:13px;font-weight:700}
+.imgpick{display:flex;gap:10px;align-items:center}
+.imgpick .thumb{width:72px;height:72px}
+.empty{text-align:center;color:var(--mute);padding:30px 10px}
+.moreBtn{display:block;margin:6px auto 20px}
+
+/* الشريط السفلي */
+nav#bar{position:fixed;bottom:0;inset-inline:0;background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);padding:6px 6px calc(6px + env(safe-area-inset-bottom));z-index:30}
+nav#bar button{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:12px;font-weight:700;color:var(--mute);padding:4px 0;border-radius:12px;position:relative}
+nav#bar button.on{background:#eef2ff;color:var(--ink)}
+nav#bar .ic{font-size:20px;line-height:1.1}
+nav#bar .plus .ic{background:var(--navy);color:#fff;width:42px;height:42px;border-radius:13px;display:grid;place-items:center;font-size:26px;margin-top:-18px;box-shadow:0 6px 16px rgba(15,23,42,.3)}
+.badge{position:absolute;top:0;inset-inline-start:calc(50% + 4px);background:var(--bad);color:#fff;border-radius:999px;font-size:11px;min-width:18px;height:18px;display:grid;place-items:center;padding:0 4px}
+
+/* النوافذ */
+.sheet{position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:50;display:flex;align-items:flex-end;justify-content:center}
+.sheet .box{background:#fff;width:100%;max-width:640px;max-height:92vh;overflow:auto;border-radius:22px 22px 0 0;padding:16px 16px calc(18px + env(safe-area-inset-bottom))}
+@media(min-width:700px){.sheet{align-items:center}.sheet .box{border-radius:22px}}
+.sh{display:flex;justify-content:space-between;align-items:center;gap:8px;position:sticky;top:-16px;background:#fff;padding:4px 0 10px;z-index:2}
+.sh h3{margin:0;font-size:21px;font-weight:900}
+.sh small{display:block;color:var(--mute);font-size:12.5px;font-weight:600}
+.x{background:var(--soft);border-radius:12px;padding:8px 13px;font-weight:700}
+label.f{display:block;font-weight:800;font-size:14px;margin:12px 0 5px}
+label.f em{color:var(--bad);font-style:normal}
+.in{width:100%;border:1px solid #d9dee6;border-radius:13px;padding:11px 12px;background:#fff;outline:0}
+.in:focus{border-color:#93a4c3;box-shadow:0 0 0 3px #e7ecf6}
+.row{display:flex;gap:8px}
+.row>*{flex:1}
+.items .it{display:grid;grid-template-columns:1fr 64px 84px 34px;gap:6px;margin-bottom:6px;align-items:center}
+.items .it button{background:#fff1f1;color:var(--bad);border-radius:10px;height:42px;font-weight:900}
+.items .it .from{grid-column:1/-1;font-size:12px;color:#92400e;font-weight:700;margin:-2px 2px 4px;line-height:1.6}
+.items .it.amb select{border-color:#f59e0b;background:#fffbeb}
+.left{margin:4px 0 10px;padding:10px 12px;border-radius:12px;background:#fffbeb;border:1px solid #fcd34d;color:#78350f;font-size:13px;font-weight:700;line-height:1.8}
+.left b{background:#fef3c7;border-radius:6px;padding:1px 6px;margin:0 2px;display:inline-block}
+.left small{display:block;font-weight:600;color:#a16207}
+.okbar{margin:4px 0 10px;padding:9px 12px;border-radius:12px;background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;font-size:13px;font-weight:700}
+textarea.msg{min-height:190px;font-size:15px;line-height:1.7}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{flex:1;border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 6px;font-weight:800;font-size:14px}
+.seg button.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.sum{background:var(--soft);border-radius:13px;padding:10px 12px;margin-top:10px;font-weight:700;font-size:14px}
+.sum div{display:flex;justify-content:space-between;padding:2px 0}
+.sum .t{font-size:17px;font-weight:900}
+.foot{display:flex;gap:8px;margin-top:16px;position:sticky;bottom:-18px;background:#fff;padding:10px 0}
+.foot .btn{flex:1}
+.sugg{border:1px solid var(--line);border-radius:12px;margin-top:4px;overflow:hidden}
+.sugg button{display:block;width:100%;text-align:right;padding:9px 12px;border-bottom:1px solid var(--line);font-size:14px}
+.sugg button:last-child{border-bottom:0}
+details.more{margin-top:12px;border:1px dashed #cfd6e2;border-radius:14px;padding:4px 12px 10px}
+details.more summary{font-weight:800;padding:8px 0;cursor:pointer}
+.hist{font-size:13px;color:var(--mute);margin-top:10px}
+.hist div{padding:3px 0;border-bottom:1px dashed var(--line)}
+.list button{display:block;width:100%;text-align:right;padding:13px 6px;border-bottom:1px solid var(--line);font-weight:700}
+.note{color:var(--mute);font-size:13px;line-height:1.7}
+#toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 16px;border-radius:12px;font-weight:700;z-index:80;display:none;max-width:90vw;text-align:center}
+.welcome{max-width:520px;margin:40px auto;background:#fff;border-radius:20px;padding:22px;box-shadow:var(--sh);text-align:center}
+.welcome img{width:64px}
+.welcome .btn{display:block;width:100%;margin-top:10px}
+</style>
+</head>
+<body>
+<div id="sbx"></div>
+<div class="wrap">
+  <header>
+    <div class="brand"><img src="logo.svg" alt=""><div><h1>EMD Business</h1><small id="storeName">إدارة الطلبات والمخزون</small></div></div>
+    <div class="hbtns"><button data-act="settings">⚙️ الإعدادات</button><button data-act="moreSheet">☰ المزيد</button></div>
+  </header>
+  <main id="view"></main>
+</div>
+<nav id="bar">
+  <button data-go="home"><span class="ic">🏠</span>الرئيسية</button>
+  <button data-go="orders"><span class="ic">📋</span>الطلبات</button>
+  <button data-act="importMsg" class="plus"><span class="ic">＋</span>طلب جديد</button>
+  <button data-act="alerts"><span class="ic">🔔</span>التنبيهات<span class="badge hide" id="alertBadge"></span></button>
+  <button data-act="moreSheet"><span class="ic">☰</span>المزيد</button>
+</nav>
+<div id="sheets"></div>
+<div id="toast"></div>
+<input type="file" id="fileIn" accept=".json,application/json" class="hide">
+
+<script>
+/* =========================================================
+   EMD Business — النسخة الجديدة، المرحلة الأولى
+   ملف واحد مرتب: البيانات ← الحسابات ← العرض ← الأحداث.
+   لا تعديل على بيانات التطبيق الأصلي: كل التعديلات في نسخة تجريبية مستقلة.
+   ========================================================= */
+'use strict';
+/*@@APP@@*/
+})();
+</script>
+</body>
+</html>
