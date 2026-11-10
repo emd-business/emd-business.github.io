@@ -5734,6 +5734,15 @@ html.my234-on #my234{visibility:hidden}
 .my234all{display:block;margin:14px auto 0;padding:11px 16px;border-radius:12px;border:1px solid var(--line,#ddd);text-align:center;color:var(--ink,#111);text-decoration:none;font-weight:700;max-width:320px}
 .q234{font-weight:700}.q234.ok{color:#15803d}.q234.x{color:#b91c1c}
 @media (prefers-reduced-motion:reduce){.my234s,.my234s .sh{transition:none}}
+.add234{position:fixed;z-index:60;left:50%;bottom:calc(74px + env(safe-area-inset-bottom,0px));transform:translate(-50%,24px);opacity:0;pointer-events:none;width:min(calc(100% - 24px),440px);display:flex;align-items:center;gap:10px;
+  padding:10px 10px 10px 14px;border-radius:16px;background:var(--surface,#fff);color:var(--ink,#111);border:1px solid var(--line,#ddd);box-shadow:0 14px 36px rgba(0,0,0,.25);font-family:var(--body,system-ui);transition:transform .22s,opacity .22s}
+.add234.in{transform:translate(-50%,0);opacity:1;pointer-events:auto}
+#add234 .a2ok{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#22c55e;color:#fff;font-weight:800;flex:none}
+#add234 .a2tx{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+#add234 .a2tx b{font-size:14px}
+#add234 .a2tx small{font-size:12.5px;color:var(--muted,#666);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#add234 .a2go{flex:none;width:auto;height:auto;margin:0;min-width:0;white-space:nowrap;border:0;border-radius:12px;padding:10px 14px;background:var(--accent,#c9a24a);color:var(--accent-ink,#fff);font:700 14px var(--body,system-ui);cursor:pointer}
+@media (prefers-reduced-motion:reduce){.add234{transition:none}}
 </style>
 </head>
 <body>
@@ -6066,7 +6075,7 @@ $('psheet').addEventListener('click',function(e){if(e.target===this||e.target.cl
   var b=e.target.closest('button');if(!b||!PS.g)return;
   if(b.hasAttribute('data-v')){PS.v=+b.getAttribute('data-v');drawP()}
   else if(b.hasAttribute('data-n')){PS.n=Math.max(1,Math.min(50,PS.n+(+b.getAttribute('data-n'))));drawP()}
-  else if(b.hasAttribute('data-padd')){var k=PS.g.v[PS.v].p.key;cart[k]=Math.min(50,(cart[k]||0)+PS.n);saveCart();paint();this.classList.remove('show');drawer(true)}});
+  else if(b.hasAttribute('data-padd')){var k=PS.g.v[PS.v].p.key;cart[k]=Math.min(50,(cart[k]||0)+PS.n);saveCart();paint();this.classList.remove('show');my234added(k,PS.n)}});
 document.addEventListener('keydown',function(e){if(e.key==='Escape')$('psheet').classList.remove('show')});
 
 /* يوم الاستلام عند الطلب المسبق */
@@ -9029,6 +9038,13 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')myClose()});
 /* الرابط السريع: «طلباتك السابقة» تعرض الرقم والحالة بدل التاريخ فقط */
 (function(){var _b=qrBan;qrBan=function(){_b();var d=$('qkTr');if(!d||!myList().length)return;myFetch().then(function(){var L=myList().filter(function(x){return MYD[x.t]}).slice(0,3);if(!L.length){d.remove();return}
   d.innerHTML='<b>📦 '+esc(my('t'))+'</b>'+L.map(function(x){var o=MYD[x.t],st=myStage(o);return '<a href="'+esc(myUrl(x.t))+'"><span>'+esc(my('no'))+' <span dir="ltr">#'+esc(o.id)+'</span> · '+esc(myDate(o.created_at))+'</span><span class="q234 '+(st<0?'x':st===3?'ok':'go')+'">'+esc(myLabel(st))+' ←</span></a>'}).join('')})}})();
+/* V234: بعد «أضف إلى الحقيبة» يبقى العميل في المتجر — رسالة قصيرة مع زر «إتمام الطلب» بدل فتح الحقيبة مباشرة */
+function my234added(k,n){var p=null;for(var i=0;i<P.length;i++)if(P[i].key===k){p=P[i];break}
+  var c=0;for(var x in cart)c+=cart[x];var el=$('add234');if(!el){el=document.createElement('div');el.id='add234';el.className='add234';el.setAttribute('role','status');document.body.appendChild(el)}
+  el.innerHTML='<span class="a2ok" aria-hidden="true">✓</span><span class="a2tx"><b>'+esc(LANG==='en'?'Added to your bag':'أُضيف إلى الحقيبة')+'</b><small>'+esc((p?p.name:'')+(n>1?' ×'+n:''))+'</small></span>'+
+   '<button type="button" class="a2go" data-a234>'+esc(LANG==='en'?'Checkout':'إتمام الطلب')+' ('+c+')</button>';
+  el.classList.remove('in');void el.offsetWidth;el.classList.add('in');clearTimeout(my234added.tm);my234added.tm=setTimeout(function(){el.classList.remove('in')},4500)}
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-a234]');if(!b)return;var el=$('add234');if(el)el.classList.remove('in');drawer(true)});
 
 boot();
 })();
