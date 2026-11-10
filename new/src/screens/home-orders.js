@@ -40,7 +40,7 @@ function filtered(){
   var qs=q?q.split(' '):null;
   for(var i=0;i<db.orders.length;i++){
     var o=db.orders[i],s=status(o);
-    if(f==='all'){if(s==='cancelled'&&!q)continue}else if(f==='store'){if(o.source!=='store'&&!o.storeOrderId)continue}else if(f==='prep'){if(s!=='ready'&&s!=='packing')continue}else if(s!==f)continue;
+    if(f==='all'){if(s==='cancelled'&&!q)continue}else if(f==='store'){if(o.source!=='store'&&!o.storeOrderId)continue}else if(f==='prep'){if(s!=='ready'&&s!=='packing')continue}else if(f==='todo'){if(!NEXT[s])continue}else if(s!==f)continue;
     if(state.pinnedOnly&&!pins[oid(o)])continue;
     if(qs){var h=hay(o),ok=true;for(var j=0;j<qs.length;j++)if(h.indexOf(qs[j])<0){ok=false;break}if(!ok)continue}
     out.push(o);
@@ -49,34 +49,47 @@ function filtered(){
   return out;
 }
 var QL={card:true};
+/* ---------- صفحة الطلبات بتصميم «الوارد» (اختيار عماد 2026-11-10): رأس بلون التطبيق، بحث وفلاتر، بطاقة «تحتاج خطوة منك»، صفوف مجمّعة باليوم ---------- */
+var FMT_T=null,FMT_D=null;
+function ibTime(t){if(!t)return '';if(!FMT_T)FMT_T=new Intl.DateTimeFormat('ar-OM-u-nu-latn',{hour:'numeric',minute:'2-digit'});return FMT_T.format(t)}
+function ibDay(t){ // عنوان المجموعة: اليوم / أمس / التاريخ
+  if(!t)return 'بدون تاريخ';var k=dkey(t),now=new Date(),y=new Date(now.getTime()-864e5);
+  if(!FMT_D)FMT_D=new Intl.DateTimeFormat('ar-OM-u-nu-latn',{weekday:'long',day:'numeric',month:'long'});
+  if(k===dkey(now))return 'اليوم · '+FMT_D.format(t);if(k===dkey(y))return 'أمس · '+FMT_D.format(t);return FMT_D.format(t)}
+function ibTodo(ix){ // الطلبات التي تنتظر خطوة من التاجر، مع تفصيل الحالات
+  var n=0,parts=[];['new','waiting','ready','packing','shipped'].forEach(function(k){var c=ix.counts[k]||0;if(c){n+=c;parts.push(c+' '+ST[k].l)}});return {n:n,txt:parts.join(' · ')}}
 function cardHtml(o,pins){
   var s=status(o),id=oid(o),its=items(o),n=0;its.forEach(function(x){n+=qty(x)});
-  var nx=NEXT[s],ps=payState(o),pin=pins[id];
-  var tags='<span class="tag">📦 '+n+' قطعة</span>'+its.slice(0,4).map(function(x){return '<span class="tag">'+esc(iname(x))+' × '+qty(x)+'</span>'}).join('')+(its.length>4?'<span class="tag">+'+(its.length-4)+'</span>':'');
-  if(o.company)tags+='<span class="tag">🚚 '+esc(o.company)+'</span>';
-  tags+=trPills(o);
-  if(ps!=='paid'&&s!=='cancelled')tags+='<span class="tag warn">'+PAYL[ps]+' · '+money(remaining(o))+'</span>';
-  return '<div class="card" style="--sc:'+ST[s].c+'" data-id="'+esc(id)+'">'+
-    '<div class="ch"><h3>'+(pin?'<span class="pin">📌</span> ':'')+esc(onum(o))+' — '+esc(cname(o)||'بدون اسم')+'</h3><span class="pill">'+ST[s].i+' '+ST[s].l+'</span></div>'+
-    '<div class="meta">📱 '+esc(cphone(o)||'—')+(cplace(o)?' · 📍 '+esc(cplace(o)):'')+'</div>'+
-    '<div class="tags">'+tags+'</div>'+
-    (nx?'<div class="next">'+ST[nx[0]].i+' الخطوة التالية: '+nx[1]+'</div>':'')+
-    '<div class="acts">'+(nx?'<button class="btn dark" data-act="advance">⚡ '+ST[nx[0]].i+' '+ST[nx[0]].l+'</button>':'')+
-    '<button class="btn" data-act="open">📋 التفاصيل</button>'+(QL.card?'<button class="btn" data-act="qlabel" title="طباعة ملصق شحن سريع">🏷️ ملصق</button>':'')+'<button class="btn" data-act="wa">💬 واتساب</button><button class="btn more" data-act="cardMore" aria-label="خيارات أكثر">⋯</button></div></div>';
+  var nx=NEXT[s],ps=payState(o),pin=pins[id],t=odate(o);
+  var line=esc(onum(o))+(cplace(o)?' · 📍 '+esc(cplace(o)):'')+(o.company?' · 🚚 '+esc(o.company):'')+' · '+its.slice(0,3).map(function(x){return esc(iname(x))+' ×'+qty(x)}).join('، ')+(its.length>3?' +'+(its.length-3):'');
+  var st='<span class="ib-st">'+ST[s].l+'</span>'+(ps!=='paid'&&s!=='cancelled'?'<span class="ib-st pay">'+PAYL[ps]+'</span>':'');
+  return '<div class="card ib" style="--sc:'+ST[s].c+'" data-id="'+esc(id)+'">'+
+    '<div class="ib-ic">'+ST[s].i+'</div>'+
+    '<div class="ib-bd" data-act="open" role="button" tabindex="0">'+
+      '<div class="ib-nm"><span>'+(pin?'<span class="pin">📌</span> ':'')+esc(cname(o)||'بدون اسم')+'</span><small>'+ibTime(t)+'</small></div>'+
+      '<div class="ib-p" title="'+esc(cphone(o)||'')+'">'+line+'</div>'+
+      (trPills(o)?'<div class="tags">'+trPills(o)+'</div>':'')+
+    '</div>'+
+    '<div class="ib-f"><span class="ib-stw">'+st+'</span>'+
+      '<span class="ib-ac">'+(QL.card?'<button class="ib-ico" data-act="qlabel" title="ملصق شحن سريع" aria-label="ملصق">🏷️</button>':'')+'<button class="ib-ico" data-act="wa" aria-label="واتساب">💬</button><button class="ib-ico" data-act="cardMore" aria-label="خيارات أكثر">⋯</button>'+
+      (nx?'<button class="btn dark ib-nx" data-act="advance">'+ST[nx[0]].i+' '+nx[1]+'</button>':'<button class="btn ib-nx" data-act="open">📋 التفاصيل</button>')+'</span></div></div>';
 }
 function ordersHtml(){
   var ix=index(),list=filtered(),pins=pinned();
-  var chips=[['all','📋 الكل',ix.counts.all]].concat(FLOW.map(function(k){return [k,ST[k].i+' '+ST[k].s,ix.counts[k]]}));
+  var chips=[['all','الكل',ix.counts.all]].concat(FLOW.map(function(k){return [k,ST[k].i+' '+ST[k].s,ix.counts[k]]}));
   if(ix.counts.cancelled)chips.push(['cancelled','❌ ملغاة',ix.counts.cancelled]);
-  var shown=list.slice(0,state.limit);
-  return '<h2 class="ptitle">📋 الطلبات</h2><p class="psub">كل الطلبات المحفوظة وحالاتها.</p>'+
-    '<button class="btn dark wide qlink" data-act="quickLink">⚡ رابط طلب سريع</button>'+
-    '<div class="chips">'+chips.map(function(c){return '<button class="chip'+(state.filter===c[0]?' on':'')+'" data-filter="'+c[0]+'">'+c[1]+' '+c[2]+'</button>'}).join('')+
-    (storePublished()||ix.store?'<button class="chip'+(state.filter==='store'?' on':'')+'" data-filter="store">🛍️ المتجر '+(ix.store||0)+'</button>':'')+(state.filter==='prep'?'<button class="chip on" data-filter="prep">🧑‍💼 للتجهيز الآن '+list.length+'</button>':'')+'</div>'+
-    '<div class="search">🔎<input id="q" type="search" placeholder="ابحث بالاسم أو الرقم أو الموقع أو المنتج أو رقم الطلب" value="'+esc(state.q)+'" autocomplete="off"></div>'+
-    '<div class="tools"><button class="btn sm" data-act="archSearch">🗄️ ابحث في الأرشيف</button><button class="btn sm'+(state.pinnedOnly?' dark':'')+'" data-act="pinnedOnly">📌 المثبتة فقط'+(ix.counts.pinned?' ('+ix.counts.pinned+')':'')+'</button><button class="btn sm" data-act="clearQ">مسح البحث</button></div>'+
-    '<div id="list">'+(shown.length?(QL=qlOpt(),shown).map(function(o){return cardHtml(o,pins)}).join(''):'<div class="empty">لا توجد طلبات مطابقة.</div>')+'</div>'+
-    (list.length>shown.length?'<button class="btn moreBtn" data-act="showMore">عرض المزيد ('+(list.length-shown.length)+')</button>':'');
+  if(storePublished()||ix.store)chips.push(['store','🛍️ المتجر',ix.store||0]);
+  var shown=list.slice(0,state.limit),todo=ibTodo(ix),done=ix.counts.received||0,tot=Math.max(0,ix.counts.all-(ix.counts.cancelled||0)),pct=tot?Math.round(done*100/tot):0;
+  var rows='',last=null;QL=qlOpt();
+  shown.forEach(function(o){var d=ibDay(odate(o));if(d!==last){rows+='<div class="ib-day">'+d+'</div>';last=d}rows+=cardHtml(o,pins)});
+  return '<div class="ib-top"><div class="ib-r"><div><h2 class="ptitle">📋 الطلبات</h2><div class="ib-sm">'+ix.counts.all+' طلبًا · '+done+' مكتملة</div></div><div class="ib-ring" style="--p:'+pct+'" title="نسبة الطلبات المستلمة"><span>'+pct+'%</span></div></div>'+
+    '<div class="search ib-in">🔎<input id="q" type="search" placeholder="ابحث بالاسم أو الرقم أو الموقع أو المنتج أو رقم الطلب" value="'+esc(state.q)+'" autocomplete="off">'+'<button class="ib-x dim" data-act="clearQ" aria-label="مسح البحث" title="مسح البحث">×</button>'+'<button class="ib-x" data-act="archSearch" title="ابحث في الأرشيف" aria-label="الأرشيف">🗄️</button></div>'+
+    '<div class="chips ib-fl">'+chips.map(function(c){return '<button class="chip'+(state.filter===c[0]?' on':'')+'" data-filter="'+c[0]+'">'+c[1]+' <b>'+c[2]+'</b></button>'}).join('')+(state.filter==='prep'?'<button class="chip on" data-filter="prep">🧑‍💼 للتجهيز الآن '+list.length+'</button>':'')+(state.filter==='todo'?'<button class="chip on" data-filter="todo">⚡ تحتاج خطوة '+list.length+'</button>':'')+
+    '<button class="chip'+(state.pinnedOnly?' on':'')+'" data-act="pinnedOnly">📌 المثبتة'+(ix.counts.pinned?' <b>'+ix.counts.pinned+'</b>':'')+'</button></div></div>'+
+    (todo.n?'<div class="ib-att"><div class="n">'+todo.n+'</div><div><b>'+(todo.n===1?'طلب واحد يحتاج خطوة منك':todo.n===2?'طلبان يحتاجان خطوة منك':'طلبات تحتاج خطوة منك')+'</b><small>'+todo.txt+'</small></div><button class="btn dark" data-filter="'+(state.filter==='todo'?'all':'todo')+'">'+(state.filter==='todo'?'الكل':'ابدأ ▸')+'</button></div>':'<div class="ib-att ok"><div class="n">✅</div><div><b>لا توجد طلبات تنتظر خطوة منك</b><small>كل الطلبات مكتملة.</small></div></div>')+
+    '<div class="tools"></div><div id="list">'+(shown.length?rows:'<div class="empty">لا توجد طلبات مطابقة.</div>')+'</div>'+
+    (list.length>shown.length?'<button class="btn moreBtn" data-act="showMore">عرض المزيد ('+(list.length-shown.length)+')</button>':'')+
+    '<button class="ib-fab" data-act="quickLink">⚡ رابط طلب سريع</button>';
 }
 function refreshList(){ // تحديث القائمة فقط دون إعادة بناء الصفحة كلها
   if(state.view!=='orders')return render();
@@ -87,6 +100,8 @@ function refreshList(){ // تحديث القائمة فقط دون إعادة ب
   if(oldMore)oldMore.remove();if(newMore)l.after(newMore);
   var oc=document.querySelector('.chips'),nc=tmp.querySelector('.chips');if(oc&&nc)oc.innerHTML=nc.innerHTML;
   var ot=document.querySelector('.tools'),nt=tmp.querySelector('.tools');if(ot&&nt)ot.innerHTML=nt.innerHTML;
+  var oa=document.querySelector('.ib-att'),na=tmp.querySelector('.ib-att');if(oa&&na)oa.outerHTML=na.outerHTML;
+  var og=document.querySelector('.ib-ring'),ng=tmp.querySelector('.ib-ring');if(og&&ng)og.outerHTML=ng.outerHTML;
 }
 
 /* صورة الرئيسية بجانب التحية (مثل V90): صورة من اختيارك، أو شعار المتجر، أو بدون — حسب «المظهر» في التطبيق الحالي */
