@@ -24,6 +24,7 @@ lib/notify.js
 lib/parseclean.js
 lib/setload.js
 lib/look.js
+screens/homecfg.js
 screens/home-orders.js
 screens/order-form.js
 screens/import.js

@@ -68,6 +68,40 @@ x=cut(x,"    addTool();setTimeout(addTool,500);setTimeout(addTool,1500);\n","")
 x=cut(x,"if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();","init();")
 css+='#emdSecurityV315 input,#emdSecurityV315 textarea,#emdSecurityV315 select{width:100%;box-sizing:border-box;border:1px solid #dfe5ec;border-radius:11px;padding:11px;background:#fff;font:inherit;color:inherit}#emdSecurityV315 .row{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}#emdSecurityV315 .row>*{flex:0 1 auto;min-width:0;max-width:100%}#emdSecurityV315 .actions{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}#emdSecurityV315 .muted{color:#687384;font-size:13px}'
 js+=add('V315',x)
+# تخصيص الرئيسية: إظهار البطاقات V337، ترتيبها V338، إبراز المهم V339 — نفس النوافذ والمفاتيح؛ التطبيق يرسم البطاقات حسبها
+ADM="function admin(){try{return typeof window.isAdmin==='function'?!!window.isAdmin():(window.currentUser&&window.currentUser.role==='admin')||document.body.getAttribute('data-role')==='admin'}catch(e){return false}}"
+for v,sid,cid,hid in [('V337','EMD-V337-dashboard-js','EMD-V337-dashboard-style','emdV337DashboardModal'),('V338','EMD-V338-dashboard-order-script','EMD-V338-dashboard-order-style','emdV338DashboardOrderModal'),('V339','EMD-V339-dashboard-priority-script','EMD-V339-dashboard-priority-style','emdV339DashboardPriorityModal')]:
+  x=block(sid,'script');css+=block(cid,'style');html+=html_by_id(hid)
+  x=cut(x,ADM,"function admin(){return RW.EMDPosH.owner()}")
+  x=re.sub(r"function allowed\(\)\{try\{.*?\}catch\(e\)\{return true\}\}","function allowed(){return true}",x,count=1)
+  if v=='V337':
+    x=cut(x,"function apply(){var st=read();cards().forEach(function(el){var k=el.getAttribute('data-home-status');el.style.display=st[k]?'none':''})}","function apply(){RW.EMDPosH.homeRefresh()}")
+    x=re.sub(r"apply\(\);try\{new MutationObserver\(.*?\}catch\(e\)\{\}","apply();",x,count=1,flags=re.S)
+    x=cut(x,"if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();","boot();")
+  if v=='V338':
+    x=re.sub(r"  function apply\(\)\{if\(applying\)return;.*?\n","  function apply(){RW.EMDPosH.homeRefresh()}\n",x,count=1)
+    x=re.sub(r"  function observe\(\)\{.*?\n","  function observe(){}\n",x,count=1)
+    x=cut(x,"if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();","boot();")
+  if v=='V339':
+    x=re.sub(r"function apply\(\)\{var chosen=load\(\);.*?\n","function apply(){RW.EMDPosH.homeRefresh()}\n",x,count=1)
+    x=cut(x,"document.addEventListener('DOMContentLoaded',function(){","(function(){")
+    x=cut(x,"apply();setTimeout(apply,500);setTimeout(apply,1500);});","})();")
+    x=re.sub(r"var last='';function watch\(\)\{.*?setInterval\(watch,1200\);\n","",x,count=1,flags=re.S)
+  js+=add(v,x)
+# ترتيب الأزرار والأقسام V114: أقسام الرئيسية وبطاقات الحالات (يُحفظ في db.uiOrder مثل التطبيق الحالي)
+x=block('EMD-V114-layout','script');css+=block('EMD-V114-css','style')+'\n#emd114Modal .row>button{flex:0 0 auto}#emd114Modal .row>b{flex:1}'
+a=x.index('var GROUPS={');b=x.index('function D(){')
+x=x[:a]+"""var GROUPS={
+ home:{title:'🏠 أقسام الصفحة الرئيسية',short:'🏠 الرئيسية',hint:'ترتيب: الترحيب، شريط المبيعات، بطاقات الحالات، أزرار الإدخال، لوحة اليوم.',def:['hero','strip','grid','actions','daily'],labels:{hero:'👋 الترحيب والساعة',strip:'💰 شريط مبيعات اليوم',grid:'🧮 بطاقات حالات الطلبات',actions:'⚡ أزرار الإدخال السريع',daily:'🎯 لوحة اليوم'}},
+ homestats:{title:'🧮 بطاقات حالات الطلبات',short:'🧮 البطاقات',hint:'ترتيب بطاقات: جديدة، بانتظار المنتجات، جاهزة، قيد التجهيز، تم الشحن، تم الاستلام.',def:['new','waiting','ready','packing','shipped','received'],labels:{new:'🆕 طلبات جديدة',waiting:'⏳ بانتظار المنتجات',ready:'🟢 جاهزة للتجهيز',packing:'🛠️ قيد التجهيز',shipped:'🚚 تم الشحن',received:'📬 تم الاستلام'}}
+};
+"""+x[b:]
+x=cut(x,"var cg='nav';","var cg='home';")
+x=re.sub(r"function watch\(\)\{.*?\n","",x,count=1)
+x=cut(x,"function setOrder(g,keys){var d=D();if(!d.uiOrder)d.uiOrder={};if(keys)d.uiOrder[g]=keys;else delete d.uiOrder[g];persist();if(GROUPS[g].dyn)applyDyn(g);refreshOthers(g)}","function setOrder(g,keys){var d=D();if(!d.uiOrder)d.uiOrder={};if(keys)d.uiOrder[g]=keys;else delete d.uiOrder[g];persist();RW.EMDPosH.homeRefresh()}")
+x=re.sub(r"function inject\(\)\{.*?\n.*?\n.*?\n","",x,count=1)
+x=cut(x,"setInterval(function(){watch();applyAll();inject()},1500);watch();inject();\n","")
+js+=add('V114',x)
 for j in [js]:
   assert 'setInterval' not in j and 'MutationObserver' not in j
 js=re.sub(r"(?<![\w.$])(window\.)?localStorage\b",'PLS',js)

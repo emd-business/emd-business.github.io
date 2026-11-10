@@ -79,6 +79,8 @@ body.emd412-s-tile .emd412-i{width:1.75em;height:1.75em;border-radius:.5em;backg
 body.emd412-s-soft .emd412-i{width:1.85em;height:1.85em;border-radius:50%;color:var(--c);background:color-mix(in srgb,var(--c) 15%,transparent)}body.emd412-s-soft .emd412-i svg{width:1.05em;height:1.05em;stroke-width:2.1}
 body.emd412-s-gold .emd412-i{color:#b8892b}body.emd412-s-gold .emd412-i svg{stroke-width:1.6}
 .stat .emd412-i{font-size:15px;margin-inline-end:7px}
+/* إبراز الحالات المهمة (V339) */
+.emd339-priority{position:relative;box-shadow:0 0 0 2px var(--accent,#18202a),0 8px 22px rgba(24,32,42,.12)!important;transform:translateY(-1px)}.emd339-priority::after{content:'أولوية';position:absolute;top:8px;left:8px;padding:3px 7px;border-radius:999px;background:var(--accent,#18202a);color:#fff;font-size:10px;font-weight:800}.stat.emd339-priority b{font-size:32px}
 .stat.cc small{display:block;color:var(--mute);font-size:12px;margin-top:4px;font-weight:400}.stat.cc b{font-size:24px;font-variant-numeric:tabular-nums}.stat.cc.warn b{color:#b45309}.stat.cc.off b{color:#94a3b8}
 .stat i{width:24px;height:24px;border-radius:7px;display:inline-grid;place-items:center;font-style:normal;font-size:13px;color:#fff}
 .quick{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
@@ -1181,7 +1183,7 @@ function posLs(){var SB=function(){return typeof CLOUD_SANDBOX==='undefined'||CL
     removeItem:function(k){if(SB()){lsSet(rk(k),POS_RM);return}try{LS.removeItem(k)}catch(e){}}}}
 var POS_LS=posLs();
 function dsMgr(){try{var m=JSON.parse(POS_LS.getItem('emd_manager_profile_v41')||'null');return (m&&m.name)||'المدير'}catch(e){return 'المدير'}}
-function posHelpers(){return {db:function(){return db},ls:POS_LS,coBlock:function(){return !cloudCanWrite()},owner:function(){return stOwner()},permFor:stPermFor,viewGuard:stViewGuard,closing:function(){closingSheet()},idsFmt:idsFmt,invoice:function(id){openInvoice(id)},icStyle:function(){icApply();render()},icBar:function(){renderBar()},look:function(dark,acc,v){lookNative(dark,acc);lookBody(v)},lookPaint:function(){storeRow();render()},backup:function(){setRun(function(){EMDBackupV313.open()})},locked:function(){lkCoverOff()},unlocked:function(){lkCoverOff();dirty();render()},
+function posHelpers(){return {db:function(){return db},ls:POS_LS,coBlock:function(){return !cloudCanWrite()},owner:function(){return stOwner()},permFor:stPermFor,viewGuard:stViewGuard,closing:function(){closingSheet()},idsFmt:idsFmt,invoice:function(id){openInvoice(id)},homeRefresh:function(){dirty();render()},icStyle:function(){icApply();render()},icBar:function(){renderBar()},look:function(dark,acc,v){lookNative(dark,acc);lookBody(v)},lookPaint:function(){storeRow();render()},backup:function(){setRun(function(){EMDBackupV313.open()})},locked:function(){lkCoverOff()},unlocked:function(){lkCoverOff();dirty();render()},
     alias:{EMDProductImageV81:{pick:function(cb){v81Pick(cb)}},save:function(){dirty();saveNow()},render:function(){dirty();render()},renderProducts:function(){dirty();if(state.view==='products')render()},toast:toast,EMDBusinessProfileV333:{get:function(){return dsHelpers().profile()}},EMDLookV89:{accentHex:dsLook,logoImg:function(){return dsLogo&&dsLogo.complete&&dsLogo.naturalWidth?dsLogo:null}},EMDMoneyV75:{total:function(o){return total(o)},paid:function(o){return paid(o)},remaining:function(o){return remaining(o)},payState:function(o){return payState(o)},invoice:function(id){openInvoice(id)}},EMDStaffV108:{who:function(){return {id:'owner',name:dsMgr(),owner:true}},can:function(){return true}},EMDCloudV93:{api:{uid:function(){return cUid()},token:function(){return cToken()}}},EMDPrefixV129:{fmt:function(s){return idsFmt(String(s))}}},nat:function(f){try{return /\{\s*\[native code\]\s*\}$/.test(Function.prototype.toString.call(f))}catch(e){return false}}}}
 function directLoad(){if(window.EMDDirectV113)return Promise.resolve(window.EMDDirectV113);if(dsLoading)return dsLoading;window.EMDDirH=dsHelpers();
   var w=dsWant();dsVariant=w;
@@ -1413,6 +1415,18 @@ function lookNative(dark,acc){var r=document.documentElement.style;
 function storeRow(){var el=$('storeName');if(!el)return;var n=storeName(),lg=lookLogo();el.classList.toggle('hide',!n&&!lg);
   el.innerHTML=(n||lg)?(lg?'<img src="'+esc(lg)+'" alt="">':'<i>🏪</i>')+'<span>'+esc(n||'متجري')+'</span>':''}
 
+/* ===== screens/homecfg.js ===== */
+/* ---------- تخصيص الرئيسية: نفس مفاتيح التطبيق الحالي ----------
+   إخفاء البطاقات V337 (emd_dashboard_v337)، ترتيبها V338 (emd_dashboard_order_v338) ثم V114 (db.uiOrder.homestats)،
+   إبراز المهم V339 (emd_dashboard_priority_v339)، وترتيب أقسام الرئيسية V114 (db.uiOrder.home). النوافذ في lazy/settings.js. */
+var HC_ST=['new','waiting','ready','packing','shipped','received'],HC_SEC=['hero','strip','grid','actions','daily'];
+function hcJson(k,d){try{var x=JSON.parse(POS_LS.getItem(k)||'null');return x==null?d:x}catch(e){return d}}
+function hcMerge(sv,keys){var out=[];(Array.isArray(sv)?sv:[]).forEach(function(k){if(keys.indexOf(k)>=0&&out.indexOf(k)<0)out.push(k)});keys.forEach(function(k){if(out.indexOf(k)<0)out.push(k)});return out}
+function hcOrder(){var o=hcMerge(hcJson('emd_dashboard_order_v338',null),HC_ST);return hcMerge(db.uiOrder&&db.uiOrder.homestats,o)}
+function hcHidden(){var x=hcJson('emd_dashboard_v337',{});return x&&typeof x==='object'?x:{}}
+function hcPri(){var x=hcJson('emd_dashboard_priority_v339',[]);return Array.isArray(x)?x:[]}
+function hcSections(){return hcMerge(db.uiOrder&&db.uiOrder.home,HC_SEC)}
+
 /* ===== screens/home-orders.js ===== */
 /* ---------- 4) العرض ---------- */
 var state={view:'home',filter:'all',q:'',pinnedOnly:false,limit:30,ptab:'prep',sel:{}};
@@ -1439,14 +1453,16 @@ function homeHtml(){
   var hijri='';try{hijri=new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura-nu-latn',{day:'numeric',month:'long',year:'numeric'}).format(now).replace(/\s*هـ\s*$/,'')+' هـ'}catch(e){}
   var greg=new Intl.DateTimeFormat('ar-OM-u-nu-latn',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(now);
   var hh=h%12||12;
-  var cards=['new','waiting','ready','packing','shipped','received'].map(function(k){
-    return '<button class="stat" data-filter="'+k+'"><b>'+ix.counts[k]+'</b><span>'+statIcon(k)+''+(k==='new'?'طلبات جديدة':k==='waiting'?'بانتظار المنتجات':k==='ready'?'جاهزة للتجهيز':ST[k].l)+'</span></button>';
+  var hid=hcHidden(),pri=hcPri();
+  var cards=hcOrder().filter(function(k){return !hid[k]}).map(function(k){
+    return '<button class="stat'+(pri.indexOf(k)>-1&&ix.counts[k]>0?' emd339-priority':'')+'" data-filter="'+k+'"><b>'+ix.counts[k]+'</b><span>'+statIcon(k)+''+(k==='new'?'طلبات جديدة':k==='waiting'?'بانتظار المنتجات':k==='ready'?'جاهزة للتجهيز':ST[k].l)+'</span></button>';
   }).join('');
-  return '<div class="hero"><div><h2>'+esc(greet)+'</h2>'+(lk.clock!==false?'<div class="clock">'+pad(hh)+':'+pad(now.getMinutes())+' <span>'+(h<12?'ص':'م')+'</span></div>':'')+'<div class="date">'+esc(greg)+(hijri&&lk.hijri!==false?' · '+esc(hijri):'')+'</div></div>'+heroImg(lk)+'</div>'+modesHome()+
-    '<div class="money" data-act="finance" role="button"><div><small>مبيعات اليوم</small><b>'+money(ix.sales)+'</b></div><div><small>غير محصّل</small><b class="gold">'+money(ix.unpaid)+'</b></div><div><small>ربح الشهر</small><b>'+money(ix.profit)+'</b></div><div class="cap">💰 اضغط لفتح المالية · '+CUR+'</div></div>'+
-    storeHomeCard()+(shopMode()?cashCards():'<div class="stats">'+cards+'</div>')+
-    (shopMode()?'':'<div class="quick"><button class="btn dark" data-act="importMsg">🤖 إدخال من رسالة</button><button class="btn" data-act="newOrder">✍️ كتابة طلب يدوي</button>'+(shopMode()?'':'<button class="btn" data-act="prepNow">🧑‍💼 ماذا أجهز الآن؟</button>')+'<button class="btn" data-act="closing">📊 تقفيلة اليوم</button></div>')+
-    (state.dayOpen?'<button class="fold" data-act="dayFold">▲ إخفاء تفاصيل اليوم</button>'+dayHtml():'<button class="fold" data-act="dayFold">▼ تفاصيل اليوم والتوصيات <small>(لوحة اليوم، ما يحتاج انتباهك)</small></button>');
+  var P={hero:'<div class="hero"><div><h2>'+esc(greet)+'</h2>'+(lk.clock!==false?'<div class="clock">'+pad(hh)+':'+pad(now.getMinutes())+' <span>'+(h<12?'ص':'م')+'</span></div>':'')+'<div class="date">'+esc(greg)+(hijri&&lk.hijri!==false?' · '+esc(hijri):'')+'</div></div>'+heroImg(lk)+'</div>'+modesHome(),
+    strip:'<div class="money" data-act="finance" role="button"><div><small>مبيعات اليوم</small><b>'+money(ix.sales)+'</b></div><div><small>غير محصّل</small><b class="gold">'+money(ix.unpaid)+'</b></div><div><small>ربح الشهر</small><b>'+money(ix.profit)+'</b></div><div class="cap">💰 اضغط لفتح المالية · '+CUR+'</div></div>',
+    grid:storeHomeCard()+(shopMode()?cashCards():'<div class="stats">'+cards+'</div>'),
+    actions:(shopMode()?'':'<div class="quick"><button class="btn dark" data-act="importMsg">🤖 إدخال من رسالة</button><button class="btn" data-act="newOrder">✍️ كتابة طلب يدوي</button>'+(shopMode()?'':'<button class="btn" data-act="prepNow">🧑‍💼 ماذا أجهز الآن؟</button>')+'<button class="btn" data-act="closing">📊 تقفيلة اليوم</button></div>'),
+    daily:(state.dayOpen?'<button class="fold" data-act="dayFold">▲ إخفاء تفاصيل اليوم</button>'+dayHtml():'<button class="fold" data-act="dayFold">▼ تفاصيل اليوم والتوصيات <small>(لوحة اليوم، ما يحتاج انتباهك)</small></button>')};
+  return hcSections().map(function(k){return P[k]||''}).join('');
 }
 
 function filtered(){
@@ -2315,11 +2331,11 @@ var SET_I={
  look:['🎨 المظهر والهوية','الثيم والألوان والشعار وحجم العرض.',function(){lookOpen()}],
  lang:['🌐 اللغة','الحالية: العربية. اضغط للتبديل إلى English.',null],
  btn:['🎛️ شكل الأزرار والشريط السفلي','شكل الأيقونات وأزرار الشريط السفلي على الجوال.',function(){icOpen()}],
- ord:['↕️ ترتيب الأزرار والأقسام','ترتيب أزرار الشريط وأقسام الصفحات.',null],
+ ord:['↕️ ترتيب الأزرار والأقسام','ترتيب أزرار الشريط وأقسام الصفحات.',function(){setRun(function(){EMDLayoutV114.open()})}],
  qa:['⚡ الإجراءات السريعة','الاختصارات التي تظهر في قائمة «إجراءات سريعة».',null],
- dash:['📊 بطاقات الرئيسية','إظهار بطاقات حالات الطلبات أو إخفاؤها.',null],
- dord:['↕️ ترتيب بطاقات الرئيسية','ترتيب بطاقات حالات الطلبات.',null],
- dpri:['🎯 إبراز الحالات المهمة','تمييز البطاقات التي فيها طلبات تحتاج انتباهك.',null],
+ dash:['📊 بطاقات الرئيسية','إظهار بطاقات حالات الطلبات أو إخفاؤها.',function(){setRun(function(){EMDDashboardV337.open()})}],
+ dord:['↕️ ترتيب بطاقات الرئيسية','ترتيب بطاقات حالات الطلبات.',function(){setRun(function(){EMDDashboardOrderV338.open()})}],
+ dpri:['🎯 إبراز الحالات المهمة','تمييز البطاقات التي فيها طلبات تحتاج انتباهك.',function(){setRun(function(){EMDDashboardPriorityV339.open()})}],
  staff:['👥 الموظفون','إظهار زر الموظفين وإدارة الموظفين وصلاحياتهم.',function(){stLoad().then(function(){EMDStaffHideV111.open()},function(){toast('تعذّر الفتح. تحقّق من الاتصال.')})}],
  lock:['🔐 قفل التطبيق','كلمة المرور والقفل التلقائي وتسجيل الخروج.',function(){lkOpen()}],
  sec:['🧾 الأدوار وسجل العمليات','الصلاحيات وسجل العمليات المهمة.',function(){setRun(function(){EMDSecurityV315.open()})}],

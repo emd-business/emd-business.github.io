@@ -1,0 +1,17 @@
+const {chromium}=require('playwright');const O='/tmp/claude-0/cmp/';
+(async()=>{const b=await chromium.launch();const ctx=await b.newContext({viewport:{width:400,height:860}});const errs=[];
+const n=await ctx.newPage();n.on('pageerror',e=>errs.push(e.message));n.on('dialog',d=>{console.log('DLG',d.message().slice(0,60));d.accept()});
+await n.goto('http://localhost:8133/new/index.html');await n.waitForTimeout(300);await n.click('[data-act=demo][data-n="40"]');await n.waitForTimeout(3000);
+await n.evaluate(()=>document.querySelectorAll('.rc-alert,#emd122Ban').forEach(x=>x.remove()));
+const hub=async k=>{await n.evaluate(()=>{const b=document.createElement('button');b.dataset.act='settings';document.body.appendChild(b);b.click();b.remove()});await n.click('[data-sg=layout]');await n.click('#e445G [data-si='+k+']');await n.waitForTimeout(700)};
+const cards=()=>n.$$eval('#view .stats .stat',x=>x.map(c=>c.dataset.filter+(c.classList.contains('emd339-priority')?'*':'')).join(','));
+console.log('start',await cards());
+await hub('dash');await n.screenshot({path:O+'n-hc1.png'});await n.click('#emdV337List label[for=emdV337Sw5]');await n.click('#emdV337Save');await n.waitForTimeout(300);console.log('hide received',await cards());
+await hub('dord');await n.screenshot({path:O+'n-hc2.png'});await n.click('#emdV338List .emd338-row[data-v338-key=ready] [data-dir=up]');await n.click('#emdV338Save');await n.waitForTimeout(300);console.log('ready up',await cards());
+await hub('dpri');await n.screenshot({path:O+'n-hc3.png'});await n.click('#emdV339List label:has(input[value=ready])');await n.click('#emdV339Save');await n.waitForTimeout(300);console.log('pri ready',await cards());
+await hub('ord');await n.screenshot({path:O+'n-hc4.png'});await n.click('#emd114Modal [data-a=dn][data-v=hero]');await n.waitForTimeout(300);
+console.log('sections',await n.evaluate(()=>[...document.querySelectorAll('#view>*')].slice(0,3).map(x=>x.className).join(',')),await n.evaluate(()=>JSON.stringify(EMDRebuild.db().uiOrder)));
+await n.click('#emd114Modal [data-a=reset]');await n.click('#emd114Modal [data-a=x]');
+await n.screenshot({path:O+'n-hc5.png'});
+console.log('live untouched',await n.evaluate(()=>['emd_dashboard_v337','emd_dashboard_order_v338','emd_dashboard_priority_v339','emd_business_v1'].every(k=>localStorage.getItem(k)===null)));
+console.log(errs);await b.close()})();
