@@ -27,6 +27,14 @@ if errs:print('\n'.join(errs));sys.exit(1)
 shell=open(os.path.join(H,'shell.html'),encoding='utf-8').read()
 assert shell.count('/*@@APP@@*/')==1
 html=shell.replace('/*@@APP@@*/','(function(){\n\n'+'\n'.join(parts))
+# الملفات المحمّلة عند الحاجة: رقم النسخة = بصمة محتواها، فيأخذ الجوال الملف الجديد بعد كل تحديث بدل نسخته القديمة المخزّنة
+import hashlib
+def _ver(m):
+  for d in ('lazy','static'):
+    q=os.path.join(H,d,m.group(1)+'.js')
+    if os.path.exists(q):return m.group(1)+'.js?v='+hashlib.md5(open(q,'rb').read()).hexdigest()[:8]
+  return m.group(0)
+html=re.sub(r"\b([a-z0-9]+)\.js\?v=\d+",_ver,html)
 os.makedirs(out,exist_ok=True)
 open(os.path.join(out,'index.html'),'w',encoding='utf-8').write(html)
 for x in os.listdir(os.path.join(H,'static')):shutil.copy(os.path.join(H,'static',x),os.path.join(out,x))
