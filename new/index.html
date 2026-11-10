@@ -49,7 +49,10 @@ header{padding:14px 0 8px}
 .money .cap{grid-column:1/-1;border:0!important;font-size:11.5px;color:#94a3b8;margin-top:6px}
 .himg{flex:0 0 112px;height:112px;border-radius:18px;overflow:hidden;border:1px solid var(--line);background:var(--card);padding:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
 .himg img{width:100%;height:100%;object-fit:cover}.himg.empty{border-style:dashed;color:var(--mute)}.himg.empty span{font-size:30px}.himg.empty small{font-size:12px}
-.srow{font-size:14px;font-weight:800;margin-top:4px}
+.srow{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:800;margin-top:4px}.srow img{width:34px;height:34px;border-radius:10px;object-fit:cover;border:1px solid #e5e7eb;background:#fff}.srow i{font-style:normal;width:34px;height:34px;border-radius:10px;background:#f1f5f9;display:inline-flex;align-items:center;justify-content:center}
+.himg.f-circle{border-radius:50%;padding:4px;border:0;background:var(--emd89-acc,#18202a);box-shadow:0 6px 18px rgba(15,23,42,.18)}.himg.f-circle img{border-radius:50%;border:3px solid #fff}
+.himg.f-white{padding:6px;border:0;background:#fff;border-radius:26px;box-shadow:0 10px 26px rgba(15,23,42,.18);transform:rotate(-3deg)}.himg.f-white img{border-radius:20px}
+.himg.f-grad{padding:4px;border:0;border-radius:28px;background:linear-gradient(135deg,var(--emd89-acc,#18202a),#f59e0b 55%,#ec4899)}.himg.f-grad img{border-radius:24px;border:3px solid #fff}
 .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.grid3 button{border:1px solid var(--line);background:var(--soft);border-radius:14px;padding:12px 4px;font-weight:800;font-size:13.5px;display:flex;flex-direction:column;align-items:center;gap:6px}.grid3 button i{font-style:normal;font-size:24px}
 .day{display:grid;gap:12px;margin-top:12px}.dcard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px}.dcard h3{margin:0 0 4px;font-size:17px}.dh{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}.dh small{color:var(--mute);font-size:12px}
 .kp4,.kp3{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:10px 0}.kp3{grid-template-columns:repeat(3,1fr)}.kp4 div,.kp3 div{border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}.kp4 b,.kp3 b{display:block;font-size:20px;font-weight:900}.kp4 small,.kp3 small{color:var(--mute);font-size:11.5px}
@@ -64,9 +67,18 @@ header{padding:14px 0 8px}
 .tkc{border:1px solid var(--line);border-radius:14px;padding:12px;margin:8px 0}.tkc small{display:block;color:var(--mute);font-size:12.5px;margin-top:4px;word-break:break-all}.tkc small.ok{color:#15803d}
 .msec{font-size:12.5px;font-weight:800;color:var(--mute);margin:14px 2px 8px}.mver{text-align:center;color:var(--mute);font-size:12px;margin-top:14px}
 .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.stat{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);border:1px solid var(--line);padding:14px;text-align:right}
-.stat b{display:block;font-size:30px;font-weight:900;text-align:left}
-.stat span{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px}
+.stat{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);border:1px solid var(--line);padding:16px;text-align:right}
+.stat b{display:block;font-size:30px;font-weight:900}
+.stat span{display:flex;align-items:center;gap:0;font-weight:400;font-size:16px}.stat span>i{margin-inline-end:7px}
+/* أيقونات V412 (نفس أنماط التطبيق الحالي) */
+.emd412-i{display:inline-grid;place-items:center;flex:none;vertical-align:-0.28em;margin-inline-end:6px;line-height:1}
+.emd412-i svg{display:block;width:1.15em;height:1.15em;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}.emd412-i svg .f{display:none}
+body.emd412-s-line .emd412-i svg{stroke-width:1.5}body.emd412-s-bold .emd412-i svg{stroke-width:2.4}body.emd412-s-solid .emd412-i svg{fill:currentColor;stroke-width:1.2}body.emd412-s-solid .emd412-i svg .k{fill:none;stroke:var(--card,#fff);stroke-width:1.8}
+body.emd412-s-duo .emd412-i svg .f{display:inline;fill:var(--c);fill-opacity:.24;stroke:none}body.emd412-s-duo .emd412-i{color:var(--c)}
+body.emd412-s-tile .emd412-i{width:1.75em;height:1.75em;border-radius:.5em;background:var(--c);color:#fff}body.emd412-s-tile .emd412-i svg{width:1.05em;height:1.05em;stroke-width:2.1}
+body.emd412-s-soft .emd412-i{width:1.85em;height:1.85em;border-radius:50%;color:var(--c);background:color-mix(in srgb,var(--c) 15%,transparent)}body.emd412-s-soft .emd412-i svg{width:1.05em;height:1.05em;stroke-width:2.1}
+body.emd412-s-gold .emd412-i{color:#b8892b}body.emd412-s-gold .emd412-i svg{stroke-width:1.6}
+.stat .emd412-i{font-size:15px;margin-inline-end:7px}
 .stat.cc small{display:block;color:var(--mute);font-size:12px;margin-top:4px;font-weight:400}.stat.cc b{font-size:24px;font-variant-numeric:tabular-nums}.stat.cc.warn b{color:#b45309}.stat.cc.off b{color:#94a3b8}
 .stat i{width:24px;height:24px;border-radius:7px;display:inline-grid;place-items:center;font-style:normal;font-size:13px;color:#fff}
 .quick{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
@@ -336,7 +348,7 @@ function toast(t){var el=$('toast');el.textContent=t;el.style.display='block';cl
 function openSheet(html,cls){
   var d=document.createElement('div');d.className='sheet '+(cls||'');d.innerHTML='<div class="box">'+html+'</div>';
   d.addEventListener('click',function(e){if(e.target===d)closeSheet(d)});
-  $('sheets').appendChild(d);document.body.style.overflow='hidden';return d;
+  $('sheets').appendChild(d);document.body.style.overflow='hidden';if(window.__lookSweep)setTimeout(lookSweep);return d;
 }
 function closeSheetIfMenu(b){var s=b.closest('.sheet');if(s&&s.querySelector('.list,.grid3'))closeSheet(s)}
 function closeSheet(d){d=d||$('sheets').lastElementChild;if(d)d.remove();if(!$('sheets').children.length)document.body.style.overflow=''}
@@ -1169,8 +1181,8 @@ function posLs(){var SB=function(){return typeof CLOUD_SANDBOX==='undefined'||CL
     removeItem:function(k){if(SB()){lsSet(rk(k),POS_RM);return}try{LS.removeItem(k)}catch(e){}}}}
 var POS_LS=posLs();
 function dsMgr(){try{var m=JSON.parse(POS_LS.getItem('emd_manager_profile_v41')||'null');return (m&&m.name)||'المدير'}catch(e){return 'المدير'}}
-function posHelpers(){return {db:function(){return db},ls:POS_LS,coBlock:function(){return !cloudCanWrite()},owner:function(){return stOwner()},permFor:stPermFor,viewGuard:stViewGuard,closing:function(){closingSheet()},idsFmt:idsFmt,invoice:function(id){openInvoice(id)},backup:function(){setRun(function(){EMDBackupV313.open()})},locked:function(){lkCoverOff()},unlocked:function(){lkCoverOff();dirty();render()},
-    alias:{save:function(){dirty();saveNow()},render:function(){dirty();render()},renderProducts:function(){dirty();if(state.view==='products')render()},toast:toast,EMDBusinessProfileV333:{get:function(){return dsHelpers().profile()}},EMDLookV89:{accentHex:dsLook,logoImg:function(){return dsLogo&&dsLogo.complete&&dsLogo.naturalWidth?dsLogo:null}},EMDMoneyV75:{total:function(o){return total(o)},paid:function(o){return paid(o)},remaining:function(o){return remaining(o)},payState:function(o){return payState(o)},invoice:function(id){openInvoice(id)}},EMDStaffV108:{who:function(){return {id:'owner',name:dsMgr(),owner:true}},can:function(){return true}},EMDCloudV93:{api:{uid:function(){return cUid()},token:function(){return cToken()}}},EMDPrefixV129:{fmt:function(s){return idsFmt(String(s))}}},nat:function(f){try{return /\{\s*\[native code\]\s*\}$/.test(Function.prototype.toString.call(f))}catch(e){return false}}}}
+function posHelpers(){return {db:function(){return db},ls:POS_LS,coBlock:function(){return !cloudCanWrite()},owner:function(){return stOwner()},permFor:stPermFor,viewGuard:stViewGuard,closing:function(){closingSheet()},idsFmt:idsFmt,invoice:function(id){openInvoice(id)},icStyle:function(){icApply();render()},icBar:function(){renderBar()},look:function(dark,acc,v){lookNative(dark,acc);lookBody(v)},lookPaint:function(){storeRow();render()},backup:function(){setRun(function(){EMDBackupV313.open()})},locked:function(){lkCoverOff()},unlocked:function(){lkCoverOff();dirty();render()},
+    alias:{EMDProductImageV81:{pick:function(cb){v81Pick(cb)}},save:function(){dirty();saveNow()},render:function(){dirty();render()},renderProducts:function(){dirty();if(state.view==='products')render()},toast:toast,EMDBusinessProfileV333:{get:function(){return dsHelpers().profile()}},EMDLookV89:{accentHex:dsLook,logoImg:function(){return dsLogo&&dsLogo.complete&&dsLogo.naturalWidth?dsLogo:null}},EMDMoneyV75:{total:function(o){return total(o)},paid:function(o){return paid(o)},remaining:function(o){return remaining(o)},payState:function(o){return payState(o)},invoice:function(id){openInvoice(id)}},EMDStaffV108:{who:function(){return {id:'owner',name:dsMgr(),owner:true}},can:function(){return true}},EMDCloudV93:{api:{uid:function(){return cUid()},token:function(){return cToken()}}},EMDPrefixV129:{fmt:function(s){return idsFmt(String(s))}}},nat:function(f){try{return /\{\s*\[native code\]\s*\}$/.test(Function.prototype.toString.call(f))}catch(e){return false}}}}
 function directLoad(){if(window.EMDDirectV113)return Promise.resolve(window.EMDDirectV113);if(dsLoading)return dsLoading;window.EMDDirH=dsHelpers();
   var w=dsWant();dsVariant=w;
   dsLoading=(w==='live'?loadScript('direct.js?v=1'):loadScript('direct453.js?v=1').then(function(){return loadScript('qrcode.js?v=1').catch(function(){})}).then(function(){window.EMDPosH=posHelpers();return loadScript('pos.js?v=1')}).then(function(){if(w==='co')return loadScript('company.js?v=1')})).then(function(){if(!window.EMDDirectV113)throw new Error('direct');return window.EMDDirectV113},function(e){dsLoading=null;throw e});return dsLoading}
@@ -1250,6 +1262,30 @@ function c438(a){directLoad().then(function(X){if(a==='cust'&&!window.EMDLoyV434
 /* سؤال أول تشغيل: فقط لتطبيق جديد بلا طلبات ولا منتجات، كي لا يُفاجأ التاجر الحالي بنافذة */
 function modesFirstRun(){if(mdLs('emd416_asked')||mdLs('emd416_mode'))return;if(db.orders.length||db.products.length)return;
   modesLoad().then(function(M){M.firstRun()},function(){})}
+
+/* ===== lib/icons.js ===== */
+/* ---------- شكل أيقونات حالات الطلبات (V412): نفس الأيقونات والأنماط؛ النافذة في lazy/icons.js (tools/port-icons.py) ---------- */
+/* [تعبئة للنمط ثنائي اللون, الخطوط] — منقولة كما هي من V412 */
+var IC412={
+ spark:['<circle class="f" cx="12" cy="12" r="9"/>','<path d="M12 3v4M12 17v4M3 12h4M17 12h4"/><circle cx="12" cy="12" r="3"/>'],
+ clock:['<circle class="f" cx="12" cy="12" r="9"/>','<circle cx="12" cy="12" r="9"/><path class="k" d="M12 7v5l3 2"/>'],
+ check:['<circle class="f" cx="12" cy="12" r="9"/>','<circle cx="12" cy="12" r="9"/><path class="k" d="m8 12 3 3 5-6"/>'],
+ tool:['<circle class="f" cx="12" cy="12" r="9"/>','<path d="M14.5 6.5a4 4 0 0 0 5 5L12 19a2.1 2.1 0 0 1-3-3l7.5-7.5Z"/><path d="M14.5 6.5 17 4"/>'],
+ truck:['<path class="f" d="M3 6h11v10H3z"/>','<path d="M3 6h11v10H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="18" r="1.8"/><circle cx="17" cy="18" r="1.8"/>'],
+ inbox:['<path class="f" d="M5 5h14l2 8v6H3v-6Z"/>','<path d="M5 5h14l2 8v6H3v-6l2-8Z"/><path class="k" d="M3 13h5l1.5 3h5L16 13h5"/>'],
+ home:['<path class="f" d="M5 9.5 12 4l7 5.5V20H5Z"/>','<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path class="k" d="M10 21v-6h4v6"/>'],
+ cart:['<path class="f" d="M6 7h15l-2 8.2a1 1 0 0 1-1 .8H8.6a1 1 0 0 1-1-.8Z"/>','<circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h3l2.6 12.2a1 1 0 0 0 1 .8h9.7a1 1 0 0 0 1-.8L21 7H6"/>'],
+ wallet:['<path class="f" d="M4 7h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a1 1 0 0 1-1-1Z"/>','<path d="M4 7h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a1 1 0 0 1-1-1V7Z"/><path d="M4 7l11-3v3"/><path class="k" d="M15 13.5h2"/>']};
+var IC_ST={new:['spark','#2563eb'],waiting:['clock','#d97706'],ready:['check','#16a34a'],packing:['tool','#7c3aed'],shipped:['truck','#0891b2'],received:['inbox','#64748b']};
+var IC_STYLES=['tile','soft','duo','line','bold','solid','gold','emoji'];
+function icStyle(){var s=mdLs('emd412_icons');return IC_STYLES.indexOf(s)>-1?s:'tile'}
+function icApply(){var b=document.body,s=icStyle();IC_STYLES.forEach(function(x){b.classList.toggle('emd412-s-'+x,x===s)})}
+function icSvg(k){var p=IC412[k]||IC412.check;return '<svg viewBox="0 0 24 24" aria-hidden="true">'+p[0]+p[1]+'</svg>'}
+/* أيقونة بطاقة الحالة: إيموجي (النمط القديم) أو أيقونة V412 */
+function statIcon(k){var e=IC_ST[k];if(!e||icStyle()==='emoji')return '<i style="background:'+ST[k].c+'">'+ST[k].i+'</i>';return '<span class="emd412-i" style="--c:'+e[1]+'">'+icSvg(e[0])+'</span>'}
+var IC_P=null;
+function icOpen(){if(!IC_P){window.EMDPosH=window.EMDPosH||posHelpers();IC_P=loadScript('icons.js?v=1').catch(function(e){IC_P=null;throw e})}
+  IC_P.then(function(){EMDIconsV412.open()},function(){toast('تعذّر الفتح. تحقّق من الاتصال.')})}
 
 /* ===== lib/notify.js ===== */
 /* ---------- مركز التنبيهات (V317/V233) ----------
@@ -1345,6 +1381,38 @@ function lkBoot(){if(!lkHas())return;lkCover();lkLoad().catch(function(){})}
 function lkOpen(){lkLoad().then(function(){openSettingsV80()},function(){toast('تعذّر الفتح. تحقّق من الاتصال.')})}
 function lkTick(){try{if(window.__lkTick)__lkTick()}catch(e){}}
 
+/* ===== lib/look.js ===== */
+/* ---------- المظهر (V89/V409): القراءة والتطبيق الأساسي هنا؛ نافذة المظهر والثيمات ومحرك الألوان في lazy/look.js (tools/port-look.py) ---------- */
+var LOOK_DEF={accent:'#18202a',mode:'light',density:'comfortable',size:'m',owner:'',clock:true,hijri:true,homeImg:'custom',frame:'none'};
+function lookGet(){var v=JSON.parse(JSON.stringify(LOOK_DEF)),x=null;try{x=JSON.parse(POS_LS.getItem('emd_v89_look')||'null')}catch(e){}
+  if(!x){try{var o=JSON.parse(POS_LS.getItem('emd_appearance_v335')||'null');if(o){if(o.accent)v.accent=o.accent;if(o.density)v.density=o.density;if(o.text==='large')v.size='l'}}catch(e){}return v}
+  Object.keys(v).forEach(function(k){if(x[k]!==undefined&&x[k]!==null)v[k]=x[k]});return v}
+function lookOwner(){return String(lookGet().owner||'').trim()}
+function lookLogo(){var l=POS_LS.getItem('emd_v89_logo')||'';return /^(data:image\/|https:\/\/)/.test(l)?l:''}
+/* صورة الرئيسية: نفس مفتاح المظهر (emd_v90_homeimg)؛ ننقل مفتاح التجربة القديم مرة واحدة */
+function homeImgGet(){return POS_LS.getItem('emd_v90_homeimg')||''}
+function homeImgSet(v){if(v)POS_LS.setItem('emd_v90_homeimg',v);else POS_LS.removeItem('emd_v90_homeimg')}
+function lookMigrate(){if(!CLOUD_SANDBOX)return;var o=lsGet('emd_rb_v90_homeimg');if(o==null)return;if(lsGet('emd_rb_emd_v90_homeimg')==null)homeImgSet(o);try{LS.removeItem('emd_rb_v90_homeimg')}catch(e){}}
+/* لون أو وضع أو ثيم غير الافتراضي → نحمّل محرك الألوان فورًا */
+function lookFancy(v){return String(v.accent||'').toLowerCase()!=='#18202a'||v.mode!=='light'||!!POS_LS.getItem('emd_theme_v409')}
+function lookBody(v){var b=document.body,z={s:.92,m:1,l:1.1,xl:1.2}[v.size]||1;b.style.zoom=z===1?'':String(z);b.classList.toggle('emd335-compact',v.density==='compact')}
+var LOOK_P=null;
+function lookLoad(){if(window.__lookSweep)return Promise.resolve();if(LOOK_P)return LOOK_P;window.EMDPosH=window.EMDPosH||posHelpers();
+  LOOK_P=loadScript('look.js?v=1').catch(function(e){LOOK_P=null;throw e});return LOOK_P}
+function lookBoot(){lookMigrate();var v=lookGet();lookBody(v);if(lookFancy(v))lookLoad().catch(function(){})}
+function lookOpen(){lookLoad().then(function(){EMDLookV89.open()},function(){toast('تعذّر الفتح. تحقّق من الاتصال.')})}
+function lookSweep(){try{if(window.__lookSweep)__lookSweep()}catch(e){}}
+function lookTick(){try{if(window.__lookTick)__lookTick()}catch(e){}}
+/* متغيرات ألوان التطبيق الجديد للوضع الداكن واللون (المحرك يعالج الألوان الثابتة) */
+function lookNative(dark,acc){var r=document.documentElement.style;
+  if(acc)r.setProperty('--navy','var(--emd89-acc)');else r.removeProperty('--navy');
+  var s=$('EMD-V89-dark-rb');
+  if(dark&&!s){s=document.createElement('style');s.id='EMD-V89-dark-rb';s.textContent=':root{--bg:#0d1218;--card:#161d26;--ink:#e6e9ee;--mute:#9aa5b4;--line:#2a3440;--soft:#1e2731}html,body{background:#0d1218;color:#e6e9ee}';document.head.appendChild(s)}
+  if(!dark&&s)s.remove()}
+/* اسم المتجر وشعاره تحت اسم التطبيق (مثل .emd89-store) */
+function storeRow(){var el=$('storeName');if(!el)return;var n=storeName(),lg=lookLogo();el.classList.toggle('hide',!n&&!lg);
+  el.innerHTML=(n||lg)?(lg?'<img src="'+esc(lg)+'" alt="">':'<i>🏪</i>')+'<span>'+esc(n||'متجري')+'</span>':''}
+
 /* ===== screens/home-orders.js ===== */
 /* ---------- 4) العرض ---------- */
 var state={view:'home',filter:'all',q:'',pinnedOnly:false,limit:30,ptab:'prep',sel:{}};
@@ -1354,7 +1422,7 @@ function hay(o){var h=HAY.get(o);if(h==null){h=normTxt([oid(o),onum(o),cname(o),
 function render(){
   var v=$('view');
   document.querySelectorAll('nav#bar [data-go]').forEach(function(b){b.classList.toggle('on',b.dataset.go===state.view)});
-  renderBar();nfBadge();stTick();
+  renderBar();nfBadge();stTick();if(window.__lookSweep)setTimeout(lookSweep);
   if(state.view==='home'){v.innerHTML=homeHtml();if(window.EMDCoV430&&mode()==='company')try{EMDCoV430._chip()}catch(e){}}
   else if(state.view==='products'){v.innerHTML=productsHtml();varPass()}
   else if(state.view==='stock')v.innerHTML=stockHtml();
@@ -1367,14 +1435,14 @@ function render(){
 
 function homeHtml(){
   var ix=index(),now=new Date(),h=now.getHours();
-  var greet=h<12?'صباح الخير ☀️':'مساء الخير 🌙';
-  var hijri='';try{hijri=new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura',{day:'numeric',month:'long',year:'numeric'}).format(now)}catch(e){}
-  var greg=new Intl.DateTimeFormat('ar',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(now);
+  var lk=lookGet(),own=String(lk.owner||'').trim(),am=h>=4&&h<12,greet=(am?'صباح الخير':'مساء الخير')+(own?' يا '+own:'')+(am?' ☀️':' 🌙');
+  var hijri='';try{hijri=new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura-nu-latn',{day:'numeric',month:'long',year:'numeric'}).format(now).replace(/\s*هـ\s*$/,'')+' هـ'}catch(e){}
+  var greg=new Intl.DateTimeFormat('ar-OM-u-nu-latn',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(now);
   var hh=h%12||12;
   var cards=['new','waiting','ready','packing','shipped','received'].map(function(k){
-    return '<button class="stat" data-filter="'+k+'"><b>'+ix.counts[k]+'</b><span><i style="background:'+ST[k].c+'">'+ST[k].i+'</i>'+(k==='new'?'طلبات جديدة':k==='waiting'?'بانتظار المنتجات':k==='ready'?'جاهزة للتجهيز':ST[k].l)+'</span></button>';
+    return '<button class="stat" data-filter="'+k+'"><b>'+ix.counts[k]+'</b><span>'+statIcon(k)+''+(k==='new'?'طلبات جديدة':k==='waiting'?'بانتظار المنتجات':k==='ready'?'جاهزة للتجهيز':ST[k].l)+'</span></button>';
   }).join('');
-  return '<div class="hero"><div><h2>'+greet+'</h2><div class="clock">'+pad(hh)+':'+pad(now.getMinutes())+' <span>'+(h<12?'ص':'م')+'</span></div><div class="date">'+esc(greg)+(hijri?' · '+esc(hijri):'')+'</div></div>'+heroImg()+'</div>'+modesHome()+
+  return '<div class="hero"><div><h2>'+esc(greet)+'</h2>'+(lk.clock!==false?'<div class="clock">'+pad(hh)+':'+pad(now.getMinutes())+' <span>'+(h<12?'ص':'م')+'</span></div>':'')+'<div class="date">'+esc(greg)+(hijri&&lk.hijri!==false?' · '+esc(hijri):'')+'</div></div>'+heroImg(lk)+'</div>'+modesHome()+
     '<div class="money" data-act="finance" role="button"><div><small>مبيعات اليوم</small><b>'+money(ix.sales)+'</b></div><div><small>غير محصّل</small><b class="gold">'+money(ix.unpaid)+'</b></div><div><small>ربح الشهر</small><b>'+money(ix.profit)+'</b></div><div class="cap">💰 اضغط لفتح المالية · '+CUR+'</div></div>'+
     storeHomeCard()+(shopMode()?cashCards():'<div class="stats">'+cards+'</div>')+
     (shopMode()?'':'<div class="quick"><button class="btn dark" data-act="importMsg">🤖 إدخال من رسالة</button><button class="btn" data-act="newOrder">✍️ كتابة طلب يدوي</button>'+(shopMode()?'':'<button class="btn" data-act="prepNow">🧑‍💼 ماذا أجهز الآن؟</button>')+'<button class="btn" data-act="closing">📊 تقفيلة اليوم</button></div>')+
@@ -1433,15 +1501,13 @@ function refreshList(){ // تحديث القائمة فقط دون إعادة ب
 }
 
 /* صورة الرئيسية بجانب التحية (مثل V90): صورة من اختيارك، أو شعار المتجر، أو بدون — حسب «المظهر» في التطبيق الحالي */
-var HOMEIMG_KEY=CLOUD_SANDBOX?'emd_rb_v90_homeimg':'emd_v90_homeimg';
-function heroSrc(){var m='custom';try{m=(JSON.parse(POS_LS.getItem('emd_v89_look')||'{}')||{}).homeImg||'custom'}catch(e){}
-  if(m==='none')return null;if(m==='logo')return POS_LS.getItem('emd_v89_logo')||'';var v=lsGet(HOMEIMG_KEY);return v!==null?v:(lsGet('emd_v90_homeimg')||'')}
-function heroImg(){var s=heroSrc();if(s===null)return '';
-  return s&&/^(data:image\/|https:\/\/)/.test(s)?'<button class="himg" data-act="homeImg" aria-label="صورة الرئيسية"><img src="'+esc(s)+'" alt=""></button>':'<button class="himg empty" data-act="homeImg"><span>🖼️</span><small>أضف صورة</small></button>'}
+function heroSrc(){var m=lookGet().homeImg||'custom';if(m==='none')return null;if(m==='logo')return lookLogo();return homeImgGet()}
+function heroImg(lk){var s=heroSrc();if(s===null)return '';var fr=(lk&&lk.frame)||'none';
+  return s&&/^(data:image\/|https:\/\/)/.test(s)?'<button class="himg'+(fr!=='none'?' f-'+fr:'')+'" data-act="homeImg" aria-label="صورة الرئيسية"><img src="'+esc(s)+'" alt=""></button>':'<button class="himg empty" data-act="homeImg"><span>🖼️</span><small>أضف صورة</small></button>'}
 function homeImgSheet(){var has=!!heroSrc();
   if(!has){$('homeImgIn').click();return}
   openSheet('<div class="sh"><h3>🖼️ صورة الرئيسية</h3><button class="x" data-act="close">إغلاق ✕</button></div><div class="list"><button data-act="homeImgPick">🔄 تغيير الصورة</button><button data-act="homeImgDel" class="red">🗑️ حذف الصورة</button></div>')}
-function homeImgPicked(f){if(!f)return;shrink(f,900,function(url){if(!url){toast('تعذّرت قراءة الصورة');return}lsSet(HOMEIMG_KEY,url);render();toast('✅ تم حفظ صورة الرئيسية')})}
+function homeImgPicked(f){if(!f)return;shrink(f,900,function(url){if(!url){toast('تعذّرت قراءة الصورة');return}homeImgSet(url);render();toast('✅ تم حفظ صورة الرئيسية')})}
 
 /* ===== screens/order-form.js ===== */
 function itemRow(x){
@@ -2246,9 +2312,9 @@ var SET_I={
  tpl:['📝 رسائل طلب جاهزة للعملاء','نماذج يملؤها العميل ويعيدها إليك.',function(){setRun(function(){EMDOrderTemplatesV121.open()})}],
  ign:['🧹 جمل يتجاهلها التحليل','أسطر في رسالة الطلب لا يقرؤها التحليل.',function(){setRun(function(){EMDParseCleanV120.open()})}],
  dup:['♻️ الطلبات المكررة','قواعد كشف الطلبات المكررة ومعالجتها.',null],
- look:['🎨 المظهر والهوية','الثيم والألوان والشعار وحجم العرض.',null],
+ look:['🎨 المظهر والهوية','الثيم والألوان والشعار وحجم العرض.',function(){lookOpen()}],
  lang:['🌐 اللغة','الحالية: العربية. اضغط للتبديل إلى English.',null],
- btn:['🎛️ شكل الأزرار والشريط السفلي','شكل الأيقونات وأزرار الشريط السفلي على الجوال.',null],
+ btn:['🎛️ شكل الأزرار والشريط السفلي','شكل الأيقونات وأزرار الشريط السفلي على الجوال.',function(){icOpen()}],
  ord:['↕️ ترتيب الأزرار والأقسام','ترتيب أزرار الشريط وأقسام الصفحات.',null],
  qa:['⚡ الإجراءات السريعة','الاختصارات التي تظهر في قائمة «إجراءات سريعة».',null],
  dash:['📊 بطاقات الرئيسية','إظهار بطاقات حالات الطلبات أو إخفاؤها.',null],
@@ -2276,7 +2342,7 @@ function setBody(){return SET_S.map(function(s){return '<div class="e445-sec"><d
     (lsGet(LIVE_KEY)?'<button type="button" class="emd327-item" data-act="recopy"><b>🔁 إعادة نسخ بياناتي</b><span>نسخة جديدة من بيانات تطبيقك الحالي.</span></button>':'')+
     '<button type="button" class="emd327-item" data-act="cloud"><b>☁️ الحساب والحفظ في السحابة</b><span>تسجيل الدخول والمزامنة.</span></button><button type="button" class="emd327-item" data-act="openFile"><b>📂 فتح ملف نسخة احتياطية</b><span>تجربة التطبيق على ملف نسخة.</span></button>'+
     '<button type="button" class="emd327-item" data-act="demo" data-n="40"><b>🧪 بيانات تجريبية صغيرة</b><span>40 طلبًا.</span></button><button type="button" class="emd327-item" data-act="demo" data-n="1500"><b>⚡ بيانات كبيرة لاختبار السرعة</b><span>1500 طلب.</span></button></div></div>':'')}
-function setClose(){var m=$('setHub');if(m)m.remove();var g=$('e445G');if(g)g.remove();var sn=storeName(),el=$('storeName');if(el){el.textContent=sn?'🏪 '+sn:'';el.classList.toggle('hide',!sn)}}
+function setClose(){var m=$('setHub');if(m)m.remove();var g=$('e445G');if(g)g.remove();storeRow()}
 function setPaint(){var b=$('setBody');if(b)b.innerHTML=setBody()}
 function settingsSheet(){setClose();
   var m=document.createElement('div');m.id='setHub';m.className='emd327-settings-modal show';
@@ -2386,7 +2452,7 @@ document.addEventListener('click',function(e){
     case 'track':closeSheetIfMenu(b);trackSheet();break;
     case 'nfSend':{var o3=findOrder(id);if(o3)nfSend(o3);break}
     case 'homeImgPick':closeSheet(b.closest('.sheet'));$('homeImgIn').click();break;
-    case 'homeImgDel':if(confirm('حذف صورة الرئيسية؟')){lsSet(HOMEIMG_KEY,'');closeSheet(b.closest('.sheet'));render()}break;
+    case 'homeImgDel':if(confirm('حذف صورة الرئيسية؟')){homeImgSet('');closeSheet(b.closest('.sheet'));render()}break;
     case 'quickLink':quickOpen();break;
     case 'storeOrders':storeOrdersOpen();break;
     case 'cloud':closeSheetIfMenu(b);cloudSheet();break;
@@ -2437,13 +2503,13 @@ function boot(){
   if(!db){var live=lsGet(LIVE_KEY);if(load()){}else if(live&&!meta.source){try{adopt(JSON.parse(live),'live')}catch(e){}}}
   if(!db)return welcome();
   db=fix(db);dirty();if(stockReconcile())save();syPrime();banner();
-  var sn=storeName();if(sn){$('storeName').textContent='🏪 '+sn;$('storeName').classList.remove('hide')}
+  storeRow();
 $('homeImgIn').addEventListener('change',function(){var f=this.files&&this.files[0];this.value='';homeImgPicked(f)});
   render();setTimeout(modesFirstRun,1500);
 }
-boot();lkBoot();if(stCfgOn())stLoad().catch(function(){});cloudBoot();storeBoot();puBoot();
+icApply();boot();lkBoot();lookBoot();if(stCfgOn())stLoad().catch(function(){});cloudBoot();storeBoot();puBoot();
 setTimeout(function(){nfLoad().then(nfBadge,function(){})},900);setTimeout(trBoot,2500);setTimeout(function(){setLoad().catch(function(){})},2000);setTimeout(archRefresh,2500);setTimeout(trEnsureAll,3000);
-setInterval(function(){coTick();lkTick();if(window.__bkTick)try{__bkTick()}catch(e){}cloudTick();storeTick();trTick();puTick();supTick();archTick();if(!$('sheets').children.length)closingTick();if(state.view==='home'&&!$('sheets').children.length){var c=document.querySelector('.clock');if(c){var n=new Date(),h=n.getHours();c.innerHTML=pad(h%12||12)+':'+pad(n.getMinutes())+' <span>'+(h<12?'ص':'م')+'</span>'}}},10000);
+setInterval(function(){coTick();lkTick();lookTick();if(window.__bkTick)try{__bkTick()}catch(e){}cloudTick();storeTick();trTick();puTick();supTick();archTick();if(!$('sheets').children.length)closingTick();if(state.view==='home'&&!$('sheets').children.length){var c=document.querySelector('.clock');if(c){var n=new Date(),h=n.getHours();c.innerHTML=pad(h%12||12)+':'+pad(n.getMinutes())+' <span>'+(h<12?'ص':'م')+'</span>'}}},10000);
 window.EMDRebuild={db:function(){return db},save:save,cloudCheck:cloudCheck,trPoll:trPoll,render:render,index:index,total:total,payState:payState,status:status};
 
 })();

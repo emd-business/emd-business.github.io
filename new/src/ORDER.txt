@@ -19,9 +19,11 @@ lib/support.js
 lib/direct.js
 lib/finance.js
 lib/modes.js
+lib/icons.js
 lib/notify.js
 lib/parseclean.js
 lib/setload.js
+lib/look.js
 screens/home-orders.js
 screens/order-form.js
 screens/import.js

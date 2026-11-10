@@ -3,7 +3,7 @@ function toast(t){var el=$('toast');el.textContent=t;el.style.display='block';cl
 function openSheet(html,cls){
   var d=document.createElement('div');d.className='sheet '+(cls||'');d.innerHTML='<div class="box">'+html+'</div>';
   d.addEventListener('click',function(e){if(e.target===d)closeSheet(d)});
-  $('sheets').appendChild(d);document.body.style.overflow='hidden';return d;
+  $('sheets').appendChild(d);document.body.style.overflow='hidden';if(window.__lookSweep)setTimeout(lookSweep);return d;
 }
 function closeSheetIfMenu(b){var s=b.closest('.sheet');if(s&&s.querySelector('.list,.grid3'))closeSheet(s)}
 function closeSheet(d){d=d||$('sheets').lastElementChild;if(d)d.remove();if(!$('sheets').children.length)document.body.style.overflow=''}

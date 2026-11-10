@@ -64,7 +64,7 @@ document.addEventListener('click',function(e){
     case 'track':closeSheetIfMenu(b);trackSheet();break;
     case 'nfSend':{var o3=findOrder(id);if(o3)nfSend(o3);break}
     case 'homeImgPick':closeSheet(b.closest('.sheet'));$('homeImgIn').click();break;
-    case 'homeImgDel':if(confirm('حذف صورة الرئيسية؟')){lsSet(HOMEIMG_KEY,'');closeSheet(b.closest('.sheet'));render()}break;
+    case 'homeImgDel':if(confirm('حذف صورة الرئيسية؟')){homeImgSet('');closeSheet(b.closest('.sheet'));render()}break;
     case 'quickLink':quickOpen();break;
     case 'storeOrders':storeOrdersOpen();break;
     case 'cloud':closeSheetIfMenu(b);cloudSheet();break;

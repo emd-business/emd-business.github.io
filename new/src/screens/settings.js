@@ -11,9 +11,9 @@ var SET_I={
  tpl:['📝 رسائل طلب جاهزة للعملاء','نماذج يملؤها العميل ويعيدها إليك.',function(){setRun(function(){EMDOrderTemplatesV121.open()})}],
  ign:['🧹 جمل يتجاهلها التحليل','أسطر في رسالة الطلب لا يقرؤها التحليل.',function(){setRun(function(){EMDParseCleanV120.open()})}],
  dup:['♻️ الطلبات المكررة','قواعد كشف الطلبات المكررة ومعالجتها.',null],
- look:['🎨 المظهر والهوية','الثيم والألوان والشعار وحجم العرض.',null],
+ look:['🎨 المظهر والهوية','الثيم والألوان والشعار وحجم العرض.',function(){lookOpen()}],
  lang:['🌐 اللغة','الحالية: العربية. اضغط للتبديل إلى English.',null],
- btn:['🎛️ شكل الأزرار والشريط السفلي','شكل الأيقونات وأزرار الشريط السفلي على الجوال.',null],
+ btn:['🎛️ شكل الأزرار والشريط السفلي','شكل الأيقونات وأزرار الشريط السفلي على الجوال.',function(){icOpen()}],
  ord:['↕️ ترتيب الأزرار والأقسام','ترتيب أزرار الشريط وأقسام الصفحات.',null],
  qa:['⚡ الإجراءات السريعة','الاختصارات التي تظهر في قائمة «إجراءات سريعة».',null],
  dash:['📊 بطاقات الرئيسية','إظهار بطاقات حالات الطلبات أو إخفاؤها.',null],
@@ -41,7 +41,7 @@ function setBody(){return SET_S.map(function(s){return '<div class="e445-sec"><d
     (lsGet(LIVE_KEY)?'<button type="button" class="emd327-item" data-act="recopy"><b>🔁 إعادة نسخ بياناتي</b><span>نسخة جديدة من بيانات تطبيقك الحالي.</span></button>':'')+
     '<button type="button" class="emd327-item" data-act="cloud"><b>☁️ الحساب والحفظ في السحابة</b><span>تسجيل الدخول والمزامنة.</span></button><button type="button" class="emd327-item" data-act="openFile"><b>📂 فتح ملف نسخة احتياطية</b><span>تجربة التطبيق على ملف نسخة.</span></button>'+
     '<button type="button" class="emd327-item" data-act="demo" data-n="40"><b>🧪 بيانات تجريبية صغيرة</b><span>40 طلبًا.</span></button><button type="button" class="emd327-item" data-act="demo" data-n="1500"><b>⚡ بيانات كبيرة لاختبار السرعة</b><span>1500 طلب.</span></button></div></div>':'')}
-function setClose(){var m=$('setHub');if(m)m.remove();var g=$('e445G');if(g)g.remove();var sn=storeName(),el=$('storeName');if(el){el.textContent=sn?'🏪 '+sn:'';el.classList.toggle('hide',!sn)}}
+function setClose(){var m=$('setHub');if(m)m.remove();var g=$('e445G');if(g)g.remove();storeRow()}
 function setPaint(){var b=$('setBody');if(b)b.innerHTML=setBody()}
 function settingsSheet(){setClose();
   var m=document.createElement('div');m.id='setHub';m.className='emd327-settings-modal show';

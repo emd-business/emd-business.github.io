@@ -1,0 +1,16 @@
+const {chromium}=require('playwright');const O='/tmp/claude-0/cmp/';
+(async()=>{const b=await chromium.launch();const ctx=await b.newContext({viewport:{width:400,height:860}});const errs=[];
+const n=await ctx.newPage();n.on('pageerror',e=>errs.push(e.message));n.on('dialog',d=>d.accept());
+await n.goto('http://localhost:8133/new/index.html');await n.waitForTimeout(300);await n.click('[data-act=demo][data-n="40"]');await n.waitForTimeout(2500);
+await n.evaluate(()=>document.querySelectorAll('.rc-alert,#emd122Ban').forEach(x=>x.remove()));
+console.log('default tile',await n.evaluate(()=>document.body.classList.contains('emd412-s-tile')),await n.$$eval('#view .stat .emd412-i',x=>x.length));
+await n.screenshot({path:O+'n-ic0.png'});
+await n.evaluate(()=>{const b=document.createElement('button');b.dataset.act='settings';document.body.appendChild(b);b.click();b.remove()});
+await n.click('[data-sg=layout]');await n.click('#e445G [data-si=btn]');await n.waitForTimeout(900);await n.screenshot({path:O+'n-ic1.png'});
+console.log('modal',await n.$eval('#emd412Modal',x=>x.className+' | '+x.innerText.slice(0,80).replace(/\n/g,' | ')));
+await n.click('#emd412Modal [data-style=emoji]');await n.waitForTimeout(400);console.log('emoji',await n.$$eval('#view .stat .emd412-i',x=>x.length),await n.evaluate(()=>localStorage.getItem('emd_rb_emd412_icons')));
+await n.selectOption('#emd412Modal select[data-slot="1"]','products');await n.waitForTimeout(400);
+console.log('bar',await n.evaluate(()=>localStorage.getItem('emd_rb_emd412_bar')),await n.$$eval('nav#bar button',x=>x.map(b=>b.innerText.replace(/\n/g,'')).join(',')));
+await n.click('#emd412Modal [data-a=reset]');await n.click('#emd412Modal [data-style=tile]');await n.click('#emd412Modal [data-a=close]');
+console.log('live untouched',await n.evaluate(()=>localStorage.getItem('emd412_icons')===null&&localStorage.getItem('emd412_bar')===null));
+console.log(errs);await b.close()})();
