@@ -95,7 +95,12 @@ function newOrder(pre,st){
   setTimeout(function(){var f=$('fPhone');if(f&&!f.value)f.focus()},60);
   box.addEventListener('submit',function(e){
     e.preventDefault();
-    if(stDeny('create'))return;var o=collect(box,{});if(!o)return;var who=stWho();if(who)o.createdBy=who;
+    if(stDeny('create'))return;var o=collect(box,{});if(!o)return;
+    var old=dupFind(o);if(old){dupAsk(o,old,function(){saveNew(o)});return}
+    saveNew(o);
+  });
+  function saveNew(o){
+    var who=stWho();if(who)o.createdBy=who;
     if(st){o.orderSource=o.orderSource||'واتساب';learnImport(box,st,o)}
     o.id=nextId();var now=new Date().toISOString();o.created=now;o.orderDate=now;
     o.status='new';o.history=[{status:'new',at:now,by:'rebuild'}];
@@ -104,7 +109,7 @@ function newOrder(pre,st){
     upsertCustomer(o);trEnsureAll();save();
     closeSheet(d);toast('✅ تم حفظ الطلب '+onum(o));
     afterSave(o);
-  });
+  }
 }
 function afterSave(o){
   var d=openSheet('<div class="sh"><h3>✅ تم حفظ الطلب</h3><button class="x" data-act="close">إغلاق ✕</button></div><p class="note">الطلب '+esc(onum(o))+' للعميل '+esc(cname(o)||cphone(o))+'. الحالة: '+ST[status(o)].l+'.</p><div class="foot"><button class="btn dark" data-act="waSend" data-id="'+esc(oid(o))+'">💬 إرسال تأكيد واتساب</button><button class="btn" data-act="close">لاحقًا</button></div><button class="btn sm" data-act="invoice" data-id="'+esc(oid(o))+'" style="margin-top:6px">🧾 الفاتورة</button>');

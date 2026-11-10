@@ -1,5 +1,6 @@
 /* رسائل واتساب حسب حالة الطلب (نفس أنواع التطبيق الحالي ومتغيراته)
    القوالب التي عدّلها التاجر في التطبيق الحالي تُقرأ ولا تُعدَّل؛ تعديلات التجربة تُحفظ في مفتاح منفصل */
+var WA_OLD_DEF='السلام عليكم {اسم العميل} 👋\nتم شحن طلبك رقم #{رقم الطلب} بنجاح 📦\n\n📚 {المنتج} × {الكمية}\n📍 مكان التوصيل: {المكان}\n🚚 شركة الشحن: {شركة الشحن}\n🛵 طريقة التوصيل: {طريقة التوصيل}\n\nشكرًا لطلبك 🤍';
 var WA_LIVE_KEY='emd_whatsapp_templates_v189',WA_KEY='emd_rb_wa_templates';
 var WA_TYPES=[
   {k:'new_order',t:'✅ تأكيد الطلب',st:['new','waiting','ready'],d:'مرحبًا {name} 🌷\n\nاستلمنا طلبك رقم #{order} ✅\nالمنتجات: {items}\n\nسنبدأ تجهيزه ونبلغك فور شحنه.'},
@@ -12,6 +13,7 @@ function waTypeFor(o){var s=status(o);for(var i=0;i<WA_TYPES.length;i++)if(WA_TY
 function waTemplate(k){
   var a=waSaved(WA_KEY)[k]||waSaved(WA_LIVE_KEY)[k];
   if(a&&typeof a==='object'&&a.enabled!==false&&String(a.text||'').trim())return String(a.text).replace(/\\n/g,'\n');
+  if(k==='shipped'){var old=POS_LS.getItem('emd_wa_template');if(old&&old.trim()&&old!==WA_OLD_DEF)return old} // القالب القديم «💬 رسالة واتساب»
   for(var i=0;i<WA_TYPES.length;i++)if(WA_TYPES[i].k===k)return WA_TYPES[i].d;return WA_TYPES[0].d;
 }
 function waLink(o){return String(o.trackingUrl||o.tracking_url||'')}

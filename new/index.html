@@ -79,6 +79,14 @@ body.emd412-s-tile .emd412-i{width:1.75em;height:1.75em;border-radius:.5em;backg
 body.emd412-s-soft .emd412-i{width:1.85em;height:1.85em;border-radius:50%;color:var(--c);background:color-mix(in srgb,var(--c) 15%,transparent)}body.emd412-s-soft .emd412-i svg{width:1.05em;height:1.05em;stroke-width:2.1}
 body.emd412-s-gold .emd412-i{color:#b8892b}body.emd412-s-gold .emd412-i svg{stroke-width:1.6}
 .stat .emd412-i{font-size:15px;margin-inline-end:7px}
+/* تنبيه الطلب المكرر (V53) */
+#emdDuplicateModal53{position:fixed;inset:0;background:rgba(0,0,0,.62);z-index:10150;padding:14px;overflow:auto}
+.emd-dup53{max-width:650px;margin:30px auto;background:#fff;border-radius:22px;padding:22px;direction:rtl;box-shadow:0 20px 70px rgba(0,0,0,.28)}
+.emd-dup53 .box{background:#f7f8fa;border-radius:15px;padding:14px;margin:12px 0}
+.emd-dup53 .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.emd-dup53 button{border:0;border-radius:11px;padding:11px 15px;cursor:pointer;font-size:15px}
+.emd-dup53 .yes{background:#18202a;color:#fff}
+.emd-dup53 .no{background:#eef2f6}
 /* إبراز الحالات المهمة (V339) */
 .emd339-priority{position:relative;box-shadow:0 0 0 2px var(--accent,#18202a),0 8px 22px rgba(24,32,42,.12)!important;transform:translateY(-1px)}.emd339-priority::after{content:'أولوية';position:absolute;top:8px;left:8px;padding:3px 7px;border-radius:999px;background:var(--accent,#18202a);color:#fff;font-size:10px;font-weight:800}.stat.emd339-priority b{font-size:32px}
 .stat.cc small{display:block;color:var(--mute);font-size:12px;margin-top:4px;font-weight:400}.stat.cc b{font-size:24px;font-variant-numeric:tabular-nums}.stat.cc.warn b{color:#b45309}.stat.cc.off b{color:#94a3b8}
@@ -569,6 +577,7 @@ function custByKey(k){customersIndex();return CX.map[k]}
 /* ===== lib/wa.js ===== */
 /* رسائل واتساب حسب حالة الطلب (نفس أنواع التطبيق الحالي ومتغيراته)
    القوالب التي عدّلها التاجر في التطبيق الحالي تُقرأ ولا تُعدَّل؛ تعديلات التجربة تُحفظ في مفتاح منفصل */
+var WA_OLD_DEF='السلام عليكم {اسم العميل} 👋\nتم شحن طلبك رقم #{رقم الطلب} بنجاح 📦\n\n📚 {المنتج} × {الكمية}\n📍 مكان التوصيل: {المكان}\n🚚 شركة الشحن: {شركة الشحن}\n🛵 طريقة التوصيل: {طريقة التوصيل}\n\nشكرًا لطلبك 🤍';
 var WA_LIVE_KEY='emd_whatsapp_templates_v189',WA_KEY='emd_rb_wa_templates';
 var WA_TYPES=[
   {k:'new_order',t:'✅ تأكيد الطلب',st:['new','waiting','ready'],d:'مرحبًا {name} 🌷\n\nاستلمنا طلبك رقم #{order} ✅\nالمنتجات: {items}\n\nسنبدأ تجهيزه ونبلغك فور شحنه.'},
@@ -581,6 +590,7 @@ function waTypeFor(o){var s=status(o);for(var i=0;i<WA_TYPES.length;i++)if(WA_TY
 function waTemplate(k){
   var a=waSaved(WA_KEY)[k]||waSaved(WA_LIVE_KEY)[k];
   if(a&&typeof a==='object'&&a.enabled!==false&&String(a.text||'').trim())return String(a.text).replace(/\\n/g,'\n');
+  if(k==='shipped'){var old=POS_LS.getItem('emd_wa_template');if(old&&old.trim()&&old!==WA_OLD_DEF)return old} // القالب القديم «💬 رسالة واتساب»
   for(var i=0;i<WA_TYPES.length;i++)if(WA_TYPES[i].k===k)return WA_TYPES[i].d;return WA_TYPES[0].d;
 }
 function waLink(o){return String(o.trackingUrl||o.tracking_url||'')}
@@ -1331,6 +1341,39 @@ function parseClean(raw){
   return out.join('\n');
 }
 
+/* ===== lib/dup.js ===== */
+/* ---------- كشف الطلب المكرر عند الحفظ (V53) بإعدادات V54 (emd_duplicate_settings): نفس القواعد والنافذة ---------- */
+var DUP_DEF={enabled:true,days:1,phone:true,place:true,items:true,qty:true,name:false};
+function dupSettings(){var d={};for(var k in DUP_DEF)d[k]=DUP_DEF[k];try{var x=JSON.parse(POS_LS.getItem('emd_duplicate_settings')||'{}');for(var j in x)d[j]=x[j]}catch(e){}return d}
+function dupNorm(s){return String(s==null?'':s).trim().toLowerCase().replace(/[ً-ٰٟ]/g,'').replace(/\s+/g,' ')}
+function dupDig(s){return String(s==null?'':s).replace(/[٠-٩]/g,function(d){return String('٠١٢٣٤٥٦٧٨٩'.indexOf(d))}).replace(/\D/g,'')}
+function dupProds(o){var a=Array.isArray(o&&o.products)?o.products:(o&&o.product?[{name:o.product,qty:o.quantity||1}]:[]);
+  return a.map(function(x){return {name:dupNorm(x.name||x.product),qty:Number(x.qty||x.quantity||1)}}).filter(function(x){return x.name}).sort(function(a,b){return a.name.localeCompare(b.name,'ar')})}
+function dupSameItems(a,b){var x=dupProds(a),y=dupProds(b);if(!x.length||x.length!==y.length)return false;return x.every(function(v,i){return v.name===y[i].name&&v.qty===y[i].qty})}
+function dupFind(obj){var s=dupSettings();if(!s.enabled)return null;
+  var now=new Date(obj.orderDate||Date.now()),maxDays=Math.max(1,Number(s.days)||1);
+  for(var i=0;i<db.orders.length;i++){var old=db.orders[i];if(!old||String(old.id)===String(obj.id))continue;
+    var od=new Date(old.orderDate||old.created||0);if(isNaN(od.getTime()))continue;
+    if(Math.abs(now.getTime()-od.getTime())>maxDays*864e5)continue;
+    if(s.phone&&!(dupDig(obj.phone)&&dupDig(obj.phone)===dupDig(old.phone)))continue;
+    if(s.place&&!(dupNorm(obj.place)&&dupNorm(obj.place)===dupNorm(old.place)))continue;
+    if(s.items&&!dupSameItems(obj,old))continue;
+    if(s.name&&dupNorm(obj.name)!==dupNorm(old.name))continue;
+    if(!s.phone&&!s.place&&!s.items&&!s.name)continue;
+    if(s.qty&&!dupSameItems({products:dupProds(obj)},{products:dupProds(old)}))continue;
+    return old}
+  return null}
+function dupDate(v){var d=new Date(v||0);if(isNaN(d.getTime()))return 'تاريخ غير معروف';return d.toLocaleDateString('ar-OM',{year:'numeric',month:'numeric',day:'numeric'})+' · '+d.toLocaleTimeString('ar-OM',{hour:'2-digit',minute:'2-digit'})}
+/* نافذة «⚠️ يوجد طلب مشابه»: نعم ← يكمل الحفظ، إلغاء ← يبقى النموذج كما هو */
+function dupAsk(obj,old,go){var its=function(o){return dupProds(o).map(function(x){return x.name+' × '+x.qty}).join('، ')||'غير محدد'};
+  var m=document.createElement('div');m.id='emdDuplicateModal53';
+  m.innerHTML='<div class="emd-dup53"><h2 style="margin:0">⚠️ يوجد طلب مشابه</h2><p style="color:#666">وجدت طلبًا سابقًا يبدو مطابقًا لهذا الطلب. راجع التفاصيل قبل الحفظ.</p>'+
+    '<div class="box"><b>📅 الطلب السابق</b><br>'+esc(idsFmt('#'+String(old.id||'').replace(/^#+/,'')))+' · '+esc(old.name||'اسم غير مذكور')+'<br>📱 '+esc(old.phone||'')+' · 📍 '+esc(old.place||'غير محدد')+'<br>📦 '+esc(its(old))+'<br>🕐 '+esc(dupDate(old.orderDate||old.created))+'</div>'+
+    '<div class="box"><b>🔎 الطلب الحالي</b><br>📱 '+esc(obj.phone||'')+' · 📍 '+esc(obj.place||'غير محدد')+'<br>📦 '+esc(its(obj))+'</div>'+
+    '<div class="actions"><button class="yes" type="button" data-d="yes">✅ نعم، هذا طلب جديد</button><button class="no" type="button" data-d="no">↩️ ألغي هذا الطلب</button></div></div>';
+  m.addEventListener('click',function(e){var b=e.target.closest('[data-d]');if(!b)return;m.remove();if(b.getAttribute('data-d')==='yes')go()});
+  document.body.appendChild(m)}
+
 /* ===== lib/setload.js ===== */
 /* ---------- وحدات الإعدادات المنقولة من التطبيق الحالي (lazy/settings.js، مولَّدة بـ tools/port-settings.py) ---------- */
 var SET_P=null;
@@ -1623,7 +1666,12 @@ function newOrder(pre,st){
   setTimeout(function(){var f=$('fPhone');if(f&&!f.value)f.focus()},60);
   box.addEventListener('submit',function(e){
     e.preventDefault();
-    if(stDeny('create'))return;var o=collect(box,{});if(!o)return;var who=stWho();if(who)o.createdBy=who;
+    if(stDeny('create'))return;var o=collect(box,{});if(!o)return;
+    var old=dupFind(o);if(old){dupAsk(o,old,function(){saveNew(o)});return}
+    saveNew(o);
+  });
+  function saveNew(o){
+    var who=stWho();if(who)o.createdBy=who;
     if(st){o.orderSource=o.orderSource||'واتساب';learnImport(box,st,o)}
     o.id=nextId();var now=new Date().toISOString();o.created=now;o.orderDate=now;
     o.status='new';o.history=[{status:'new',at:now,by:'rebuild'}];
@@ -1632,7 +1680,7 @@ function newOrder(pre,st){
     upsertCustomer(o);trEnsureAll();save();
     closeSheet(d);toast('✅ تم حفظ الطلب '+onum(o));
     afterSave(o);
-  });
+  }
 }
 function afterSave(o){
   var d=openSheet('<div class="sh"><h3>✅ تم حفظ الطلب</h3><button class="x" data-act="close">إغلاق ✕</button></div><p class="note">الطلب '+esc(onum(o))+' للعميل '+esc(cname(o)||cphone(o))+'. الحالة: '+ST[status(o)].l+'.</p><div class="foot"><button class="btn dark" data-act="waSend" data-id="'+esc(oid(o))+'">💬 إرسال تأكيد واتساب</button><button class="btn" data-act="close">لاحقًا</button></div><button class="btn sm" data-act="invoice" data-id="'+esc(oid(o))+'" style="margin-top:6px">🧾 الفاتورة</button>');
@@ -2324,10 +2372,10 @@ var SET_I={
  quick:['🏷️ الملصق السريع','تصميم الملصق الذي يُطبع بزر «🏷️ ملصق» ومقاسه.',null],
  invp:['🧾 اقتراح إرسال الفاتورة',function(){return invpOn()?'مفعّل: يظهر اقتراح إرسال الفاتورة بعد استلام الطلب. اضغط للإيقاف.':'متوقف. اضغط لتفعيل اقتراح إرسال الفاتورة بعد استلام الطلب.'},function(){setRun(function(){EMDInvPromptV117.set(!EMDInvPromptV117.on());setPaint()})}],
  push:['🔔 الإشعارات','طلبات المتجر الجديدة، والتقييمات، والمخزون، وملخص اليوم على جوالك.',function(){setClose();pushSheet()}],
- wa:['💬 رسالة واتساب','قالب الرسالة التي تُرسل للعميل ومتغيراتها.',null],
+ wa:['💬 رسالة واتساب','قالب الرسالة التي تُرسل للعميل ومتغيراتها.',function(){setRun(function(){openWaTemplate()})}],
  tpl:['📝 رسائل طلب جاهزة للعملاء','نماذج يملؤها العميل ويعيدها إليك.',function(){setRun(function(){EMDOrderTemplatesV121.open()})}],
  ign:['🧹 جمل يتجاهلها التحليل','أسطر في رسالة الطلب لا يقرؤها التحليل.',function(){setRun(function(){EMDParseCleanV120.open()})}],
- dup:['♻️ الطلبات المكررة','قواعد كشف الطلبات المكررة ومعالجتها.',null],
+ dup:['♻️ الطلبات المكررة','قواعد كشف الطلبات المكررة ومعالجتها.',function(){setRun(function(){openDuplicateSettings54()})}],
  look:['🎨 المظهر والهوية','الثيم والألوان والشعار وحجم العرض.',function(){lookOpen()}],
  lang:['🌐 اللغة','الحالية: العربية. اضغط للتبديل إلى English.',null],
  btn:['🎛️ شكل الأزرار والشريط السفلي','شكل الأيقونات وأزرار الشريط السفلي على الجوال.',function(){icOpen()}],

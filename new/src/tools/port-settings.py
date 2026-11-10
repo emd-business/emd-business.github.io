@@ -16,7 +16,7 @@ def cut(x,a,b=None,n=1):
 css='';js='';html=''
 def add(name,x):  # db = بيانات التطبيق الجديد، إلا في وحدة تعرّف db محليًا
   if not re.search(r"(\bvar\s+|,)db\s*[=;,]|function db\(",x):x=re.sub(r"(?<![\w.$'\"])db\b(?!\s*[:(])",'window.db',x)
-  return '/* ---- '+name+' ---- */\n'+x+'\n'
+  return '/* ---- '+name+' ---- */\n'+x+'\n;\n'
 # بيانات النشاط
 x=block('EMD-V333-business-profile-js','script');css+=block('EMD-V333-business-profile-style','style');html+=html_by_id('emdV333BusinessProfileModal')
 x=cut(x,"function admin(){try{return !!(window.EMDSecurityV315&&window.EMDSecurityV315.hasPermission&&window.EMDSecurityV315.hasPermission('*'))}catch(e){return false}}","function admin(){return RW.EMDPosH.owner()}")
@@ -68,6 +68,16 @@ x=cut(x,"    addTool();setTimeout(addTool,500);setTimeout(addTool,1500);\n","")
 x=cut(x,"if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();","init();")
 css+='#emdSecurityV315 input,#emdSecurityV315 textarea,#emdSecurityV315 select{width:100%;box-sizing:border-box;border:1px solid #dfe5ec;border-radius:11px;padding:11px;background:#fff;font:inherit;color:inherit}#emdSecurityV315 .row{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}#emdSecurityV315 .row>*{flex:0 1 auto;min-width:0;max-width:100%}#emdSecurityV315 .actions{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}#emdSecurityV315 .muted{color:#687384;font-size:13px}'
 js+=add('V315',x)
+# إعدادات كشف التكرار V54 (الفحص نفسه في lib/dup.js)
+x=block('EMD Business V54 - إعدادات كشف التكرار','script');css+=block('EMD Business V54 - إعدادات كشف التكرار','style');html+=html_by_id('emdDuplicateSettings54')
+x=re.sub(r"  // زر الإعدادات داخل الاختصارات\.\n.*?setTimeout\(addShortcut54,500\);\n","",x,count=1,flags=re.S)
+js+=add('V54',x)
+# رسالة واتساب (القالب القديم = رسالة الشحن إن عدّلها التاجر، كما في V189)
+a=h.index('const DEFAULT_WA_TEMPLATE');b=h.index('function waValue(',a)
+x=h[a:b].replace('const DEFAULT_WA_TEMPLATE','var DEFAULT_WA_TEMPLATE')
+x=x.replace("function openWaTemplate(){","window.openWaTemplate=function(){").replace("function closeWaTemplate(){","window.closeWaTemplate=function(){").replace("function saveWaTemplate(){","window.saveWaTemplate=function(){").replace("function resetWaTemplate(){","window.resetWaTemplate=function(){")
+html+=html_by_id('waTemplateModal')
+js+=add('WA',x)
 # تخصيص الرئيسية: إظهار البطاقات V337، ترتيبها V338، إبراز المهم V339 — نفس النوافذ والمفاتيح؛ التطبيق يرسم البطاقات حسبها
 ADM="function admin(){try{return typeof window.isAdmin==='function'?!!window.isAdmin():(window.currentUser&&window.currentUser.role==='admin')||document.body.getAttribute('data-role')==='admin'}catch(e){return false}}"
 for v,sid,cid,hid in [('V337','EMD-V337-dashboard-js','EMD-V337-dashboard-style','emdV337DashboardModal'),('V338','EMD-V338-dashboard-order-script','EMD-V338-dashboard-order-style','emdV338DashboardOrderModal'),('V339','EMD-V339-dashboard-priority-script','EMD-V339-dashboard-priority-style','emdV339DashboardPriorityModal')]:
