@@ -69,6 +69,12 @@ document.addEventListener('click',function(e){
     case 'quickLink':quickOpen();break;
     case 'storeOrders':storeOrdersOpen();break;
     case 'cloud':closeSheetIfMenu(b);cloudSheet();break;
+    case 'headMore':headToggle();break;
+    case 'reload':headReload(b);break;
+    case 'langChip':langToggle();break;
+    case 'staffChip':headStaff();break;
+    case 'logout':headLogout();break;
+    case 'waCtl':waCtlOpen();break;
     case 'closing':var cs=b.closest('.sheet');if(cs)closeSheet(cs);closingSheet();break;
     case 'prepNow':state.view='prep';state.sel={};render();window.scrollTo(0,0);break;
     case 'moreSheet':moreSheet();break;

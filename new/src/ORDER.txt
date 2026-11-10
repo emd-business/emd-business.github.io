@@ -26,6 +26,8 @@ lib/dup.js
 lib/setload.js
 lib/look.js
 lib/lang.js
+lib/head.js
+lib/bkban.js
 screens/homecfg.js
 screens/home-orders.js
 screens/order-form.js

@@ -6,7 +6,7 @@ function hay(o){var h=HAY.get(o);if(h==null){h=normTxt([oid(o),onum(o),cname(o),
 function render(){
   var v=$('view');
   document.querySelectorAll('nav#bar [data-go]').forEach(function(b){b.classList.toggle('on',b.dataset.go===state.view)});
-  renderBar();nfBadge();stTick();if(window.__lookSweep)setTimeout(lookSweep);
+  renderBar();nfBadge();stTick();headPaint();if(window.__lookSweep)setTimeout(lookSweep);
   if(state.view==='home'){v.innerHTML=homeHtml();if(window.EMDCoV430&&mode()==='company')try{EMDCoV430._chip()}catch(e){}}
   else if(state.view==='products'){v.innerHTML=productsHtml();varPass()}
   else if(state.view==='stock')v.innerHTML=stockHtml();

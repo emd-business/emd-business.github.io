@@ -263,6 +263,7 @@ details.more summary{font-weight:800;padding:8px 0;cursor:pointer}
 @media(max-width:600px){#e445G{align-items:flex-end;padding:0}#e445G .w{border-radius:20px 20px 0 0}}
 .e137-fee{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:10px 0;padding:10px 12px;border:1px solid #e3e8ef;border-radius:12px;background:#f8fafc}.e137-fee span{font-weight:800;font-size:14px;margin-inline-end:auto}.e137-fee button{border:1px solid #cfd6e0;background:#fff;color:#18202a;border-radius:10px;padding:8px 12px;font-weight:800;cursor:pointer;font-size:13px;flex:0 0 auto}.e137-fee button.on{background:#0f172a;color:#fff;border-color:#0f172a}
 .emd98-lang{border:1px solid var(--line,#e4e8ef);background:var(--card,#fff);color:var(--text,#18202a);border-radius:999px;padding:7px 12px;font-weight:800;font-size:13px;cursor:pointer;white-space:nowrap}
+body:not(.hopen) .hbtns .hx,body:not(.hopen) .hbtns #emd108Chip{display:none!important}.hbtns .wactl{flex-basis:100%;background:#128c7e!important;color:#fff!important;border:0!important;padding:11px 14px!important}.hbtns .lgout{color:#b42318!important;background:#fff5f5!important;border-color:#f3c7c7!important}#hReload{background:var(--card,#fff)!important;min-width:44px}#hReload.spin span{display:inline-block;animation:hspin .8s linear infinite}@keyframes hspin{to{transform:rotate(360deg)}}#hMore{background:var(--card,#fff)!important}body.hopen #hMore{background:var(--soft)!important}
 </style>
 </head>
 <body>
@@ -270,7 +271,7 @@ details.more summary{font-weight:800;padding:8px 0;cursor:pointer}
 <div class="wrap">
   <header>
     <div class="brand"><img src="logo.svg" alt=""><div><h1>EMD Business</h1><small>إدارة الطلبات والمخزون</small><div class="srow hide" id="storeName"></div></div></div>
-    <div class="hbtns"><button id="cloudChip" class="cchip off" data-act="cloud">☁️ الحساب</button><button data-act="settings">⚙️ الإعدادات</button><button id="emd101Chip" class="emd101-chip" data-act="support">🆘 مساعدة</button></div>
+    <div class="hbtns"><button id="cloudChip" class="cchip off hx" data-act="cloud">☁️ الحساب</button><button id="langChip" class="hx emd-no-i18n" data-act="langChip">🌐 English</button><button id="emd101Chip" class="emd101-chip hx" data-act="support">🆘 مساعدة</button><button id="stStub" class="hx" data-act="staffChip">👥 الموظفين</button><button data-act="settings">⚙️ الإعدادات</button><button class="hx" data-act="importMsg">🤖 استيراد طلب</button><button id="logoutChip" class="hx lgout hide" data-act="logout">🔒 تسجيل خروج</button><button class="hx wactl" data-act="waCtl">💬 التحكم برسائل واتساب</button><button id="hReload" data-act="reload" aria-label="تحديث"><span>🔄</span></button><button id="hMore" data-act="headMore">☰ <span>المزيد</span></button></div>
   </header>
   <main id="view"></main>
 </div>
