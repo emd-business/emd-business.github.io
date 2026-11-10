@@ -50,13 +50,16 @@ function perfHtml(){
   var md=nfMode(),rd=nfReady(),wt=nfWaiting();
   return '<div class="ph"><h2>📊 مركز الأداء</h2><small>ملخص عملي لأداء الطلبات والمنتجات والمخزون.</small></div>'+
     '<div class="pgrid">'+[['📋 إجمالي الطلبات',all.length],['📅 طلبات اليوم',insToday().length],['🟢 جاهزة',c('ready')],['🛠️ قيد التجهيز',c('packing')],['🚚 مشحونة',c('shipped')],['📬 مستلمة',rec]].map(function(x){return '<div><small>'+x[0]+'</small><b>'+x[1]+'</b></div>'}).join('')+'</div>'+
-    '<div class="pcard"><div class="prow"><span><b>🏆 الإنجاز</b><small>نسبة الطلبات المستلمة</small></span><b class="big">'+pct+'%</b></div><div class="bar"><i style="width:'+pct+'%"></i></div><div class="prow"><span>⏳ بانتظار المنتجات</span><b>'+c('waiting')+'</b></div></div>'+
+    '<div class="pcard"><h3>🏆 الإنجاز</h3><div class="prow ln"><span>نسبة الطلبات المستلمة</span><b>'+pct+'%</b></div><div class="prow ln"><span>⏳ بانتظار المنتجات</span><b>'+c('waiting')+'</b></div></div>'+
     '<div class="pcard"><h3>🔥 الأكثر طلبًا</h3>'+(tops.length?tops.map(function(n,i){return '<div class="prow ln"><span>'+(i+1)+'. '+esc(n)+'</span><i class="pill">'+top[n]+' قطعة</i></div>'}).join(''):'<p class="note">لا توجد طلبات بعد.</p>')+'</div>'+
     '<div class="pcard"><h3>📦 المخزون الذي يحتاج انتباه</h3>'+(low.length?low.map(function(x){return '<div class="prow ln"><span>'+esc(x.n)+'</span><i class="pill'+(x.a<=0?' bad':'')+'">متاح '+Math.max(0,x.a)+'</i></div>'}).join(''):'<p class="note">لا توجد منتجات بعد.</p>')+'</div>'+
     '<div class="pcard"><div class="prow"><span><b>🔔 إشعارات توفر المنتجات</b><small>يتابع العملاء الذين طلبوا إشعارهم عند وصول المنتج.</small></span><span class="tag">'+(md==='manual'?'يدوي':md==='approval'?'موافقة قبل الإرسال':'تلقائي')+'</span></div>'+
       '<div class="nfm"><b>طريقة الإشعار</b>'+[['manual','يدوي — EMD ينبهك وأنت ترسل'],['approval','يحتاج موافقة — يظهر لك الإرسال قبل التنفيذ'],['auto','تلقائي — يحتاج ربط WhatsApp Business API للإرسال الحقيقي']].map(function(m){return '<label><input type="radio" name="nfm" value="'+m[0]+'"'+(md===m[0]?' checked':'')+'> '+m[1]+'</label>'}).join('')+'</div>'+
-      '<p>🟢 جاهز للإشعار: <b>'+rd.length+'</b> &nbsp; ⏳ بانتظار التوفر: <b>'+wt.length+'</b></p>'+
-      (rd.length?'<div class="okbox"><b>🟢 أصبح متوفرًا الآن</b>'+rd.slice(0,8).map(function(o){return insRow(o,'<button class="btn sm dark" data-act="nfSend" data-id="'+esc(oid(o))+'">💬 إرسال الإشعار</button>')}).join('')+'</div>':'<p class="okbox">لا توجد حاليًا طلبات جاهزة لإشعار العميل ✅</p>')+'</div>';
+      '<div class="nfc"><b>🟢 جاهز للإشعار: '+rd.length+'</b> &nbsp; <span class="note">⏳ بانتظار التوفر: '+wt.length+'</span></div>'+
+      (rd.length?'<div class="nfl">'+rd.slice(0,8).map(function(o){return insRow(o,'<button class="btn sm nfwa" data-act="nfSend" data-id="'+esc(oid(o))+'">📱 واتساب</button>')}).join('')+'</div>':'<div class="nfok">لا توجد حاليًا طلبات جاهزة لإشعار العميل ✅</div>')+
+      '<button class="btn wide nfr" data-act="perfRefresh">🔄 تحديث</button></div>'+
+    /* مثل V166 في التطبيق الحالي: صندوق أخضر لما أصبح متوفرًا */
+    '<div class="okbox nf166"><b>🟢 أصبح متوفرًا الآن</b>'+(rd.length?rd.slice(0,8).map(function(o){return insRow(o,'<button class="btn sm nfwa" data-act="nfSend" data-id="'+esc(oid(o))+'">📱 إشعار واتساب</button>')}).join(''):'<div class="note">لا توجد طلبات جديدة جاهزة للإشعار حاليًا.</div>')+'</div>';
 }
 function nfSetMode(v){var s={};try{s=JSON.parse(lsGet(NOTIFY_KEY)||lsGet('emd_v164_notify_settings')||'{}')||{}}catch(e){}s.mode=v;lsSet(NOTIFY_KEY,JSON.stringify(s));render()}
 
@@ -68,18 +71,24 @@ function trToken2(){try{var a=new Uint8Array(18);crypto.getRandomValues(a);retur
 function trEnsureAll(){var used={},ch=false;db.orders.forEach(function(o){var n=String(o.customerTrackingNumber||'').trim().replace(/\s+/g,'-');if(n){used[n]=1;if(n!==o.customerTrackingNumber){o.customerTrackingNumber=n;ch=true}}});
   db.orders.forEach(function(o){if(!o.customerTrackingNumber){o.customerTrackingNumber=trNumber(o,used);ch=true}if(!o.trackingToken){o.trackingToken=trToken2();ch=true}});if(ch)save();return ch}
 var trAll=false;
+/* تسميات الحالة كما تظهر للعميل في صفحة التتبع (V316) */
+var TR_ST={new:'🆕 تم استلام الطلب',waiting:'⏳ بانتظار توفر المنتجات',packing:'📦 قيد التجهيز',ready:'✅ جاهز للتسليم',shipped:'🚚 تم الشحن',received:'🎉 تم التسليم',cancelled:'❌ تم إلغاء الطلب'};
+function trSummary(){var r=db.orders.filter(function(o){return o.customerRating&&o.customerRating.stars}),w=trWatched().filter(function(o){return status(o)!=='received'}).length,m=trMeta();
+  var avg=r.length?r.reduce(function(n,o){return n+Number(o.customerRating.stars||0)},0)/r.length:0;
+  return '<div class="tr70">'+(r.length?'⭐ متوسط تقييم العملاء: <b>'+avg.toFixed(1)+'</b> من '+r.length+' تقييم':'⭐ لا توجد تقييمات بعد')+' · 📬 بانتظار تأكيد العميل: <b>'+w+'</b>'+(m.lastOk?' · آخر تحقق '+new Date(m.lastOk).toLocaleTimeString('ar-OM',{hour:'2-digit',minute:'2-digit'}):'')+'</div>'}
 function trackSheet(){trEnsureAll();var L=db.orders.filter(function(o){return status(o)!=='cancelled'}).slice().sort(function(a,b){return (odate(a)||0)-(odate(b)||0)}),has=L.filter(function(o){return o.customerTrackingNumber}).length,shown=trAll?L:L.slice(-12);
-  var d=openSheet('<div class="sh"><div><h3>🔗 تتبع طلبات العملاء</h3><small>لكل طلب رقم تتبع EMD ورابط متابعة. الرابط لا يعرض رقم الهاتف أو بيانات الاتصال.</small></div><button class="x" data-act="close">إغلاق ✕</button></div>'+
+  var d=openSheet('<div class="sh"><div><h3>🔗 تتبع طلبات العملاء</h3><small>لكل طلب رقم تتبع EMD ورابط متابعة يتم إنشاؤهما تلقائيًا. الرابط لا يعرض رقم الهاتف أو بيانات الاتصال.</small><div class="tr380">🧪 <b>اختبار التتبع:</b> يمكنك الآن فتح اختبار التتبع مباشرة حتى لو كانت النسخة محلية. الاختبار يفتح صفحة مستقلة من داخل التطبيق ولا يعتمد على ملف خارجي. للاستخدام الحقيقي بين أجهزة مختلفة مع تحديث الحالة تلقائيًا نحتاج نشرًا عامًا + Backend مشترك.</div></div><button class="x" data-act="close">إغلاق ✕</button></div>'+
     '<div class="kp3"><div><b>'+L.length+'</b><small>الطلبات</small></div><div><b>'+has+'</b><small>لها رابط تتبع</small></div><div><b>'+(L.length-has)+'</b><small>بدون رابط</small></div></div>'+
-    '<div class="rowb"><button class="btn sm dark" data-tk="refresh">🔄 تحديث</button>'+(L.length>12?'<button class="btn sm" data-tk="all">'+(trAll?'عرض أحدث 12':'📋 عرض الكل')+'</button>':'')+'</div>'+
+    '<div class="rowb"><button class="btn sm dark" data-tk="refresh">🔄 تحديث</button>'+(L.length>12?'<button class="btn sm" data-tk="all">'+(trAll?'عرض أحدث 12':'📋 عرض الكل')+'</button>':'')+'</div>'+trSummary()+
     shown.map(function(o){var u=trUrl(o),sent=o.trackingSentStatus&&String(o.trackingSentStatus)===String(o.status);
-      return '<div class="tkc"><b>طلب '+esc(onum(o))+' — '+esc(cname(o)||'بدون اسم')+'</b><small>'+ST[status(o)].i+' '+ST[status(o)].l+' · 🔢 <span dir="ltr">'+esc(o.customerTrackingNumber)+'</span></small>'+
+      return '<div class="tkc"><b>طلب '+esc(onum(o))+' — '+esc(cname(o)||'بدون اسم')+'</b><small>'+(TR_ST[status(o)]||ST[status(o)].l)+' · 🔢 <span dir="ltr">'+esc(o.customerTrackingNumber)+'</span></small>'+
         '<small>🔗 '+(u?'<span dir="ltr">'+esc(u)+'</span>':'⏳ يُنشأ الرابط من موقع التتبع عند الإرسال أو النسخ')+'</small>'+
-        '<div class="rowb"><button class="btn sm" data-tk="num" data-id="'+esc(oid(o))+'">📋 نسخ الرقم</button><button class="btn sm" data-tk="link" data-id="'+esc(oid(o))+'">🔗 نسخ الرابط</button><button class="btn sm" data-act="wa" data-id="'+esc(oid(o))+'">📲 واتساب الشحن</button></div>'+
+        '<div class="rowb"><button class="btn sm" data-tk="num" data-id="'+esc(oid(o))+'">📋 نسخ الرقم</button><button class="btn sm" data-tk="link" data-id="'+esc(oid(o))+'">🔗 نسخ الرابط</button><button class="btn sm" data-tk="test" data-id="'+esc(oid(o))+'">🧪 اختبار داخل التطبيق</button><button class="btn sm" data-act="wa" data-id="'+esc(oid(o))+'">📲 واتساب الشحن</button></div>'+
         '<small class="'+(u&&sent?'ok':'mute')+'">📡 '+(u?(sent?'صفحة العميل محدَّثة بحالة الطلب.':'حالة الطلب لم تُرسل لصفحة العميل بعد.'):'لم يُرسل الطلب لصفحة العميل بعد.')+'</small>'+
         (u&&!sent?'<button class="btn sm" data-tk="sync" data-id="'+esc(oid(o))+'">🔄 مزامنة الحالة الآن</button>':'')+'</div>'}).join(''));
   d.addEventListener('click',function(e){var b=e.target.closest('[data-tk]');if(!b)return;var k=b.dataset.tk,o=findOrder(b.dataset.id||'');
     if(k==='all'||k==='refresh'){if(k==='all')trAll=!trAll;closeSheet(d);trackSheet();return}if(!o)return;
     if(k==='num')insCopy(o.customerTrackingNumber,'📋 نُسخ رقم التتبع');
+    else if(k==='test'){b.disabled=true;trLink(o).then(function(u){b.disabled=false;window.open(u,'_blank','noopener')},function(er){b.disabled=false;toast(er.message||'تعذر إنشاء رابط التتبع العام. تأكد من اتصال الإنترنت ثم حاول مرة أخرى.')})}
     else if(k==='link'||k==='sync'){b.disabled=true;trLink(o).then(function(u){if(k==='link')insCopy(u,'🔗 نُسخ رابط التتبع');else toast('✅ تم تحديث صفحة العميل');closeSheet(d);trackSheet()},function(er){b.disabled=false;toast(er.message||'تعذّر إنشاء الرابط')})}})}
 function insCopy(t,msg){if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(function(){toast(msg)},function(){prompt('انسخ:',t)});else prompt('انسخ:',t)}

@@ -1,13 +1,13 @@
 /* ---------- نافذة الحساب والحفظ في السحابة ---------- */
 var clView='login',clEmail='',clBox=null;
 function cloudPaint(){var b=$('cloudChip');if(!b)return;var s=cSession(),m=cMeta(),t,c;
-  if(!s){t='☁️ الحساب';c='off'}
+  if(!s){t='☁️ احفظ بياناتك بحساب';c='off'}
   else if(cs.state==='saving'){t='⏳ جارٍ الحفظ…';c=''}
   else if(cs.state==='dry'){t='☁️ متصل (تجربة)';c='ok'}
   else if(cs.state==='offline'){t='📴 يُحفظ عند عودة الإنترنت';c='off'}
   else if(cs.state==='error'){t='⚠️ لم يُحفظ';c='err'}
   else{t='☁️ محفوظ'+(m.lastPush?' · '+clAgo(m.lastPush):'');c='ok'}
-  if(b.textContent!==t)b.textContent=t;b.className='cchip '+c;
+  if(b.textContent!==t)b.textContent=t;b.className='cchip hx '+c;
   var st=document.getElementById('clStatus');if(st)st.innerHTML=clStatusHtml()}
 function clStatusHtml(){var m=cMeta(),c=clCounts(clCollect());
   return 'آخر حفظ في السحابة: <b>'+(m.lastPush?clFmt(m.lastPush):'لم يتم بعد')+'</b><br>على هذا الجهاز: '+clCnt(c)+(cs.err?'<br><span class="bad">'+esc(cs.err)+'</span>':'')}

@@ -14,15 +14,10 @@ function pStats(){var m={};db.orders.forEach(function(o){var s=String(o.status||
 function pSmart(i){var p=db.products[i];if(!p)return;var s=pStats()(p);
   alert('📦 '+p.name+'\n\n🏬 المخزون الفعلي: '+s.stock+'\n🔒 المحجوز: '+s.reserved+'\n🟢 المتاح: '+s.available+'\n⏳ مطلوب للطلبات المنتظرة: '+s.waiting+'\n📈 إجمالي الكمية المطلوبة: '+s.total)}
 function stockHtml(){
-  var low=0,out=0,res=0;
-  var rows=db.products.map(function(p){var a=available(p.name),r=index().reserved[normTxt(p.name)]||0;res+=r;if(a<=0)out++;else if(a<=minStock(p))low++;return {p:p,a:a,r:r}});
-  if(state.stockLow)rows=rows.filter(function(x){return x.a<=Math.max(0,minStock(x.p))});
-  rows.sort(function(x,y){return x.a-y.a});
-  return '<h2 class="ptitle">🏭 المخزون</h2><p class="psub">المتاح = المخزون الفعلي − المحجوز للطلبات التي لم تُشحن بعد.</p>'+
-    '<div class="kpis"><div class="kpi"><b>'+db.products.length+'</b><span>منتجات</span></div><div class="kpi"><b>'+res+'</b><span>قطع محجوزة للطلبات</span></div><div class="kpi"><b style="color:var(--bad)">'+out+'</b><span>نفد أو بالسالب</span></div><div class="kpi"><b style="color:#b45309">'+low+'</b><span>قارب على النفاد</span></div></div>'+
-    '<div class="tools"><button class="btn sm'+(state.stockLow?' dark':'')+'" data-act="stockLow">⚠️ النواقص فقط</button></div>'+
-    (rows.length?rows.map(function(x){var p=x.p,i=pIndex(p);
-      return '<div class="card" style="--sc:'+(x.a<=0?'var(--bad)':x.a<=minStock(p)?'#d97706':'var(--ok)')+'"><div class="prow">'+pimg(p)+'<div class="pbody"><h3>'+esc(p.name)+'</h3><div class="nums"><span>الفعلي: '+num(p.stock)+'</span><span>🔒 المحجوز: '+x.r+'</span><span class="'+(x.a<=0?'low':'okk')+'">🟢 المتاح: '+x.a+'</span>'+(minStock(p)?'<span>حد التنبيه: '+minStock(p)+'</span>':'')+'</div></div><button class="btn sm" data-act="addStock" data-pi="'+i+'">➕</button></div></div>'}).join(''):'<div class="empty">'+(state.stockLow?'لا توجد نواقص الآن.':'لا توجد منتجات.')+'</div>');
+  /* مثل صفحة «🏭 المخزون» في التطبيق الحالي: قائمة بسيطة بالفعلي والمحجوز والمتاح */
+  var rows=db.products.map(function(p){return {p:p,a:available(p.name),r:index().reserved[normTxt(p.name)]||0}});
+  return '<div class="card"><h2 class="ptitle" style="margin-top:0">🏭 المخزون</h2><p class="psub">المتاح = المخزون الفعلي − المحجوز.</p>'+
+    (rows.length?rows.map(function(x){var p=x.p;return '<div class="stk"><span>📦 <b>'+esc(p.name)+'</b><br><span class="muted">فعلي: '+num(p.stock)+' · 🔒 محجوز: '+x.r+' · 🟢 متاح: '+x.a+'</span></span>'+pimg(p)+'</div>'}).join(''):'<div class="empty">لا توجد منتجات.</div>')+'</div>';
 }
 function productSheet(i,prefillName){
   var p=i!=null?db.products[i]:null,img=p?String(p.image||p.img||p.imageUrl||''):'';

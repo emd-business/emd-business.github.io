@@ -13,7 +13,7 @@ async function mock(ctx){await ctx.route(HOST+'/**',async r=>{const u=new URL(r.
   return J(200,{})})}
 async function dev(test){const ctx=await b.newContext({viewport:{width:400,height:860}});await mock(ctx);if(test)await ctx.addInitScript(()=>{window.__EMD_CLOUD_TEST=true});
   const p=await ctx.newPage();p.on('pageerror',e=>errs.push(e.message));p.on('dialog',d=>d.accept());await p.goto('http://localhost:8131/index.html');await p.waitForTimeout(300);return p}
-async function login(p){await p.click('#cloudChip');await p.fill('#clEmail','a@b.co');await p.fill('#clPw','pass1234');await p.click('[data-ck=go]');await p.waitForTimeout(800)}
+async function login(p){await p.evaluate(()=>document.body.classList.add('hopen'));await p.click('#cloudChip');await p.fill('#clEmail','a@b.co');await p.fill('#clPw','pass1234');await p.click('[data-ck=go]');await p.waitForTimeout(800)}
 // 1) التجربة: تسجيل دخول، لا كتابة في السحابة
 const s=await dev(false);await s.click('[data-act=demo][data-n="40"]');await s.waitForTimeout(300);await login(s);
 console.log('sandbox chip:',await s.textContent('#cloudChip'),'| writes:',log.filter(x=>/^(POST|PATCH|DELETE) \/rest/.test(x)).length,'| session key:',await s.evaluate(()=>!!localStorage.getItem('emd_rb_cloud_session')),'live session untouched:',await s.evaluate(()=>localStorage.getItem('emd_v93_session_b')));

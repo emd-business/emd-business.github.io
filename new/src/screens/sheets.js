@@ -11,7 +11,7 @@ function moreSheet(){ // مثل «كل الصفحات» في التطبيق ال
   function g(a){a=a.filter(function(x){return !inBar[x[2]]});return a.length?'<div class="grid3">'+a.map(function(x){return '<button '+x[0]+'><i>'+x[1]+'</i>'+x[2]+'</button>'}).join('')+'</div>':''}
   openSheet('<div class="sh"><div><h3>كل الصفحات</h3><small>اختر الصفحة التي تريدها.</small></div></div>'+
     g([['data-act="finance"','💰','المالية']].concat(shopMode()?[]:[['data-act="track"','🔗','التتبع']]).concat([['data-go="customers"','👤','العملاء'],['data-go="products"','📦','المنتجات'],['data-go="stock"','🏭','المخزن'],['data-act="direct"','🛒','بيع مباشر'],['data-go="perf"','📊','الأداء']]))+
-    '<div class="msec">أدوات</div>'+g([['data-act="alerts"','🔔','التنبيهات'],['data-act="store"','🛍️','متجري'],['data-act="settings"','⚙️','الإعدادات'],['data-act="support"','🆘','المساعدة'],['data-act="icons"','🎛️','شكل الأزرار']])+
+    '<div class="msec">أدوات</div>'+g([['data-act="alerts"','🔔','التنبيهات'],['data-act="store"','🛍️','متجري'],['data-act="settings"','⚙️','الإعدادات'],['data-act="icons"','🎛️','شكل الأزرار']])+
     '<div class="mver">EMD Business • '+APP_VER+'</div>');
 }
 function alertsSheet(){

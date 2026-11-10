@@ -38,8 +38,8 @@ header{padding:14px 0 8px}
 /* الرئيسية */
 #view>.hero{display:flex;justify-content:space-between;align-items:flex-start;margin:16px 0 12px}
 #view>.hero h2{margin:0;font-size:24px;font-weight:900}
-.clock{font-size:34px;font-weight:900;margin-top:4px;direction:ltr;text-align:right}
-.clock span{font-size:16px;color:var(--mute)}
+.clock{font-size:30px;font-weight:900;margin-top:4px;direction:ltr;text-align:right}
+.clock bdi{direction:ltr;unicode-bidi:isolate;display:inline-block}.clock span{font-size:16px;font-weight:800;color:#475569}.clock .s{font-weight:700;color:#94a3b8}
 .date{color:var(--mute);font-size:13px;font-weight:600}
 .money{background:var(--navy);color:#fff;border-radius:18px;padding:14px 10px;display:grid;grid-template-columns:repeat(3,1fr);text-align:center;margin-bottom:12px}
 .money div+div{border-inline-start:1px solid rgba(255,255,255,.15)}
@@ -63,7 +63,7 @@ header{padding:14px 0 8px}
 .ph h2{margin:14px 0 2px;font-size:22px}.ph small{color:var(--mute)}.pgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:12px 0}.pgrid div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px}.pgrid small{display:block;color:var(--mute);font-size:12.5px}.pgrid b{font-size:22px;font-weight:900}
 .pcard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px}.pcard h3{margin:0 0 8px;font-size:16px}.prow{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 0}.prow small{display:block;color:var(--mute);font-size:12px}.prow .big{font-size:24px}.prow .bad{color:var(--bad)}
 .prow.ln{border-top:1px solid var(--line);padding:9px 0}.pill{font-style:normal;font-size:12px;background:var(--soft);border-radius:999px;padding:3px 10px;color:var(--mute);white-space:nowrap}.pill.bad{color:var(--bad);background:#fef2f2}
-.bar{height:8px;background:var(--soft);border-radius:8px;overflow:hidden;margin:4px 0 8px}.bar i{display:block;height:100%;background:#16a34a}.nfm{display:grid;gap:6px;margin:8px 0;font-size:13.5px}
+.bar{height:8px;background:var(--soft);border-radius:8px;overflow:hidden;margin:4px 0 8px}.bar i{display:block;height:100%;background:#16a34a}.tr380{margin:8px 0 0;padding:10px 12px;border:1px solid #dbeafe;background:#eff6ff;color:#1e3a8a;border-radius:12px;font-size:12px;line-height:1.6;font-weight:600}.tr70{margin:0 0 12px;padding:10px 12px;border-radius:14px;background:#fff7e6;color:#5b4300;font-size:14px}.nfm{display:grid;gap:6px;margin:10px 0;padding:10px;border:1px solid #e8edf2;border-radius:12px;background:#fafafa;font-size:13.5px}.nfm label{font-weight:800}.nfc{margin-top:10px}.nfc .note{color:var(--mute)}.nfok{color:#087443;font-weight:800;padding:10px 0}.nfr{background:#f4f6f8;color:#333;margin-top:10px}.nfwa{background:#087443;color:#fff;border-color:#087443}.okbox.nf166{background:#f1fbf5;border-color:#ccebd8;border-radius:14px;padding:12px;margin:10px 0 12px}.okbox.nf166>b{color:#087443}.okbox.nf166 .note{margin-top:6px;color:#666}
 .tkc{border:1px solid var(--line);border-radius:14px;padding:12px;margin:8px 0}.tkc small{display:block;color:var(--mute);font-size:12.5px;margin-top:4px;word-break:break-all}.tkc small.ok{color:#15803d}
 .msec{font-size:12.5px;font-weight:800;color:var(--mute);margin:14px 2px 8px}.mver{text-align:center;color:var(--mute);font-size:12px;margin-top:14px}
 .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -108,7 +108,7 @@ body.emd412-s-gold .emd412-i{color:#b8892b}body.emd412-s-gold .emd412-i svg{stro
 .chip.on{background:#fff3e6;border-color:#f6b77a}
 .search{display:flex;gap:8px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:0 12px;margin-bottom:8px}
 .search input{border:0;outline:0;flex:1;padding:12px 0;background:transparent}
-.tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}.chead{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px}.cbadges{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.cbadge{background:#f5f7f9;border-radius:999px;padding:5px 9px;font-size:12px}.clast{margin-top:10px;padding:10px;border-radius:12px;background:#f7f8fa;font-size:13px}.clast .mute{color:var(--mute)}.stk{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}.stk b{font-size:15px}.stk .muted{color:var(--mute);font-size:13px}.stk .pimg{flex:none}.qlink{margin:4px 0 10px;font-size:15px;border-radius:14px;padding:12px}
 .card{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);border:1px solid var(--line);border-inline-start:5px solid var(--sc,#94a3b8);padding:14px;margin-bottom:12px;content-visibility:auto;contain-intrinsic-size:260px}
 .ch{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
 .ch h3{margin:0;font-size:17px;font-weight:900}
@@ -271,7 +271,7 @@ body:not(.hopen) .hbtns .hx,body:not(.hopen) .hbtns #emd108Chip{display:none!imp
 <div class="wrap">
   <header>
     <div class="brand"><img src="logo.svg" alt=""><div><h1>EMD Business</h1><small>إدارة الطلبات والمخزون</small><div class="srow hide" id="storeName"></div></div></div>
-    <div class="hbtns"><button id="cloudChip" class="cchip off hx" data-act="cloud">☁️ الحساب</button><button id="langChip" class="hx emd-no-i18n" data-act="langChip">🌐 English</button><button id="emd101Chip" class="emd101-chip hx" data-act="support">🆘 مساعدة</button><button id="stStub" class="hx" data-act="staffChip">👥 الموظفين</button><button data-act="settings">⚙️ الإعدادات</button><button class="hx" data-act="importMsg">🤖 استيراد طلب</button><button id="logoutChip" class="hx lgout hide" data-act="logout">🔒 تسجيل خروج</button><button class="hx wactl" data-act="waCtl">💬 التحكم برسائل واتساب</button><button id="hReload" data-act="reload" aria-label="تحديث"><span>🔄</span></button><button id="hMore" data-act="headMore">☰ <span>المزيد</span></button></div>
+    <div class="hbtns"><button id="cloudChip" class="cchip off hx" data-act="cloud">☁️ احفظ بياناتك بحساب</button><button id="langChip" class="hx emd-no-i18n" data-act="langChip">🌐 English</button><button id="emd101Chip" class="emd101-chip hx" data-act="support">🆘 مساعدة</button><button data-act="settings">⚙️ الإعدادات</button><button class="hx" data-act="importMsg">🤖 استيراد طلب</button><button id="logoutChip" class="hx lgout hide" data-act="logout">🔒 تسجيل خروج</button><button class="hx wactl" data-act="waCtl">💬 التحكم برسائل واتساب</button><button id="stStub" class="hx" data-act="staffChip">👥 الموظفين</button><button id="hReload" data-act="reload" aria-label="تحديث"><span>🔄</span></button><button id="hMore" data-act="headMore">☰ <span>المزيد</span></button></div>
   </header>
   <main id="view"></main>
 </div>

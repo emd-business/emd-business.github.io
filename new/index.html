@@ -38,8 +38,8 @@ header{padding:14px 0 8px}
 /* الرئيسية */
 #view>.hero{display:flex;justify-content:space-between;align-items:flex-start;margin:16px 0 12px}
 #view>.hero h2{margin:0;font-size:24px;font-weight:900}
-.clock{font-size:34px;font-weight:900;margin-top:4px;direction:ltr;text-align:right}
-.clock span{font-size:16px;color:var(--mute)}
+.clock{font-size:30px;font-weight:900;margin-top:4px;direction:ltr;text-align:right}
+.clock bdi{direction:ltr;unicode-bidi:isolate;display:inline-block}.clock span{font-size:16px;font-weight:800;color:#475569}.clock .s{font-weight:700;color:#94a3b8}
 .date{color:var(--mute);font-size:13px;font-weight:600}
 .money{background:var(--navy);color:#fff;border-radius:18px;padding:14px 10px;display:grid;grid-template-columns:repeat(3,1fr);text-align:center;margin-bottom:12px}
 .money div+div{border-inline-start:1px solid rgba(255,255,255,.15)}
@@ -63,7 +63,7 @@ header{padding:14px 0 8px}
 .ph h2{margin:14px 0 2px;font-size:22px}.ph small{color:var(--mute)}.pgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:12px 0}.pgrid div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px}.pgrid small{display:block;color:var(--mute);font-size:12.5px}.pgrid b{font-size:22px;font-weight:900}
 .pcard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px}.pcard h3{margin:0 0 8px;font-size:16px}.prow{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 0}.prow small{display:block;color:var(--mute);font-size:12px}.prow .big{font-size:24px}.prow .bad{color:var(--bad)}
 .prow.ln{border-top:1px solid var(--line);padding:9px 0}.pill{font-style:normal;font-size:12px;background:var(--soft);border-radius:999px;padding:3px 10px;color:var(--mute);white-space:nowrap}.pill.bad{color:var(--bad);background:#fef2f2}
-.bar{height:8px;background:var(--soft);border-radius:8px;overflow:hidden;margin:4px 0 8px}.bar i{display:block;height:100%;background:#16a34a}.nfm{display:grid;gap:6px;margin:8px 0;font-size:13.5px}
+.bar{height:8px;background:var(--soft);border-radius:8px;overflow:hidden;margin:4px 0 8px}.bar i{display:block;height:100%;background:#16a34a}.tr380{margin:8px 0 0;padding:10px 12px;border:1px solid #dbeafe;background:#eff6ff;color:#1e3a8a;border-radius:12px;font-size:12px;line-height:1.6;font-weight:600}.tr70{margin:0 0 12px;padding:10px 12px;border-radius:14px;background:#fff7e6;color:#5b4300;font-size:14px}.nfm{display:grid;gap:6px;margin:10px 0;padding:10px;border:1px solid #e8edf2;border-radius:12px;background:#fafafa;font-size:13.5px}.nfm label{font-weight:800}.nfc{margin-top:10px}.nfc .note{color:var(--mute)}.nfok{color:#087443;font-weight:800;padding:10px 0}.nfr{background:#f4f6f8;color:#333;margin-top:10px}.nfwa{background:#087443;color:#fff;border-color:#087443}.okbox.nf166{background:#f1fbf5;border-color:#ccebd8;border-radius:14px;padding:12px;margin:10px 0 12px}.okbox.nf166>b{color:#087443}.okbox.nf166 .note{margin-top:6px;color:#666}
 .tkc{border:1px solid var(--line);border-radius:14px;padding:12px;margin:8px 0}.tkc small{display:block;color:var(--mute);font-size:12.5px;margin-top:4px;word-break:break-all}.tkc small.ok{color:#15803d}
 .msec{font-size:12.5px;font-weight:800;color:var(--mute);margin:14px 2px 8px}.mver{text-align:center;color:var(--mute);font-size:12px;margin-top:14px}
 .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -108,7 +108,7 @@ body.emd412-s-gold .emd412-i{color:#b8892b}body.emd412-s-gold .emd412-i svg{stro
 .chip.on{background:#fff3e6;border-color:#f6b77a}
 .search{display:flex;gap:8px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:0 12px;margin-bottom:8px}
 .search input{border:0;outline:0;flex:1;padding:12px 0;background:transparent}
-.tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}.chead{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px}.cbadges{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.cbadge{background:#f5f7f9;border-radius:999px;padding:5px 9px;font-size:12px}.clast{margin-top:10px;padding:10px;border-radius:12px;background:#f7f8fa;font-size:13px}.clast .mute{color:var(--mute)}.stk{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}.stk b{font-size:15px}.stk .muted{color:var(--mute);font-size:13px}.stk .pimg{flex:none}.qlink{margin:4px 0 10px;font-size:15px;border-radius:14px;padding:12px}
 .card{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);border:1px solid var(--line);border-inline-start:5px solid var(--sc,#94a3b8);padding:14px;margin-bottom:12px;content-visibility:auto;contain-intrinsic-size:260px}
 .ch{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
 .ch h3{margin:0;font-size:17px;font-weight:900}
@@ -271,7 +271,7 @@ body:not(.hopen) .hbtns .hx,body:not(.hopen) .hbtns #emd108Chip{display:none!imp
 <div class="wrap">
   <header>
     <div class="brand"><img src="logo.svg" alt=""><div><h1>EMD Business</h1><small>إدارة الطلبات والمخزون</small><div class="srow hide" id="storeName"></div></div></div>
-    <div class="hbtns"><button id="cloudChip" class="cchip off hx" data-act="cloud">☁️ الحساب</button><button id="langChip" class="hx emd-no-i18n" data-act="langChip">🌐 English</button><button id="emd101Chip" class="emd101-chip hx" data-act="support">🆘 مساعدة</button><button id="stStub" class="hx" data-act="staffChip">👥 الموظفين</button><button data-act="settings">⚙️ الإعدادات</button><button class="hx" data-act="importMsg">🤖 استيراد طلب</button><button id="logoutChip" class="hx lgout hide" data-act="logout">🔒 تسجيل خروج</button><button class="hx wactl" data-act="waCtl">💬 التحكم برسائل واتساب</button><button id="hReload" data-act="reload" aria-label="تحديث"><span>🔄</span></button><button id="hMore" data-act="headMore">☰ <span>المزيد</span></button></div>
+    <div class="hbtns"><button id="cloudChip" class="cchip off hx" data-act="cloud">☁️ احفظ بياناتك بحساب</button><button id="langChip" class="hx emd-no-i18n" data-act="langChip">🌐 English</button><button id="emd101Chip" class="emd101-chip hx" data-act="support">🆘 مساعدة</button><button data-act="settings">⚙️ الإعدادات</button><button class="hx" data-act="importMsg">🤖 استيراد طلب</button><button id="logoutChip" class="hx lgout hide" data-act="logout">🔒 تسجيل خروج</button><button class="hx wactl" data-act="waCtl">💬 التحكم برسائل واتساب</button><button id="stStub" class="hx" data-act="staffChip">👥 الموظفين</button><button id="hReload" data-act="reload" aria-label="تحديث"><span>🔄</span></button><button id="hMore" data-act="headMore">☰ <span>المزيد</span></button></div>
   </header>
   <main id="view"></main>
 </div>
@@ -850,6 +850,14 @@ var ARCH_LIFE=[],archLast=0;
 function archRefresh(){archLast=Date.now();return archAll().then(function(a){var n=a.map(function(x){return x&&x.order}).filter(Boolean);
   if(n.length!==ARCH_LIFE.length||JSON.stringify(n.map(oid))!==JSON.stringify(ARCH_LIFE.map(oid))){ARCH_LIFE=n;dirty();if(state.view==='home')render()}})}
 function archTick(){if(!document.hidden&&Date.now()-archLast>6e4)archRefresh()}
+/* نافذة «🗄️ أرشيف الطلبات» (V67) تُحمَّل عند الطلب من lazy/archive.js (tools/port-archive.py) */
+var ARCH_P=null;
+function archLoad(){if(!ARCH_P){window.EMDPosH=window.EMDPosH||posHelpers();ARCH_P=loadScript('archive.js?v=211b9298').catch(function(e){ARCH_P=null;throw e})}return ARCH_P}
+function archWin(q){archLoad().then(function(){EMDArchiveV67.open(q==null?undefined:q)},function(){toast('تعذّر فتح الأرشيف. تحقّق من الاتصال.')})}
+/* الأرشفة التلقائية مثل التطبيق الحالي: بعد 9 ثوانٍ من الفتح ثم كل 6 ساعات (لا تعمل في التجربة) */
+function archAutoRun(){if(!cloudCanWrite())return;archLoad().then(function(){return EMDArchiveV67.reconcile().then(function(){return EMDArchiveV67.archiveNow(false)})}).then(function(n){if(n){toast('🗄️ نُقل '+n+' طلب مستلم إلى الأرشيف');dirty();render();archRefresh()}}).catch(function(e){console.warn('archive',e)})}
+var archAutoAt=Date.now()+9000;
+function archAutoTick(){if(!cloudCanWrite()||Date.now()<archAutoAt)return;archAutoAt=Date.now()+6*3600*1000;archAutoRun()}
 
 /* ===== lib/cloud.js ===== */
 /* ---------- الحساب والحفظ في السحابة ----------
@@ -1495,7 +1503,7 @@ document.addEventListener('click',function(e){if(e.target.closest&&e.target.clos
 function headToggle(){var on=document.body.classList.toggle('hopen');var s=document.querySelector('#hMore span');if(s)s.textContent=on?'إخفاء':'المزيد'}
 function headPaint(){
   var lg=$('langChip');if(lg)lg.textContent=langGet()==='en'?'🌐 عربي':'🌐 English';
-  var lo=$('logoutChip');if(lo)lo.classList.toggle('hide',!lkHas());
+  var lo=$('logoutChip');if(lo)lo.classList.remove('hide');
   var st=$('stStub');if(st){if(window.EMDStaffV108)st.remove();else st.classList.toggle('hide',POS_LS.getItem('emd_v111_hidestaff')==='1')}
 }
 function headStaff(){stLoad().then(function(S){headPaint();S.open()},function(){toast('تعذّر الفتح. تحقّق من الاتصال.')})}
@@ -1565,7 +1573,7 @@ function homeHtml(){
   var cards=hcOrder().filter(function(k){return !hid[k]}).map(function(k){
     return '<button class="stat'+(pri.indexOf(k)>-1&&ix.counts[k]>0?' emd339-priority':'')+'" data-filter="'+k+'"><b>'+ix.counts[k]+'</b><span>'+statIcon(k)+''+(k==='new'?'طلبات جديدة':k==='waiting'?'بانتظار المنتجات':k==='ready'?'جاهزة للتجهيز':ST[k].l)+'</span></button>';
   }).join('');
-  var P={hero:'<div class="hero"><div><h2>'+esc(greet)+'</h2>'+(lk.clock!==false?'<div class="clock">'+pad(hh)+':'+pad(now.getMinutes())+' <span>'+(h<12?'ص':'م')+'</span></div>':'')+'<div class="date">'+esc(greg)+(hijri&&lk.hijri!==false?' · '+esc(hijri):'')+'</div></div>'+heroImg(lk)+'</div>'+modesHome(),
+  var P={hero:'<div class="hero"><div><h2>'+esc(greet)+'</h2>'+(lk.clock!==false?'<div class="clock"><bdi>'+pad(hh)+':'+pad(now.getMinutes())+'<span class="s">:'+pad(now.getSeconds())+'</span></bdi> <span>'+(h<12?'ص':'م')+'</span></div>':'')+'<div class="date">'+esc(greg)+(hijri&&lk.hijri!==false?' · '+esc(hijri):'')+'</div></div>'+heroImg(lk)+'</div>'+modesHome(),
     strip:'<div class="money" data-act="finance" role="button"><div><small>مبيعات اليوم</small><b>'+money(ix.sales)+'</b></div><div><small>غير محصّل</small><b class="gold">'+money(ix.unpaid)+'</b></div><div><small>ربح الشهر</small><b>'+money(ix.profit)+'</b></div><div class="cap">💰 اضغط لفتح المالية · '+CUR+'</div></div>',
     grid:storeHomeCard()+(shopMode()?cashCards():'<div class="stats">'+cards+'</div>'),
     actions:(shopMode()?'':'<div class="quick"><button class="btn dark" data-act="importMsg">🤖 إدخال من رسالة</button><button class="btn" data-act="newOrder">✍️ كتابة طلب يدوي</button>'+(shopMode()?'':'<button class="btn" data-act="prepNow">🧑‍💼 ماذا أجهز الآن؟</button>')+'<button class="btn" data-act="closing">📊 تقفيلة اليوم</button></div>'),
@@ -1591,6 +1599,7 @@ function cardHtml(o,pins){
   var s=status(o),id=oid(o),its=items(o),n=0;its.forEach(function(x){n+=qty(x)});
   var nx=NEXT[s],ps=payState(o),pin=pins[id];
   var tags='<span class="tag">📦 '+n+' قطعة</span>'+its.slice(0,4).map(function(x){return '<span class="tag">'+esc(iname(x))+' × '+qty(x)+'</span>'}).join('')+(its.length>4?'<span class="tag">+'+(its.length-4)+'</span>':'');
+  if(o.company)tags+='<span class="tag">🚚 '+esc(o.company)+'</span>';
   tags+=trPills(o);
   if(ps!=='paid'&&s!=='cancelled')tags+='<span class="tag warn">'+PAYL[ps]+' · '+money(remaining(o))+'</span>';
   return '<div class="card" style="--sc:'+ST[s].c+'" data-id="'+esc(id)+'">'+
@@ -1607,10 +1616,11 @@ function ordersHtml(){
   if(ix.counts.cancelled)chips.push(['cancelled','❌ ملغاة',ix.counts.cancelled]);
   var shown=list.slice(0,state.limit);
   return '<h2 class="ptitle">📋 الطلبات</h2><p class="psub">كل الطلبات المحفوظة وحالاتها.</p>'+
+    '<button class="btn dark wide qlink" data-act="quickLink">⚡ رابط طلب سريع</button>'+
     '<div class="chips">'+chips.map(function(c){return '<button class="chip'+(state.filter===c[0]?' on':'')+'" data-filter="'+c[0]+'">'+c[1]+' '+c[2]+'</button>'}).join('')+
     (storePublished()||ix.store?'<button class="chip'+(state.filter==='store'?' on':'')+'" data-filter="store">🛍️ المتجر '+(ix.store||0)+'</button>':'')+(state.filter==='prep'?'<button class="chip on" data-filter="prep">🧑‍💼 للتجهيز الآن '+list.length+'</button>':'')+'</div>'+
-    '<div class="search">🔎<input id="q" type="search" placeholder="ابحث بالاسم أو الرقم أو المكان أو المنتج" value="'+esc(state.q)+'" autocomplete="off"></div>'+
-    '<div class="tools"><button class="btn sm" data-act="quickLink">⚡ رابط طلب سريع</button><button class="btn sm'+(state.pinnedOnly?' dark':'')+'" data-act="pinnedOnly">📌 المثبتة فقط'+(ix.counts.pinned?' ('+ix.counts.pinned+')':'')+'</button>'+(state.q?'<button class="btn sm" data-act="clearQ">مسح البحث</button>':'')+'</div>'+
+    '<div class="search">🔎<input id="q" type="search" placeholder="ابحث بالاسم أو الرقم أو الموقع أو المنتج أو رقم الطلب" value="'+esc(state.q)+'" autocomplete="off"></div>'+
+    '<div class="tools"><button class="btn sm" data-act="archSearch">🗄️ ابحث في الأرشيف</button><button class="btn sm'+(state.pinnedOnly?' dark':'')+'" data-act="pinnedOnly">📌 المثبتة فقط'+(ix.counts.pinned?' ('+ix.counts.pinned+')':'')+'</button><button class="btn sm" data-act="clearQ">مسح البحث</button></div>'+
     '<div id="list">'+(shown.length?(QL=qlOpt(),shown).map(function(o){return cardHtml(o,pins)}).join(''):'<div class="empty">لا توجد طلبات مطابقة.</div>')+'</div>'+
     (list.length>shown.length?'<button class="btn moreBtn" data-act="showMore">عرض المزيد ('+(list.length-shown.length)+')</button>':'');
 }
@@ -1847,7 +1857,7 @@ function moreSheet(){ // مثل «كل الصفحات» في التطبيق ال
   function g(a){a=a.filter(function(x){return !inBar[x[2]]});return a.length?'<div class="grid3">'+a.map(function(x){return '<button '+x[0]+'><i>'+x[1]+'</i>'+x[2]+'</button>'}).join('')+'</div>':''}
   openSheet('<div class="sh"><div><h3>كل الصفحات</h3><small>اختر الصفحة التي تريدها.</small></div></div>'+
     g([['data-act="finance"','💰','المالية']].concat(shopMode()?[]:[['data-act="track"','🔗','التتبع']]).concat([['data-go="customers"','👤','العملاء'],['data-go="products"','📦','المنتجات'],['data-go="stock"','🏭','المخزن'],['data-act="direct"','🛒','بيع مباشر'],['data-go="perf"','📊','الأداء']]))+
-    '<div class="msec">أدوات</div>'+g([['data-act="alerts"','🔔','التنبيهات'],['data-act="store"','🛍️','متجري'],['data-act="settings"','⚙️','الإعدادات'],['data-act="support"','🆘','المساعدة'],['data-act="icons"','🎛️','شكل الأزرار']])+
+    '<div class="msec">أدوات</div>'+g([['data-act="alerts"','🔔','التنبيهات'],['data-act="store"','🛍️','متجري'],['data-act="settings"','⚙️','الإعدادات'],['data-act="icons"','🎛️','شكل الأزرار']])+
     '<div class="mver">EMD Business • '+APP_VER+'</div>');
 }
 function alertsSheet(){
@@ -2117,13 +2127,16 @@ function perfHtml(){
   var md=nfMode(),rd=nfReady(),wt=nfWaiting();
   return '<div class="ph"><h2>📊 مركز الأداء</h2><small>ملخص عملي لأداء الطلبات والمنتجات والمخزون.</small></div>'+
     '<div class="pgrid">'+[['📋 إجمالي الطلبات',all.length],['📅 طلبات اليوم',insToday().length],['🟢 جاهزة',c('ready')],['🛠️ قيد التجهيز',c('packing')],['🚚 مشحونة',c('shipped')],['📬 مستلمة',rec]].map(function(x){return '<div><small>'+x[0]+'</small><b>'+x[1]+'</b></div>'}).join('')+'</div>'+
-    '<div class="pcard"><div class="prow"><span><b>🏆 الإنجاز</b><small>نسبة الطلبات المستلمة</small></span><b class="big">'+pct+'%</b></div><div class="bar"><i style="width:'+pct+'%"></i></div><div class="prow"><span>⏳ بانتظار المنتجات</span><b>'+c('waiting')+'</b></div></div>'+
+    '<div class="pcard"><h3>🏆 الإنجاز</h3><div class="prow ln"><span>نسبة الطلبات المستلمة</span><b>'+pct+'%</b></div><div class="prow ln"><span>⏳ بانتظار المنتجات</span><b>'+c('waiting')+'</b></div></div>'+
     '<div class="pcard"><h3>🔥 الأكثر طلبًا</h3>'+(tops.length?tops.map(function(n,i){return '<div class="prow ln"><span>'+(i+1)+'. '+esc(n)+'</span><i class="pill">'+top[n]+' قطعة</i></div>'}).join(''):'<p class="note">لا توجد طلبات بعد.</p>')+'</div>'+
     '<div class="pcard"><h3>📦 المخزون الذي يحتاج انتباه</h3>'+(low.length?low.map(function(x){return '<div class="prow ln"><span>'+esc(x.n)+'</span><i class="pill'+(x.a<=0?' bad':'')+'">متاح '+Math.max(0,x.a)+'</i></div>'}).join(''):'<p class="note">لا توجد منتجات بعد.</p>')+'</div>'+
     '<div class="pcard"><div class="prow"><span><b>🔔 إشعارات توفر المنتجات</b><small>يتابع العملاء الذين طلبوا إشعارهم عند وصول المنتج.</small></span><span class="tag">'+(md==='manual'?'يدوي':md==='approval'?'موافقة قبل الإرسال':'تلقائي')+'</span></div>'+
       '<div class="nfm"><b>طريقة الإشعار</b>'+[['manual','يدوي — EMD ينبهك وأنت ترسل'],['approval','يحتاج موافقة — يظهر لك الإرسال قبل التنفيذ'],['auto','تلقائي — يحتاج ربط WhatsApp Business API للإرسال الحقيقي']].map(function(m){return '<label><input type="radio" name="nfm" value="'+m[0]+'"'+(md===m[0]?' checked':'')+'> '+m[1]+'</label>'}).join('')+'</div>'+
-      '<p>🟢 جاهز للإشعار: <b>'+rd.length+'</b> &nbsp; ⏳ بانتظار التوفر: <b>'+wt.length+'</b></p>'+
-      (rd.length?'<div class="okbox"><b>🟢 أصبح متوفرًا الآن</b>'+rd.slice(0,8).map(function(o){return insRow(o,'<button class="btn sm dark" data-act="nfSend" data-id="'+esc(oid(o))+'">💬 إرسال الإشعار</button>')}).join('')+'</div>':'<p class="okbox">لا توجد حاليًا طلبات جاهزة لإشعار العميل ✅</p>')+'</div>';
+      '<div class="nfc"><b>🟢 جاهز للإشعار: '+rd.length+'</b> &nbsp; <span class="note">⏳ بانتظار التوفر: '+wt.length+'</span></div>'+
+      (rd.length?'<div class="nfl">'+rd.slice(0,8).map(function(o){return insRow(o,'<button class="btn sm nfwa" data-act="nfSend" data-id="'+esc(oid(o))+'">📱 واتساب</button>')}).join('')+'</div>':'<div class="nfok">لا توجد حاليًا طلبات جاهزة لإشعار العميل ✅</div>')+
+      '<button class="btn wide nfr" data-act="perfRefresh">🔄 تحديث</button></div>'+
+    /* مثل V166 في التطبيق الحالي: صندوق أخضر لما أصبح متوفرًا */
+    '<div class="okbox nf166"><b>🟢 أصبح متوفرًا الآن</b>'+(rd.length?rd.slice(0,8).map(function(o){return insRow(o,'<button class="btn sm nfwa" data-act="nfSend" data-id="'+esc(oid(o))+'">📱 إشعار واتساب</button>')}).join(''):'<div class="note">لا توجد طلبات جديدة جاهزة للإشعار حاليًا.</div>')+'</div>';
 }
 function nfSetMode(v){var s={};try{s=JSON.parse(lsGet(NOTIFY_KEY)||lsGet('emd_v164_notify_settings')||'{}')||{}}catch(e){}s.mode=v;lsSet(NOTIFY_KEY,JSON.stringify(s));render()}
 
@@ -2135,19 +2148,25 @@ function trToken2(){try{var a=new Uint8Array(18);crypto.getRandomValues(a);retur
 function trEnsureAll(){var used={},ch=false;db.orders.forEach(function(o){var n=String(o.customerTrackingNumber||'').trim().replace(/\s+/g,'-');if(n){used[n]=1;if(n!==o.customerTrackingNumber){o.customerTrackingNumber=n;ch=true}}});
   db.orders.forEach(function(o){if(!o.customerTrackingNumber){o.customerTrackingNumber=trNumber(o,used);ch=true}if(!o.trackingToken){o.trackingToken=trToken2();ch=true}});if(ch)save();return ch}
 var trAll=false;
+/* تسميات الحالة كما تظهر للعميل في صفحة التتبع (V316) */
+var TR_ST={new:'🆕 تم استلام الطلب',waiting:'⏳ بانتظار توفر المنتجات',packing:'📦 قيد التجهيز',ready:'✅ جاهز للتسليم',shipped:'🚚 تم الشحن',received:'🎉 تم التسليم',cancelled:'❌ تم إلغاء الطلب'};
+function trSummary(){var r=db.orders.filter(function(o){return o.customerRating&&o.customerRating.stars}),w=trWatched().filter(function(o){return status(o)!=='received'}).length,m=trMeta();
+  var avg=r.length?r.reduce(function(n,o){return n+Number(o.customerRating.stars||0)},0)/r.length:0;
+  return '<div class="tr70">'+(r.length?'⭐ متوسط تقييم العملاء: <b>'+avg.toFixed(1)+'</b> من '+r.length+' تقييم':'⭐ لا توجد تقييمات بعد')+' · 📬 بانتظار تأكيد العميل: <b>'+w+'</b>'+(m.lastOk?' · آخر تحقق '+new Date(m.lastOk).toLocaleTimeString('ar-OM',{hour:'2-digit',minute:'2-digit'}):'')+'</div>'}
 function trackSheet(){trEnsureAll();var L=db.orders.filter(function(o){return status(o)!=='cancelled'}).slice().sort(function(a,b){return (odate(a)||0)-(odate(b)||0)}),has=L.filter(function(o){return o.customerTrackingNumber}).length,shown=trAll?L:L.slice(-12);
-  var d=openSheet('<div class="sh"><div><h3>🔗 تتبع طلبات العملاء</h3><small>لكل طلب رقم تتبع EMD ورابط متابعة. الرابط لا يعرض رقم الهاتف أو بيانات الاتصال.</small></div><button class="x" data-act="close">إغلاق ✕</button></div>'+
+  var d=openSheet('<div class="sh"><div><h3>🔗 تتبع طلبات العملاء</h3><small>لكل طلب رقم تتبع EMD ورابط متابعة يتم إنشاؤهما تلقائيًا. الرابط لا يعرض رقم الهاتف أو بيانات الاتصال.</small><div class="tr380">🧪 <b>اختبار التتبع:</b> يمكنك الآن فتح اختبار التتبع مباشرة حتى لو كانت النسخة محلية. الاختبار يفتح صفحة مستقلة من داخل التطبيق ولا يعتمد على ملف خارجي. للاستخدام الحقيقي بين أجهزة مختلفة مع تحديث الحالة تلقائيًا نحتاج نشرًا عامًا + Backend مشترك.</div></div><button class="x" data-act="close">إغلاق ✕</button></div>'+
     '<div class="kp3"><div><b>'+L.length+'</b><small>الطلبات</small></div><div><b>'+has+'</b><small>لها رابط تتبع</small></div><div><b>'+(L.length-has)+'</b><small>بدون رابط</small></div></div>'+
-    '<div class="rowb"><button class="btn sm dark" data-tk="refresh">🔄 تحديث</button>'+(L.length>12?'<button class="btn sm" data-tk="all">'+(trAll?'عرض أحدث 12':'📋 عرض الكل')+'</button>':'')+'</div>'+
+    '<div class="rowb"><button class="btn sm dark" data-tk="refresh">🔄 تحديث</button>'+(L.length>12?'<button class="btn sm" data-tk="all">'+(trAll?'عرض أحدث 12':'📋 عرض الكل')+'</button>':'')+'</div>'+trSummary()+
     shown.map(function(o){var u=trUrl(o),sent=o.trackingSentStatus&&String(o.trackingSentStatus)===String(o.status);
-      return '<div class="tkc"><b>طلب '+esc(onum(o))+' — '+esc(cname(o)||'بدون اسم')+'</b><small>'+ST[status(o)].i+' '+ST[status(o)].l+' · 🔢 <span dir="ltr">'+esc(o.customerTrackingNumber)+'</span></small>'+
+      return '<div class="tkc"><b>طلب '+esc(onum(o))+' — '+esc(cname(o)||'بدون اسم')+'</b><small>'+(TR_ST[status(o)]||ST[status(o)].l)+' · 🔢 <span dir="ltr">'+esc(o.customerTrackingNumber)+'</span></small>'+
         '<small>🔗 '+(u?'<span dir="ltr">'+esc(u)+'</span>':'⏳ يُنشأ الرابط من موقع التتبع عند الإرسال أو النسخ')+'</small>'+
-        '<div class="rowb"><button class="btn sm" data-tk="num" data-id="'+esc(oid(o))+'">📋 نسخ الرقم</button><button class="btn sm" data-tk="link" data-id="'+esc(oid(o))+'">🔗 نسخ الرابط</button><button class="btn sm" data-act="wa" data-id="'+esc(oid(o))+'">📲 واتساب الشحن</button></div>'+
+        '<div class="rowb"><button class="btn sm" data-tk="num" data-id="'+esc(oid(o))+'">📋 نسخ الرقم</button><button class="btn sm" data-tk="link" data-id="'+esc(oid(o))+'">🔗 نسخ الرابط</button><button class="btn sm" data-tk="test" data-id="'+esc(oid(o))+'">🧪 اختبار داخل التطبيق</button><button class="btn sm" data-act="wa" data-id="'+esc(oid(o))+'">📲 واتساب الشحن</button></div>'+
         '<small class="'+(u&&sent?'ok':'mute')+'">📡 '+(u?(sent?'صفحة العميل محدَّثة بحالة الطلب.':'حالة الطلب لم تُرسل لصفحة العميل بعد.'):'لم يُرسل الطلب لصفحة العميل بعد.')+'</small>'+
         (u&&!sent?'<button class="btn sm" data-tk="sync" data-id="'+esc(oid(o))+'">🔄 مزامنة الحالة الآن</button>':'')+'</div>'}).join(''));
   d.addEventListener('click',function(e){var b=e.target.closest('[data-tk]');if(!b)return;var k=b.dataset.tk,o=findOrder(b.dataset.id||'');
     if(k==='all'||k==='refresh'){if(k==='all')trAll=!trAll;closeSheet(d);trackSheet();return}if(!o)return;
     if(k==='num')insCopy(o.customerTrackingNumber,'📋 نُسخ رقم التتبع');
+    else if(k==='test'){b.disabled=true;trLink(o).then(function(u){b.disabled=false;window.open(u,'_blank','noopener')},function(er){b.disabled=false;toast(er.message||'تعذر إنشاء رابط التتبع العام. تأكد من اتصال الإنترنت ثم حاول مرة أخرى.')})}
     else if(k==='link'||k==='sync'){b.disabled=true;trLink(o).then(function(u){if(k==='link')insCopy(u,'🔗 نُسخ رابط التتبع');else toast('✅ تم تحديث صفحة العميل');closeSheet(d);trackSheet()},function(er){b.disabled=false;toast(er.message||'تعذّر إنشاء الرابط')})}})}
 function insCopy(t,msg){if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(function(){toast(msg)},function(){prompt('انسخ:',t)});else prompt('انسخ:',t)}
 
@@ -2155,13 +2174,13 @@ function insCopy(t,msg){if(navigator.clipboard&&navigator.clipboard.writeText)na
 /* ---------- نافذة الحساب والحفظ في السحابة ---------- */
 var clView='login',clEmail='',clBox=null;
 function cloudPaint(){var b=$('cloudChip');if(!b)return;var s=cSession(),m=cMeta(),t,c;
-  if(!s){t='☁️ الحساب';c='off'}
+  if(!s){t='☁️ احفظ بياناتك بحساب';c='off'}
   else if(cs.state==='saving'){t='⏳ جارٍ الحفظ…';c=''}
   else if(cs.state==='dry'){t='☁️ متصل (تجربة)';c='ok'}
   else if(cs.state==='offline'){t='📴 يُحفظ عند عودة الإنترنت';c='off'}
   else if(cs.state==='error'){t='⚠️ لم يُحفظ';c='err'}
   else{t='☁️ محفوظ'+(m.lastPush?' · '+clAgo(m.lastPush):'');c='ok'}
-  if(b.textContent!==t)b.textContent=t;b.className='cchip '+c;
+  if(b.textContent!==t)b.textContent=t;b.className='cchip hx '+c;
   var st=document.getElementById('clStatus');if(st)st.innerHTML=clStatusHtml()}
 function clStatusHtml(){var m=cMeta(),c=clCounts(clCollect());
   return 'آخر حفظ في السحابة: <b>'+(m.lastPush?clFmt(m.lastPush):'لم يتم بعد')+'</b><br>على هذا الجهاز: '+clCnt(c)+(cs.err?'<br><span class="bad">'+esc(cs.err)+'</span>':'')}
@@ -2243,15 +2262,10 @@ function pStats(){var m={};db.orders.forEach(function(o){var s=String(o.status||
 function pSmart(i){var p=db.products[i];if(!p)return;var s=pStats()(p);
   alert('📦 '+p.name+'\n\n🏬 المخزون الفعلي: '+s.stock+'\n🔒 المحجوز: '+s.reserved+'\n🟢 المتاح: '+s.available+'\n⏳ مطلوب للطلبات المنتظرة: '+s.waiting+'\n📈 إجمالي الكمية المطلوبة: '+s.total)}
 function stockHtml(){
-  var low=0,out=0,res=0;
-  var rows=db.products.map(function(p){var a=available(p.name),r=index().reserved[normTxt(p.name)]||0;res+=r;if(a<=0)out++;else if(a<=minStock(p))low++;return {p:p,a:a,r:r}});
-  if(state.stockLow)rows=rows.filter(function(x){return x.a<=Math.max(0,minStock(x.p))});
-  rows.sort(function(x,y){return x.a-y.a});
-  return '<h2 class="ptitle">🏭 المخزون</h2><p class="psub">المتاح = المخزون الفعلي − المحجوز للطلبات التي لم تُشحن بعد.</p>'+
-    '<div class="kpis"><div class="kpi"><b>'+db.products.length+'</b><span>منتجات</span></div><div class="kpi"><b>'+res+'</b><span>قطع محجوزة للطلبات</span></div><div class="kpi"><b style="color:var(--bad)">'+out+'</b><span>نفد أو بالسالب</span></div><div class="kpi"><b style="color:#b45309">'+low+'</b><span>قارب على النفاد</span></div></div>'+
-    '<div class="tools"><button class="btn sm'+(state.stockLow?' dark':'')+'" data-act="stockLow">⚠️ النواقص فقط</button></div>'+
-    (rows.length?rows.map(function(x){var p=x.p,i=pIndex(p);
-      return '<div class="card" style="--sc:'+(x.a<=0?'var(--bad)':x.a<=minStock(p)?'#d97706':'var(--ok)')+'"><div class="prow">'+pimg(p)+'<div class="pbody"><h3>'+esc(p.name)+'</h3><div class="nums"><span>الفعلي: '+num(p.stock)+'</span><span>🔒 المحجوز: '+x.r+'</span><span class="'+(x.a<=0?'low':'okk')+'">🟢 المتاح: '+x.a+'</span>'+(minStock(p)?'<span>حد التنبيه: '+minStock(p)+'</span>':'')+'</div></div><button class="btn sm" data-act="addStock" data-pi="'+i+'">➕</button></div></div>'}).join(''):'<div class="empty">'+(state.stockLow?'لا توجد نواقص الآن.':'لا توجد منتجات.')+'</div>');
+  /* مثل صفحة «🏭 المخزون» في التطبيق الحالي: قائمة بسيطة بالفعلي والمحجوز والمتاح */
+  var rows=db.products.map(function(p){return {p:p,a:available(p.name),r:index().reserved[normTxt(p.name)]||0}});
+  return '<div class="card"><h2 class="ptitle" style="margin-top:0">🏭 المخزون</h2><p class="psub">المتاح = المخزون الفعلي − المحجوز.</p>'+
+    (rows.length?rows.map(function(x){var p=x.p;return '<div class="stk"><span>📦 <b>'+esc(p.name)+'</b><br><span class="muted">فعلي: '+num(p.stock)+' · 🔒 محجوز: '+x.r+' · 🟢 متاح: '+x.a+'</span></span>'+pimg(p)+'</div>'}).join(''):'<div class="empty">لا توجد منتجات.</div>')+'</div>';
 }
 function productSheet(i,prefillName){
   var p=i!=null?db.products[i]:null,img=p?String(p.image||p.img||p.imageUrl||''):'';
@@ -2407,14 +2421,19 @@ function customersHtml(){
   var srt=state.csort||'recent';
   list.sort(srt==='most'?function(a,b){return b.orders.length-a.orders.length}:srt==='name'?function(a,b){return String(a.name).localeCompare(String(b.name),'ar')}:function(a,b){return b.last-a.last});
   var shown=list.slice(0,state.limit);
-  return '<h2 class="ptitle">👤 العملاء</h2><p class="psub">ملف سريع لكل عميل وسجل طلباته.</p>'+
+  if(srt==='phone')list.sort(function(a,b){return String(a.phone).localeCompare(String(b.phone))});
+  return '<div class="chead"><div><h2 class="ptitle">👤 العملاء</h2><p class="psub">ملف سريع لكل عميل وسجل طلباته.</p></div><button class="btn dark" data-act="cManage">➕ إدارة العملاء</button></div>'+
     '<div class="kpis"><div class="kpi"><b>'+customersIndex().length+'</b><span>إجمالي العملاء</span></div><div class="kpi"><b>'+rep+'</b><span>عملاء متكررون</span></div><div class="kpi"><b>'+ords+'</b><span>إجمالي الطلبات</span></div><div class="kpi"><b>'+act+'</b><span>طلبات نشطة</span></div></div>'+
     '<div class="search">🔎<input id="cq" type="search" placeholder="ابحث بالاسم أو الرقم أو المكان" value="'+esc(state.cq||'')+'" autocomplete="off"></div>'+
-    '<div class="seg" style="margin-bottom:10px">'+[['recent','الأحدث نشاطًا'],['most','الأكثر طلبات'],['name','الاسم']].map(function(x){return '<button data-act="csort" data-s="'+x[0]+'" class="'+(srt===x[0]?'on':'')+'">'+x[1]+'</button>'}).join('')+'</div>'+
+    '<select class="in" id="csort" style="margin-bottom:10px">'+[['recent','الأحدث نشاطًا'],['most','الأكثر طلبات'],['name','الاسم أبجديًا'],['phone','رقم الهاتف']].map(function(x){return '<option value="'+x[0]+'"'+(srt===x[0]?' selected':'')+'>'+x[1]+'</option>'}).join('')+'</select>'+
     '<div id="clist">'+(shown.length?shown.map(function(c){var lo=c.orders.slice().sort(function(a,b){var x=odate(a),y=odate(b);return (y?y.getTime():0)-(x?x.getTime():0)})[0];
-      return '<div class="card" style="--sc:var(--navy2)" data-ck="'+esc(c.k)+'"><div class="ch"><h3>👤 '+esc(c.name||'بدون اسم')+'</h3><span class="pill">📦 الطلبات: '+c.orders.length+'</span></div><div class="meta">📱 '+esc(c.phone)+(c.place?' · 📍 '+esc(c.place):'')+'</div>'+
-        (lo?'<div class="next" style="background:var(--soft);border-color:var(--line);color:var(--ink)">آخر طلب '+esc(onum(lo))+' · '+ST[status(lo)].i+' '+ST[status(lo)].l+'</div>':'')+
-        '<div class="acts"><button class="btn" data-act="cProfile">📋 الملف</button><button class="btn" data-act="cNew">✍️ طلب جديد</button><button class="btn" data-act="cWa">💬 واتساب</button><button class="btn more" data-act="cEdit" aria-label="تعديل">✏️</button></div></div>'}).join(''):'<div class="empty">لا يوجد عملاء مطابقون.</div>')+'</div>'+
+      var cnt={};c.orders.forEach(function(o){var k=status(o);cnt[k]=(cnt[k]||0)+1});var badges=Object.keys(cnt).map(function(k){return '<span class="cbadge">'+esc(ST[k]?ST[k].l:k)+': '+cnt[k]+'</span>'}).join('');
+      var rec=c.ci>=0?db.customers[c.ci]:null;
+      return '<div class="card" style="--sc:var(--navy2)" data-ck="'+esc(c.k)+'"><div class="ch"><div><h3>👤 '+esc(c.name||'اسم غير مذكور')+'</h3><div class="meta">📱 '+esc(c.phone)+'<br>📍 '+esc(c.place||'غير محدد')+'</div></div><span class="pill">📦 '+c.orders.length+' '+(c.orders.length===1?'طلب':'طلبات')+'</span></div>'+
+        '<div class="cbadges">'+(badges||'<span class="cbadge">لا توجد حالات مسجلة</span>')+'</div>'+
+        (lo?'<div class="clast"><b>آخر طلب '+esc(onum(lo))+'</b><br><span class="mute">'+esc(items(lo).map(function(x){return iname(x)+' × '+qty(x)}).join('، '))+' · '+esc(ST[status(lo)].l)+'</span></div>':'')+
+        (rec&&rec.notes?'<div class="meta">📝 '+esc(rec.notes)+'</div>':'')+
+        '<div class="acts"><button class="btn" data-act="cProfile">📋 الملف</button>'+(lo?'<button class="btn" data-act="open" data-id="'+esc(oid(lo))+'">📦 آخر طلب</button>':'')+'<button class="btn" data-act="cWa">💬 واتساب</button><button class="btn" data-act="cEdit">✏️ تعديل</button></div></div>'}).join(''):'<div class="empty">لا توجد نتائج مطابقة.</div>')+'</div>'+
     (list.length>shown.length?'<button class="btn moreBtn" data-act="showMore">عرض المزيد ('+(list.length-shown.length)+')</button>':'');
 }
 function customerProfile(k){
@@ -2432,6 +2451,20 @@ function customerEdit(k){
   d.querySelector('#cf').addEventListener('submit',function(e){e.preventDefault();
     var rec=c.ci>=0?db.customers[c.ci]:null;if(!rec){rec={name:'',phone:c.phone,place:'',orders:c.orders.map(oid)};db.customers.push(rec)}
     rec.name=$('cName').value.trim();rec.place=$('cPlace').value.trim();rec.updatedAt=new Date().toISOString();save();closeSheet(d);toast('💾 تم الحفظ');render()});
+}
+
+/* «➕ إدارة العملاء»: قاعدة العملاء مثل التطبيق الحالي — بحث، عميل جديد، تعديل */
+function customersManage(){
+  var list=customersIndex().slice().sort(function(a,b){return b.last-a.last}),q='';
+  function rows(){var l=q?list.filter(function(c){return normTxt([c.name,c.phone,c.place].join(' ')).indexOf(normTxt(q))>=0}):list;
+    return l.slice(0,150).map(function(c){return '<div class="irow" data-ck="'+esc(c.k)+'"><span>👤 <b>'+esc(c.name||'اسم غير مذكور')+'</b><small>📱 '+esc(c.phone)+(c.place?' · 📍 '+esc(c.place):'')+' · 📦 '+c.orders.length+'</small></span><span class="rowb"><button class="btn sm" data-act="cProfile">📋</button><button class="btn sm" data-act="cEdit">✏️</button></span></div>'}).join('')||'<div class="empty">لا يوجد عملاء.</div>'}
+  var d=openSheet('<div class="sh"><h3>👥 قاعدة العملاء</h3><button class="x" data-act="close">إغلاق ✕</button></div><div class="row"><div><input class="in" id="cmq" placeholder="🔎 ابحث بالاسم أو الرقم..."></div><div><button class="btn dark wide" type="button" data-cm="new">➕ عميل جديد</button></div></div>'+
+    '<form id="cmf" class="hide" novalidate><div class="row"><div><input class="in" id="cmPhone" placeholder="📱 الرقم" inputmode="tel"></div><div><input class="in" id="cmName" placeholder="👤 الاسم (اختياري)"></div></div><div class="row"><div><input class="in" id="cmPlace" placeholder="📍 المكان"></div><div><input class="in" id="cmNotes" placeholder="📝 ملاحظات"></div></div><div class="rowb"><button class="btn green" type="submit">💾 حفظ العميل</button><button class="btn" type="button" data-cm="cancel">إلغاء</button></div></form><div id="cmList">'+rows()+'</div>');
+  d.querySelector('#cmq').addEventListener('input',function(){q=this.value;$('cmList').innerHTML=rows()});
+  d.addEventListener('click',function(e){var b=e.target.closest('[data-cm]');if(!b)return;if(b.dataset.cm==='new'){$('cmf').classList.remove('hide');$('cmPhone').focus()}else $('cmf').classList.add('hide')});
+  d.querySelector('#cmf').addEventListener('submit',function(e){e.preventDefault();var ph=$('cmPhone').value.trim();if(!phoneKey(ph)){alert('رقم العميل مطلوب');return}
+    var k=phoneKey(ph),rec=db.customers.find(function(c){return phoneKey(c.phone)===k});if(!rec){rec={phone:ph,orders:[]};db.customers.push(rec)}
+    rec.name=$('cmName').value.trim();rec.place=$('cmPlace').value.trim();rec.notes=$('cmNotes').value.trim();rec.updatedAt=new Date().toISOString();save();dirty();closeSheet(d);toast('💾 تم حفظ العميل');render()});
 }
 
 /* ===== screens/settings.js ===== */
@@ -2575,6 +2608,7 @@ document.addEventListener('click',function(e){
     case 'stockLow':state.stockLow=!state.stockLow;render();break;
     case 'csort':state.csort=b.dataset.s;state.limit=30;render();break;
     case 'cProfile':customerProfile(ck(b));break;
+    case 'cManage':customersManage();break;
     case 'cEdit':customerEdit(ck(b));break;
     case 'cWa':{var cc=custByKey(ck(b));if(cc)waOpen({phone:cc.phone,name:cc.name,status:'x',products:[]},true);break}
     case 'cNew':{var cn=custByKey(ck(b));closeSheet();newOrder();if(cn){$('fPhone').value=cn.phone;$('fName').value=cn.name||'';$('fPlace').value=cn.place||'';$('fPlace').dispatchEvent(new Event('input',{bubbles:true}))}break}
@@ -2588,9 +2622,11 @@ document.addEventListener('click',function(e){
     case 'dayFold':state.dayOpen=!state.dayOpen;render();break;
     case 'track':closeSheetIfMenu(b);trackSheet();break;
     case 'nfSend':{var o3=findOrder(id);if(o3)nfSend(o3);break}
+    case 'perfRefresh':dirty();render();toast('🔄 تم التحديث');break;
     case 'homeImgPick':closeSheet(b.closest('.sheet'));$('homeImgIn').click();break;
     case 'homeImgDel':if(confirm('حذف صورة الرئيسية؟')){homeImgSet('');closeSheet(b.closest('.sheet'));render()}break;
     case 'quickLink':quickOpen();break;
+    case 'archSearch':archWin(($('q')||{}).value||'');break;
     case 'storeOrders':storeOrdersOpen();break;
     case 'cloud':closeSheetIfMenu(b);cloudSheet();break;
     case 'headMore':headToggle();break;
@@ -2623,7 +2659,7 @@ document.addEventListener('input',function(e){
   if(id==='q'){state.q=e.target.value;state.limit=30;clearTimeout(qT);qT=setTimeout(refreshList,180);return}
   if(id==='pq'||id==='cq'){state[id]=e.target.value;state.limit=30;clearTimeout(qT);qT=setTimeout(function(){var tmp=document.createElement('div');tmp.innerHTML=state.view==='products'?productsHtml():customersHtml();var L=id==='pq'?'#plist':'#clist';$(L.slice(1)).innerHTML=tmp.querySelector(L).innerHTML;if(id==='pq')varPass();var om=document.querySelector('.moreBtn'),nm=tmp.querySelector('.moreBtn');if(om)om.remove();if(nm)$(L.slice(1)).after(nm)},180)}
 });
-$('view').addEventListener('change',function(e){if(e.target.name==='nfm')nfSetMode(e.target.value)});
+$('view').addEventListener('change',function(e){if(e.target.name==='nfm')nfSetMode(e.target.value);else if(e.target.id==='csort'){state.csort=e.target.value;state.limit=30;render()}});
 $('fileIn').addEventListener('change',function(){
   var f=this.files&&this.files[0];if(!f)return;var r=new FileReader();
   r.onload=function(){try{var raw=JSON.parse(r.result),d=raw&&raw.data&&raw.data.orders?raw.data:raw;
@@ -2653,7 +2689,9 @@ $('homeImgIn').addEventListener('change',function(){var f=this.files&&this.files
 }
 langBoot();icApply();boot();lkBoot();bkBoot();lookBoot();if(stCfgOn())stLoad().catch(function(){});cloudBoot();storeBoot();puBoot();
 setTimeout(function(){nfLoad().then(nfBadge,function(){})},900);setTimeout(trBoot,2500);setTimeout(function(){setLoad().catch(function(){})},2000);setTimeout(archRefresh,2500);setTimeout(trEnsureAll,3000);
-setInterval(function(){coTick();lkTick();lookTick();bkTick();cloudTick();storeTick();trTick();puTick();supTick();archTick();if(!$('sheets').children.length)closingTick();if(state.view==='home'&&!$('sheets').children.length){var c=document.querySelector('.clock');if(c){var n=new Date(),h=n.getHours();c.innerHTML=pad(h%12||12)+':'+pad(n.getMinutes())+' <span>'+(h<12?'ص':'م')+'</span>'}}},10000);
+setInterval(function(){coTick();lkTick();lookTick();bkTick();cloudTick();storeTick();trTick();puTick();supTick();archTick();archAutoTick();if(!$('sheets').children.length)closingTick();},10000);
+/* الساعة في الرئيسية: الثواني كل ثانية مثل V88 (تحديث نص فقط) */
+setInterval(function(){if(document.hidden||state.view!=='home')return;var c=document.querySelector('#view .clock');if(!c)return;var n=new Date(),h=n.getHours();c.innerHTML='<bdi>'+pad(h%12||12)+':'+pad(n.getMinutes())+'<span class="s">:'+pad(n.getSeconds())+'</span></bdi> <span>'+(h<12?'ص':'م')+'</span>'},1000);
 window.EMDRebuild={db:function(){return db},save:save,cloudCheck:cloudCheck,trPoll:trPoll,render:render,index:index,total:total,payState:payState,status:status};
 
 })();

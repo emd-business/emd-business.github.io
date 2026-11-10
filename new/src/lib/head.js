@@ -3,7 +3,7 @@
 function headToggle(){var on=document.body.classList.toggle('hopen');var s=document.querySelector('#hMore span');if(s)s.textContent=on?'إخفاء':'المزيد'}
 function headPaint(){
   var lg=$('langChip');if(lg)lg.textContent=langGet()==='en'?'🌐 عربي':'🌐 English';
-  var lo=$('logoutChip');if(lo)lo.classList.toggle('hide',!lkHas());
+  var lo=$('logoutChip');if(lo)lo.classList.remove('hide');
   var st=$('stStub');if(st){if(window.EMDStaffV108)st.remove();else st.classList.toggle('hide',POS_LS.getItem('emd_v111_hidestaff')==='1')}
 }
 function headStaff(){stLoad().then(function(S){headPaint();S.open()},function(){toast('تعذّر الفتح. تحقّق من الاتصال.')})}

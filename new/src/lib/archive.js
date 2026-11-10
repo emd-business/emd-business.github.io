@@ -21,3 +21,11 @@ var ARCH_LIFE=[],archLast=0;
 function archRefresh(){archLast=Date.now();return archAll().then(function(a){var n=a.map(function(x){return x&&x.order}).filter(Boolean);
   if(n.length!==ARCH_LIFE.length||JSON.stringify(n.map(oid))!==JSON.stringify(ARCH_LIFE.map(oid))){ARCH_LIFE=n;dirty();if(state.view==='home')render()}})}
 function archTick(){if(!document.hidden&&Date.now()-archLast>6e4)archRefresh()}
+/* نافذة «🗄️ أرشيف الطلبات» (V67) تُحمَّل عند الطلب من lazy/archive.js (tools/port-archive.py) */
+var ARCH_P=null;
+function archLoad(){if(!ARCH_P){window.EMDPosH=window.EMDPosH||posHelpers();ARCH_P=loadScript('archive.js?v=1').catch(function(e){ARCH_P=null;throw e})}return ARCH_P}
+function archWin(q){archLoad().then(function(){EMDArchiveV67.open(q==null?undefined:q)},function(){toast('تعذّر فتح الأرشيف. تحقّق من الاتصال.')})}
+/* الأرشفة التلقائية مثل التطبيق الحالي: بعد 9 ثوانٍ من الفتح ثم كل 6 ساعات (لا تعمل في التجربة) */
+function archAutoRun(){if(!cloudCanWrite())return;archLoad().then(function(){return EMDArchiveV67.reconcile().then(function(){return EMDArchiveV67.archiveNow(false)})}).then(function(n){if(n){toast('🗄️ نُقل '+n+' طلب مستلم إلى الأرشيف');dirty();render();archRefresh()}}).catch(function(e){console.warn('archive',e)})}
+var archAutoAt=Date.now()+9000;
+function archAutoTick(){if(!cloudCanWrite()||Date.now()<archAutoAt)return;archAutoAt=Date.now()+6*3600*1000;archAutoRun()}

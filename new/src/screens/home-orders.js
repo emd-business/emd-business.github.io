@@ -27,7 +27,7 @@ function homeHtml(){
   var cards=hcOrder().filter(function(k){return !hid[k]}).map(function(k){
     return '<button class="stat'+(pri.indexOf(k)>-1&&ix.counts[k]>0?' emd339-priority':'')+'" data-filter="'+k+'"><b>'+ix.counts[k]+'</b><span>'+statIcon(k)+''+(k==='new'?'طلبات جديدة':k==='waiting'?'بانتظار المنتجات':k==='ready'?'جاهزة للتجهيز':ST[k].l)+'</span></button>';
   }).join('');
-  var P={hero:'<div class="hero"><div><h2>'+esc(greet)+'</h2>'+(lk.clock!==false?'<div class="clock">'+pad(hh)+':'+pad(now.getMinutes())+' <span>'+(h<12?'ص':'م')+'</span></div>':'')+'<div class="date">'+esc(greg)+(hijri&&lk.hijri!==false?' · '+esc(hijri):'')+'</div></div>'+heroImg(lk)+'</div>'+modesHome(),
+  var P={hero:'<div class="hero"><div><h2>'+esc(greet)+'</h2>'+(lk.clock!==false?'<div class="clock"><bdi>'+pad(hh)+':'+pad(now.getMinutes())+'<span class="s">:'+pad(now.getSeconds())+'</span></bdi> <span>'+(h<12?'ص':'م')+'</span></div>':'')+'<div class="date">'+esc(greg)+(hijri&&lk.hijri!==false?' · '+esc(hijri):'')+'</div></div>'+heroImg(lk)+'</div>'+modesHome(),
     strip:'<div class="money" data-act="finance" role="button"><div><small>مبيعات اليوم</small><b>'+money(ix.sales)+'</b></div><div><small>غير محصّل</small><b class="gold">'+money(ix.unpaid)+'</b></div><div><small>ربح الشهر</small><b>'+money(ix.profit)+'</b></div><div class="cap">💰 اضغط لفتح المالية · '+CUR+'</div></div>',
     grid:storeHomeCard()+(shopMode()?cashCards():'<div class="stats">'+cards+'</div>'),
     actions:(shopMode()?'':'<div class="quick"><button class="btn dark" data-act="importMsg">🤖 إدخال من رسالة</button><button class="btn" data-act="newOrder">✍️ كتابة طلب يدوي</button>'+(shopMode()?'':'<button class="btn" data-act="prepNow">🧑‍💼 ماذا أجهز الآن؟</button>')+'<button class="btn" data-act="closing">📊 تقفيلة اليوم</button></div>'),
@@ -53,6 +53,7 @@ function cardHtml(o,pins){
   var s=status(o),id=oid(o),its=items(o),n=0;its.forEach(function(x){n+=qty(x)});
   var nx=NEXT[s],ps=payState(o),pin=pins[id];
   var tags='<span class="tag">📦 '+n+' قطعة</span>'+its.slice(0,4).map(function(x){return '<span class="tag">'+esc(iname(x))+' × '+qty(x)+'</span>'}).join('')+(its.length>4?'<span class="tag">+'+(its.length-4)+'</span>':'');
+  if(o.company)tags+='<span class="tag">🚚 '+esc(o.company)+'</span>';
   tags+=trPills(o);
   if(ps!=='paid'&&s!=='cancelled')tags+='<span class="tag warn">'+PAYL[ps]+' · '+money(remaining(o))+'</span>';
   return '<div class="card" style="--sc:'+ST[s].c+'" data-id="'+esc(id)+'">'+
@@ -69,10 +70,11 @@ function ordersHtml(){
   if(ix.counts.cancelled)chips.push(['cancelled','❌ ملغاة',ix.counts.cancelled]);
   var shown=list.slice(0,state.limit);
   return '<h2 class="ptitle">📋 الطلبات</h2><p class="psub">كل الطلبات المحفوظة وحالاتها.</p>'+
+    '<button class="btn dark wide qlink" data-act="quickLink">⚡ رابط طلب سريع</button>'+
     '<div class="chips">'+chips.map(function(c){return '<button class="chip'+(state.filter===c[0]?' on':'')+'" data-filter="'+c[0]+'">'+c[1]+' '+c[2]+'</button>'}).join('')+
     (storePublished()||ix.store?'<button class="chip'+(state.filter==='store'?' on':'')+'" data-filter="store">🛍️ المتجر '+(ix.store||0)+'</button>':'')+(state.filter==='prep'?'<button class="chip on" data-filter="prep">🧑‍💼 للتجهيز الآن '+list.length+'</button>':'')+'</div>'+
-    '<div class="search">🔎<input id="q" type="search" placeholder="ابحث بالاسم أو الرقم أو المكان أو المنتج" value="'+esc(state.q)+'" autocomplete="off"></div>'+
-    '<div class="tools"><button class="btn sm" data-act="quickLink">⚡ رابط طلب سريع</button><button class="btn sm'+(state.pinnedOnly?' dark':'')+'" data-act="pinnedOnly">📌 المثبتة فقط'+(ix.counts.pinned?' ('+ix.counts.pinned+')':'')+'</button>'+(state.q?'<button class="btn sm" data-act="clearQ">مسح البحث</button>':'')+'</div>'+
+    '<div class="search">🔎<input id="q" type="search" placeholder="ابحث بالاسم أو الرقم أو الموقع أو المنتج أو رقم الطلب" value="'+esc(state.q)+'" autocomplete="off"></div>'+
+    '<div class="tools"><button class="btn sm" data-act="archSearch">🗄️ ابحث في الأرشيف</button><button class="btn sm'+(state.pinnedOnly?' dark':'')+'" data-act="pinnedOnly">📌 المثبتة فقط'+(ix.counts.pinned?' ('+ix.counts.pinned+')':'')+'</button><button class="btn sm" data-act="clearQ">مسح البحث</button></div>'+
     '<div id="list">'+(shown.length?(QL=qlOpt(),shown).map(function(o){return cardHtml(o,pins)}).join(''):'<div class="empty">لا توجد طلبات مطابقة.</div>')+'</div>'+
     (list.length>shown.length?'<button class="btn moreBtn" data-act="showMore">عرض المزيد ('+(list.length-shown.length)+')</button>':'');
 }
