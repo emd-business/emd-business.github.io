@@ -25,6 +25,7 @@ lib/parseclean.js
 lib/dup.js
 lib/setload.js
 lib/look.js
+lib/lang.js
 screens/homecfg.js
 screens/home-orders.js
 screens/order-form.js

@@ -6,6 +6,7 @@ await n.evaluate(()=>document.querySelectorAll('.rc-alert,#emd122Ban').forEach(x
 const act=a=>n.evaluate(a=>{const b=document.createElement('button');b.dataset.act=a;document.body.appendChild(b);b.click();b.remove()},a);
 const before=await n.evaluate(()=>Object.keys(localStorage).filter(k=>!k.startsWith('emd_rb_')).sort().join(','));
 await act('settings');await n.click('#setHub [data-si=wizard]');await n.waitForTimeout(1200);
+console.log('english btn',await n.$eval('#emd92Ov .emd98-wiz',x=>x.textContent).catch(()=>'none'));
 for(let i=0;i<6;i++){const ov=await n.$('#emd92Ov');if(!ov){console.log('closed at',i);break}
   await n.screenshot({path:O+'n-wiz'+i+'.png'});console.log('step',i,(await ov.innerText()).slice(0,70).replace(/\n/g,' | '));
   const nx=await n.$('#emd92Ov [data-k=next]');if(nx)await nx.click();else{const f=await n.$('#emd92Ov [data-k=finish]');if(f){await f.click();}else break}

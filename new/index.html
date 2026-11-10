@@ -262,6 +262,7 @@ details.more summary{font-weight:800;padding:8px 0;cursor:pointer}
 #e445G .x{border:0;background:#f1f5f9;width:36px;height:36px;border-radius:12px;font-size:16px;cursor:pointer}#e445G .emd327-item{width:100%;margin-bottom:8px;display:block}
 @media(max-width:600px){#e445G{align-items:flex-end;padding:0}#e445G .w{border-radius:20px 20px 0 0}}
 .e137-fee{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:10px 0;padding:10px 12px;border:1px solid #e3e8ef;border-radius:12px;background:#f8fafc}.e137-fee span{font-weight:800;font-size:14px;margin-inline-end:auto}.e137-fee button{border:1px solid #cfd6e0;background:#fff;color:#18202a;border-radius:10px;padding:8px 12px;font-weight:800;cursor:pointer;font-size:13px;flex:0 0 auto}.e137-fee button.on{background:#0f172a;color:#fff;border-color:#0f172a}
+.emd98-lang{border:1px solid var(--line,#e4e8ef);background:var(--card,#fff);color:var(--text,#18202a);border-radius:999px;padding:7px 12px;font-weight:800;font-size:13px;cursor:pointer;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -1469,6 +1470,22 @@ function lookNative(dark,acc){var r=document.documentElement.style;
 function storeRow(){var el=$('storeName');if(!el)return;var n=storeName(),lg=lookLogo();el.classList.toggle('hide',!n&&!lg);
   el.innerHTML=(n||lg)?(lg?'<img src="'+esc(lg)+'" alt="">':'<i>🏪</i>')+'<span>'+esc(n||'متجري')+'</span>':''}
 
+/* ===== lib/lang.js ===== */
+/* اللغة (V98): العربية افتراضيًا. اختيار English يحمّل lang.js (القاموس والترجمة عند العرض) ويعيد فتح التطبيق.
+   في العربية لا يُحمَّل شيء؛ نُبقي فقط window.EMDLangV98 الذي تسأله الأدوات المنقولة عن اللغة. */
+function langGet(){try{return POS_LS.getItem('emd_v98_lang')==='en'?'en':'ar'}catch(e){return 'ar'}}
+function langSet(l){try{POS_LS.setItem('emd_v98_lang',l==='en'?'en':'ar')}catch(e){}location.reload()}
+function langToggle(){langSet(langGet()==='en'?'ar':'en')}
+function langDesc(){return langGet()==='en'?'الحالية: English. اضغط للتبديل إلى العربية.':'الحالية: العربية. اضغط للتبديل إلى English.'}
+window.EMDLangV98={lang:function(){return 'ar'},set:langSet,t:function(s){return String(s)}};
+function langBoot(){if(langGet()!=='en')return;window.EMDLangV98.lang=function(){return 'en'};window.EMDPosH=window.EMDPosH||posHelpers();
+  loadScript('lang.js?v=1').catch(function(){window.EMDLangV98={lang:function(){return 'ar'},set:langSet,t:function(s){return String(s)}};toast('تعذّر تحميل الواجهة الإنجليزية.')})}
+/* زر «🌐 English» أعلى معالج الإعداد (كما في التطبيق الحالي) */
+function langWiz(){var h=document.querySelector('#emd92Ov .emd92-hero');if(!h||h.parentNode.querySelector('.emd98-wiz'))return;var en=langGet()==='en';
+  var b=document.createElement('button');b.type='button';b.className='emd98-lang emd98-wiz emd-no-i18n';b.style.cssText='display:block;margin:0 auto 10px';
+  b.textContent=en?'🌐 عربي':'🌐 English';b.addEventListener('click',function(e){e.stopPropagation();langToggle()});h.parentNode.insertBefore(b,h)}
+document.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('#emd92Ov'))setTimeout(langWiz,0)});
+
 /* ===== screens/homecfg.js ===== */
 /* ---------- تخصيص الرئيسية: نفس مفاتيح التطبيق الحالي ----------
    إخفاء البطاقات V337 (emd_dashboard_v337)، ترتيبها V338 (emd_dashboard_order_v338) ثم V114 (db.uiOrder.homestats)،
@@ -2385,7 +2402,7 @@ function customerEdit(k){
 var SET_I={
  profile:['🏢 بيانات النشاط','الاسم والتواصل والموقع والعملة. تظهر في الفاتورة والملصق.',function(){setRun(function(){EMDBusinessProfileV333.open()})}],
  prefix:['🔤 حروف رقم الطلب',function(){var p=prefix();return 'الحالية: '+p+'. تظهر قبل رقم كل طلب مثل '+p+'-0042.'},function(){setRun(function(){EMDPrefixV129.open()})}],
- wizard:['🚀 معالج الإعداد السريع','المتجر والمنتجات وشركات الشحن خطوة بخطوة.',function(){setRun(function(){EMDOnboardV92.open()})}],
+ wizard:['🚀 معالج الإعداد السريع','المتجر والمنتجات وشركات الشحن خطوة بخطوة.',function(){setRun(function(){EMDOnboardV92.open();langWiz()})}],
  quick:['🏷️ الملصق السريع','تصميم الملصق الذي يُطبع بزر «🏷️ ملصق» ومقاسه.',function(){quickLabelSettings()}],
  invp:['🧾 اقتراح إرسال الفاتورة',function(){return invpOn()?'مفعّل: يظهر اقتراح إرسال الفاتورة بعد استلام الطلب. اضغط للإيقاف.':'متوقف. اضغط لتفعيل اقتراح إرسال الفاتورة بعد استلام الطلب.'},function(){setRun(function(){EMDInvPromptV117.set(!EMDInvPromptV117.on());setPaint()})}],
  push:['🔔 الإشعارات','طلبات المتجر الجديدة، والتقييمات، والمخزون، وملخص اليوم على جوالك.',function(){setClose();pushSheet()}],
@@ -2394,7 +2411,7 @@ var SET_I={
  ign:['🧹 جمل يتجاهلها التحليل','أسطر في رسالة الطلب لا يقرؤها التحليل.',function(){setRun(function(){EMDParseCleanV120.open()})}],
  dup:['♻️ الطلبات المكررة','قواعد كشف الطلبات المكررة ومعالجتها.',function(){setRun(function(){openDuplicateSettings54()})}],
  look:['🎨 المظهر والهوية','الثيم والألوان والشعار وحجم العرض.',function(){lookOpen()}],
- lang:['🌐 اللغة','الحالية: العربية. اضغط للتبديل إلى English.',null],
+ lang:['🌐 اللغة',function(){return langDesc()},function(){langToggle()}],
  btn:['🎛️ شكل الأزرار والشريط السفلي','شكل الأيقونات وأزرار الشريط السفلي على الجوال.',function(){icOpen()}],
  ord:['↕️ ترتيب الأزرار والأقسام','ترتيب أزرار الشريط وأقسام الصفحات.',function(){setRun(function(){EMDLayoutV114.open()})}],
  qa:['⚡ الإجراءات السريعة','الاختصارات التي تظهر في قائمة «إجراءات سريعة».',null],
@@ -2589,7 +2606,7 @@ function boot(){
 $('homeImgIn').addEventListener('change',function(){var f=this.files&&this.files[0];this.value='';homeImgPicked(f)});
   render();setTimeout(modesFirstRun,1500);
 }
-icApply();boot();lkBoot();lookBoot();if(stCfgOn())stLoad().catch(function(){});cloudBoot();storeBoot();puBoot();
+langBoot();icApply();boot();lkBoot();lookBoot();if(stCfgOn())stLoad().catch(function(){});cloudBoot();storeBoot();puBoot();
 setTimeout(function(){nfLoad().then(nfBadge,function(){})},900);setTimeout(trBoot,2500);setTimeout(function(){setLoad().catch(function(){})},2000);setTimeout(archRefresh,2500);setTimeout(trEnsureAll,3000);
 setInterval(function(){coTick();lkTick();lookTick();if(window.__bkTick)try{__bkTick()}catch(e){}cloudTick();storeTick();trTick();puTick();supTick();archTick();if(!$('sheets').children.length)closingTick();if(state.view==='home'&&!$('sheets').children.length){var c=document.querySelector('.clock');if(c){var n=new Date(),h=n.getHours();c.innerHTML=pad(h%12||12)+':'+pad(n.getMinutes())+' <span>'+(h<12?'ص':'م')+'</span>'}}},10000);
 window.EMDRebuild={db:function(){return db},save:save,cloudCheck:cloudCheck,trPoll:trPoll,render:render,index:index,total:total,payState:payState,status:status};

@@ -1,0 +1,23 @@
+// الواجهة الإنجليزية (V98): التبديل من الإعدادات، الترجمة، الرجوع للعربية، عدم لمس مفاتيح التطبيق الحي
+const {chromium}=require('playwright');const O='/tmp/claude-0/cmp/';
+(async()=>{const b=await chromium.launch();const ctx=await b.newContext({viewport:{width:400,height:860}});const errs=[];
+const n=await ctx.newPage();n.on('pageerror',e=>errs.push(e.message));n.on('dialog',d=>d.accept());
+await n.goto('http://localhost:8133/new/index.html');await n.waitForTimeout(300);await n.click('[data-act=demo][data-n="40"]');await n.waitForTimeout(2000);
+const before=await n.evaluate(()=>Object.keys(localStorage).filter(k=>!k.startsWith('emd_rb_')).sort().join(','));
+const act=a=>n.evaluate(a=>{const b=document.createElement('button');b.dataset.act=a;document.body.appendChild(b);b.click();b.remove()},a);
+console.log('ar script loaded',await n.evaluate(()=>!!document.querySelector('script[src^="lang.js"]')),'lang',await n.evaluate(()=>EMDLangV98.lang()));
+await act('settings');console.log('hub desc',await n.$eval('#setHub [data-si=lang] span',x=>x.textContent));
+await Promise.all([n.waitForNavigation(),n.click('#setHub [data-si=lang]')]);await n.waitForTimeout(3500);
+console.log('lang',await n.evaluate(()=>EMDLangV98.lang()),'dir',await n.evaluate(()=>document.documentElement.dir));
+await n.evaluate(()=>document.querySelectorAll('.rc-alert,#emd122Ban').forEach(x=>x.remove()));
+await n.screenshot({path:O+'n-en-home.png'});
+console.log('home text',JSON.stringify((await n.evaluate(()=>{const w=document.createTreeWalker(document.getElementById('view'),NodeFilter.SHOW_TEXT);let s='',t;while(t=w.nextNode())s+=EMDLangV98.raw(t)+' ';return s})).slice(0,200)));
+await act('settings');await n.waitForTimeout(400);await n.screenshot({path:O+'n-en-set.png'});
+console.log('hub desc en',await n.evaluate(()=>EMDLangV98.raw(document.querySelector('#setHub [data-si=lang] span').firstChild)));
+await n.evaluate(()=>document.querySelectorAll('.sheet').forEach(x=>x.remove()));
+await n.evaluate(()=>{const b=document.createElement('button');b.dataset.go='orders';document.body.appendChild(b);b.click()});await n.waitForTimeout(600);await n.screenshot({path:O+'n-en-orders.png'});
+await act('settings');await Promise.all([n.waitForNavigation(),n.click('#setHub [data-si=lang]')]);await n.waitForTimeout(2500);
+console.log('back',await n.evaluate(()=>EMDLangV98.lang()),await n.evaluate(()=>document.documentElement.dir||'(none)'));
+const after=await n.evaluate(()=>Object.keys(localStorage).filter(k=>!k.startsWith('emd_rb_')).sort().join(','));
+console.log('live keys unchanged',before===after);
+console.log(errs);await b.close()})();
