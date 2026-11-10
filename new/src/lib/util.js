@@ -1,3 +1,5 @@
+/* رقم النسخة الظاهر في «كل الصفحات» (الحية V233) */
+var APP_VER='V234 (تجربة)';
 /* ---------- 2) أدوات عامة ---------- */
 function $(id){return document.getElementById(id)}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}

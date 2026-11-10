@@ -79,6 +79,7 @@ document.addEventListener('click',function(e){
     case 'prepNow':state.view='prep';state.sel={};render();window.scrollTo(0,0);break;
     case 'moreSheet':moreSheet();break;
     case 'alerts':nfOpen();break;
+    case 'icons':closeSheetIfMenu(b);icOpen();break;
     case 'settings':closeSheetIfMenu(b);settingsSheet();break;
     case 'modes':closeSheet();modesOpen();break;
     case 'c438':c438(b.dataset.v);break;

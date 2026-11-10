@@ -342,6 +342,8 @@ function companies(){try{var a=JSON.parse(POS_LS.getItem('emd_v79_companies')||'
 function storeName(){try{var p=JSON.parse(POS_LS.getItem('emd_business_profile_v333')||'{}');return String(p.name||'').trim()}catch(e){return ''}}
 
 /* ===== lib/util.js ===== */
+/* رقم النسخة الظاهر في «كل الصفحات» (الحية V233) */
+var APP_VER='V234 (تجربة)';
 /* ---------- 2) أدوات عامة ---------- */
 function $(id){return document.getElementById(id)}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
@@ -1840,12 +1842,13 @@ function cardMore(id){
     '<button data-act="label" data-id="'+esc(id)+'">🏷️ ملصق الشحن</button><button data-act="invoice" data-id="'+esc(id)+'">🧾 الفاتورة</button>'+
     '<button data-act="copyNum" data-id="'+esc(id)+'">📋 نسخ رقم الطلب</button></div>');
 }
-function moreSheet(){ // مثل «كل الصفحات» في التطبيق الحالي (V410)
-  function g(a){return '<div class="grid3">'+a.map(function(x){return '<button '+x[0]+'><i>'+x[1]+'</i>'+x[2]+'</button>'}).join('')+'</div>'}
-  openSheet('<div class="sh"><div><h3>كل الصفحات</h3><small>اختر الصفحة التي تريدها.</small></div><button class="x" data-act="close">إغلاق ✕</button></div>'+
+function moreSheet(){ // مثل «كل الصفحات» في التطبيق الحالي (V410 + V159): ما هو في الشريط السفلي لا يتكرر هنا
+  var inBar={};barSlots().forEach(function(k){if(BAR_OPT[k])inBar[BAR_OPT[k][1]]=1});
+  function g(a){a=a.filter(function(x){return !inBar[x[2]]});return a.length?'<div class="grid3">'+a.map(function(x){return '<button '+x[0]+'><i>'+x[1]+'</i>'+x[2]+'</button>'}).join('')+'</div>':''}
+  openSheet('<div class="sh"><div><h3>كل الصفحات</h3><small>اختر الصفحة التي تريدها.</small></div></div>'+
     g([['data-act="finance"','💰','المالية']].concat(shopMode()?[]:[['data-act="track"','🔗','التتبع']]).concat([['data-go="customers"','👤','العملاء'],['data-go="products"','📦','المنتجات'],['data-go="stock"','🏭','المخزن'],['data-act="direct"','🛒','بيع مباشر'],['data-go="perf"','📊','الأداء']]))+
-    '<div class="msec">أدوات</div>'+g([['data-act="store"','🛍️','متجري'],['data-act="settings"','⚙️','الإعدادات'],['data-act="support"','🆘','المساعدة']])+
-    '<div class="mver">EMD Business • النسخة الجديدة (تجربة)</div>');
+    '<div class="msec">أدوات</div>'+g([['data-act="alerts"','🔔','التنبيهات'],['data-act="store"','🛍️','متجري'],['data-act="settings"','⚙️','الإعدادات'],['data-act="support"','🆘','المساعدة'],['data-act="icons"','🎛️','شكل الأزرار']])+
+    '<div class="mver">EMD Business • '+APP_VER+'</div>');
 }
 function alertsSheet(){
   var arr=[],now=Date.now();
@@ -2600,6 +2603,7 @@ document.addEventListener('click',function(e){
     case 'prepNow':state.view='prep';state.sel={};render();window.scrollTo(0,0);break;
     case 'moreSheet':moreSheet();break;
     case 'alerts':nfOpen();break;
+    case 'icons':closeSheetIfMenu(b);icOpen();break;
     case 'settings':closeSheetIfMenu(b);settingsSheet();break;
     case 'modes':closeSheet();modesOpen();break;
     case 'c438':c438(b.dataset.v);break;
