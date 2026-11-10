@@ -10,7 +10,7 @@ await ctx.route('**/store/index.html',r=>r.fulfill({status:200,contentType:'text
 const p=await ctx.newPage();p.on('pageerror',e=>errs.push(e.message));p.on('dialog',d=>d.accept());
 await p.goto('http://localhost:8131/index.html');await p.waitForTimeout(300);await p.click('[data-act=demo][data-n="40"]');await p.waitForTimeout(300);
 await p.evaluate(()=>{localStorage.setItem('emd_store_v411',JSON.stringify({on:true,name:'متجر التجربة',slug:'test-shop',pubAt:'9/11 · 10:00',pubSlug:'test-shop',prod:{}}));localStorage.removeItem('emd_rb_store')});
-await p.click('#cloudChip');await p.fill('#clEmail','a@b.co');await p.fill('#clPw','pass1234');await p.click('[data-ck=go]');await p.waitForTimeout(600);
+await p.evaluate(()=>document.body.classList.add('hopen'));await p.click('#cloudChip');await p.fill('#clEmail','a@b.co');await p.fill('#clPw','pass1234');await p.click('[data-ck=go]');await p.waitForTimeout(600);
 await p.evaluate(()=>document.querySelectorAll('.sheet').forEach(s=>s.remove()));await p.reload();await p.waitForTimeout(5500);
 console.log('store.js loaded:',await p.evaluate(()=>!!window.EMDStoreV411),'| seeded:',await p.evaluate(()=>!!localStorage.getItem('emd_rb_store')),'| card:',JSON.stringify(await p.evaluate(()=>(document.querySelector('.scard')||{}).textContent)));
 await p.click('.scard');await p.waitForTimeout(500);await p.screenshot({path:'/tmp/store-orders.png'});

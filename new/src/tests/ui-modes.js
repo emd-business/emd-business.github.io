@@ -14,7 +14,7 @@ await p.click('#emd416 [data-a=confirm]');await p.waitForTimeout(300);await p.cl
 console.log('shop bar:',await bar());
 const home=await p.$eval('#view',v=>v.textContent);console.log('shop home: panel',home.includes('مبيعات المحل اليوم'),'prep hidden',!home.includes('ماذا أجهز'));
 await p.screenshot({path:'/tmp/claude-0/cmp/new-modes-shop.png',fullPage:false});
-await p.click('nav#bar [data-act=moreSheet]');await p.waitForTimeout(150);console.log('track hidden:',!(await p.$eval('.sheet',x=>x.textContent)).includes('التتبع'));await p.click('.sheet [data-act=close]');
+await p.click('nav#bar [data-act=moreSheet]');await p.waitForTimeout(150);console.log('track hidden:',!(await p.$eval('.sheet',x=>x.textContent)).includes('التتبع'));await p.evaluate(()=>{document.querySelectorAll('.sheet').forEach(x=>x.click())});await p.waitForTimeout(150);
 await p.evaluate(()=>{EMDModesV416.set('hybrid');});await p.waitForTimeout(400);console.log('hybrid bar:',await bar(),'| panel',await p.$eval('#view',v=>v.textContent.includes('طلب أونلاين')));
 await p.screenshot({path:'/tmp/claude-0/cmp/new-modes-hybrid.png'});
 await p.evaluate(()=>{EMDModesV416.set('online');});await p.waitForTimeout(300);console.log('back online bar:',await bar(),'| panel gone',!(await p.$eval('#view',v=>v.textContent.includes('مبيعات المحل'))));
