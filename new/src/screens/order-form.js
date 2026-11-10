@@ -12,6 +12,8 @@ function readItems(box){
     out.push({name:name,qty:q,unitPrice:pr});
   });return out;
 }
+/* رسوم التوصيل مدفوعة أو غير مدفوعة (V137): تظهر على الملصق */
+function feeRowHtml(v){v=v==='paid'||v==='unpaid'?v:'';return '<div class="e137-fee" id="feeSeg"><span>🚚 رسوم التوصيل</span><button type="button" data-feep="paid" class="'+(v==='paid'?'on':'')+'">✓ مدفوعة</button><button type="button" data-feep="unpaid" class="'+(v==='unpaid'?'on':'')+'">غير مدفوعة</button></div>'}
 function formHtml(o,isNew){
   var comp=companies(),pState=o?payState(o):'unpaid';
   var f=function(id,lbl,val,ph,extra){return '<label class="f" for="'+id+'">'+lbl+'</label><input class="in" id="'+id+'" value="'+esc(val||'')+'" placeholder="'+esc(ph||'')+'" '+(extra||'')+'>'};
@@ -30,6 +32,7 @@ function formHtml(o,isNew){
     f('fPlace','📍 مكان التوصيل <em>*</em>',o&&cplace(o),'مثال: نزوى')+
     '<label class="f">📦 المنتجات <em>*</em></label><div class="items" id="items">'+(o&&items(o).length?items(o).map(itemRow).join(''):itemRow(null))+'</div><button type="button" class="btn sm" data-act="addItem">＋ إضافة منتج</button>'+
     '<div class="row"><div>'+f('fFee','🚚 رسوم التوصيل',o&&num(o.deliveryFee)?money(num(o.deliveryFee)):'','0.000','inputmode="decimal"')+'</div><div>'+f('fDisc','🏷️ الخصم',o&&num(o.discount)?money(num(o.discount)):'','0.000','inputmode="decimal"')+'</div></div>'+
+    feeRowHtml(o&&o.feePaid)+
     '<label class="f">💳 الدفع</label><div class="seg" id="paySeg">'+['unpaid','partial','paid'].map(function(k){return '<button type="button" data-pay="'+k+'" class="'+(pState===k?'on':'')+'">'+(k==='unpaid'?'⏳ ':k==='partial'?'🌓 ':'✅ ')+PAYL[k]+'</button>'}).join('')+'</div>'+
     '<div id="partBox" class="'+(pState==='partial'?'':'hide')+'">'+f('fPaid','المبلغ المدفوع',o&&num(o.paidAmount)?money(num(o.paidAmount)):'','0.000','inputmode="decimal"')+'</div>'+
     '<div class="sum" id="sumBox"></div>'+
@@ -55,6 +58,7 @@ function bindForm(box,o){
     var b=e.target.closest('button');if(!b)return;
     if(b.dataset.act==='addItem'){it.insertAdjacentHTML('beforeend',itemRow(null));recalc()}
     else if(b.dataset.act==='delItem'){if(it.children.length>1)b.closest('.it').remove();else b.closest('.it').querySelectorAll('input').forEach(function(i){i.value=i.dataset.k==='qty'?1:''});recalc()}
+    else if(b.dataset.feep){box.querySelectorAll('#feeSeg button').forEach(function(x){x.classList.toggle('on',x===b)})}
     else if(b.dataset.pay){box.querySelectorAll('#paySeg button').forEach(function(x){x.classList.toggle('on',x===b)});$('partBox').classList.toggle('hide',b.dataset.pay!=='partial')}
     else if(b.dataset.cust!=null){var c=db.customers[+b.dataset.cust];$('fPhone').value=c.phone||'';if(!$('fName').value)$('fName').value=c.name||'';if(!$('fPlace').value)$('fPlace').value=c.place||'';$('sugg').innerHTML=''}
   });
@@ -75,6 +79,7 @@ function collect(box,o){
   o.paymentMethod=$('fPayM').value.trim();o.transfer=$('fTransfer').value.trim();o.beneficiary=$('fBenef').value.trim();o.due=$('fDue').value;o.note=$('fNote').value.trim();if($('fNotify')){o.notifyOnAvailable=$('fNotify').checked;o.notifyStatus=o.notifyOnAvailable?(o.notifyStatus==='sent_manual'?'sent_manual':'waiting'):'none'}
   o.products=its;if(o.items&&o.products!==o.items)delete o.items;
   o.deliveryFee=num($('fFee').value);o.discount=num($('fDisc').value);
+  var fp=box.querySelector('#feeSeg .on');if(fp)o.feePaid=fp.dataset.feep;
   o.subtotal=its.reduce(function(s,x){return s+x.unitPrice*x.qty},0);
   o.total=Math.max(0,o.subtotal+o.deliveryFee-o.discount);o.pricingEnabled=true;
   if(pay==='paid'){o.paymentStatus='paid';o.paidAmount=o.total}
@@ -124,7 +129,7 @@ function openOrder(id){
     '<form id="frm" novalidate><label class="f" for="fStatus">🔄 حالة الطلب</label><select class="in" id="fStatus">'+opts+'</select>'+formHtml(o,false)+
     (hist?'<div class="hist"><b>سجل الطلب</b>'+hist+'</div>':'')+
     '<div class="foot"><button class="btn green" type="submit">💾 حفظ التعديلات</button><button class="btn" type="button" data-act="waSend" data-id="'+esc(id)+'">💬</button><button class="btn" type="button" data-act="copyNum" data-id="'+esc(id)+'">📋</button></div>'+
-    '<div class="foot" style="margin-top:4px"><button class="btn" type="button" data-act="label" data-id="'+esc(id)+'">🏷️ ملصق الشحن</button><button class="btn" type="button" data-act="invoice" data-id="'+esc(id)+'">🧾 الفاتورة</button></div>'+
+    '<div class="foot" style="margin-top:4px"><button class="btn" type="button" data-act="label" data-id="'+esc(id)+'">🏷️ ملصق الشحن</button>'+(qlOpt().modal?'<button class="btn" type="button" data-act="qlabel" data-id="'+esc(id)+'">🏷️ ملصق سريع</button>':'')+'<button class="btn" type="button" data-act="invoice" data-id="'+esc(id)+'">🧾 الفاتورة</button></div>'+
     (s!=='cancelled'?'<button class="btn red" type="button" data-act="cancelOrder" data-id="'+esc(id)+'" style="width:100%;margin-top:4px">❌ إلغاء الطلب</button>':'')+'</form>');
   var box=d.querySelector('#frm');bindForm(box,o);
   box.addEventListener('submit',function(e){

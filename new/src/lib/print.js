@@ -22,5 +22,15 @@ function withDocs(cb){
       storeName:storeName,toast:toast,printDoc:printDoc,openSheet:openSheet,esc:esc,nOrders:nOrders,waOpen:waOpen});return window.EMDDocs});
   docsP.then(cb).catch(function(){docsP=null;toast('تعذّر تحميل أداة الطباعة. تحقّق من الاتصال وحاول مجددًا.')});
 }
-function openLabels(ids){var os=ids.map(findOrder).filter(Boolean);if(!os.length){toast('حدّد طلبًا واحدًا على الأقل');return}withDocs(function(D){D.labels(os)})}
+/* ملصق الشحن كما في التطبيق الحالي (V418 وما يتبعه) في ملف label.js */
+var LB_P=null;
+function lbLoad(){if(window.EMDLabelV418)return Promise.resolve();if(LB_P)return LB_P;window.EMDPosH=window.EMDPosH||posHelpers();
+  try{var o=localStorage.getItem('emd_rb_label');if(o&&localStorage.getItem('emd_rb_emd418_label')===null)localStorage.setItem('emd_rb_emd418_label',o)}catch(e){}
+  LB_P=loadScript('qrcode.js?v=1').catch(function(){}).then(function(){return loadScript('label.js?v=1')}).catch(function(e){LB_P=null;throw e});return LB_P}
+function lbRun(fn){lbLoad().then(fn,function(){toast('تعذّر تحميل أداة الملصق. تحقّق من الاتصال وحاول مجددًا.')})}
+function openLabels(ids){var os=ids.map(findOrder).filter(Boolean);if(!os.length){toast('حدّد طلبًا واحدًا على الأقل');return}lbRun(function(){EMDLabelV418.open(os.map(oid))})}
+function quickLabel(id){if(findOrder(id))lbRun(function(){EMDLabelDesignV423.quick(id)})}
+function quickLabelSettings(){lbRun(function(){EMDQuickV424.open()})}
+/* إظهار زر «🏷️ ملصق» في البطاقة و«🏷️ ملصق سريع» في نافذة الطلب (V424) */
+function qlOpt(){var d={};try{d=JSON.parse(POS_LS.getItem('emd424_quick')||'{}')||{}}catch(e){}return {card:d.card!==false,modal:d.modal!==false}}
 function openInvoice(id){var o=findOrder(id);if(o)withDocs(function(D){D.invoice(o)})}

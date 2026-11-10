@@ -4,7 +4,7 @@ var SET_I={
  profile:['🏢 بيانات النشاط','الاسم والتواصل والموقع والعملة. تظهر في الفاتورة والملصق.',function(){setRun(function(){EMDBusinessProfileV333.open()})}],
  prefix:['🔤 حروف رقم الطلب',function(){var p=prefix();return 'الحالية: '+p+'. تظهر قبل رقم كل طلب مثل '+p+'-0042.'},function(){setRun(function(){EMDPrefixV129.open()})}],
  wizard:['🚀 معالج الإعداد السريع','المتجر والمنتجات وشركات الشحن خطوة بخطوة.',function(){setRun(function(){EMDOnboardV92.open()})}],
- quick:['🏷️ الملصق السريع','تصميم الملصق الذي يُطبع بزر «🏷️ ملصق» ومقاسه.',null],
+ quick:['🏷️ الملصق السريع','تصميم الملصق الذي يُطبع بزر «🏷️ ملصق» ومقاسه.',function(){quickLabelSettings()}],
  invp:['🧾 اقتراح إرسال الفاتورة',function(){return invpOn()?'مفعّل: يظهر اقتراح إرسال الفاتورة بعد استلام الطلب. اضغط للإيقاف.':'متوقف. اضغط لتفعيل اقتراح إرسال الفاتورة بعد استلام الطلب.'},function(){setRun(function(){EMDInvPromptV117.set(!EMDInvPromptV117.on());setPaint()})}],
  push:['🔔 الإشعارات','طلبات المتجر الجديدة، والتقييمات، والمخزون، وملخص اليوم على جوالك.',function(){setClose();pushSheet()}],
  wa:['💬 رسالة واتساب','قالب الرسالة التي تُرسل للعميل ومتغيراتها.',function(){setRun(function(){openWaTemplate()})}],

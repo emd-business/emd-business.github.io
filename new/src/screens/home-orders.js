@@ -48,6 +48,7 @@ function filtered(){
   out.sort(function(a,b){var pa=pins[oid(a)]?1:0,pb=pins[oid(b)]?1:0;if(pa!==pb)return pb-pa;var ta=odate(a),tb=odate(b);return (tb?tb.getTime():0)-(ta?ta.getTime():0)});
   return out;
 }
+var QL={card:true};
 function cardHtml(o,pins){
   var s=status(o),id=oid(o),its=items(o),n=0;its.forEach(function(x){n+=qty(x)});
   var nx=NEXT[s],ps=payState(o),pin=pins[id];
@@ -60,7 +61,7 @@ function cardHtml(o,pins){
     '<div class="tags">'+tags+'</div>'+
     (nx?'<div class="next">'+ST[nx[0]].i+' الخطوة التالية: '+nx[1]+'</div>':'')+
     '<div class="acts">'+(nx?'<button class="btn dark" data-act="advance">⚡ '+ST[nx[0]].i+' '+ST[nx[0]].l+'</button>':'')+
-    '<button class="btn" data-act="open">📋 التفاصيل</button><button class="btn" data-act="wa">💬 واتساب</button><button class="btn more" data-act="cardMore" aria-label="خيارات أكثر">⋯</button></div></div>';
+    '<button class="btn" data-act="open">📋 التفاصيل</button>'+(QL.card?'<button class="btn" data-act="qlabel" title="طباعة ملصق شحن سريع">🏷️ ملصق</button>':'')+'<button class="btn" data-act="wa">💬 واتساب</button><button class="btn more" data-act="cardMore" aria-label="خيارات أكثر">⋯</button></div></div>';
 }
 function ordersHtml(){
   var ix=index(),list=filtered(),pins=pinned();
@@ -72,7 +73,7 @@ function ordersHtml(){
     (storePublished()||ix.store?'<button class="chip'+(state.filter==='store'?' on':'')+'" data-filter="store">🛍️ المتجر '+(ix.store||0)+'</button>':'')+(state.filter==='prep'?'<button class="chip on" data-filter="prep">🧑‍💼 للتجهيز الآن '+list.length+'</button>':'')+'</div>'+
     '<div class="search">🔎<input id="q" type="search" placeholder="ابحث بالاسم أو الرقم أو المكان أو المنتج" value="'+esc(state.q)+'" autocomplete="off"></div>'+
     '<div class="tools"><button class="btn sm" data-act="quickLink">⚡ رابط طلب سريع</button><button class="btn sm'+(state.pinnedOnly?' dark':'')+'" data-act="pinnedOnly">📌 المثبتة فقط'+(ix.counts.pinned?' ('+ix.counts.pinned+')':'')+'</button>'+(state.q?'<button class="btn sm" data-act="clearQ">مسح البحث</button>':'')+'</div>'+
-    '<div id="list">'+(shown.length?shown.map(function(o){return cardHtml(o,pins)}).join(''):'<div class="empty">لا توجد طلبات مطابقة.</div>')+'</div>'+
+    '<div id="list">'+(shown.length?(QL=qlOpt(),shown).map(function(o){return cardHtml(o,pins)}).join(''):'<div class="empty">لا توجد طلبات مطابقة.</div>')+'</div>'+
     (list.length>shown.length?'<button class="btn moreBtn" data-act="showMore">عرض المزيد ('+(list.length-shown.length)+')</button>':'');
 }
 function refreshList(){ // تحديث القائمة فقط دون إعادة بناء الصفحة كلها

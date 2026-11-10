@@ -34,6 +34,7 @@ document.addEventListener('click',function(e){
     case 'printHand':printHandover(b.dataset.c);break;
     case 'label':closeSheetIfMenu(b);openLabels(id?[id]:selIds());break;
     case 'invoice':closeSheetIfMenu(b);openInvoice(id);break;
+    case 'qlabel':quickLabel(id);break;
     case 'copyNum':{var o4=findOrder(id);if(o4&&navigator.clipboard)navigator.clipboard.writeText(onum(o4)).then(function(){toast('📋 نُسخ '+onum(o4))});break}
     case 'cancelOrder':{var o5=findOrder(id);if(o5&&confirm('هل تريد إلغاء الطلب '+onum(o5)+'؟')){closeSheet();setStatus(o5,'cancelled');render()}break}
     case 'pinnedOnly':state.pinnedOnly=!state.pinnedOnly;state.limit=30;refreshList();break;
