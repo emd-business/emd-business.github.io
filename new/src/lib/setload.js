@@ -37,3 +37,14 @@ var ST_ACT={newOrder:'create',importMsg:'create',manualOrder:'create',doParse:'c
 var ST_GO={customers:'customers',perf:'finance'};
 function stPermFor(el){if(el.closest('#emd108Lock,.emd108-banner,[data-emd108-skip]'))return '';var a=el.getAttribute('data-act'),g=el.getAttribute('data-go');return (a&&ST_ACT[a])||(g&&ST_GO[g])||''}
 function stViewGuard(can){var v={customers:'customers',perf:'finance'}[state.view];if(v&&!can(v)){state.view='home';render()}}
+/* ---------- قفل التطبيق بكلمة مرور (V73 + V74 + V80 في lazy/lock.js، مولَّدة بـ tools/port-lock.py) ---------- */
+var LK_P=null;
+function lkHas(){try{var r=JSON.parse(POS_LS.getItem('emd_business_password_v80')||'null');return !!(r&&r.hash)}catch(e){return false}}
+function lkLoad(){if(window.unlockV80)return Promise.resolve();if(LK_P)return LK_P;window.EMDPosH=window.EMDPosH||posHelpers();
+  LK_P=loadScript('lock.js?v=1').then(lkCoverOff,function(e){LK_P=null;lkCoverOff();throw e});return LK_P}
+/* غطاء مؤقت حتى تُحمَّل شاشة القفل، فلا تظهر البيانات لحظة الفتح */
+function lkCover(){if(POS_LS.getItem('emd_business_locked_v80')!=='1'||$('lkCover'))return;var d=document.createElement('div');d.id='lkCover';document.body.appendChild(d)}
+function lkCoverOff(){var d=$('lkCover');if(d)d.remove()}
+function lkBoot(){if(!lkHas())return;lkCover();lkLoad().catch(function(){})}
+function lkOpen(){lkLoad().then(function(){openSettingsV80()},function(){toast('تعذّر الفتح. تحقّق من الاتصال.')})}
+function lkTick(){try{if(window.__lkTick)__lkTick()}catch(e){}}

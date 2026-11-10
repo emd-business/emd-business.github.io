@@ -190,6 +190,7 @@ details.more summary{font-weight:800;padding:8px 0;cursor:pointer}
 .welcome img{width:64px}
 .welcome .btn{display:block;width:100%;margin-top:10px}
 .rc-alert{position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:1000001;background:#fff;color:#18202a;border:1px solid #ddd;border-radius:15px;box-shadow:0 8px 30px rgba(0,0,0,.16);padding:13px 34px 13px 16px;max-width:92%;display:none}.rc-alert.show{display:block}.rc-alert b{display:block;margin-bottom:4px}.rc-alert small{opacity:.72}.rc-alert .x{position:absolute;top:6px;right:8px;border:0;background:none;font-size:20px;cursor:pointer;color:inherit}
+#lkCover{position:fixed;inset:0;z-index:2147483000;background:linear-gradient(180deg,#f5f7fb,#eef2f7)}
 /* تعديل سريع (نافذة المنتجات V16/V51/V144 + نافذة الكمية V146) */
 .qe-hb{display:flex;gap:6px;align-items:center;flex-shrink:0}.qe-hb .btn{white-space:nowrap}
 .sheet.qe{align-items:flex-start;padding:18px;overflow:auto;background:rgba(0,0,0,.55)}.sheet.qe .box{max-width:min(980px,100%);margin:25px auto;max-height:none;border-radius:18px;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.25);box-sizing:border-box}
@@ -1160,13 +1161,15 @@ function dsHelpers(){var src=POS_LS.getItem('emd_v89_logo')||'';if(src&&/^(data:
 /* أنواع المحل تستعمل البيع المباشر بنسخة التطوير V453 مع نقطة البيع (lazy/pos.js)؛ «بيع أونلاين» يبقى مثل التطبيق الحالي تمامًا */
 var dsVariant='';
 function dsWant(){var m=mode();return m==='online'?'live':m==='company'?'co':'pos'}
+/* في التجربة: الحذف يترك علامة حتى لا تعود القراءة الاحتياطية لقيمة التطبيق الحالي */
+var POS_RM='\u0000rm';
 function posLs(){var SB=function(){return typeof CLOUD_SANDBOX==='undefined'||CLOUD_SANDBOX};function rk(k){return SB()?'emd_rb_'+k:k}
-  return {getItem:function(k){if(k===LIVE_KEY)return null;var v=lsGet(rk(k));return v==null&&SB()?lsGet(k):v},
+  return {getItem:function(k){if(k===LIVE_KEY)return null;var v=lsGet(rk(k));if(v===POS_RM)return null;return v==null&&SB()?lsGet(k):v},
     setItem:function(k,v){if(k===LIVE_KEY){dirty();saveNow();return}lsSet(rk(k),String(v))},
-    removeItem:function(k){try{LS.removeItem(rk(k))}catch(e){}}}}
+    removeItem:function(k){if(SB()){lsSet(rk(k),POS_RM);return}try{LS.removeItem(k)}catch(e){}}}}
 var POS_LS=posLs();
 function dsMgr(){try{var m=JSON.parse(POS_LS.getItem('emd_manager_profile_v41')||'null');return (m&&m.name)||'المدير'}catch(e){return 'المدير'}}
-function posHelpers(){return {db:function(){return db},ls:POS_LS,coBlock:function(){return !cloudCanWrite()},owner:function(){return stOwner()},permFor:stPermFor,viewGuard:stViewGuard,closing:function(){closingSheet()},idsFmt:idsFmt,invoice:function(id){openInvoice(id)},
+function posHelpers(){return {db:function(){return db},ls:POS_LS,coBlock:function(){return !cloudCanWrite()},owner:function(){return stOwner()},permFor:stPermFor,viewGuard:stViewGuard,closing:function(){closingSheet()},idsFmt:idsFmt,invoice:function(id){openInvoice(id)},backup:function(){setRun(function(){EMDBackupV313.open()})},locked:function(){lkCoverOff()},unlocked:function(){lkCoverOff();dirty();render()},
     alias:{save:function(){dirty();saveNow()},render:function(){dirty();render()},renderProducts:function(){dirty();if(state.view==='products')render()},toast:toast,EMDBusinessProfileV333:{get:function(){return dsHelpers().profile()}},EMDLookV89:{accentHex:dsLook,logoImg:function(){return dsLogo&&dsLogo.complete&&dsLogo.naturalWidth?dsLogo:null}},EMDMoneyV75:{total:function(o){return total(o)},paid:function(o){return paid(o)},remaining:function(o){return remaining(o)},payState:function(o){return payState(o)},invoice:function(id){openInvoice(id)}},EMDStaffV108:{who:function(){return {id:'owner',name:dsMgr(),owner:true}},can:function(){return true}},EMDCloudV93:{api:{uid:function(){return cUid()},token:function(){return cToken()}}},EMDPrefixV129:{fmt:function(s){return idsFmt(String(s))}}},nat:function(f){try{return /\{\s*\[native code\]\s*\}$/.test(Function.prototype.toString.call(f))}catch(e){return false}}}}
 function directLoad(){if(window.EMDDirectV113)return Promise.resolve(window.EMDDirectV113);if(dsLoading)return dsLoading;window.EMDDirH=dsHelpers();
   var w=dsWant();dsVariant=w;
@@ -1330,6 +1333,17 @@ var ST_ACT={newOrder:'create',importMsg:'create',manualOrder:'create',doParse:'c
 var ST_GO={customers:'customers',perf:'finance'};
 function stPermFor(el){if(el.closest('#emd108Lock,.emd108-banner,[data-emd108-skip]'))return '';var a=el.getAttribute('data-act'),g=el.getAttribute('data-go');return (a&&ST_ACT[a])||(g&&ST_GO[g])||''}
 function stViewGuard(can){var v={customers:'customers',perf:'finance'}[state.view];if(v&&!can(v)){state.view='home';render()}}
+/* ---------- قفل التطبيق بكلمة مرور (V73 + V74 + V80 في lazy/lock.js، مولَّدة بـ tools/port-lock.py) ---------- */
+var LK_P=null;
+function lkHas(){try{var r=JSON.parse(POS_LS.getItem('emd_business_password_v80')||'null');return !!(r&&r.hash)}catch(e){return false}}
+function lkLoad(){if(window.unlockV80)return Promise.resolve();if(LK_P)return LK_P;window.EMDPosH=window.EMDPosH||posHelpers();
+  LK_P=loadScript('lock.js?v=1').then(lkCoverOff,function(e){LK_P=null;lkCoverOff();throw e});return LK_P}
+/* غطاء مؤقت حتى تُحمَّل شاشة القفل، فلا تظهر البيانات لحظة الفتح */
+function lkCover(){if(POS_LS.getItem('emd_business_locked_v80')!=='1'||$('lkCover'))return;var d=document.createElement('div');d.id='lkCover';document.body.appendChild(d)}
+function lkCoverOff(){var d=$('lkCover');if(d)d.remove()}
+function lkBoot(){if(!lkHas())return;lkCover();lkLoad().catch(function(){})}
+function lkOpen(){lkLoad().then(function(){openSettingsV80()},function(){toast('تعذّر الفتح. تحقّق من الاتصال.')})}
+function lkTick(){try{if(window.__lkTick)__lkTick()}catch(e){}}
 
 /* ===== screens/home-orders.js ===== */
 /* ---------- 4) العرض ---------- */
@@ -2241,9 +2255,9 @@ var SET_I={
  dord:['↕️ ترتيب بطاقات الرئيسية','ترتيب بطاقات حالات الطلبات.',null],
  dpri:['🎯 إبراز الحالات المهمة','تمييز البطاقات التي فيها طلبات تحتاج انتباهك.',null],
  staff:['👥 الموظفون','إظهار زر الموظفين وإدارة الموظفين وصلاحياتهم.',function(){stLoad().then(function(){EMDStaffHideV111.open()},function(){toast('تعذّر الفتح. تحقّق من الاتصال.')})}],
- lock:['🔐 قفل التطبيق','كلمة المرور والقفل التلقائي وتسجيل الخروج.',null],
- sec:['🧾 الأدوار وسجل العمليات','الصلاحيات وسجل العمليات المهمة.',null],
- rec:['🛟 رمز استرجاع المدير','رمز يعيد لك رمز المدير إذا نسيته.',null],
+ lock:['🔐 قفل التطبيق','كلمة المرور والقفل التلقائي وتسجيل الخروج.',function(){lkOpen()}],
+ sec:['🧾 الأدوار وسجل العمليات','الصلاحيات وسجل العمليات المهمة.',function(){setRun(function(){EMDSecurityV315.open()})}],
+ rec:['🛟 رمز استرجاع المدير','رمز يعيد لك رمز المدير إذا نسيته.',function(){stLoad().then(function(){EMDOwnerRecoveryV119.manage()},function(){toast('تعذّر الفتح. تحقّق من الاتصال.')})}],
  bk:['💾 النسخة الاحتياطية والاستعادة','تصدير نسخة، واستيراد نسخة، ونقطة استعادة.',function(){setRun(function(){EMDBackupV313.open()})}],
  bk2:['📊 حالة التخزين والتذكير','آخر نسخة، ونسبة التخزين، وتذكير النسخ.',function(){setRun(function(){EMDBackupReminderV122.open()})}],
  lost:['🛟 استرجاع الطلبات المفقودة','البحث في النسخ التلقائية عن طلب اختفى.',function(){setRun(function(){EMDRecoverV124.open()})}],
@@ -2427,9 +2441,9 @@ function boot(){
 $('homeImgIn').addEventListener('change',function(){var f=this.files&&this.files[0];this.value='';homeImgPicked(f)});
   render();setTimeout(modesFirstRun,1500);
 }
-boot();if(stCfgOn())stLoad().catch(function(){});cloudBoot();storeBoot();puBoot();
+boot();lkBoot();if(stCfgOn())stLoad().catch(function(){});cloudBoot();storeBoot();puBoot();
 setTimeout(function(){nfLoad().then(nfBadge,function(){})},900);setTimeout(trBoot,2500);setTimeout(function(){setLoad().catch(function(){})},2000);setTimeout(archRefresh,2500);setTimeout(trEnsureAll,3000);
-setInterval(function(){coTick();if(window.__bkTick)try{__bkTick()}catch(e){}cloudTick();storeTick();trTick();puTick();supTick();archTick();if(!$('sheets').children.length)closingTick();if(state.view==='home'&&!$('sheets').children.length){var c=document.querySelector('.clock');if(c){var n=new Date(),h=n.getHours();c.innerHTML=pad(h%12||12)+':'+pad(n.getMinutes())+' <span>'+(h<12?'ص':'م')+'</span>'}}},10000);
+setInterval(function(){coTick();lkTick();if(window.__bkTick)try{__bkTick()}catch(e){}cloudTick();storeTick();trTick();puTick();supTick();archTick();if(!$('sheets').children.length)closingTick();if(state.view==='home'&&!$('sheets').children.length){var c=document.querySelector('.clock');if(c){var n=new Date(),h=n.getHours();c.innerHTML=pad(h%12||12)+':'+pad(n.getMinutes())+' <span>'+(h<12?'ص':'م')+'</span>'}}},10000);
 window.EMDRebuild={db:function(){return db},save:save,cloudCheck:cloudCheck,trPoll:trPoll,render:render,index:index,total:total,payState:payState,status:status};
 
 })();

@@ -23,7 +23,8 @@ x=cut(x,"function openClosing(){var c=cfg();if(c.enabled&&!can('closing')){toast
 x=cut(x,"  if(k==='closing'){view='closing';return render()}","  if(k==='closing')return openClosing();")
 x=cutre(x,r"function homeBtn\(\)\{.*?\n","")
 x=cut(x,"function boot(){hookSec();guards();stampOrders();homeBtn();apply()}\nboot();setTimeout(boot,1200);setTimeout(boot,3500);setInterval(function(){tag();dueCheck();if(cfg().enabled&&!who()&&!lockEl)showLock()},1500);",
- "apply();RW.__stTick=function(){tag();if(cfg().enabled&&!who()&&!lockEl)showLock()};")
+ "apply();RW.__stTick=function(){tag();if(cfg().enabled&&!who()&&!lockEl)showLock();try{RW.__stNudge&&RW.__stNudge()}catch(e){}};")
+x=cut(x,"h+='</div>';lockEl.innerHTML=h;document.body.classList.add('emd93-open')}","h+='</div>';lockEl.innerHTML=h;document.body.classList.add('emd93-open');try{RW.__stDecor&&RW.__stDecor()}catch(e){}}")
 x=cut(x,"function setCfg(c){wr(SK,c);apply()}","function setCfg(c){wr(SK,c);apply();try{RW.__stHide&&RW.__stHide()}catch(e){}}")
 x=cut(x,"window.EMDStaffV108={can:can,who:who,open:function(){openStaff()},closing:function(){openClosing()}};","window.EMDStaffV108={can:can,who:who,open:function(){openStaff()},closing:function(){openClosing()},apply:apply,on:function(){return cfg().enabled}};")
 js='/* ---- V108 ---- */\n'+x+'\n'
@@ -31,11 +32,18 @@ y=block('EMD-V111-staffhide','script')
 y=cutre(y,r"function inject\(\)\{.*?\n.*?\n.*?\n","")
 y=cutre(y,r"apply\(\);inject\(\);setInterval\(function\(\)\{apply\(\);inject\(\)\},1500\);\n/\* تثبيت اسم التطبيق.*?\}\)\(\);\n","apply();RW.__stHide=apply;\n")
 js+='/* ---- V111 ---- */\n'+y+'\n'
+# رمز استرجاع المدير V119: يُزيَّن القفل عند رسمه، والتذكير بعد دخول المدير مع نبضة الموظفين
+css+=block('EMD-V119-css','style')
+r=block('EMD-V119-recovery','script')
+r=cut(r,"new MutationObserver(function(){decorate()}).observe(document.documentElement,{childList:true,subtree:true});","RW.__stDecor=decorate;")
+r=cut(r,"setInterval(nudge,2500);","RW.__stNudge=nudge;")
+r=cutre(r,r"function inject\(\)\{.*?\nsetInterval\(inject,1500\);inject\(\);\n","")
+js+='/* ---- V119 ---- */\n'+r+'\n'
 assert 'setInterval' not in js and 'MutationObserver' not in js,'timer'
 js=re.sub(r"(?<![\w.$])(window\.)?localStorage\b",'PLS',js)
 assert not re.search(r"(?<![\w.$'\"])db\.(orders|products)",js)
 js=js.replace("window.db","window.db")
 wrap=("(function(RW){var PH=RW.EMDPosH,PLS=PH.ls;\n"
   "var window=new Proxy(RW,{get:function(t,k){if(k==='db')return PH.db();if(k==='localStorage')return PLS;if(PH.alias[k]&&!(k in t))return PH.alias[k];var v=t[k];return typeof v==='function'&&PH.nat(v)?v.bind(t):v},set:function(t,k,v){t[k]=v;return true},has:function(t,k){return k in t||!!PH.alias[k]}});\n")
-out='/* مُولَّد بـ tools/port-staff.py من V108 وV111 — لا تعدّل هنا */\n(function(){var s=document.createElement("style");s.textContent='+json.dumps(css,ensure_ascii=False)+';document.head.appendChild(s)})();\n'+wrap+js+'})(window);\n'
+out='/* مُولَّد بـ tools/port-staff.py من V108 وV111 وV119 — لا تعدّل هنا */\n(function(){var s=document.createElement("style");s.textContent='+json.dumps(css,ensure_ascii=False)+';document.head.appendChild(s)})();\n'+wrap+js+'})(window);\n'
 open(os.path.join(os.path.dirname(__file__),'..','lazy','staff.js'),'w',encoding='utf8').write(out);print('staff.js',len(out.encode()),'bytes')

@@ -22,13 +22,15 @@ function dsHelpers(){var src=POS_LS.getItem('emd_v89_logo')||'';if(src&&/^(data:
 /* أنواع المحل تستعمل البيع المباشر بنسخة التطوير V453 مع نقطة البيع (lazy/pos.js)؛ «بيع أونلاين» يبقى مثل التطبيق الحالي تمامًا */
 var dsVariant='';
 function dsWant(){var m=mode();return m==='online'?'live':m==='company'?'co':'pos'}
+/* في التجربة: الحذف يترك علامة حتى لا تعود القراءة الاحتياطية لقيمة التطبيق الحالي */
+var POS_RM='\u0000rm';
 function posLs(){var SB=function(){return typeof CLOUD_SANDBOX==='undefined'||CLOUD_SANDBOX};function rk(k){return SB()?'emd_rb_'+k:k}
-  return {getItem:function(k){if(k===LIVE_KEY)return null;var v=lsGet(rk(k));return v==null&&SB()?lsGet(k):v},
+  return {getItem:function(k){if(k===LIVE_KEY)return null;var v=lsGet(rk(k));if(v===POS_RM)return null;return v==null&&SB()?lsGet(k):v},
     setItem:function(k,v){if(k===LIVE_KEY){dirty();saveNow();return}lsSet(rk(k),String(v))},
-    removeItem:function(k){try{LS.removeItem(rk(k))}catch(e){}}}}
+    removeItem:function(k){if(SB()){lsSet(rk(k),POS_RM);return}try{LS.removeItem(k)}catch(e){}}}}
 var POS_LS=posLs();
 function dsMgr(){try{var m=JSON.parse(POS_LS.getItem('emd_manager_profile_v41')||'null');return (m&&m.name)||'المدير'}catch(e){return 'المدير'}}
-function posHelpers(){return {db:function(){return db},ls:POS_LS,coBlock:function(){return !cloudCanWrite()},owner:function(){return stOwner()},permFor:stPermFor,viewGuard:stViewGuard,closing:function(){closingSheet()},idsFmt:idsFmt,invoice:function(id){openInvoice(id)},
+function posHelpers(){return {db:function(){return db},ls:POS_LS,coBlock:function(){return !cloudCanWrite()},owner:function(){return stOwner()},permFor:stPermFor,viewGuard:stViewGuard,closing:function(){closingSheet()},idsFmt:idsFmt,invoice:function(id){openInvoice(id)},backup:function(){setRun(function(){EMDBackupV313.open()})},locked:function(){lkCoverOff()},unlocked:function(){lkCoverOff();dirty();render()},
     alias:{save:function(){dirty();saveNow()},render:function(){dirty();render()},renderProducts:function(){dirty();if(state.view==='products')render()},toast:toast,EMDBusinessProfileV333:{get:function(){return dsHelpers().profile()}},EMDLookV89:{accentHex:dsLook,logoImg:function(){return dsLogo&&dsLogo.complete&&dsLogo.naturalWidth?dsLogo:null}},EMDMoneyV75:{total:function(o){return total(o)},paid:function(o){return paid(o)},remaining:function(o){return remaining(o)},payState:function(o){return payState(o)},invoice:function(id){openInvoice(id)}},EMDStaffV108:{who:function(){return {id:'owner',name:dsMgr(),owner:true}},can:function(){return true}},EMDCloudV93:{api:{uid:function(){return cUid()},token:function(){return cToken()}}},EMDPrefixV129:{fmt:function(s){return idsFmt(String(s))}}},nat:function(f){try{return /\{\s*\[native code\]\s*\}$/.test(Function.prototype.toString.call(f))}catch(e){return false}}}}
 function directLoad(){if(window.EMDDirectV113)return Promise.resolve(window.EMDDirectV113);if(dsLoading)return dsLoading;window.EMDDirH=dsHelpers();
   var w=dsWant();dsVariant=w;

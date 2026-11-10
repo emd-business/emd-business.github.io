@@ -61,11 +61,18 @@ x=block('EMD-V124-fix','script');css+=block('EMD-V124-css','style')
 x=re.sub(r"function inject\(\)\{.*?\n","",x,count=1)
 x=re.sub(r"setInterval\(inject,1500\);inject\(\);\n?","",x,count=1)
 js+=add('V124',x)
+# الأدوار وسجل العمليات V315
+x=block('EMD-V315-security-audit-script','script');css+=block('EMD-V315-security-audit-style','style');html+=html_by_id('emdSecurityV315')
+x=re.sub(r"  function addTool\(\)\{.*?\n  \}\n","",x,count=1,flags=re.S)
+x=cut(x,"    addTool();setTimeout(addTool,500);setTimeout(addTool,1500);\n","")
+x=cut(x,"if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();","init();")
+css+='#emdSecurityV315 input,#emdSecurityV315 textarea,#emdSecurityV315 select{width:100%;box-sizing:border-box;border:1px solid #dfe5ec;border-radius:11px;padding:11px;background:#fff;font:inherit;color:inherit}#emdSecurityV315 .row{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}#emdSecurityV315 .row>*{flex:0 1 auto;min-width:0;max-width:100%}#emdSecurityV315 .actions{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}#emdSecurityV315 .muted{color:#687384;font-size:13px}'
+js+=add('V315',x)
 for j in [js]:
   assert 'setInterval' not in j and 'MutationObserver' not in j
 js=re.sub(r"(?<![\w.$])(window\.)?localStorage\b",'PLS',js)
 wrap=("(function(RW){var PH=RW.EMDSetH,PLS=PH.ls;\n"
   "var window=new Proxy(RW,{get:function(t,k){if(k==='db')return PH.db();if(k==='localStorage')return PLS;if(PH.alias[k]&&!(k in t))return PH.alias[k];var v=t[k];return typeof v==='function'&&PH.nat(v)?v.bind(t):v},set:function(t,k,v){t[k]=v;return true},has:function(t,k){return k in t||!!PH.alias[k]}});\n")
-out='/* مُولَّد بـ tools/port-settings.py من V333 وV129 وV120 وV121 وV117 وV313 وV122 وV124 — لا تعدّل هنا */\n(function(){var s=document.createElement("style");s.textContent='+json.dumps(css,ensure_ascii=False)+';document.head.appendChild(s);var d=document.createElement("div");d.innerHTML='+json.dumps(html,ensure_ascii=False)+';while(d.firstChild)document.body.appendChild(d.firstChild)})();\n'+wrap+js+'})(window);\n'
+out='/* مُولَّد بـ tools/port-settings.py من V333 وV129 وV120 وV121 وV117 وV313 وV122 وV124 وV315 — لا تعدّل هنا */\n(function(){var s=document.createElement("style");s.textContent='+json.dumps(css,ensure_ascii=False)+';document.head.appendChild(s);var d=document.createElement("div");d.innerHTML='+json.dumps(html,ensure_ascii=False)+';while(d.firstChild)document.body.appendChild(d.firstChild)})();\n'+wrap+js+'})(window);\n'
 out=out.replace('RW.EMDPosH','RW.EMDSetH')
 open(os.path.join(os.path.dirname(__file__),'..','lazy','settings.js'),'w',encoding='utf8').write(out);print('settings.js',len(out.encode()),'bytes')

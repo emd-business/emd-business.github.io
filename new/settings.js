@@ -1,5 +1,5 @@
-/* مُولَّد بـ tools/port-settings.py من V333 وV129 وV120 وV121 وV117 وV313 وV122 وV124 — لا تعدّل هنا */
-(function(){var s=document.createElement("style");s.textContent="\n#emdV333BusinessProfileModal{position:fixed;inset:0;z-index:2147483647;background:rgba(15,23,42,.52);display:none;align-items:flex-end;justify-content:center;padding:12px;direction:rtl}\n#emdV333BusinessProfileModal.show{display:flex}\n.emd333-profile-card{width:min(720px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:24px;box-shadow:0 20px 60px rgba(0,0,0,.25);padding:18px;color:#111827}\n.emd333-profile-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}.emd333-profile-head h2{margin:0;font-size:21px}.emd333-profile-sub{font-size:12px;color:#64748b;margin-top:4px}\n.emd333-profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.emd333-profile-field{display:flex;flex-direction:column;gap:6px}.emd333-profile-field.full{grid-column:1/-1}.emd333-profile-field label{font-size:12px;font-weight:800;color:#475569}.emd333-profile-field input,.emd333-profile-field textarea,.emd333-profile-field select{width:100%;box-sizing:border-box;border:1px solid #dbe2ea;border-radius:12px;padding:11px 12px;font:inherit;background:#fff;color:#111827}.emd333-profile-field textarea{min-height:90px;resize:vertical}\n.emd333-profile-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.emd333-profile-actions button{border:0;border-radius:12px;padding:11px 15px;font-weight:800;cursor:pointer}.emd333-profile-save{background:#111827;color:#fff}.emd333-profile-reset{background:#f1f5f9;color:#111827}.emd333-profile-close{background:#fee2e2;color:#991b1b}\n.emd333-profile-note{margin-top:12px;padding:10px 12px;border-radius:12px;background:#f8fafc;border:1px solid #e8edf3;color:#64748b;font-size:11px;line-height:1.7}\n@media(max-width:600px){.emd333-profile-grid{grid-template-columns:1fr}.emd333-profile-field.full{grid-column:auto}}\n\n#emd129Modal{position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:2147483647;display:flex;align-items:flex-start;justify-content:center;padding:12px;direction:rtl;overflow:auto}\n#emd129Modal .box{background:#fff;border-radius:22px;padding:16px;width:min(460px,100%);margin:8px 0;font-family:inherit;color:#17212b}\n#emd129Modal h3{margin:0 0 6px;font-size:19px}#emd129Modal p{margin:4px 0 10px;color:#475569;font-size:13.5px;line-height:1.8}\n#emd129Modal input{width:100%;box-sizing:border-box;font-size:20px;font-weight:900;letter-spacing:2px;text-align:center;padding:12px;border:1.5px solid #cbd5e1;border-radius:14px;direction:ltr;text-transform:uppercase}\n#emd129Modal .pv{margin:10px 0;padding:10px;border-radius:12px;background:#f1f5f9;text-align:center;font-weight:900;font-size:16px;direction:ltr}\n#emd129Modal .acts{display:flex;gap:8px;margin-top:12px}#emd129Modal .acts button{flex:1;border:0;border-radius:14px;padding:13px;font:inherit;font-size:15px;font-weight:900;cursor:pointer;min-height:48px}\n#emd129Modal .g{background:#16a34a;color:#fff}#emd129Modal .l{background:#f1f5f9;color:#334155}\n#emd129Modal .er{color:#b91c1c;font-size:13px;min-height:18px}\n\n#emd120Modal{position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:14px;direction:rtl}\n#emd120Modal .box{background:#fff;border-radius:22px;padding:16px;width:min(460px,100%);max-height:92vh;overflow:auto;font-family:inherit}\n#emd120Modal h3{margin:0 0 4px;font-size:19px}#emd120Modal p{margin:4px 0 10px;color:#475569;font-size:13.5px;line-height:1.8}\n#emd120Modal .row{display:flex;gap:6px;align-items:center;background:#f8fafc;border:1px solid #e8eaee;border-radius:12px;padding:6px 10px;margin:6px 0}\n#emd120Modal .row b{flex:1;font-size:14px;overflow-wrap:anywhere}\n#emd120Modal .row button{border:0;background:#fee2e2;color:#b91c1c;border-radius:10px;width:42px;height:42px;font-size:16px;cursor:pointer}\n#emd120Modal input{width:100%;box-sizing:border-box;border:1px solid #dfe3e8;border-radius:12px;padding:12px;font:inherit;font-size:16px}\n#emd120Modal .b{display:block;width:100%;border:0;border-radius:14px;padding:13px;font:inherit;font-size:15px;font-weight:900;cursor:pointer;margin-top:8px;min-height:46px}\n#emd120Modal .b1{background:#0f766e;color:#fff}#emd120Modal .b3{background:#f1f5f9;color:#334155}\n\n#emd121Modal{position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:12px;direction:rtl}\n#emd121Modal .box{background:#fff;border-radius:22px;padding:16px;width:min(560px,100%);max-height:94vh;overflow:auto;font-family:inherit}\n#emd121Modal h3{margin:0 0 4px;font-size:19px}#emd121Modal p{margin:4px 0 10px;color:#475569;font-size:13.5px;line-height:1.8}\n#emd121Modal .st{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}\n#emd121Modal .st button{border:1px solid #dfe3e8;background:#fff;border-radius:12px;padding:10px 12px;font:inherit;font-size:14px;font-weight:800;cursor:pointer;min-height:44px}\n#emd121Modal .st button.on{background:#111827;color:#fff;border-color:#111827}\n#emd121Modal textarea{width:100%;box-sizing:border-box;min-height:250px;border:1px solid #dfe3e8;border-radius:14px;padding:12px;font:inherit;font-size:15px;line-height:1.8;direction:rtl;background:#f8fafc}\n#emd121Modal .op{background:#f8fafc;border:1px solid #e8eaee;border-radius:14px;padding:10px;margin:10px 0}\n#emd121Modal label.c{display:flex;gap:8px;align-items:center;font-size:14.5px;padding:6px 0}\n#emd121Modal label.c input{width:20px;height:20px}\n#emd121Modal input[type=text]{width:100%;box-sizing:border-box;border:1px solid #dfe3e8;border-radius:12px;padding:11px;font:inherit;font-size:15px;margin:4px 0}\n#emd121Modal .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}\n#emd121Modal .acts button{flex:1 1 140px;border:0;border-radius:14px;padding:13px;font:inherit;font-size:15px;font-weight:900;cursor:pointer;min-height:48px}\n#emd121Modal .g{background:#16a34a;color:#fff}#emd121Modal .w{background:#25d366;color:#fff}#emd121Modal .l{background:#f1f5f9;color:#334155}\n\n#emd117Card{position:fixed;left:12px;right:12px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:2147482000;background:#111827;color:#fff;border-radius:18px;padding:12px 14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;box-shadow:0 12px 36px rgba(0,0,0,.4);direction:rtl;max-width:560px;margin:auto;font-family:inherit}\n#emd117Card b{flex:1 1 100%;font-size:15px}\n#emd117Card button{flex:1;border:0;border-radius:12px;padding:11px;font:inherit;font-size:15px;font-weight:900;cursor:pointer;min-height:46px}\n#emd117Card .y{background:#25d366;color:#fff}#emd117Card .n{background:#334155;color:#fff}\n\n#emdBackupV313{display:none;position:fixed;inset:0;z-index:2147483647;background:rgba(15,23,42,.58);padding:14px;box-sizing:border-box;direction:rtl}\n#emdBackupV313.show{display:flex;align-items:center;justify-content:center}\n.emd313-box{width:min(680px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:20px;padding:16px;box-shadow:0 24px 80px rgba(0,0,0,.3)}\n.emd313-head{display:flex;align-items:center;justify-content:space-between;gap:10px}\n.emd313-title{font-size:19px;font-weight:900}\n.emd313-close{border:0;background:#eef1f5;border-radius:10px;width:38px;height:38px;font-size:21px;cursor:pointer}\n.emd313-note{margin:10px 0;padding:11px;border-radius:13px;background:#f7f9fc;line-height:1.7;font-size:13px}\n.emd313-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}\n.emd313-btn{border:1px solid #e1e6ed;background:#fff;border-radius:14px;padding:13px;text-align:right;cursor:pointer;font-weight:800}\n.emd313-btn:hover{background:#f8fafc}\n.emd313-danger{border-color:#efc2c2;background:#fff6f6}\n.emd313-status{margin-top:11px;padding:11px;border-radius:12px;background:#f3f6fa;min-height:22px;line-height:1.6}\n@media(max-width:560px){.emd313-grid{grid-template-columns:1fr}}\n\n#emd122Ban{position:relative;z-index:5;margin:8px 8px 4px;background:#fff7ed;border:2px solid #f59e0b;border-radius:16px;padding:11px 12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;box-shadow:0 4px 14px rgba(0,0,0,.12);direction:rtl;font-family:inherit}\n#emd122Ban.red{background:#fef2f2;border-color:#dc2626}\n#emd122Ban .t{flex:1 1 210px;font-size:14px;line-height:1.7;color:#431407;font-weight:700}\n#emd122Ban button{border:0;border-radius:12px;padding:10px 14px;font:inherit;font-size:14px;font-weight:900;cursor:pointer;min-height:44px}\n#emd122Ban .go{background:#16a34a;color:#fff}#emd122Ban .no{background:#f1f5f9;color:#334155}\n#emd122Modal{position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:12px;direction:rtl}\n#emd122Modal .box{background:#fff;border-radius:22px;padding:16px;width:min(520px,100%);max-height:94vh;overflow:auto;font-family:inherit}\n#emd122Modal h3{margin:0 0 6px;font-size:19px}#emd122Modal p{margin:4px 0 10px;color:#475569;font-size:13.5px;line-height:1.8}\n#emd122Modal .row{display:flex;justify-content:space-between;gap:8px;padding:9px 0;border-bottom:1px solid #eef0f3;font-size:14.5px}\n#emd122Modal .bar{height:12px;background:#e5e7eb;border-radius:8px;overflow:hidden;margin:6px 0}#emd122Modal .bar i{display:block;height:100%;background:#16a34a}\n#emd122Modal select{width:100%;box-sizing:border-box;border:1px solid #dfe3e8;border-radius:12px;padding:11px;font:inherit;font-size:15px;margin:6px 0}\n#emd122Modal .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}\n#emd122Modal .acts button{flex:1 1 140px;border:0;border-radius:14px;padding:13px;font:inherit;font-size:15px;font-weight:900;cursor:pointer;min-height:48px}\n#emd122Modal .g{background:#16a34a;color:#fff}#emd122Modal .l{background:#f1f5f9;color:#334155}\n#emd122Modal .tip{background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:10px;margin:10px 0;font-size:13.5px;line-height:1.8;color:#1e3a8a}\n\n#emd124Modal{position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:2147483647;display:flex;align-items:flex-start;justify-content:center;padding:12px;direction:rtl;overflow:auto}\n#emd124Modal .box{background:#fff;border-radius:22px;padding:16px;width:min(560px,100%);margin:8px 0;font-family:inherit;color:#17212b}\n#emd124Modal h3{margin:0 0 6px;font-size:19px}#emd124Modal p{margin:4px 0 10px;color:#475569;font-size:13.5px;line-height:1.8}\n#emd124Modal h4{margin:14px 0 6px;font-size:15px}\n#emd124Modal .row{display:flex;gap:10px;align-items:flex-start;padding:9px 6px;border-bottom:1px solid #eef0f3;font-size:14px;line-height:1.6}\n#emd124Modal .row input{width:20px;height:20px;margin-top:3px;flex:none}\n#emd124Modal .row small{display:block;color:#64748b;font-size:12px}\n#emd124Modal .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}\n#emd124Modal .acts button{flex:1 1 140px;border:0;border-radius:14px;padding:13px;font:inherit;font-size:15px;font-weight:900;cursor:pointer;min-height:48px}\n#emd124Modal .g{background:#16a34a;color:#fff}#emd124Modal .l{background:#f1f5f9;color:#334155}\n#emd124Modal .ok{background:#ecfdf5;border:1px solid #a7f3d0;border-radius:12px;padding:10px;margin:10px 0;font-size:13.5px;line-height:1.8;color:#065f46}\n";document.head.appendChild(s);var d=document.createElement("div");d.innerHTML="<div id=\"emdV333BusinessProfileModal\" aria-hidden=\"true\" data-feature-id=\"businessProfile\">\n  <div class=\"emd333-profile-card\" role=\"dialog\" aria-modal=\"true\" aria-labelledby=\"emdV333BusinessProfileTitle\">\n    <div class=\"emd333-profile-head\"><div><h2 id=\"emdV333BusinessProfileTitle\">🏢 بيانات النشاط</h2><div class=\"emd333-profile-sub\">معلومات تعريفية محفوظة على هذا الجهاز وتستخدم كأساس للإعدادات القادمة.</div></div><button type=\"button\" class=\"emd333-profile-close\" id=\"emdV333BusinessProfileClose\">إغلاق ✕</button></div>\n    <div class=\"emd333-profile-grid\">\n      <div class=\"emd333-profile-field\"><label for=\"emdV333BusinessName\">اسم النشاط</label><input id=\"emdV333BusinessName\" type=\"text\" autocomplete=\"organization\" placeholder=\"مثال: EMD Business\"></div>\n      <div class=\"emd333-profile-field\"><label for=\"emdV333BusinessCurrency\">العملة الافتراضية</label><select id=\"emdV333BusinessCurrency\"><option value=\"OMR\">ريال عماني (OMR)</option><option value=\"SAR\">ريال سعودي (SAR)</option><option value=\"AED\">درهم إماراتي (AED)</option><option value=\"KWD\">دينار كويتي (KWD)</option><option value=\"BHD\">دينار بحريني (BHD)</option><option value=\"QAR\">ريال قطري (QAR)</option><option value=\"USD\">دولار أمريكي (USD)</option><option value=\"EUR\">يورو (EUR)</option></select></div>\n      <div class=\"emd333-profile-field\"><label for=\"emdV333BusinessPhone\">رقم التواصل</label><input id=\"emdV333BusinessPhone\" type=\"tel\" inputmode=\"tel\" placeholder=\"مثال: 9XXXXXXX\"></div>\n      <div class=\"emd333-profile-field\"><label for=\"emdV333BusinessWhatsapp\">رقم واتساب</label><input id=\"emdV333BusinessWhatsapp\" type=\"tel\" inputmode=\"tel\" placeholder=\"رقم واتساب النشاط\"></div>\n      <div class=\"emd333-profile-field full\"><label for=\"emdV333BusinessLocation\">موقع / عنوان النشاط</label><input id=\"emdV333BusinessLocation\" type=\"text\" autocomplete=\"street-address\" placeholder=\"المدينة أو العنوان المختصر\"></div>\n      <div class=\"emd333-profile-field full\"><label for=\"emdV333BusinessDescription\">وصف مختصر للنشاط</label><textarea id=\"emdV333BusinessDescription\" placeholder=\"اكتب وصفًا مختصرًا للنشاط، المنتجات أو الخدمات...\"></textarea></div>\n    </div>\n    <div class=\"emd333-profile-actions\"><button type=\"button\" class=\"emd333-profile-save\" id=\"emdV333BusinessProfileSave\">💾 حفظ البيانات</button><button type=\"button\" class=\"emd333-profile-reset\" id=\"emdV333BusinessProfileReset\">↩️ مسح البيانات</button></div>\n    <div class=\"emd333-profile-note\">🔒 هذه البيانات محلية على الجهاز في هذه النسخة. لم نضف أي اتصال خارجي، ولن تُرسل إلى AI تلقائيًا في هذه المرحلة.</div>\n  </div>\n</div><div id=\"emdBackupV313\">\n  <div class=\"emd313-box\">\n    <div class=\"emd313-head\">\n      <div class=\"emd313-title\">💾 حفظ ونسخ بيانات النظام</div>\n      <button class=\"emd313-close\" type=\"button\" aria-label=\"إغلاق\">×</button>\n    </div>\n    <div class=\"emd313-note\">\n      هذه الأدوات تعمل محليًا ولا ترسل بياناتك إلى أي جهة. قبل الاسترجاع يتم فحص الملف والتأكد من بنيته.\n    </div>\n    <div class=\"emd313-grid\">\n      <button id=\"emd313Export\" class=\"emd313-btn\" type=\"button\">⬇️ تصدير نسخة احتياطية</button>\n      <button id=\"emd313Snapshot\" class=\"emd313-btn\" type=\"button\">📸 حفظ نقطة استعادة</button>\n      <button id=\"emd313Restore\" class=\"emd313-btn\" type=\"button\">↩️ استعادة نقطة الاستعادة</button>\n      <button id=\"emd313Import\" class=\"emd313-btn\" type=\"button\">⬆️ استيراد نسخة احتياطية</button>\n      <button id=\"emd313Validate\" class=\"emd313-btn\" type=\"button\">🩺 فحص سلامة البيانات</button>\n      <button id=\"emd313ClearSnapshot\" class=\"emd313-btn emd313-danger\" type=\"button\">🗑️ حذف نقطة الاستعادة</button>\n    </div>\n    <div id=\"emd313Status\" class=\"emd313-status\">جاهز.</div>\n    <input id=\"emd313File\" type=\"file\" accept=\".json,application/json\" style=\"display:none\">\n  </div>\n</div>";while(d.firstChild)document.body.appendChild(d.firstChild)})();
+/* مُولَّد بـ tools/port-settings.py من V333 وV129 وV120 وV121 وV117 وV313 وV122 وV124 وV315 — لا تعدّل هنا */
+(function(){var s=document.createElement("style");s.textContent="\n#emdV333BusinessProfileModal{position:fixed;inset:0;z-index:2147483647;background:rgba(15,23,42,.52);display:none;align-items:flex-end;justify-content:center;padding:12px;direction:rtl}\n#emdV333BusinessProfileModal.show{display:flex}\n.emd333-profile-card{width:min(720px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:24px;box-shadow:0 20px 60px rgba(0,0,0,.25);padding:18px;color:#111827}\n.emd333-profile-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}.emd333-profile-head h2{margin:0;font-size:21px}.emd333-profile-sub{font-size:12px;color:#64748b;margin-top:4px}\n.emd333-profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.emd333-profile-field{display:flex;flex-direction:column;gap:6px}.emd333-profile-field.full{grid-column:1/-1}.emd333-profile-field label{font-size:12px;font-weight:800;color:#475569}.emd333-profile-field input,.emd333-profile-field textarea,.emd333-profile-field select{width:100%;box-sizing:border-box;border:1px solid #dbe2ea;border-radius:12px;padding:11px 12px;font:inherit;background:#fff;color:#111827}.emd333-profile-field textarea{min-height:90px;resize:vertical}\n.emd333-profile-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.emd333-profile-actions button{border:0;border-radius:12px;padding:11px 15px;font-weight:800;cursor:pointer}.emd333-profile-save{background:#111827;color:#fff}.emd333-profile-reset{background:#f1f5f9;color:#111827}.emd333-profile-close{background:#fee2e2;color:#991b1b}\n.emd333-profile-note{margin-top:12px;padding:10px 12px;border-radius:12px;background:#f8fafc;border:1px solid #e8edf3;color:#64748b;font-size:11px;line-height:1.7}\n@media(max-width:600px){.emd333-profile-grid{grid-template-columns:1fr}.emd333-profile-field.full{grid-column:auto}}\n\n#emd129Modal{position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:2147483647;display:flex;align-items:flex-start;justify-content:center;padding:12px;direction:rtl;overflow:auto}\n#emd129Modal .box{background:#fff;border-radius:22px;padding:16px;width:min(460px,100%);margin:8px 0;font-family:inherit;color:#17212b}\n#emd129Modal h3{margin:0 0 6px;font-size:19px}#emd129Modal p{margin:4px 0 10px;color:#475569;font-size:13.5px;line-height:1.8}\n#emd129Modal input{width:100%;box-sizing:border-box;font-size:20px;font-weight:900;letter-spacing:2px;text-align:center;padding:12px;border:1.5px solid #cbd5e1;border-radius:14px;direction:ltr;text-transform:uppercase}\n#emd129Modal .pv{margin:10px 0;padding:10px;border-radius:12px;background:#f1f5f9;text-align:center;font-weight:900;font-size:16px;direction:ltr}\n#emd129Modal .acts{display:flex;gap:8px;margin-top:12px}#emd129Modal .acts button{flex:1;border:0;border-radius:14px;padding:13px;font:inherit;font-size:15px;font-weight:900;cursor:pointer;min-height:48px}\n#emd129Modal .g{background:#16a34a;color:#fff}#emd129Modal .l{background:#f1f5f9;color:#334155}\n#emd129Modal .er{color:#b91c1c;font-size:13px;min-height:18px}\n\n#emd120Modal{position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:14px;direction:rtl}\n#emd120Modal .box{background:#fff;border-radius:22px;padding:16px;width:min(460px,100%);max-height:92vh;overflow:auto;font-family:inherit}\n#emd120Modal h3{margin:0 0 4px;font-size:19px}#emd120Modal p{margin:4px 0 10px;color:#475569;font-size:13.5px;line-height:1.8}\n#emd120Modal .row{display:flex;gap:6px;align-items:center;background:#f8fafc;border:1px solid #e8eaee;border-radius:12px;padding:6px 10px;margin:6px 0}\n#emd120Modal .row b{flex:1;font-size:14px;overflow-wrap:anywhere}\n#emd120Modal .row button{border:0;background:#fee2e2;color:#b91c1c;border-radius:10px;width:42px;height:42px;font-size:16px;cursor:pointer}\n#emd120Modal input{width:100%;box-sizing:border-box;border:1px solid #dfe3e8;border-radius:12px;padding:12px;font:inherit;font-size:16px}\n#emd120Modal .b{display:block;width:100%;border:0;border-radius:14px;padding:13px;font:inherit;font-size:15px;font-weight:900;cursor:pointer;margin-top:8px;min-height:46px}\n#emd120Modal .b1{background:#0f766e;color:#fff}#emd120Modal .b3{background:#f1f5f9;color:#334155}\n\n#emd121Modal{position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:12px;direction:rtl}\n#emd121Modal .box{background:#fff;border-radius:22px;padding:16px;width:min(560px,100%);max-height:94vh;overflow:auto;font-family:inherit}\n#emd121Modal h3{margin:0 0 4px;font-size:19px}#emd121Modal p{margin:4px 0 10px;color:#475569;font-size:13.5px;line-height:1.8}\n#emd121Modal .st{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}\n#emd121Modal .st button{border:1px solid #dfe3e8;background:#fff;border-radius:12px;padding:10px 12px;font:inherit;font-size:14px;font-weight:800;cursor:pointer;min-height:44px}\n#emd121Modal .st button.on{background:#111827;color:#fff;border-color:#111827}\n#emd121Modal textarea{width:100%;box-sizing:border-box;min-height:250px;border:1px solid #dfe3e8;border-radius:14px;padding:12px;font:inherit;font-size:15px;line-height:1.8;direction:rtl;background:#f8fafc}\n#emd121Modal .op{background:#f8fafc;border:1px solid #e8eaee;border-radius:14px;padding:10px;margin:10px 0}\n#emd121Modal label.c{display:flex;gap:8px;align-items:center;font-size:14.5px;padding:6px 0}\n#emd121Modal label.c input{width:20px;height:20px}\n#emd121Modal input[type=text]{width:100%;box-sizing:border-box;border:1px solid #dfe3e8;border-radius:12px;padding:11px;font:inherit;font-size:15px;margin:4px 0}\n#emd121Modal .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}\n#emd121Modal .acts button{flex:1 1 140px;border:0;border-radius:14px;padding:13px;font:inherit;font-size:15px;font-weight:900;cursor:pointer;min-height:48px}\n#emd121Modal .g{background:#16a34a;color:#fff}#emd121Modal .w{background:#25d366;color:#fff}#emd121Modal .l{background:#f1f5f9;color:#334155}\n\n#emd117Card{position:fixed;left:12px;right:12px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:2147482000;background:#111827;color:#fff;border-radius:18px;padding:12px 14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;box-shadow:0 12px 36px rgba(0,0,0,.4);direction:rtl;max-width:560px;margin:auto;font-family:inherit}\n#emd117Card b{flex:1 1 100%;font-size:15px}\n#emd117Card button{flex:1;border:0;border-radius:12px;padding:11px;font:inherit;font-size:15px;font-weight:900;cursor:pointer;min-height:46px}\n#emd117Card .y{background:#25d366;color:#fff}#emd117Card .n{background:#334155;color:#fff}\n\n#emdBackupV313{display:none;position:fixed;inset:0;z-index:2147483647;background:rgba(15,23,42,.58);padding:14px;box-sizing:border-box;direction:rtl}\n#emdBackupV313.show{display:flex;align-items:center;justify-content:center}\n.emd313-box{width:min(680px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:20px;padding:16px;box-shadow:0 24px 80px rgba(0,0,0,.3)}\n.emd313-head{display:flex;align-items:center;justify-content:space-between;gap:10px}\n.emd313-title{font-size:19px;font-weight:900}\n.emd313-close{border:0;background:#eef1f5;border-radius:10px;width:38px;height:38px;font-size:21px;cursor:pointer}\n.emd313-note{margin:10px 0;padding:11px;border-radius:13px;background:#f7f9fc;line-height:1.7;font-size:13px}\n.emd313-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}\n.emd313-btn{border:1px solid #e1e6ed;background:#fff;border-radius:14px;padding:13px;text-align:right;cursor:pointer;font-weight:800}\n.emd313-btn:hover{background:#f8fafc}\n.emd313-danger{border-color:#efc2c2;background:#fff6f6}\n.emd313-status{margin-top:11px;padding:11px;border-radius:12px;background:#f3f6fa;min-height:22px;line-height:1.6}\n@media(max-width:560px){.emd313-grid{grid-template-columns:1fr}}\n\n#emd122Ban{position:relative;z-index:5;margin:8px 8px 4px;background:#fff7ed;border:2px solid #f59e0b;border-radius:16px;padding:11px 12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;box-shadow:0 4px 14px rgba(0,0,0,.12);direction:rtl;font-family:inherit}\n#emd122Ban.red{background:#fef2f2;border-color:#dc2626}\n#emd122Ban .t{flex:1 1 210px;font-size:14px;line-height:1.7;color:#431407;font-weight:700}\n#emd122Ban button{border:0;border-radius:12px;padding:10px 14px;font:inherit;font-size:14px;font-weight:900;cursor:pointer;min-height:44px}\n#emd122Ban .go{background:#16a34a;color:#fff}#emd122Ban .no{background:#f1f5f9;color:#334155}\n#emd122Modal{position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:12px;direction:rtl}\n#emd122Modal .box{background:#fff;border-radius:22px;padding:16px;width:min(520px,100%);max-height:94vh;overflow:auto;font-family:inherit}\n#emd122Modal h3{margin:0 0 6px;font-size:19px}#emd122Modal p{margin:4px 0 10px;color:#475569;font-size:13.5px;line-height:1.8}\n#emd122Modal .row{display:flex;justify-content:space-between;gap:8px;padding:9px 0;border-bottom:1px solid #eef0f3;font-size:14.5px}\n#emd122Modal .bar{height:12px;background:#e5e7eb;border-radius:8px;overflow:hidden;margin:6px 0}#emd122Modal .bar i{display:block;height:100%;background:#16a34a}\n#emd122Modal select{width:100%;box-sizing:border-box;border:1px solid #dfe3e8;border-radius:12px;padding:11px;font:inherit;font-size:15px;margin:6px 0}\n#emd122Modal .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}\n#emd122Modal .acts button{flex:1 1 140px;border:0;border-radius:14px;padding:13px;font:inherit;font-size:15px;font-weight:900;cursor:pointer;min-height:48px}\n#emd122Modal .g{background:#16a34a;color:#fff}#emd122Modal .l{background:#f1f5f9;color:#334155}\n#emd122Modal .tip{background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:10px;margin:10px 0;font-size:13.5px;line-height:1.8;color:#1e3a8a}\n\n#emd124Modal{position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:2147483647;display:flex;align-items:flex-start;justify-content:center;padding:12px;direction:rtl;overflow:auto}\n#emd124Modal .box{background:#fff;border-radius:22px;padding:16px;width:min(560px,100%);margin:8px 0;font-family:inherit;color:#17212b}\n#emd124Modal h3{margin:0 0 6px;font-size:19px}#emd124Modal p{margin:4px 0 10px;color:#475569;font-size:13.5px;line-height:1.8}\n#emd124Modal h4{margin:14px 0 6px;font-size:15px}\n#emd124Modal .row{display:flex;gap:10px;align-items:flex-start;padding:9px 6px;border-bottom:1px solid #eef0f3;font-size:14px;line-height:1.6}\n#emd124Modal .row input{width:20px;height:20px;margin-top:3px;flex:none}\n#emd124Modal .row small{display:block;color:#64748b;font-size:12px}\n#emd124Modal .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}\n#emd124Modal .acts button{flex:1 1 140px;border:0;border-radius:14px;padding:13px;font:inherit;font-size:15px;font-weight:900;cursor:pointer;min-height:48px}\n#emd124Modal .g{background:#16a34a;color:#fff}#emd124Modal .l{background:#f1f5f9;color:#334155}\n#emd124Modal .ok{background:#ecfdf5;border:1px solid #a7f3d0;border-radius:12px;padding:10px;margin:10px 0;font-size:13.5px;line-height:1.8;color:#065f46}\n\n#emdSecurityV315{position:fixed;inset:0;background:rgba(15,23,42,.56);z-index:100000;display:none;align-items:center;justify-content:center;padding:12px}\n#emdSecurityV315.show{display:flex}\n.emd-v315-panel{width:min(960px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:22px;box-shadow:0 22px 70px rgba(0,0,0,.28);padding:18px}\n.emd-v315-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}\n.emd-v315-head h2{margin:0;font-size:21px}\n.emd-v315-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}\n.emd-v315-card{border:1px solid #e8ebf0;border-radius:15px;padding:13px;background:#fafbfc}\n.emd-v315-card b{display:block;margin-top:5px}\n.emd-v315-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}\n.emd-v315-btn{border:0;border-radius:12px;padding:10px 13px;cursor:pointer;font-weight:800}\n.emd-v315-dark{background:#18202a;color:#fff}.emd-v315-soft{background:#eef1f5;color:#18202a}.emd-v315-danger{background:#fee2e2;color:#991b1b}\n.emd-v315-select{padding:10px 12px;border:1px solid #dfe4ea;border-radius:11px;background:#fff;font-weight:700}\n.emd-v315-log{margin-top:14px;border:1px solid #e7ebf0;border-radius:15px;overflow:auto;max-height:330px}\n.emd-v315-row{display:grid;grid-template-columns:145px 110px 1fr 105px;gap:8px;padding:10px 12px;border-bottom:1px solid #eef1f4;font-size:12px}\n.emd-v315-row:last-child{border-bottom:0}.emd-v315-muted{color:#687384;font-size:12px;line-height:1.7}\n@media(max-width:700px){.emd-v315-grid{grid-template-columns:1fr 1fr}.emd-v315-row{grid-template-columns:1fr 1fr}.emd-v315-row .full{grid-column:1/-1}}\n#emdSecurityV315 input,#emdSecurityV315 textarea,#emdSecurityV315 select{width:100%;box-sizing:border-box;border:1px solid #dfe5ec;border-radius:11px;padding:11px;background:#fff;font:inherit;color:inherit}#emdSecurityV315 .row{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}#emdSecurityV315 .row>*{flex:0 1 auto;min-width:0;max-width:100%}#emdSecurityV315 .actions{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}#emdSecurityV315 .muted{color:#687384;font-size:13px}";document.head.appendChild(s);var d=document.createElement("div");d.innerHTML="<div id=\"emdV333BusinessProfileModal\" aria-hidden=\"true\" data-feature-id=\"businessProfile\">\n  <div class=\"emd333-profile-card\" role=\"dialog\" aria-modal=\"true\" aria-labelledby=\"emdV333BusinessProfileTitle\">\n    <div class=\"emd333-profile-head\"><div><h2 id=\"emdV333BusinessProfileTitle\">🏢 بيانات النشاط</h2><div class=\"emd333-profile-sub\">معلومات تعريفية محفوظة على هذا الجهاز وتستخدم كأساس للإعدادات القادمة.</div></div><button type=\"button\" class=\"emd333-profile-close\" id=\"emdV333BusinessProfileClose\">إغلاق ✕</button></div>\n    <div class=\"emd333-profile-grid\">\n      <div class=\"emd333-profile-field\"><label for=\"emdV333BusinessName\">اسم النشاط</label><input id=\"emdV333BusinessName\" type=\"text\" autocomplete=\"organization\" placeholder=\"مثال: EMD Business\"></div>\n      <div class=\"emd333-profile-field\"><label for=\"emdV333BusinessCurrency\">العملة الافتراضية</label><select id=\"emdV333BusinessCurrency\"><option value=\"OMR\">ريال عماني (OMR)</option><option value=\"SAR\">ريال سعودي (SAR)</option><option value=\"AED\">درهم إماراتي (AED)</option><option value=\"KWD\">دينار كويتي (KWD)</option><option value=\"BHD\">دينار بحريني (BHD)</option><option value=\"QAR\">ريال قطري (QAR)</option><option value=\"USD\">دولار أمريكي (USD)</option><option value=\"EUR\">يورو (EUR)</option></select></div>\n      <div class=\"emd333-profile-field\"><label for=\"emdV333BusinessPhone\">رقم التواصل</label><input id=\"emdV333BusinessPhone\" type=\"tel\" inputmode=\"tel\" placeholder=\"مثال: 9XXXXXXX\"></div>\n      <div class=\"emd333-profile-field\"><label for=\"emdV333BusinessWhatsapp\">رقم واتساب</label><input id=\"emdV333BusinessWhatsapp\" type=\"tel\" inputmode=\"tel\" placeholder=\"رقم واتساب النشاط\"></div>\n      <div class=\"emd333-profile-field full\"><label for=\"emdV333BusinessLocation\">موقع / عنوان النشاط</label><input id=\"emdV333BusinessLocation\" type=\"text\" autocomplete=\"street-address\" placeholder=\"المدينة أو العنوان المختصر\"></div>\n      <div class=\"emd333-profile-field full\"><label for=\"emdV333BusinessDescription\">وصف مختصر للنشاط</label><textarea id=\"emdV333BusinessDescription\" placeholder=\"اكتب وصفًا مختصرًا للنشاط، المنتجات أو الخدمات...\"></textarea></div>\n    </div>\n    <div class=\"emd333-profile-actions\"><button type=\"button\" class=\"emd333-profile-save\" id=\"emdV333BusinessProfileSave\">💾 حفظ البيانات</button><button type=\"button\" class=\"emd333-profile-reset\" id=\"emdV333BusinessProfileReset\">↩️ مسح البيانات</button></div>\n    <div class=\"emd333-profile-note\">🔒 هذه البيانات محلية على الجهاز في هذه النسخة. لم نضف أي اتصال خارجي، ولن تُرسل إلى AI تلقائيًا في هذه المرحلة.</div>\n  </div>\n</div><div id=\"emdBackupV313\">\n  <div class=\"emd313-box\">\n    <div class=\"emd313-head\">\n      <div class=\"emd313-title\">💾 حفظ ونسخ بيانات النظام</div>\n      <button class=\"emd313-close\" type=\"button\" aria-label=\"إغلاق\">×</button>\n    </div>\n    <div class=\"emd313-note\">\n      هذه الأدوات تعمل محليًا ولا ترسل بياناتك إلى أي جهة. قبل الاسترجاع يتم فحص الملف والتأكد من بنيته.\n    </div>\n    <div class=\"emd313-grid\">\n      <button id=\"emd313Export\" class=\"emd313-btn\" type=\"button\">⬇️ تصدير نسخة احتياطية</button>\n      <button id=\"emd313Snapshot\" class=\"emd313-btn\" type=\"button\">📸 حفظ نقطة استعادة</button>\n      <button id=\"emd313Restore\" class=\"emd313-btn\" type=\"button\">↩️ استعادة نقطة الاستعادة</button>\n      <button id=\"emd313Import\" class=\"emd313-btn\" type=\"button\">⬆️ استيراد نسخة احتياطية</button>\n      <button id=\"emd313Validate\" class=\"emd313-btn\" type=\"button\">🩺 فحص سلامة البيانات</button>\n      <button id=\"emd313ClearSnapshot\" class=\"emd313-btn emd313-danger\" type=\"button\">🗑️ حذف نقطة الاستعادة</button>\n    </div>\n    <div id=\"emd313Status\" class=\"emd313-status\">جاهز.</div>\n    <input id=\"emd313File\" type=\"file\" accept=\".json,application/json\" style=\"display:none\">\n  </div>\n</div><div id=\"emdSecurityV315\" aria-hidden=\"true\">\n  <div class=\"emd-v315-panel\">\n    <div class=\"emd-v315-head\">\n      <div><h2>🔐 الأمان والصلاحيات</h2><div class=\"emd-v315-muted\">صلاحيات تشغيلية محلية وسجل للعمليات المهمة. هذه الطبقة لا تعتبر بديلًا عن تسجيل دخول خادم حقيقي.</div></div>\n      <button class=\"emd-v315-btn emd-v315-soft\" type=\"button\" id=\"emdSecurityV315Close\">إغلاق ✕</button>\n    </div>\n    <div class=\"emd-v315-grid\" id=\"emdSecurityV315Stats\"></div>\n    <div class=\"emd-v315-card\" style=\"margin-top:10px\">\n      <b>👤 الدور الحالي</b>\n      <div style=\"display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px\">\n        <select id=\"emdRoleV315\" class=\"emd-v315-select\">\n          <option value=\"admin\">مدير النظام</option>\n          <option value=\"supervisor\">مشرف</option>\n          <option value=\"prep\">تجهيز</option>\n          <option value=\"warehouse\">مخزون</option>\n          <option value=\"shipping\">شحن وتوصيل</option>\n          <option value=\"readonly\">قراءة فقط</option>\n        </select>\n        <button class=\"emd-v315-btn emd-v315-dark\" type=\"button\" id=\"emdRoleSaveV315\">حفظ الدور</button>\n      </div>\n      <div class=\"emd-v315-muted\" id=\"emdRoleHintV315\" style=\"margin-top:7px\"></div>\n    </div>\n    <div class=\"emd-v315-actions\">\n      <button class=\"emd-v315-btn emd-v315-soft\" type=\"button\" id=\"emdAuditRefreshV315\">🔄 تحديث السجل</button>\n      <button class=\"emd-v315-btn emd-v315-soft\" type=\"button\" id=\"emdAuditExportV315\">⬇️ تصدير السجل</button>\n      <button class=\"emd-v315-btn emd-v315-danger\" type=\"button\" id=\"emdAuditClearV315\">🗑️ مسح السجل</button>\n    </div>\n    <div class=\"emd-v315-log\" id=\"emdAuditLogV315\"></div>\n  </div>\n</div>";while(d.firstChild)document.body.appendChild(d.firstChild)})();
 (function(RW){var PH=RW.EMDSetH,PLS=PH.ls;
 var window=new Proxy(RW,{get:function(t,k){if(k==='db')return PH.db();if(k==='localStorage')return PLS;if(PH.alias[k]&&!(k in t))return PH.alias[k];var v=t[k];return typeof v==='function'&&PH.nat(v)?v.bind(t):v},set:function(t,k,v){t[k]=v;return true},has:function(t,k){return k in t||!!PH.alias[k]}});
 /* ---- V333 ---- */
@@ -483,6 +483,210 @@ function apply(r){
   })
 }
 window.EMDRecoverV124={open:open,scan:scan,apply:apply};
+})();
+
+/* ---- V315 ---- */
+
+(function(){
+  'use strict';
+  var ROLE_KEY='emd_business_role_v315';
+  var AUDIT_KEY='emd_business_audit_v315';
+  var MAX_LOGS=500;
+  var VERSION='V315';
+
+  var ROLE_LABELS={
+    admin:'مدير النظام',
+    supervisor:'مشرف',
+    prep:'تجهيز',
+    warehouse:'مخزون',
+    shipping:'شحن وتوصيل',
+    readonly:'قراءة فقط'
+  };
+
+  /* الصلاحيات هنا تشغيلية محلية فقط. الصلاحية الحقيقية ستنتقل للخادم عند بناء النسخة المتصلة. */
+  var PERMS={
+    admin:['*'],
+    supervisor:['orders.read','orders.edit','orders.status','products.read','products.edit','customers.read','customers.edit','reports.read','backup.use','audit.read'],
+    prep:['orders.read','orders.status','products.read'],
+    warehouse:['orders.read','orders.status','products.read','products.edit'],
+    shipping:['orders.read','orders.status','customers.read'],
+    readonly:['orders.read','products.read','customers.read','reports.read']
+  };
+
+  function role(){
+    try{
+      var r=PLS.getItem(ROLE_KEY)||'admin';
+      return ROLE_LABELS[r]?r:'admin';
+    }catch(e){return 'admin'}
+  }
+  function setRole(r){
+    if(!ROLE_LABELS[r])return false;
+    PLS.setItem(ROLE_KEY,r);
+    return true;
+  }
+  function hasPermission(p){
+    var r=role(), list=PERMS[r]||[];
+    return list.indexOf('*')!==-1 || list.indexOf(p)!==-1;
+  }
+  function readLogs(){
+    try{
+      var x=JSON.parse(PLS.getItem(AUDIT_KEY)||'[]');
+      return Array.isArray(x)?x:[];
+    }catch(e){return []}
+  }
+  function writeLogs(a){
+    try{PLS.setItem(AUDIT_KEY,JSON.stringify(a.slice(-MAX_LOGS)));return true}catch(e){return false}
+  }
+  function record(action,details){
+    var a=readLogs();
+    a.push({
+      id:'A'+Date.now().toString(36)+Math.random().toString(36).slice(2,7),
+      at:new Date().toISOString(),
+      role:role(),
+      action:String(action||'غير معروف'),
+      details:(details&&typeof details==='object')?(function(d){try{return Object.keys(d).map(function(k){var v=d[k];return k+': '+(v&&typeof v==='object'?JSON.stringify(v):v)}).join('، ').slice(0,240)}catch(e){return ''}})(details):String(details||''),
+      appVersion:VERSION
+    });
+    writeLogs(a);
+    emit('audit',a[a.length-1]);
+    refresh();
+  }
+  function emit(name,payload){
+    try{
+      if(window.EMDCoreV314&&typeof window.EMDCoreV314.emit==='function'){
+        window.EMDCoreV314.emit(name,payload);
+      }
+    }catch(e){}
+  }
+  function esc(s){
+    return String(s==null?'':s).replace(/[&<>"']/g,function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+  function fmt(iso){
+    try{return new Date(iso).toLocaleString('ar-OM',{dateStyle:'short',timeStyle:'short'})}
+    catch(e){return iso}
+  }
+  function stats(){
+    var a=readLogs();
+    var last=a.length?a[a.length-1]:null;
+    return {
+      role:role(),
+      roleLabel:ROLE_LABELS[role()],
+      logs:a.length,
+      last:last,
+      permissionCount:(PERMS[role()]||[]).length
+    };
+  }
+  function renderStats(){
+    var s=stats(),box=document.getElementById('emdSecurityV315Stats');
+    if(!box)return;
+    box.innerHTML=[
+      ['الدور الحالي',s.roleLabel],
+      ['عدد العمليات المسجلة',s.logs],
+      ['عدد الصلاحيات',s.permissionCount]
+    ].map(function(x){return '<div class="emd-v315-card"><span class="emd-v315-muted">'+x[0]+'</span><b>'+esc(x[1])+'</b></div>'}).join('');
+    var sel=document.getElementById('emdRoleV315');if(sel)sel.value=s.role;
+    var hint=document.getElementById('emdRoleHintV315');
+    if(hint)hint.textContent='الصلاحيات الحالية: '+(PERMS[s.role]||[]).map(function(p){return p==='*'?'كل الصلاحيات':p}).join('، ');
+  }
+  function renderLog(){
+    var box=document.getElementById('emdAuditLogV315');if(!box)return;
+    var a=readLogs().slice().reverse();
+    if(!a.length){box.innerHTML='<div style="padding:22px;text-align:center;color:#687384">لا توجد عمليات مسجلة بعد.</div>';return}
+    box.innerHTML='<div class="emd-v315-row" style="font-weight:900;background:#f7f8fa"><span>الوقت</span><span>الدور</span><span>العملية / التفاصيل</span><span>الإصدار</span></div>'+
+      a.map(function(x){
+        return '<div class="emd-v315-row"><span>'+esc(fmt(x.at))+'</span><span>'+esc(ROLE_LABELS[x.role]||x.role)+'</span><span class="full"><b>'+esc(x.action)+'</b> — '+esc(String(x.details||'').replace(/\[object Object\]/g,'—'))+'</span><span>'+esc(x.appVersion)+'</span></div>';
+      }).join('');
+  }
+  function refresh(){renderStats();renderLog()}
+  function open(){
+    var m=document.getElementById('emdSecurityV315');
+    if(m){m.classList.add('show');m.setAttribute('aria-hidden','false');refresh()}
+  }
+  function close(){
+    var m=document.getElementById('emdSecurityV315');
+    if(m){m.classList.remove('show');m.setAttribute('aria-hidden','true')}
+  }
+  function currentPassword(){
+    try{
+      var x=JSON.parse(PLS.getItem('emd_business_password_v80')||'null');
+      return x&&x.hash?x:null;
+    }catch(e){return null}
+  }
+  async function verifyAdmin(){
+    var rec=currentPassword();
+    if(!rec)return true;
+    var p=prompt('🔐 أدخل كلمة مرور التطبيق لتغيير الدور:');
+    if(p===null)return false;
+    try{return await window.__emdVerifyPassword(p)}catch(e){return false}
+  }
+  async function changeRole(){
+    var sel=document.getElementById('emdRoleV315');if(!sel)return;
+    var next=sel.value,old=role();
+    if(next===old)return;
+    if(!(await verifyAdmin())){alert('❌ لم يتم تغيير الدور. كلمة المرور غير صحيحة أو تم الإلغاء.');sel.value=old;return}
+    setRole(next);
+    record('تغيير الدور',ROLE_LABELS[old]+' ← '+ROLE_LABELS[next]);
+    alert('✅ تم تغيير الدور إلى: '+ROLE_LABELS[next]);
+  }
+  function exportAudit(){
+    if(!hasPermission('audit.read')){alert('ليس لديك صلاحية تصدير سجل العمليات.');return}
+    var payload={app:'EMD Business',version:VERSION,exportedAt:new Date().toISOString(),role:role(),logs:readLogs()};
+    var blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+    var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='EMD_Business_Audit_'+new Date().toISOString().slice(0,10)+'.json';a.click();
+    setTimeout(function(){URL.revokeObjectURL(a.href)},1000);
+    record('تصدير سجل العمليات','تم تنزيل سجل العمليات بصيغة JSON');
+  }
+  async function clearAudit(){
+    if(!hasPermission('audit.read')){alert('ليس لديك صلاحية مسح سجل العمليات.');return}
+    if(!(await verifyAdmin())){alert('❌ لم يتم المسح.');return}
+    if(!confirm('هل تريد مسح سجل العمليات المحلي بالكامل؟'))return;
+    PLS.removeItem(AUDIT_KEY);
+    /* سجل المسح لا يمكن حفظه بعد المسح؛ نعيد تسجيل حدث جديد ليبقى هناك أثر. */
+    record('مسح سجل العمليات','تم مسح السجل المحلي وإعادة فتحه');
+    refresh();
+  }
+  function wrap(name,label){
+    try{
+      if(window['__EMD_V315_WRAP_'+name])return;
+      var fn=window[name];if(typeof fn!=='function')return;
+      window[name]=function(){
+        var out=fn.apply(this,arguments);
+        try{record(label,'تم تنفيذ العملية')}catch(e){}
+        return out;
+      };
+      window['__EMD_V315_WRAP_'+name]=true;
+    }catch(e){}
+  }
+  function init(){
+    var c=document.getElementById('emdSecurityV315Close');if(c)c.onclick=close;
+    var s=document.getElementById('emdRoleSaveV315');if(s)s.onclick=changeRole;
+    var r=document.getElementById('emdAuditRefreshV315');if(r)r.onclick=refresh;
+    var ex=document.getElementById('emdAuditExportV315');if(ex)ex.onclick=exportAudit;
+    var cl=document.getElementById('emdAuditClearV315');if(cl)cl.onclick=clearAudit;
+    /* تسجيل العمليات الحساسة الموجودة فعليًا في V313/V314 دون تغيير سلوكها. */
+    ['exportBackupV39','importBackupV39','createLocalBackupV85','restoreLocalBackupV85'].forEach(function(n){wrap(n,n)});
+    record('تشغيل النظام','تم تشغيل طبقة الأمان والصلاحيات V315');
+    refresh();
+  }
+
+  window.EMDSecurityV315={
+    version:VERSION,
+    roles:ROLE_LABELS,
+    permissions:PERMS,
+    getRole:role,
+    setRole:setRole,
+    hasPermission:hasPermission,
+    record:record,
+    logs:readLogs,
+    stats:stats,
+    open:open,
+    close:close,
+    refresh:refresh
+  };
+
+  init();
 })();
 
 })(window);
