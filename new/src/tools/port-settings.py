@@ -78,6 +78,17 @@ x=h[a:b].replace('const DEFAULT_WA_TEMPLATE','var DEFAULT_WA_TEMPLATE')
 x=x.replace("function openWaTemplate(){","window.openWaTemplate=function(){").replace("function closeWaTemplate(){","window.closeWaTemplate=function(){").replace("function saveWaTemplate(){","window.saveWaTemplate=function(){").replace("function resetWaTemplate(){","window.resetWaTemplate=function(){")
 html+=html_by_id('waTemplateModal')
 js+=add('WA',x)
+# معالج الإعداد السريع V92 (يُفتح من الإعدادات؛ التشغيل التلقائي الأول غير لازم: التجربة تبدأ ببياناتك)
+x=block('EMD-V92-onboard','script');css+=block('EMD-V92-onboard-css','style')
+x=cut(x,"function admin(){try{return !!(window.EMDSecurityV315&&window.EMDSecurityV315.hasPermission&&window.EMDSecurityV315.hasPermission('*'))}catch(e){return true}}","function admin(){return RW.EMDPosH.owner()}")
+x=cut(x,"function persist(){try{window.save&&window.save()}catch(e){}try{window.render&&window.render()}catch(e){}}","function persist(){RW.EMDPosH.homeRefresh();RW.EMDPosH.alias.save()}")
+x=re.sub(r"function tryOrder\(\)\{.*?\n\}\n","function tryOrder(){var txt=sample();done();RW.EMDPosH.importMsg(txt)}\n",x,count=1,flags=re.S)
+x=cut(x,"if(k==='restore'){done();try{window.EMDProtectV66&&window.EMDProtectV66.open();setTimeout(function(){var f=document.getElementById('emd66FileInput');f&&f.click()},300)}catch(e){}return}","if(k==='restore'){done();RW.EMDPosH.backup();return}")
+x=cut(x,"if(k==='login'||k==='signup'){done();try{window.EMDCloudV93&&window.EMDCloudV93.open(k)}catch(e){}return}","if(k==='login'||k==='signup'){done();RW.EMDPosH.cloud(k);return}")
+x=cut(x,"if(k==='finish'){done();try{window.show&&window.show('home')}catch(e){}return}","if(k==='finish'){done();RW.EMDPosH.goHome();return}")
+x=re.sub(r"/\* زر في الإعدادات لإعادة فتح المعالج \*/.*?window\.EMDOnboardV92=\{open:open\};\n.*?\n.*?\n","window.EMDOnboardV92={open:open};\n",x,count=1,flags=re.S)
+assert 'hubButton' not in x and 'auto()' not in x,'v92'
+js+=add('V92',x)
 # تخصيص الرئيسية: إظهار البطاقات V337، ترتيبها V338، إبراز المهم V339 — نفس النوافذ والمفاتيح؛ التطبيق يرسم البطاقات حسبها
 ADM="function admin(){try{return typeof window.isAdmin==='function'?!!window.isAdmin():(window.currentUser&&window.currentUser.role==='admin')||document.body.getAttribute('data-role')==='admin'}catch(e){return false}}"
 for v,sid,cid,hid in [('V337','EMD-V337-dashboard-js','EMD-V337-dashboard-style','emdV337DashboardModal'),('V338','EMD-V338-dashboard-order-script','EMD-V338-dashboard-order-style','emdV338DashboardOrderModal'),('V339','EMD-V339-dashboard-priority-script','EMD-V339-dashboard-priority-style','emdV339DashboardPriorityModal')]:

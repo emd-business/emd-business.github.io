@@ -76,14 +76,14 @@ function paint(){if(!ov)return;var h='';ov.setAttribute('aria-labelledby','emd41
      '<div class="sum"><b><i></i>'+m.title+'</b>'+m.sum.map(function(s){return '<span>'+s+'</span>'}).join('')+'</div>'+
      '<div class="ft"><button type="button" class="cta" data-a="start">ابدأ بنمط «'+m.name+'»</button><button type="button" class="lt" data-a="later">سأختار لاحقًا</button></div></div>'}
   else if(view==='settings'){var cur=mode();
-    h='<div class="win sheet">'+head('نوع النشاط')+'<p class="sub">يحدّد نوع النشاط ترتيب الشريط السفلي والأدوات الظاهرة. أما بياناتك وطلباتك ومنتجاتك فلا تتغير أبدًا.</p>'+
+    h='<div class="win e4sh">'+head('نوع النشاط')+'<p class="sub">يحدّد نوع النشاط ترتيب الشريط السفلي والأدوات الظاهرة. أما بياناتك وطلباتك ومنتجاتك فلا تتغير أبدًا.</p>'+
      '<div class="list">'+IDS.map(function(id){var x=M[id],on=id===cur;return '<button type="button" class="row'+(on?' on':'')+'" data-pick="'+id+'" aria-pressed="'+on+'"><span class="rd"><i></i></span><span class="rt"><b>'+x.name+(on?' <em class="cur">الحالي</em>':'')+(x.soon?' <em>قريبًا</em>':'')+'</b><small>'+x.desc+'</small></span></button>'}).join('')+'</div>'+
      (cur==='company'?'<button type="button" class="link" data-a="company"><span class="li">'+ic('company',20)+'</span><span><b>الفروع والمخازن</b><small>المخزون والتحويل والموظفون والتقارير</small></span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg></button>':'')+
           (pending?'<div class="cf"><div class="cfw" role="alertdialog" aria-labelledby="emd416C"><span class="grip"></span><b id="emd416C">التحويل إلى «'+M[pending].name+'»؟</b>'+M[pending].sum.map(function(s){return '<span class="ln"><i></i>'+s+'</span>'}).join('')+
        '<span class="safe"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6l-8-3z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg>لن تتغير بياناتك، ويمكنك التراجع بضغطة واحدة</span>'+
        '<span class="two"><button type="button" class="ghost" data-a="cancel">إلغاء</button><button type="button" class="cta" data-a="confirm">تحويل الآن</button></span></div></div>':'')+'</div>'}
   else{var c=co(),opt=function(sel){return '<option value="-1"'+(sel===-1?' selected':'')+'>يزوّد جميع الفروع</option>'+c.b.map(function(b,i){return '<option value="'+i+'"'+(sel===i?' selected':'')+'>'+esc(b.n||('فرع '+(i+1)))+'</option>'}).join('')};
-    h='<div class="win sheet co">'+head('هيكل الشركة','back')+
+    h='<div class="win e4sh co">'+head('هيكل الشركة','back')+
      '<div class="cohd"><span class="badge">قريبًا: الربط الكامل</span><p>سجّل فروعك ومخازنك الآن. وعند تفعيل السحابة المشتركة، يطّلع كل فرع على مخزونه ونقطة بيعه، وتطّلع أنت على الجميع.</p>'+
      '<div class="steps"><span class="on"><i></i>الهيكل</span><span><i></i>استيراد Excel</span><span><i></i>السحابة</span><span><i></i>نقطة البيع</span></div></div>'+
      '<div class="sec"><b>الفروع</b><small>'+c.b.length+'</small><button type="button" class="add" data-a="addB">+ فرع</button></div>'+

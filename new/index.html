@@ -335,7 +335,7 @@ window.addEventListener('pagehide',function(){if(saveT){clearTimeout(saveT);save
 var PIN_KEY='emd_rb_pins_v1'; // تثبيت التجربة منفصل عن تثبيت التطبيق الأصلي
 function pinned(){try{var a=JSON.parse(lsGet(PIN_KEY)||'[]');var m={};(Array.isArray(a)?a:[]).forEach(function(x){m[String(x)]=1});return m}catch(e){return {}}}
 function setPin(id,on){var m=pinned();if(on)m[id]=1;else delete m[id];lsSet(PIN_KEY,JSON.stringify(Object.keys(m)));dirty()}
-function companies(){try{var a=JSON.parse(lsGet('emd_v79_companies')||'[]');return Array.isArray(a)?a.map(function(x){return typeof x==='string'?x:(x&&x.name)||''}).filter(Boolean):[]}catch(e){return []}}
+function companies(){try{var a=JSON.parse(POS_LS.getItem('emd_v79_companies')||'[]');return Array.isArray(a)?a.map(function(x){return typeof x==='string'?x:(x&&x.name)||''}).filter(Boolean):[]}catch(e){return []}}
 function storeName(){try{var p=JSON.parse(POS_LS.getItem('emd_business_profile_v333')||'{}');return String(p.name||'').trim()}catch(e){return ''}}
 
 /* ===== lib/util.js ===== */
@@ -1193,7 +1193,7 @@ function posLs(){var SB=function(){return typeof CLOUD_SANDBOX==='undefined'||CL
     removeItem:function(k){if(SB()){lsSet(rk(k),POS_RM);return}try{LS.removeItem(k)}catch(e){}}}}
 var POS_LS=posLs();
 function dsMgr(){try{var m=JSON.parse(POS_LS.getItem('emd_manager_profile_v41')||'null');return (m&&m.name)||'المدير'}catch(e){return 'المدير'}}
-function posHelpers(){return {db:function(){return db},ls:POS_LS,coBlock:function(){return !cloudCanWrite()},owner:function(){return stOwner()},permFor:stPermFor,viewGuard:stViewGuard,closing:function(){closingSheet()},idsFmt:idsFmt,invoice:function(id){openInvoice(id)},homeRefresh:function(){dirty();render()},icStyle:function(){icApply();render()},icBar:function(){renderBar()},look:function(dark,acc,v){lookNative(dark,acc);lookBody(v)},lookPaint:function(){storeRow();render()},backup:function(){setRun(function(){EMDBackupV313.open()})},locked:function(){lkCoverOff()},unlocked:function(){lkCoverOff();dirty();render()},
+function posHelpers(){return {db:function(){return db},ls:POS_LS,coBlock:function(){return !cloudCanWrite()},owner:function(){return stOwner()},permFor:stPermFor,viewGuard:stViewGuard,closing:function(){closingSheet()},idsFmt:idsFmt,invoice:function(id){openInvoice(id)},homeRefresh:function(){dirty();render()},importMsg:function(t){importSheet(t)},cloud:function(k){cloudSheet(k==='signup'?'signup':'login')},goHome:function(){state.view='home';render();window.scrollTo(0,0)},icStyle:function(){icApply();render()},icBar:function(){renderBar()},look:function(dark,acc,v){lookNative(dark,acc);lookBody(v)},lookPaint:function(){storeRow();render()},backup:function(){setRun(function(){EMDBackupV313.open()})},locked:function(){lkCoverOff()},unlocked:function(){lkCoverOff();dirty();render()},
     alias:{EMDProductImageV81:{pick:function(cb){v81Pick(cb)}},save:function(){dirty();saveNow()},render:function(){dirty();render()},renderProducts:function(){dirty();if(state.view==='products')render()},toast:toast,EMDBusinessProfileV333:{get:function(){return dsHelpers().profile()}},EMDLookV89:{accentHex:dsLook,logoImg:function(){return dsLogo&&dsLogo.complete&&dsLogo.naturalWidth?dsLogo:null}},EMDMoneyV75:{total:function(o){return total(o)},paid:function(o){return paid(o)},remaining:function(o){return remaining(o)},payState:function(o){return payState(o)},invoice:function(id){openInvoice(id)}},EMDStaffV108:{who:function(){return {id:'owner',name:dsMgr(),owner:true}},can:function(){return true}},EMDCloudV93:{api:{uid:function(){return cUid()},token:function(){return cToken()}}},EMDPrefixV129:{fmt:function(s){return idsFmt(String(s))}}},nat:function(f){try{return /\{\s*\[native code\]\s*\}$/.test(Function.prototype.toString.call(f))}catch(e){return false}}}}
 function directLoad(){if(window.EMDDirectV113)return Promise.resolve(window.EMDDirectV113);if(dsLoading)return dsLoading;window.EMDDirH=dsHelpers();
   var w=dsWant();dsVariant=w;
@@ -2368,7 +2368,7 @@ function customerEdit(k){
 var SET_I={
  profile:['🏢 بيانات النشاط','الاسم والتواصل والموقع والعملة. تظهر في الفاتورة والملصق.',function(){setRun(function(){EMDBusinessProfileV333.open()})}],
  prefix:['🔤 حروف رقم الطلب',function(){var p=prefix();return 'الحالية: '+p+'. تظهر قبل رقم كل طلب مثل '+p+'-0042.'},function(){setRun(function(){EMDPrefixV129.open()})}],
- wizard:['🚀 معالج الإعداد السريع','المتجر والمنتجات وشركات الشحن خطوة بخطوة.',null],
+ wizard:['🚀 معالج الإعداد السريع','المتجر والمنتجات وشركات الشحن خطوة بخطوة.',function(){setRun(function(){EMDOnboardV92.open()})}],
  quick:['🏷️ الملصق السريع','تصميم الملصق الذي يُطبع بزر «🏷️ ملصق» ومقاسه.',null],
  invp:['🧾 اقتراح إرسال الفاتورة',function(){return invpOn()?'مفعّل: يظهر اقتراح إرسال الفاتورة بعد استلام الطلب. اضغط للإيقاف.':'متوقف. اضغط لتفعيل اقتراح إرسال الفاتورة بعد استلام الطلب.'},function(){setRun(function(){EMDInvPromptV117.set(!EMDInvPromptV117.on());setPaint()})}],
  push:['🔔 الإشعارات','طلبات المتجر الجديدة، والتقييمات، والمخزون، وملخص اليوم على جوالك.',function(){setClose();pushSheet()}],

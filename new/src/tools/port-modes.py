@@ -23,6 +23,8 @@ assert 'data-a="features"' not in j6
 a=j6.index('/* سطر في الإعدادات + سؤال أول تشغيل */');b=j6.index('window.EMDModesV416=')
 j6=j6[:a]+"function firstRun(){view='pick';picked='online';host();paint();ov.classList.add('show');document.body.classList.add('emd416-open')}\n"+j6[b:]
 j6=rep(j6,"window.EMDModesV416={open:open,mode:mode,set:applyMode,company:co};","window.EMDModesV416={open:open,mode:mode,set:applyMode,company:co,firstRun:firstRun,openCo:function(){view='co';host();paint();ov.classList.add('show');document.body.classList.add('emd416-open')}};")
+# الصنف sheet يتصادم مع ورقة التطبيق الجديد (position:fixed وbox) فيضيق العرض
+j6=j6.replace('win sheet','win e4sh');assert 'class="win sheet' not in j6
 j6=re.sub(r"function boot\(\)\{tick\(\);setInterval\(tick,1000\)\}\nif\(document\.readyState.*?\n","",j6)
 assert 'setInterval' not in j6 and 'window.db' not in j6 and 'localStorage' not in j6,'v416 left'
 # ---- V417 ----
