@@ -10,14 +10,15 @@ var db=null, meta={};
 function load(){
   var raw=lsGet(KEY);
   try{meta=JSON.parse(lsGet(META)||'{}')||{}}catch(e){meta={}}
-  if(raw){try{db=JSON.parse(raw)}catch(e){db=null}}
+  if(raw){try{db=JSON.parse(raw)}catch(e){db=null;badCopy(raw)}}
   return !!db;
 }
-function fix(d){
-  d=d||{};
-  if(!Array.isArray(d.orders))d.orders=[];
-  if(!Array.isArray(d.products))d.products=[];
-  if(!Array.isArray(d.customers))d.customers=[];
+/* بيانات غير قابلة للقراءة: تُحفظ نسخة منها في مفتاح منفصل قبل أن يكتب المستخدم بيانات جديدة فوقها (مرة واحدة لكل تلف) */
+function badCopy(raw){try{var k='emd_business_bad_copy';if(LS.getItem(k)===raw)return;LS.setItem(k,raw);LS.setItem(k+'_at',new Date().toISOString())}catch(e){}}
+function fix(d){ // يُصلح شكل البيانات فقط: القوائم الثلاث قوائم، وكل عنصر فيها كائن (قيمة فارغة أو نص بدل كائن تُسقط بدل أن تعطّل الصفحات)
+  if(!d||typeof d!=='object'||Array.isArray(d))d={};
+  ['orders','products','customers'].forEach(function(k){var a=d[k];if(!Array.isArray(a)){d[k]=[];return}
+    for(var i=0;i<a.length;i++)if(!a[i]||typeof a[i]!=='object'||Array.isArray(a[i])){d[k]=a.filter(function(x){return x&&typeof x==='object'&&!Array.isArray(x)});break}});
   return d;
 }
 function adopt(d,src){

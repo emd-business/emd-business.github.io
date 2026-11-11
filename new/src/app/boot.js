@@ -14,6 +14,8 @@ function boot(){
 $('homeImgIn').addEventListener('change',function(){var f=this.files&&this.files[0];this.value='';homeImgPicked(f)});
   render();setTimeout(modesFirstRun,1500);
 }
+/* عامل الخدمة (sw.js في جذر الموقع): يُسجَّل فقط عندما تعمل هذه الصفحة في الجذر (بعد النشر)؛ في /new/ يبقى عامل التطبيق الحالي */
+if('serviceWorker' in navigator&&/^\/(index\.html)?$/.test(location.pathname)&&(location.protocol==='https:'||location.hostname==='localhost')){window.addEventListener('load',function(){try{navigator.serviceWorker.register('/sw.js',{scope:'/'}).catch(function(){})}catch(e){}})}
 langBoot();icApply();boot();lkBoot();bkBoot();lookBoot();if(stCfgOn())stLoad().catch(function(){});cloudBoot();storeBoot();puBoot();
 setTimeout(function(){nfLoad().then(nfBadge,function(){})},900);setTimeout(trBoot,2500);setTimeout(function(){setLoad().catch(function(){})},2000);setTimeout(archRefresh,2500);setTimeout(trEnsureAll,3000);
 setInterval(function(){coTick();lkTick();lookTick();bkTick();cloudTick();storeTick();trTick();puTick();supTick();archTick();archAutoTick();if(!$('sheets').children.length)closingTick();},10000);

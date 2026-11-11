@@ -60,4 +60,9 @@ eq(A.receiveOrder(r),'','الاستلام');eq(A.status(r),'received','مستل�
  const ix=B.index();eq(ix.sales,10,'مبيعات اليوم تشمل البيع المباشر وتستثني الملغاة');eq(ix.profit,10-6-2,'ربح الشهر = البيع − التكلفة − المصروفات');
  const C3=make();C3.window.localStorage.setItem('emd_v75_legacy_on','1');C3.window.localStorage.setItem('emd_v75_since','2026-11-02');const L=C3.API;
  eq(L.payState({total:5,created:'2026-11-01T10:00:00'}),'paid','الطلب الأقدم من تاريخ التفعيل محصّل');eq(L.payState({total:5,created:'2026-11-03T10:00:00'}),'unpaid','الأحدث غير محصّل')}
+/* بيانات تالفة: قيم فارغة أو نصوص بدل كائنات داخل القوائم تُسقط ولا تعطّل */
+{const C2=make(),B=C2.API;B.setDb({orders:[null,'x',42,{id:'#1',status:'new',products:[]},[1]],products:[null,{name:'p'}],customers:'bad'});
+ eq(B.db().orders.length,1,'fix: الطلبات غير الصالحة تُسقط');eq(B.db().products.length,1,'fix: المنتجات غير الصالحة تُسقط');eq(B.db().customers,[],'fix: العملاء نص → قائمة فارغة');
+ B.setDb(null);eq(B.db().orders,[],'fix: بيانات فارغة');B.setDb([1,2]);eq(Array.isArray(B.db().orders),true,'fix: مصفوفة بدل كائن')}
+
 console.log((fail?'❌':'✅')+' القواعد: '+pass+' ناجح، '+fail+' فاشل');process.exit(fail?1:0);
