@@ -974,5 +974,83 @@ function viewer(em){var P=CACHE[em]||{};var K2=P.keys||{},D=J(K2.emd_business_v1
 })();
 </script>
 
+<style id="EMD-owner-V246-dz-css">
+.dzE{display:flex;align-items:center;gap:12px;width:100%;margin:0 0 14px;padding:14px;border:1px solid var(--line);border-radius:16px;background:var(--card);color:var(--text);font:inherit;text-align:start;cursor:pointer}
+.dzE .i{flex:none;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:22px;background:var(--chip)}
+.dzE b{display:block;font-size:15px}.dzE small{display:block;color:var(--muted);font-size:12.5px;margin-top:2px}.dzE .ar{margin-inline-start:auto;color:var(--muted);font-size:20px}
+#dzS .o2-box{display:block;height:auto}
+#dzS h2{margin:0 0 4px;font-size:19px}#dzS .sub{margin:0 0 12px;color:var(--muted);font-size:13px;line-height:1.7}
+.dzL{display:grid;gap:10px}
+.dzC{border:1px solid var(--line);border-radius:14px;background:var(--card);padding:10px}
+.dzC.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.dzH{display:flex;align-items:center;gap:10px}
+.dzH img{flex:none;width:52px;height:68px;object-fit:cover;border-radius:9px;background:var(--chip)}
+.dzH .t{flex:1;min-width:0}.dzH .t b{display:block;font-size:14.5px}.dzH .t small{display:block;color:var(--muted);font-size:12px;line-height:1.5}
+.dzT{flex:none;min-height:40px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--chip);color:var(--text);font:700 13px inherit;cursor:pointer}
+.dzT[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent,#fff)}
+.dzB{display:none;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}.dzC.on .dzB{display:block}
+.dzN{display:flex;gap:6px}.dzN input{flex:1;min-width:0;min-height:42px;padding:6px 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--text);font:inherit}
+.dzN button,.dzK button{min-height:42px;padding:0 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--text);font:700 13px inherit;cursor:pointer}
+.dzN .go{background:var(--accent);border-color:var(--accent);color:var(--on-accent,#fff)}
+.dzK{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:8px;padding:8px;border-radius:10px;background:var(--surface)}
+.dzK code{font:700 16px/1.3 ui-monospace,Menlo,monospace;letter-spacing:1.5px;direction:ltr;color:var(--text)}
+.dzK .s{flex:1 1 140px;font-size:12px;color:var(--muted);line-height:1.5}.dzK .s b{color:var(--good)}
+.dzK.x{opacity:.55}.dzK.x code{text-decoration:line-through}
+.dzK button{min-height:36px;padding:0 10px;font-size:12.5px}.dzK .rv{color:var(--bad)}
+.dzU{margin-top:6px;font-size:12px;color:var(--warn)}
+.dzM{min-height:20px;margin:8px 0 0;font-size:13px;font-weight:700;color:var(--muted)}
+</style>
+<script id="EMD-owner-V246-dz">
+/* V246: التصاميم الخاصة بكود سري (لوحة المالك). كل الإجراءات عبر الدالة design-codes للمالك فقط. */
+(function(){'use strict';
+var FN='https://pfkstppvnebagbdckgbu.supabase.co/functions/v1/design-codes',KEY='sb_publishable__tfVZiyph-xyB87GzmHrkQ_9DVpPHJ0',IMG='https://emd-business.github.io/t/';
+var DZ=[['slowbrew','التقطير البطيء','هوجس'],['giveaway','ركن التوزيعات','iPrint'],['velvet','الطباعة الذهبية','iPrint'],['artboard','لوح التصميم','iPrint'],['moongarden','حديقة القمر','غرس لاين'],['homecorner','ركن القهوة المنزلي','كايليو'],['gazette','جريدة الحلوى','WOW CANDY'],['daybreak','الإشراقة','Shine'],['palace','قصر الحكايات','Mudon'],['infusion','النقع','Bloomix']];
+var D=null,busy=false;
+function $(i){return document.getElementById(i)}
+function esc(x){return String(x==null?'':x).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function call(b){var A=window.__OWNAPI;if(!A)return Promise.reject(new Error('api'));return A.token().then(function(t){return fetch(FN,{method:'POST',headers:{'Content-Type':'application/json',apikey:KEY,'x-emd-token':t},body:JSON.stringify(b)})}).then(function(r){return r.json().catch(function(){return {}}).then(function(j){if(!j||!j.ok){var e=new Error((j&&j.error)||('HTTP '+r.status));e.code=j&&j.error;throw e}return j})})}
+function errT(e){var c=e&&e.code;return c==='mfa_required'?'سجّل الخروج ثم ادخل برمز التحقق الثنائي.':c==='forbidden'?'هذا القسم لحساب المالك فقط.':c==='auth'?'انتهت الجلسة. سجّل الدخول مرة أخرى.':'تعذّر الاتصال. أعد المحاولة.'}
+function d8(s){try{return new Date(s).toLocaleDateString('ar-OM',{day:'numeric',month:'short',year:'numeric'})}catch(e){return ''}}
+function msg(t){var m=$('dzMsg');if(m)m.textContent=t||''}
+function waText(c){return 'مرحبًا، هذا كود تصميم متجرك الخاص في EMD Business:\n'+c+'\n\nطريقة التفعيل: افتح التطبيق ← 🛍️ متجري ← 🎨 التصميم ← «🔑 لدي كود تصميم خاص»، ثم أدخل الكود. التصميم مخصص لمتجرك وحدك.'}
+function draw(){var b=$('dzBody');if(!b)return;if(!D){b.innerHTML='<p class="sub">جارٍ التحميل…</p>';return}
+  var P={};(D.priv||[]).forEach(function(x){P[x.layout]=x.is_on});
+  var keys=DZ.map(function(x){return x[0]});(D.priv||[]).forEach(function(x){if(keys.indexOf(x.layout)<0){keys.push(x.layout);DZ.push([x.layout,x.layout,''])}});
+  b.innerHTML='<div class="dzL">'+DZ.map(function(x){var k=x[0],on=!!P[k],C=(D.codes||[]).filter(function(c){return c.layout===k}),U=(D.uses||{})[k]||[];
+    var used=C.filter(function(c){return c.store&&!c.revoked}).length,free=C.filter(function(c){return !c.store&&!c.revoked}).length;
+    return '<div class="dzC'+(on?' on':'')+'" data-k="'+esc(k)+'"><div class="dzH"><img alt="" loading="lazy" src="'+esc(IMG+k+'.jpg')+'"><div class="t"><b>'+esc(x[1])+'</b><small>'+(x[2]?'صُمم لـ '+esc(x[2])+' · ':'')+(on?'خاص: '+used+' متجر يملكه'+(free?' · '+free+' كود لم يُستخدم':''):'عام: يراه جميع التجار')+'</small></div>'+
+      '<button type="button" class="dzT" data-dzt="'+esc(k)+'" aria-pressed="'+on+'">'+(on?'🔒 خاص':'عام')+'</button></div>'+
+      '<div class="dzB">'+(U.length?'<div class="dzU">يستخدمه الآن: '+U.map(function(s){return esc(s.name)}).join('، ')+'</div>':'')+
+      '<div class="dzN" style="margin-top:6px"><input maxlength="60" placeholder="لمن الكود؟ (اختياري، مثل: هوجس)" aria-label="ملاحظة الكود" data-dzn="'+esc(k)+'"><button type="button" class="go" data-dzg="'+esc(k)+'">+ إنشاء كود</button></div>'+
+      C.map(function(c){var s=c.revoked?'ملغى':c.store?'<b>مُفعّل</b> لمتجر '+esc(c.store.name)+' · '+d8(c.used_at):'لم يُستخدم بعد';
+        return '<div class="dzK'+(c.revoked?' x':'')+'"><code>'+esc(c.code)+'</code><span class="s">'+s+(c.note?'<br>'+esc(c.note):'')+'</span>'+
+         (c.revoked?'':'<button type="button" data-dzc="'+esc(c.code)+'">نسخ</button>'+(c.store?'':'<button type="button" data-dzw="'+esc(c.code)+'">واتساب</button>')+'<button type="button" class="rv" data-dzr="'+esc(c.code)+'">إلغاء</button>')+'</div>'}).join('')+
+      '</div></div>'}).join('')+'</div>'}
+function load(){msg('');D=null;draw();return call({action:'list'}).then(function(j){D=j;draw()},function(e){var b=$('dzBody');if(b)b.innerHTML='<p class="sub">'+esc(errT(e))+'</p>'})}
+function open(){var o=$('dzS');if(o)o.remove();o=document.createElement('div');o.id='dzS';o.className='o2-ov';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-label','التصاميم الخاصة');
+  o.innerHTML='<div class="o2-box"><div style="display:flex;align-items:center;gap:8px"><h2 style="flex:1">🔑 التصاميم الخاصة</h2><button type="button" class="b" data-dzx="1">إغلاق</button></div>'+
+   '<p class="sub">التصميم «الخاص» يظهر لجميع التجار بقفل 🔒، ولا يستخدمه إلا من أدخل كوده. كل كود يُستخدم مرة واحدة ويرتبط بحساب التاجر. إلغاء الكود يعيد متجر التاجر إلى التصميم الأساسي فورًا.</p>'+
+   '<div id="dzBody"></div><div class="dzM" id="dzMsg" role="status" aria-live="polite"></div></div>';
+  document.body.appendChild(o);load()}
+function copy(t){try{navigator.clipboard.writeText(t).then(function(){msg('✓ نُسخ الكود '+t)},function(){prompt('انسخ الكود:',t)})}catch(e){prompt('انسخ الكود:',t)}}
+function act(p,ok){if(busy)return;busy=true;msg('⏳ جارٍ الحفظ…');call(p).then(function(j){busy=false;msg(ok?ok(j):'');return call({action:'list'}).then(function(x){D=x;draw()})},function(e){busy=false;msg(errT(e))})}
+document.addEventListener('click',function(e){var t=e.target,b;
+  if(t.id==='dzS'||(t.closest&&t.closest('[data-dzx]'))){var o=$('dzS');if(o)o.remove();return}
+  if(t.closest&&t.closest('#dzEntry')){open();return}
+  if(!t.closest||!t.closest('#dzS'))return;
+  if(b=t.closest('[data-dzt]')){var k=b.getAttribute('data-dzt'),on=b.getAttribute('aria-pressed')!=='true';
+    if(!on&&!confirm('جعل التصميم عامًا يعني أن جميع التجار يستطيعون استخدامه. متابعة؟'))return;
+    act({action:'set',layout:k,on:on},function(j){return on?'✓ أصبح التصميم خاصًا'+(j.granted?'. احتفظ '+j.granted+' متجر به لأنه كان يستخدمه.':'.'):'✓ أصبح التصميم عامًا.'});return}
+  if(b=t.closest('[data-dzg]')){var k2=b.getAttribute('data-dzg'),inp=document.querySelector('#dzS [data-dzn="'+k2+'"]');
+    act({action:'new',layout:k2,note:inp?inp.value:''},function(j){setTimeout(function(){copy(j.code)},30);return '✓ الكود الجديد: '+j.code});return}
+  if(b=t.closest('[data-dzc]')){copy(b.getAttribute('data-dzc'));return}
+  if(b=t.closest('[data-dzw]')){window.open('https://wa.me/?text='+encodeURIComponent(waText(b.getAttribute('data-dzw'))),'_blank','noopener');return}
+  if(b=t.closest('[data-dzr]')){var c=b.getAttribute('data-dzr');if(!confirm('إلغاء الكود '+c+'؟ إذا كان مُفعّلًا يرجع متجر التاجر إلى التصميم الأساسي فورًا.'))return;act({action:'revoke',code:c},function(){return '✓ أُلغي الكود.'});return}
+});
+function entry(){var g=$('vGuard');if(!g||$('dzEntry'))return;g.insertAdjacentHTML('afterbegin','<button type="button" class="dzE" id="dzEntry"><span class="i">🔑</span><span><b>التصاميم الخاصة</b><small>اقفل تصميمًا لتاجر معين وأنشئ له كودًا</small></span><span class="ar" aria-hidden="true">‹</span></button>')}
+entry();document.addEventListener('DOMContentLoaded',entry);
+})();
+</script>
+
 </body>
 </html>
