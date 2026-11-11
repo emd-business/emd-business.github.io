@@ -6191,16 +6191,16 @@ html.n8-rv .wc-c.in{animation:wcCi .7s cubic-bezier(.2,.8,.2,1) var(--d,0ms) bac
 .sh-cn button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .sh-cn small{display:block;margin-top:8px;font-size:12px;color:var(--muted)}
 .sh-add b{font-weight:700;white-space:nowrap}
-.sr-c .n8-pc,.cc-c .n8-pc,.cd-c .n8-pc{position:relative}
+.sh-c .n8-pc{position:relative;display:block;overflow:hidden;border-radius:16px}
 .sh-pitch{flex-wrap:wrap}
 .sh-sw{display:flex;gap:6px;flex-wrap:wrap;width:100%}
 .sh-sw button{flex:1 1 90px;min-height:36px;padding:0 10px;border-radius:999px;border:1px solid rgba(255,255,255,.35);background:transparent;color:inherit;font:600 12.5px var(--body,Tahoma);cursor:pointer}
 .sh-sw button[aria-pressed="true"]{background:#fff;color:#2a2018;border-color:#fff}
 
 /* 1) شروق الصباح: فخامة وردية بنية وذهبية، والمتجر يبدأ من ظلام الليل ثم يشرق */
-html[data-lx="sunrise"]{--bg:#fbf2eb;--surface:#fffaf5;--ink:#3a1f1c;--muted:#8f6f66;--line:#ead8cd;--accent:#8d524a;--accent-ink:#fbe9d2;--n8-deep:#3a1f1c;--foil:linear-gradient(100deg,#b88a52,#f8dcae 50%,#b88a52);--tile:#f3e2d8;--frame:0px;--btn-r:999px;--card-r:22px;--display:"El Messiri","Amiri",serif;--display-w:700;--track:0;--body:"IBM Plex Sans Arabic",Tahoma,sans-serif;color-scheme:light;--pattern:none;--sr-g:#f1c091;--sr-d:#6b3a36}
-html[data-lx="sunrise"] body{background:var(--bg)}
-html[data-lx="sunrise"] .n8-cat[aria-pressed="true"],html[data-lx="sunrise"] .n8-empty button{background:#8d524a;border-color:#8d524a;color:#fbe9d2}
+html:is([data-lx="sunrise"],[data-lx="carcharm"],[data-lx="giftbox"]){--bg:#fbf2eb;--surface:#fffaf5;--ink:#3a1f1c;--muted:#8f6f66;--line:#ead8cd;--accent:#8d524a;--accent-ink:#fbe9d2;--n8-deep:#3a1f1c;--foil:linear-gradient(100deg,#b88a52,#f8dcae 50%,#b88a52);--tile:#f3e2d8;--frame:0px;--btn-r:999px;--card-r:22px;--display:"El Messiri","Amiri",serif;--display-w:700;--track:0;--body:"IBM Plex Sans Arabic",Tahoma,sans-serif;color-scheme:light;--pattern:none;--sr-g:#f1c091;--sr-d:#6b3a36}
+html:is([data-lx="sunrise"],[data-lx="carcharm"],[data-lx="giftbox"]) body{background:var(--bg)}
+html:is([data-lx="sunrise"],[data-lx="carcharm"],[data-lx="giftbox"]) .n8-cat[aria-pressed="true"],html:is([data-lx="sunrise"],[data-lx="carcharm"],[data-lx="giftbox"]) .n8-empty button{background:#8d524a;border-color:#8d524a;color:#fbe9d2}
 .sr-h{text-align:center;padding:0 0 26px}
 .sr-sky{position:relative;height:430px;overflow:hidden;background:linear-gradient(#5f322f 0,#8d524a 42%,#c98a6c 74%,#f4c79b 100%)}
 .sr-glow{position:absolute;left:50%;top:150px;width:520px;height:520px;margin-left:-260px;border-radius:50%;background:radial-gradient(circle,rgba(255,226,180,.85) 0,rgba(248,207,163,.45) 30%,transparent 62%);transition:opacity 1.6s,transform 1.6s}
@@ -6241,12 +6241,12 @@ html[data-lx="sunrise"] .n8-cat[aria-pressed="true"],html[data-lx="sunrise"] .n8
 .sr-bio2{margin:4px 16px 0;font-size:13.5px;color:var(--muted)}
 .sr-ht{display:inline-flex;align-items:center;gap:8px;margin:12px 16px 0;padding:5px 14px;border-radius:999px;border:1px solid #e6cdb6;font-size:12px;color:#8d524a;background:#fffaf5}
 .sr-in{padding:0 16px}
-html[data-lx="sunrise"] .gw-soon{background:linear-gradient(120deg,#6b3a36,#8d524a);color:#fbe9d2;border-radius:20px;box-shadow:0 16px 30px -18px rgba(90,40,30,.9),inset 0 0 0 1px rgba(241,192,145,.35)}
-html[data-lx="sunrise"] .gw-sd{background:linear-gradient(140deg,#fbe6c0,#e2b987);color:#5f322f;border-radius:14px}
-html[data-lx="sunrise"] .sh-cn,html[data-lx="sunrise"] .gw-fm{background:#fffaf5;border:1px solid #ead8cd;border-radius:22px;box-shadow:0 20px 40px -32px rgba(90,40,30,.6)}
-html[data-lx="sunrise"] .sh-cn p,html[data-lx="sunrise"] .gw-lb{color:#6b3a36;font-family:var(--display);font-size:15px}
-html[data-lx="sunrise"] .sh-cn button{border-color:#e6cdb6;border-radius:14px;font-family:var(--display);color:#6b3a36}
-html[data-lx="sunrise"] .sh-cn button[aria-pressed="true"]{background:linear-gradient(140deg,#8d524a,#6b3a36);border-color:#6b3a36;color:#fbe6c0;box-shadow:inset 0 0 0 1px rgba(241,192,145,.5)}
+html:is([data-lx="sunrise"],[data-lx="carcharm"],[data-lx="giftbox"]) .gw-soon{background:linear-gradient(120deg,#6b3a36,#8d524a);color:#fbe9d2;border-radius:20px;box-shadow:0 16px 30px -18px rgba(90,40,30,.9),inset 0 0 0 1px rgba(241,192,145,.35)}
+html:is([data-lx="sunrise"],[data-lx="carcharm"],[data-lx="giftbox"]) .gw-sd{background:linear-gradient(140deg,#fbe6c0,#e2b987);color:#5f322f;border-radius:14px}
+html:is([data-lx="sunrise"],[data-lx="carcharm"],[data-lx="giftbox"]) .sh-cn,html:is([data-lx="sunrise"],[data-lx="carcharm"],[data-lx="giftbox"]) .gw-fm{background:#fffaf5;border:1px solid #ead8cd;border-radius:22px;box-shadow:0 20px 40px -32px rgba(90,40,30,.6)}
+html:is([data-lx="sunrise"],[data-lx="carcharm"],[data-lx="giftbox"]) .sh-cn p,html:is([data-lx="sunrise"],[data-lx="carcharm"],[data-lx="giftbox"]) .gw-lb{color:#6b3a36;font-family:var(--display);font-size:15px}
+html:is([data-lx="sunrise"],[data-lx="carcharm"],[data-lx="giftbox"]) .sh-cn button{border-color:#e6cdb6;border-radius:14px;font-family:var(--display);color:#6b3a36}
+html:is([data-lx="sunrise"],[data-lx="carcharm"],[data-lx="giftbox"]) .sh-cn button[aria-pressed="true"]{background:linear-gradient(140deg,#8d524a,#6b3a36);border-color:#6b3a36;color:#fbe6c0;box-shadow:inset 0 0 0 1px rgba(241,192,145,.5)}
 .sr-pv{display:flex;justify-content:center}
 .sr-cd{position:relative;width:250px;padding:26px 18px 22px;border-radius:16px;background:linear-gradient(150deg,#96594f,#6b3a36);box-shadow:0 22px 36px -22px rgba(60,25,20,.9);color:#fbe9d2}
 .sr-cd::before{content:"";position:absolute;inset:7px;border:1px solid rgba(241,192,145,.75);border-radius:11px;pointer-events:none}
@@ -6255,138 +6255,118 @@ html[data-lx="sunrise"] .sh-cn button[aria-pressed="true"]{background:linear-gra
 .sr-cd b{display:block;font:700 27px/1.4 "Aref Ruqaa","Amiri",serif;background:linear-gradient(100deg,#e2b987,#fff3d6 50%,#e2b987);-webkit-background-clip:text;background-clip:text;color:transparent;overflow-wrap:anywhere;min-height:1.4em}
 .sr-cd em{display:block;font-style:normal;font-size:12.5px;color:#f3d9c4;min-height:1em}
 .sr-cd.pr b{animation:gwPr .5s cubic-bezier(.2,.8,.2,1)}
-html[data-lx="sunrise"] #gwN{border-color:#e6cdb6;border-radius:14px;background:#fff}
-html[data-lx="sunrise"] #gwN:focus{border-color:#8d524a;box-shadow:0 0 0 3px rgba(141,82,74,.16)}
-html[data-lx="sunrise"] .gw-oc button{border-color:#e6cdb6;color:#6b3a36}
-html[data-lx="sunrise"] .gw-oc button[aria-pressed="true"]{background:#8d524a;border-color:#8d524a;color:#fbe9d2}
+html:is([data-lx="sunrise"],[data-lx="carcharm"],[data-lx="giftbox"]) #gwN{border-color:#e6cdb6;border-radius:14px;background:#fff}
+html:is([data-lx="sunrise"],[data-lx="carcharm"],[data-lx="giftbox"]) #gwN:focus{border-color:#8d524a;box-shadow:0 0 0 3px rgba(141,82,74,.16)}
+html:is([data-lx="sunrise"],[data-lx="carcharm"],[data-lx="giftbox"]) .gw-oc button{border-color:#e6cdb6;color:#6b3a36}
+html:is([data-lx="sunrise"],[data-lx="carcharm"],[data-lx="giftbox"]) .gw-oc button[aria-pressed="true"]{background:#8d524a;border-color:#8d524a;color:#fbe9d2}
 .sr-g{gap:20px 12px}
-.sr-c{background:#fffaf5;border:1px solid #ead8cd;border-radius:22px;padding:8px 8px 12px;box-shadow:0 22px 34px -30px rgba(90,40,30,.75)}
-.sr-c .lxpic{border-radius:16px;overflow:hidden;background:var(--tile)}
-.sr-c .n8-nm{font-family:var(--display);font-weight:700;color:#3a1f1c}
-.sr-c .n8-pr{color:#8d524a;font-weight:700;margin:2px 0 8px}
-.sr-c .gw-ct{background:linear-gradient(120deg,#fbe6c0,#e2b987);color:#5f322f;border-radius:6px 12px 12px 6px}
-html[data-lx="sunrise"] .n8-add{background:linear-gradient(140deg,#a0574c,#7d443e);color:#fbe9d2;box-shadow:inset 0 0 0 1px rgba(241,192,145,.4)}
-html[data-lx="sunrise"] .gw-10{border:1px solid #d9b08a;color:#7d443e;border-radius:999px;background:#fdf3e6}
-html[data-lx="sunrise"] .gw-end{display:flex;align-items:center;justify-content:center;gap:12px;color:#8d524a;font-family:"Aref Ruqaa","Amiri",serif;font-size:24px}
-html[data-lx="sunrise"] .gw-end::before,html[data-lx="sunrise"] .gw-end::after{content:"";flex:0 1 60px;height:1px;background:linear-gradient(90deg,transparent,#c79a5e)}
-html[data-lx="sunrise"] .gw-end::after{transform:scaleX(-1)}
+.sh-c{background:#fffaf5;border:1px solid #ead8cd;border-radius:22px;padding:8px 8px 12px;box-shadow:0 22px 34px -30px rgba(90,40,30,.75)}
+.sh-c .lxpic{border-radius:16px;overflow:hidden;background:var(--tile)}
+.sh-c .n8-nm{font-family:var(--display);font-weight:700;color:#3a1f1c}
+.sh-c .n8-pr{color:#8d524a;font-weight:700;margin:2px 0 8px}
+.sh-c .gw-ct{background:linear-gradient(120deg,#fbe6c0,#e2b987);color:#5f322f;border-radius:6px 12px 12px 6px}
+html:is([data-lx="sunrise"],[data-lx="carcharm"],[data-lx="giftbox"]) .n8-add{background:linear-gradient(140deg,#a0574c,#7d443e);color:#fbe9d2;box-shadow:inset 0 0 0 1px rgba(241,192,145,.4)}
+html:is([data-lx="sunrise"],[data-lx="carcharm"],[data-lx="giftbox"]) .gw-10{border:1px solid #d9b08a;color:#7d443e;border-radius:999px;background:#fdf3e6}
+html:is([data-lx="sunrise"],[data-lx="carcharm"],[data-lx="giftbox"]) .gw-end{display:flex;align-items:center;justify-content:center;gap:12px;color:#8d524a;font-family:"Aref Ruqaa","Amiri",serif;font-size:24px}
+html:is([data-lx="sunrise"],[data-lx="carcharm"],[data-lx="giftbox"]) .gw-end::before,html:is([data-lx="sunrise"],[data-lx="carcharm"],[data-lx="giftbox"]) .gw-end::after{content:"";flex:0 1 60px;height:1px;background:linear-gradient(90deg,transparent,#c79a5e)}
+html:is([data-lx="sunrise"],[data-lx="carcharm"],[data-lx="giftbox"]) .gw-end::after{transform:scaleX(-1)}
 html.n8-rv .sr-c.in{animation:srCi .8s cubic-bezier(.2,.8,.2,1) var(--d,0ms) backwards}
 @keyframes srCi{from{opacity:0;transform:translateY(18px)}}
 .n8-pt.shp1{width:7px;height:7px;border-radius:50%;background:#f8dcae;box-shadow:0 0 8px #f1c091}
 
-/* 2) معلّقة المرآة */
-html[data-lx="carcharm"]{--bg:#16110f;--surface:#211916;--ink:#f3e7da;--muted:#b9a392;--line:#3a2c26;--accent:#d98a8f;--accent-ink:#1c1210;--n8-deep:#0c0908;--foil:linear-gradient(100deg,#9c7a34,#f6e2a4 50%,#9c7a34);--tile:#efe4d6;--frame:0px;--btn-r:12px;--card-r:16px;--display:"Reem Kufi","El Messiri",sans-serif;--display-w:700;--track:0;--body:"IBM Plex Sans Arabic",Tahoma,sans-serif;color-scheme:dark;--pattern:none}
-html[data-lx="carcharm"] body{background:var(--bg)}
-html[data-lx="carcharm"] .n8-cat[aria-pressed="true"],html[data-lx="carcharm"] .n8-empty button{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
-.cc-h{text-align:center;padding:0 0 24px;color:#f3e7da}
-.cc-ws{position:relative;height:330px;overflow:hidden;background:radial-gradient(22px 22px at 14% 30%,rgba(255,190,120,.55),transparent 70%),radial-gradient(30px 30px at 30% 46%,rgba(255,120,130,.4),transparent 70%),radial-gradient(18px 18px at 78% 26%,rgba(255,220,160,.55),transparent 70%),radial-gradient(34px 34px at 88% 48%,rgba(140,200,255,.3),transparent 70%),radial-gradient(26px 26px at 62% 54%,rgba(255,170,110,.35),transparent 70%),radial-gradient(16px 16px at 46% 34%,rgba(255,255,255,.3),transparent 70%),linear-gradient(#1a2038,#3a2740 55%,#5a3038)}
-.cc-ws::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,rgba(255,255,255,.07) 0 18%,transparent 18% 40%,rgba(255,255,255,.04) 40% 46%,transparent 46%);pointer-events:none}
-.cc-mr{position:absolute;left:50%;top:0;width:150px;height:44px;margin-left:-75px;border-radius:0 0 18px 18px;background:linear-gradient(#2a2a30,#0e0e12);box-shadow:inset 0 -3px 0 #3a3a44,0 8px 16px -6px #000}
-.cc-mr::after{content:"";position:absolute;inset:6px 10px 9px;border-radius:0 0 12px 12px;background:linear-gradient(120deg,#6a7896,#2a3048 60%,#8a94ac)}
-.cc-ch{position:absolute;left:50%;top:40px;width:180px;margin-left:-90px;border:0;padding:0;background:none;color:inherit;font:inherit;cursor:pointer;transform-origin:50% 0;animation:ccSw 3.6s ease-in-out infinite alternate}
-@keyframes ccSw{from{transform:rotate(-5deg)}to{transform:rotate(5deg)}}
-.cc-ch.pr{animation:ccBig 1.5s cubic-bezier(.3,.6,.3,1)}
-@keyframes ccBig{0%{transform:rotate(-5deg)}18%{transform:rotate(22deg)}40%{transform:rotate(-16deg)}62%{transform:rotate(10deg)}82%{transform:rotate(-6deg)}100%{transform:rotate(0)}}
-.cc-st{display:block;width:2px;height:52px;margin:0 auto;background:linear-gradient(#e7c98a,#b58b5a)}
-.cc-sh{display:block;width:104px;height:104px;margin:-4px auto 0;filter:drop-shadow(0 12px 12px rgba(0,0,0,.55))}
-.cc-sh svg{width:100%;height:100%;display:block}
-.cc-pl{display:block;width:max-content;max-width:180px;margin:6px auto 0;padding:4px 14px 5px;border-radius:999px;background:#f3e7da;color:#3a1c20;box-shadow:0 8px 14px -8px #000}
-.cc-pl b{display:block;font:700 15px/1.3 "Aref Ruqaa","Amiri",serif;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.cc-pl em{display:block;font-style:normal;font-size:10.5px;font-weight:700;color:#8a4a50}
-.cc-pl em:empty{display:none}
-.cc-db{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;gap:12px;padding:16px 16px 14px;background:linear-gradient(#2a1f1b,#16110f);border-top:2px solid #4a382f;border-radius:50% 50% 0 0/22px 22px 0 0;box-shadow:0 -10px 30px rgba(0,0,0,.5)}
-.cc-db::before{content:"";position:absolute;left:12%;right:12%;top:7px;border-top:1.5px dashed rgba(217,138,143,.55)}
-.cc-lg{flex:none;width:50px;height:50px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:#b9806a;color:#f3dcae;font:700 22px var(--display);box-shadow:0 0 0 2px #16110f,0 0 0 3.5px #d7b46a}
-.cc-lg img{width:100%;height:100%;object-fit:cover}
-.cc-db h1{margin:0;min-width:0;font:700 clamp(26px,8vw,42px)/1.2 var(--display);color:#f3e7da;overflow-wrap:anywhere}
-.cc-bio{margin:16px 16px 0;font:700 17px/1.5 var(--display);color:#f3e7da}
-.cc-bio2{margin:2px 16px 0;font-size:13.5px;color:#b9a392}
-.cc-in{padding:0 16px}
-.cc-sp{max-width:760px;margin:16px auto 0}
-.cc-sp p{margin:0 0 8px;font-size:13.5px;font-weight:700;color:#f3e7da}
-.cc-sp div{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
-.cc-sp button{width:64px;min-height:72px;padding:6px 4px;border-radius:14px;border:1.5px solid #4a382f;background:#211916;color:#b9a392;font:600 11.5px var(--body);cursor:pointer}
-.cc-sp button svg{display:block;width:34px;height:34px;margin:0 auto 4px}
-.cc-sp button[aria-pressed="true"]{border-color:#d98a8f;color:#f3e7da;box-shadow:0 0 0 3px rgba(217,138,143,.2)}
-html[data-lx="carcharm"] .gw-soon{background:#d98a8f;color:#1c1210;box-shadow:none}
-html[data-lx="carcharm"] .gw-sd{background:#1c1210;color:#f3dcae}
-html[data-lx="carcharm"] .gw-fm{background:#211916;border-color:#4a382f}
-html[data-lx="carcharm"] .gw-lb{color:#f3e7da}
-html[data-lx="carcharm"] #gwN{background:#f7efe6;border-color:#8a6a5c;color:#2a1a16}
-html[data-lx="carcharm"] #gwN:focus{border-color:#d98a8f;box-shadow:0 0 0 3px rgba(217,138,143,.25)}
-html[data-lx="carcharm"] .gw-oc button{background:transparent;color:#f3e7da;border-color:#4a382f}
-html[data-lx="carcharm"] .gw-oc button[aria-pressed="true"]{background:#d98a8f;border-color:#d98a8f;color:#1c1210}
-html[data-lx="carcharm"] .gw-ws{grid-template-columns:1fr;max-width:520px}
-.cc-g{gap:18px 12px}
-.cc-c{background:linear-gradient(#261c18,#1c1512);border-radius:16px;padding:10px 10px 12px;outline:1.5px dashed rgba(217,138,143,.45);outline-offset:-6px;box-shadow:0 14px 26px -18px #000}
-.cc-c .lxpic{border-radius:10px;overflow:hidden}
-.cc-c .n8-nm{color:#f3e7da}
-.cc-c .n8-pr{color:#f0c9a0;margin:2px 0 8px}
-.cc-c .gw-ct{background:#d98a8f;color:#1c1210}
-html[data-lx="carcharm"] .gw-10{border-color:#6b4f44;color:#f0c9a0}
-html[data-lx="carcharm"] .gw-10.ok{animation:ccOk .5s}
-@keyframes ccOk{40%{background:#3a2c26;transform:scale(1.04)}}
-html[data-lx="carcharm"] .gw-end{color:#f0c9a0}
-html.n8-rv .cc-c.in{animation:srCi .7s cubic-bezier(.2,.8,.2,1) var(--d,0ms) backwards}
-.n8-pt.shp2{width:7px;height:7px;border-radius:50%;background:#d98a8f;box-shadow:0 0 8px #d98a8f}
 
-/* 3) دفتر الصف */
-html[data-lx="classdesk"]{--bg:#fdfbf4;--surface:#ffffff;--ink:#27344f;--muted:#66728a;--line:#dfe6ef;--accent:#e2607f;--accent-ink:#fff;--n8-deep:#27344f;--foil:linear-gradient(100deg,#e2607f,#f6cf5a 50%,#7cc7b0);--tile:#fdf1f4;--frame:0px;--btn-r:12px;--card-r:6px;--display:"Baloo Bhaijaan 2","Tajawal",sans-serif;--display-w:800;--track:0;--body:"IBM Plex Sans Arabic",Tahoma,sans-serif;color-scheme:light;--pattern:none}
-html[data-lx="classdesk"] body{background:var(--bg)}
-html[data-lx="classdesk"] .n8-cat[aria-pressed="true"],html[data-lx="classdesk"] .n8-empty button{background:#27344f;border-color:#27344f;color:#fff}
-.cd-h{position:relative;text-align:center;padding:40px 16px 26px;color:#27344f;background:linear-gradient(#f7b6c4,#f7b6c4) calc(100% - 26px) 0/1.5px 100% no-repeat,repeating-linear-gradient(transparent 0 31px,#cfe0f2 31px 32px),#fffdf7;border-bottom:3px solid #27344f}
-.cd-sp{position:absolute;top:0;left:0;right:0;height:26px;background:radial-gradient(circle at 50% 60%,#27344f 0 5px,transparent 5.5px) 0 0/34px 26px repeat-x,#f6cf5a;border-bottom:2px solid #27344f}
-.cd-lg{display:inline-grid;place-items:center;width:76px;height:76px;border-radius:50%;overflow:hidden;background:#b9806a;color:#f3dcae;font:800 30px var(--display);border:3px solid #27344f;box-shadow:5px 5px 0 #f6cf5a;transform:rotate(-4deg)}
-.cd-lg img{width:100%;height:100%;object-fit:cover}
-.cd-nm{margin:12px 0 0;font:800 clamp(38px,11.5vw,64px)/1.2 var(--display);color:#27344f;overflow-wrap:anywhere}
-.cd-nm span{background:linear-gradient(transparent 58%,#f6cf5a 58% 92%,transparent 92%);padding:0 10px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
-.n8-intro .cd-nm span{animation:cdHl 1s ease-out .3s backwards}
-@keyframes cdHl{from{background-size:0 100%}to{background-size:100% 100%}}
-.cd-nm span{background-repeat:no-repeat;background-size:100% 100%}
-.cd-bio{margin:8px 0 0;font:700 18px/1.6 var(--display);color:#27344f}
-.cd-bio2{margin:0;font-size:13.5px;color:#66728a}
-html[data-lx="classdesk"] .gw-soon{background:#27344f;border-radius:10px;box-shadow:5px 5px 0 #7cc7b0}
-html[data-lx="classdesk"] .gw-sd{color:#27344f;border-radius:6px}
-.cd-pv{display:flex;flex-direction:column;align-items:center;gap:12px}
-.cd-card{position:relative;width:240px;padding:26px 16px 18px;background:#fff;border:2px solid #27344f;border-radius:4px;box-shadow:6px 6px 0 #f7b6c4;transform:rotate(-2deg);color:#27344f}
-.cd-tape{position:absolute;top:-12px;left:50%;width:92px;height:24px;margin-left:-46px;background:repeating-linear-gradient(45deg,rgba(124,199,176,.9) 0 8px,rgba(160,220,200,.9) 8px 16px);transform:rotate(3deg)}
-.cd-card small{display:block;font:700 14px var(--display);color:#e2607f}
-.cd-card b{display:block;font:700 26px/1.35 "Aref Ruqaa","Amiri",serif;overflow-wrap:anywhere;min-height:1.35em}
-.cd-card em{display:block;font-style:normal;font-size:12.5px;font-weight:700;color:#66728a;min-height:1em}
-.cd-pn{position:absolute;inset-inline-end:-18px;bottom:-8px;width:74px;height:24px;transform:rotate(-28deg)}
-.cd-card.pr b{animation:cdWr .7s steps(14,end)}
-@keyframes cdWr{from{clip-path:inset(0 0 0 100%)}to{clip-path:inset(0)}}
-.cd-card.pr .cd-pn{animation:cdPn .7s ease-in-out}
-@keyframes cdPn{0%{transform:translate(-40px,-30px) rotate(-28deg)}50%{transform:translate(-110px,-36px) rotate(-22deg)}100%{transform:rotate(-28deg)}}
-.cd-to{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
-.cd-to button{min-height:40px;padding:0 12px;border-radius:8px;border:2px solid #27344f;background:#fff;color:#27344f;font:700 13px var(--body);cursor:pointer}
-.cd-to button[aria-pressed="true"]{background:#e2607f;color:#fff;box-shadow:3px 3px 0 #27344f}
-html[data-lx="classdesk"] .gw-fm{border:2px solid #27344f;border-radius:6px;box-shadow:6px 6px 0 #7cc7b0}
-html[data-lx="classdesk"] .gw-lb{color:#27344f}
-html[data-lx="classdesk"] #gwN{border:2px solid #27344f;border-radius:8px}
-html[data-lx="classdesk"] #gwN:focus{border-color:#e2607f;box-shadow:0 0 0 3px rgba(226,96,127,.2)}
-html[data-lx="classdesk"] .gw-oc button{border:2px solid #27344f;border-radius:8px}
-html[data-lx="classdesk"] .gw-oc button[aria-pressed="true"]{background:#27344f;border-color:#27344f;color:#fff}
-html[data-lx="classdesk"] .sh-cn{border:2px solid #27344f;border-radius:6px;box-shadow:6px 6px 0 #f6cf5a}
-html[data-lx="classdesk"] .sh-cn button{border:2px solid #27344f;border-radius:8px}
-html[data-lx="classdesk"] .sh-cn button[aria-pressed="true"]{background:#e2607f;border-color:#27344f;color:#fff}
-.cd-g{gap:24px 14px}
-.cd-c{position:relative;background:#fff;border:2px solid #27344f;border-radius:6px;padding:14px 8px 10px;transform:rotate(var(--r,0deg));box-shadow:5px 5px 0 var(--sh,#f7b6c4)}
-.cd-c:nth-child(3n+1){--sh:#7cc7b0}.cd-c:nth-child(3n+2){--sh:#f6cf5a}
-.cd-tp{position:absolute;top:-10px;left:50%;width:64px;height:20px;margin-left:-32px;background:repeating-linear-gradient(45deg,rgba(247,182,196,.92) 0 7px,rgba(252,214,222,.92) 7px 14px);transform:rotate(-3deg);z-index:1}
-.cd-c:nth-child(2n) .cd-tp{background:repeating-linear-gradient(45deg,rgba(246,207,90,.92) 0 7px,rgba(250,226,150,.92) 7px 14px);transform:rotate(4deg)}
-.cd-c .lxpic{border-radius:3px;overflow:hidden;background:var(--tile)}
-.cd-c .n8-nm{font-family:var(--display);font-weight:700}
-.cd-c .n8-pr{color:#e2607f;margin:2px 0 8px}
-.cd-c .gw-ct{background:#f6cf5a;color:#27344f;border-radius:3px}
-html[data-lx="classdesk"] .n8-add{background:#27344f;color:#fff}
-html[data-lx="classdesk"] .gw-10{border:2px dashed #27344f;color:#27344f;border-radius:8px}
-html[data-lx="classdesk"] .gw-end{color:#e2607f;font-family:var(--display)}
-html.n8-rv .cd-c.in{animation:cdCi .7s cubic-bezier(.2,.8,.2,1) var(--d,0ms) backwards}
-@keyframes cdCi{from{opacity:0;transform:translateY(18px) rotate(calc(var(--r,0deg)*4))}}
-.n8-pt.shp3{width:9px;height:9px;border-radius:2px;background:#e2607f}
-.n8-pt.shp3:nth-child(3n){background:#7cc7b0}.n8-pt.shp3:nth-child(3n+1){background:#f6cf5a}
-@media(prefers-reduced-motion:reduce){.sr-rays,.sr-stars,.sr-nm,.cc-ch,.cc-ch.pr,.cd-card.pr b,.cd-card.pr .cd-pn{animation:none}.sr-sun,.sr-nt,.sr-glow{transition:none}}
+/* لمعة شعاع تمر على صورة المنتج عند ظهوره */
+.sr-c .n8-pc::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 35%,rgba(255,240,205,.75) 50%,transparent 65%);transform:translateX(130%);pointer-events:none}
+html.n8-rv .sr-c.in .n8-pc::after{animation:srGlint 1.3s ease-out calc(var(--d,0ms) + .35s) backwards}
+@keyframes srGlint{from{transform:translateX(-130%)}to{transform:translateX(130%)}}
+
+/* 2) معلّقة المرآة: نفس الفخامة، ومشهد سيارة عند الغروب، والمنتجات تتدلى وتتأرجح */
+.cc-h{text-align:center;padding:0 0 26px}
+.cc-ws{position:relative;height:400px;overflow:hidden;background:radial-gradient(24px 24px at 13% 34%,rgba(255,214,160,.6),transparent 70%),radial-gradient(34px 34px at 28% 50%,rgba(241,192,145,.4),transparent 70%),radial-gradient(18px 18px at 80% 30%,rgba(255,232,190,.6),transparent 70%),radial-gradient(38px 38px at 90% 52%,rgba(248,207,163,.32),transparent 70%),radial-gradient(26px 26px at 66% 58%,rgba(255,200,150,.36),transparent 70%),radial-gradient(14px 14px at 44% 38%,rgba(255,255,255,.3),transparent 70%),linear-gradient(#2e1518 0,#5f322f 40%,#8d524a 72%,#c98a6c 100%)}
+.cc-ws::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,rgba(255,236,200,.08) 0 18%,transparent 18% 40%,rgba(255,236,200,.05) 40% 46%,transparent 46%);pointer-events:none}
+.n8-intro .cc-ws{animation:ccLights 2.4s ease-out backwards}
+@keyframes ccLights{from{filter:brightness(.25) saturate(.5)}}
+.cc-mr{position:absolute;left:50%;top:0;width:156px;height:46px;margin-left:-78px;border-radius:0 0 20px 20px;background:linear-gradient(#3a1f1c,#1e0f0d);box-shadow:inset 0 -2px 0 #c79a5e,0 10px 18px -8px #000}
+.cc-mr::after{content:"";position:absolute;inset:6px 10px 10px;border-radius:0 0 13px 13px;background:linear-gradient(120deg,#c98a6c,#5f322f 60%,#f1c091)}
+.cc-ch{position:absolute;left:50%;top:42px;width:190px;margin-left:-95px;border:0;padding:0;background:none;color:inherit;font:inherit;cursor:pointer;transform-origin:50% 0;animation:ccSw 3.6s ease-in-out infinite alternate}
+@keyframes ccSw{from{transform:rotate(-5deg)}to{transform:rotate(5deg)}}
+.n8-intro .cc-ch{animation:ccDrop 1.8s cubic-bezier(.3,1.25,.5,1) .5s backwards,ccSw 3.6s ease-in-out 2.3s infinite alternate}
+@keyframes ccDrop{0%{transform:translateY(-260px) rotate(0)}55%{transform:translateY(0) rotate(14deg)}75%{transform:rotate(-9deg)}100%{transform:rotate(-5deg)}}
+.cc-h .cc-ch.pr{animation:ccBig 1.5s cubic-bezier(.3,.6,.3,1)}
+@keyframes ccBig{0%{transform:rotate(-5deg)}18%{transform:rotate(22deg)}40%{transform:rotate(-16deg)}62%{transform:rotate(10deg)}82%{transform:rotate(-6deg)}100%{transform:rotate(0)}}
+.cc-st{display:block;width:2px;height:56px;margin:0 auto;background:linear-gradient(#f8dcae,#b88a52)}
+.cc-sh{display:block;width:112px;height:112px;margin:-4px auto 0;filter:drop-shadow(0 14px 12px rgba(30,10,8,.6))}
+.cc-sh svg{width:100%;height:100%;display:block}
+.cc-pl{display:block;width:max-content;max-width:190px;margin:8px auto 0;padding:5px 16px 6px;border-radius:999px;background:linear-gradient(120deg,#fbe6c0,#e2b987);color:#5f322f;box-shadow:0 10px 16px -8px rgba(30,10,8,.8),inset 0 0 0 1px rgba(255,255,255,.5)}
+.cc-pl b{display:block;font:700 16px/1.3 "Aref Ruqaa","Amiri",serif;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cc-pl em{display:block;font-style:normal;font-size:10.5px;font-weight:700;color:#8d524a}
+.cc-pl em:empty{display:none}
+.cc-db{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;gap:12px;padding:22px 16px 16px;background:linear-gradient(#4a2623,#2a1412);border-radius:50% 50% 0 0/26px 26px 0 0;box-shadow:0 -12px 30px rgba(20,8,6,.55),inset 0 1px 0 #c79a5e}
+.cc-db::before{content:"";position:absolute;left:10%;right:10%;top:9px;border-top:1.5px dashed rgba(241,192,145,.6)}
+.cc-lg{flex:none;width:54px;height:54px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:#b9806a;color:#f8dcae;font:700 22px var(--display);box-shadow:0 0 0 2px #2a1412,0 0 0 4px #f1c091}
+.cc-lg img{width:100%;height:100%;object-fit:cover}
+.cc-db h1{margin:0;min-width:0;font:700 clamp(34px,10vw,52px)/1.3 "Aref Ruqaa","Amiri",serif;background:linear-gradient(100deg,#c79a5e 8%,#fbe6c0 30%,#e2b987 46%,#fff3d6 54%,#c79a5e 76%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:srFoil 6s ease-in-out infinite;overflow-wrap:anywhere}
+.cc-sp{max-width:760px;margin:18px auto 0}
+.cc-sp p{margin:0 0 10px;font:700 15px var(--display);color:#6b3a36}
+.cc-sp div{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.cc-sp button{width:68px;min-height:78px;padding:8px 4px;border-radius:18px;border:1px solid #e6cdb6;background:#fffaf5;color:#8d524a;font:600 12px var(--body);cursor:pointer}
+.cc-sp button svg{display:block;width:34px;height:34px;margin:0 auto 5px}
+.cc-sp button[aria-pressed="true"]{background:linear-gradient(140deg,#8d524a,#6b3a36);border-color:#6b3a36;color:#fbe6c0;box-shadow:inset 0 0 0 1px rgba(241,192,145,.5)}
+html[data-lx="carcharm"] .gw-ws{grid-template-columns:1fr;max-width:520px}
+/* المنتجات تتدلى بخيط ذهبي وتتأرجح عند ظهورها */
+.cc-g{gap:34px 12px;padding-top:16px}
+.cc-c{position:relative;transform-origin:50% -18px}
+.cc-c::before{content:"";position:absolute;left:50%;top:-19px;width:2px;height:19px;margin-left:-1px;background:linear-gradient(#f1c091,#b88a52)}
+.cc-c::after{content:"";position:absolute;left:50%;top:-27px;width:10px;height:10px;margin-left:-5px;border-radius:50%;border:2px solid #c79a5e;box-sizing:border-box}
+html.n8-rv .cc-c.in{animation:ccHang 1.5s cubic-bezier(.3,.7,.3,1) var(--d,0ms) backwards}
+@keyframes ccHang{0%{opacity:0;transform:rotate(-12deg)}25%{opacity:1;transform:rotate(7deg)}50%{transform:rotate(-4deg)}75%{transform:rotate(2deg)}100%{transform:none}}
+@media(hover:hover){.cc-c:hover{animation:ccNudge 1.2s ease-in-out}}
+@keyframes ccNudge{30%{transform:rotate(2.2deg)}65%{transform:rotate(-1.4deg)}}
+.n8-pt.shp2{width:7px;height:7px;border-radius:50%;background:#f8dcae;box-shadow:0 0 8px #f1c091}
+
+/* 3) علبة الهدية: نفس الفخامة، وعلبة يُفك شريطها فتخرج منها بطاقة الاسم، والمنتجات تُفتح كالهدايا */
+.gb-h{text-align:center;padding:0 0 26px}
+.gb-top{position:relative;overflow:hidden;padding:22px 16px 0;background:radial-gradient(70% 55% at 50% 78%,rgba(255,226,180,.55),transparent 70%),linear-gradient(#5f322f 0,#8d524a 46%,#c98a6c 82%,#f4c79b 100%)}
+.gb-top .sr-dn{height:70px}
+.gb-st{position:relative;width:260px;height:372px;margin:34px auto 0}
+.gb-bx{position:absolute;inset:0;border:0;padding:0;background:none;cursor:pointer;color:inherit;font:inherit}
+.gb-bd{position:absolute;left:35px;bottom:44px;width:190px;height:118px;border-radius:4px 4px 10px 10px;background:linear-gradient(90deg,transparent 0 78px,#a0574c 78px 112px,transparent 112px),linear-gradient(#fbf2eb,#ecd6c6);box-shadow:0 26px 30px -18px rgba(40,14,10,.75),inset 0 0 0 1px rgba(184,138,82,.35);z-index:2}
+.gb-bd::after{content:"";position:absolute;left:78px;width:34px;top:0;bottom:0;background:linear-gradient(90deg,rgba(255,255,255,.18),transparent 40%,rgba(0,0,0,.12))}
+.gb-lid{position:absolute;left:23px;bottom:156px;width:214px;height:40px;border-radius:6px;background:linear-gradient(90deg,transparent 0 90px,#a0574c 90px 124px,transparent 124px),linear-gradient(#fffaf5,#f1dfd0);box-shadow:0 8px 12px -8px rgba(40,14,10,.6),inset 0 0 0 1px rgba(184,138,82,.4);z-index:3;transition:transform 1.1s cubic-bezier(.3,1.2,.4,1)}
+.gb-bow{position:absolute;left:50%;top:-34px;width:0;height:0}
+.gb-bow::before,.gb-bow::after{content:"";position:absolute;top:0;width:54px;height:36px;background:linear-gradient(140deg,#b9685c,#8d524a);box-shadow:inset 0 0 0 1.5px rgba(241,192,145,.6)}
+.gb-bow::before{right:2px;border-radius:60% 20% 20% 60%/70% 30% 30% 70%;transform:rotate(12deg)}
+.gb-bow::after{left:2px;border-radius:20% 60% 60% 20%/30% 70% 70% 30%;transform:rotate(-12deg)}
+.gb-kn{position:absolute;left:50%;top:-24px;width:20px;height:20px;margin-left:-10px;border-radius:6px;background:#7d443e;box-shadow:inset 0 0 0 1.5px #f1c091}
+.gb-tag{position:absolute;left:30px;bottom:96px;width:200px;box-sizing:border-box;padding:18px 14px 16px;border-radius:12px;background:linear-gradient(150deg,#96594f,#6b3a36);color:#fbe9d2;box-shadow:0 20px 30px -20px rgba(40,14,10,.9);z-index:1;opacity:0;transform:translateY(30px) scale(.8);transition:transform 1.1s cubic-bezier(.3,1.2,.4,1) .15s,opacity .5s .15s}
+.gb-tag::before{content:"";position:absolute;inset:6px;border:1px solid rgba(241,192,145,.75);border-radius:8px;pointer-events:none}
+.gb-tag small{display:block;font-size:12.5px;color:#f1c091}
+.gb-tag b{display:block;font:700 25px/1.4 "Aref Ruqaa","Amiri",serif;background:linear-gradient(100deg,#e2b987,#fff3d6 50%,#e2b987);-webkit-background-clip:text;background-clip:text;color:transparent;overflow-wrap:anywhere;min-height:1.4em}
+.gb-tag em{display:block;font-style:normal;font-size:12px;color:#f3d9c4;min-height:1em}
+.gb-tag.pr b{animation:gwPr .5s cubic-bezier(.2,.8,.2,1)}
+.gb-sp{position:absolute;left:10px;right:10px;top:40px;height:200px;opacity:0;pointer-events:none;background:radial-gradient(3px 3px at 12% 60%,#fff3d6 99%,transparent),radial-gradient(4px 4px at 26% 24%,#f8dcae 99%,transparent),radial-gradient(3px 3px at 44% 8%,#fff 99%,transparent),radial-gradient(4px 4px at 62% 18%,#f1c091 99%,transparent),radial-gradient(3px 3px at 80% 34%,#fff3d6 99%,transparent),radial-gradient(4px 4px at 92% 64%,#f8dcae 99%,transparent),radial-gradient(2.5px 2.5px at 6% 30%,#fff 99%,transparent),radial-gradient(2.5px 2.5px at 72% 52%,#fff 99%,transparent)}
+.gb-st.open .gb-lid{transform:translate(44px,-150px) rotate(13deg)}
+.gb-st.open .gb-tag{opacity:1;transform:translateY(-62px) scale(1)}
+.gb-st.open .gb-sp{animation:gbSp 1.5s ease-out .25s}
+@keyframes gbSp{0%{opacity:0;transform:translateY(90px) scale(.4)}35%{opacity:1}100%{opacity:0;transform:translateY(-24px) scale(1.25)}}
+.n8-intro .gb-st{animation:gbIn 1.1s cubic-bezier(.3,1.3,.5,1) backwards}
+@keyframes gbIn{from{opacity:0;transform:translateY(40px) scale(.85)}}
+.gb-top .sr-nm{position:relative}
+.cd-to{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;max-width:760px;margin:16px auto 0}
+.cd-to button{min-height:40px;padding:0 14px;border-radius:999px;border:1px solid #e6cdb6;background:#fffaf5;color:#6b3a36;font:600 13px var(--body);cursor:pointer}
+.cd-to button[aria-pressed="true"]{background:linear-gradient(140deg,#8d524a,#6b3a36);border-color:#6b3a36;color:#fbe6c0}
+html[data-lx="giftbox"] .gw-ws{grid-template-columns:1fr;max-width:520px}
+/* غلاف هدية ينفتح عن صورة كل منتج */
+.gb-c .n8-pc::before,.gb-c .n8-pc::after{content:"";position:absolute;top:0;bottom:0;width:50.5%;z-index:1;background:linear-gradient(#fbf2eb,#ecd6c6);pointer-events:none}
+.gb-c .n8-pc::before{left:0;border-right:9px solid #a0574c;box-sizing:border-box;transform:translateX(-102%)}
+.gb-c .n8-pc::after{right:0;border-left:9px solid #a0574c;box-sizing:border-box;transform:translateX(102%)}
+html.n8-rv .gb-c.in .n8-pc::before{animation:gbL 1s cubic-bezier(.6,0,.2,1) calc(var(--d,0ms) + .3s) backwards}
+html.n8-rv .gb-c.in .n8-pc::after{animation:gbR 1s cubic-bezier(.6,0,.2,1) calc(var(--d,0ms) + .3s) backwards}
+@keyframes gbL{from{transform:none}to{transform:translateX(-102%)}}
+@keyframes gbR{from{transform:none}to{transform:translateX(102%)}}
+html.n8-rv .gb-c.in{animation:srCi .8s cubic-bezier(.2,.8,.2,1) var(--d,0ms) backwards}
+.n8-pt.shp3{width:7px;height:7px;border-radius:2px;background:#f8dcae;transform:rotate(45deg);box-shadow:0 0 8px #f1c091}
+@media(prefers-reduced-motion:reduce){.sr-rays,.sr-stars,.sr-nm,.cc-ch,.cc-h .cc-ch.pr,.cc-db h1,.cc-c:hover{animation:none}.sr-sun,.sr-nt,.sr-glow,.gb-lid,.gb-tag{transition:none}}
 </style>
 </head>
 <body>
@@ -10002,22 +9982,22 @@ if(DEMO&&typeof D!=='undefined'){(function(){
     if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',solo);else solo();setTimeout(solo,600)}
 })()}
 
-/* ===== V242: ثلاثة تصاميم خاصة لمتاجر مستلزمات التوزيعات والقرطاسية (صُممت أولًا لإشراقة Shine): «شروق الصباح» و«معلّقة المرآة» و«دفتر الصف» — تشارك «ركن التوزيعات» الاسم والمناسبة ===== */
-['sunrise','carcharm','classdesk'].forEach(function(k){LX[k]=1;N8K[k]=1;GWL[k]=1});
-Object.assign(N8.pt,{sunrise:'shp1',carcharm:'shp2',classdesk:'shp3'});
+/* ===== V242: ثلاثة تصاميم خاصة لمتاجر مستلزمات التوزيعات والقرطاسية (صُممت أولًا لإشراقة Shine): «شروق الصباح» و«معلّقة المرآة» و«علبة الهدية» بألوان فاخرة واحدة — تشارك «ركن التوزيعات» الاسم والمناسبة ===== */
+['sunrise','carcharm','giftbox'].forEach(function(k){LX[k]=1;N8K[k]=1;GWL[k]=1});
+Object.assign(N8.pt,{sunrise:'shp1',carcharm:'shp2',giftbox:'shp3'});
 Object.assign(T.ar,{shCnt:'كم قطعة تحتاج من كل منتج؟',shCntS:'للكميات الأكبر من 50 قطعة راسلنا لنرتبها معك.',shAdd:'أضف %s',shEnd:'جودة تُشرق بحياتك',
   srSun:'المس الشمس ليحلّ الليل أو يعود الشروق',ccTap:'المس المعلّقة لتتأرجح',ccShape:'اختر شكل المعلّقة',ccSh:['نجمة','قلب','دائرة','معيّن'],ccNote:'شكل المعلّقة: ',
-  cdTo:['إلى معلمتي','إلى معلمي','إلى طلابي','إلى صديقتي'],cdToL:'لمن البطاقة؟',cdNote:'البطاقة: '});
+  cdTo:['إلى معلمتي','إلى معلمي','إلى طلابي','إلى صديقتي'],cdToL:'لمن البطاقة؟',gbTap:'المس العلبة لتفتحها أو تغلقها',cdNote:'البطاقة: '});
 if(T.en)Object.assign(T.en,{shCnt:'How many pieces of each product?',shCntS:'For more than 50 pieces, message us and we will arrange it.',shAdd:'Add %s',shEnd:'Quality that brightens your day',
   srSun:'Tap the sun to rise or set',ccTap:'Tap the charm to swing it',ccShape:'Pick the charm shape',ccSh:['Star','Heart','Circle','Diamond'],ccNote:'Charm shape: ',
-  cdTo:['To my teacher (f)','To my teacher (m)','To my students','To my friend'],cdToL:'Who is the card for?',cdNote:'Card: '});
+  cdTo:['To my teacher (f)','To my teacher (m)','To my students','To my friend'],cdToL:'Who is the card for?',gbTap:'Tap the box to open or close it',cdNote:'Card: '});
 var shN=[10,20,30,50],shS={n:10,shp:0,to:0};try{var _s=JSON.parse(sessionStorage.getItem('sh242')||'{}');if(shN.indexOf(+_s.n)>-1)shS.n=+_s.n;if(_s.shp>=0&&_s.shp<4)shS.shp=+_s.shp;if(_s.to>=0&&_s.to<4)shS.to=+_s.to}catch(e){}
 function shSave(){try{sessionStorage.setItem('sh242',JSON.stringify(shS))}catch(e){}}
 function shPc(n){if(LANG==='en')return n+' pieces';return n+' '+(n<=10?'قطع':'قطعة')}
 function shAddTxt(pr){return esc(t('shAdd').replace('%s',shPc(shS.n)))+' · <b>'+esc(money(pr*shS.n))+'</b>'}
 function shCnt(){return '<div class="sh-cn"><p id="shCl">'+esc(t('shCnt'))+'</p><div role="group" aria-labelledby="shCl">'+shN.map(function(n){return '<button type="button" data-shn="'+n+'" aria-pressed="'+(shS.n===n)+'">'+n+'</button>'}).join('')+'</div><small>'+esc(t('shCntS'))+'</small></div>'}
 function shShop(G,key,cls,pre){return n8shop(G,key,cls,function(g){var kk=g.one&&g.in?g.v[0].p.key:'',pr=kk?(+g.v[0].p.price||0):0;
-  return '<article class="n8-c '+pre+'-c" style="--r:'+(((g._i%3)-1)*.7)+'deg">'+(pre==='cd'?'<i class="cd-tp" aria-hidden="true"></i>':'')+n8pic(g,'<span class="gw-ct" aria-hidden="true"><small>'+esc(t('gwFor'))+'</small><b>'+esc(gwTagTxt())+'</b></span>')+'<div class="gw-cb">'+n8nm(g)+n8pr(g)+n8ctl(g)+(kk?'<button type="button" class="gw-10 sh-add" data-shk="'+esc(kk)+'" data-shp="'+pr+'">'+shAddTxt(pr)+'</button>':'')+'</div></article>'}).replace('<div class="n8-foot">','<p class="gw-end">'+esc(bio().split('\n')[0]||t('shEnd'))+'</p><div class="n8-foot">')}
+  return '<article class="n8-c sh-c '+pre+'-c">'+n8pic(g,'<span class="gw-ct" aria-hidden="true"><small>'+esc(t('gwFor'))+'</small><b>'+esc(gwTagTxt())+'</b></span>')+'<div class="gw-cb">'+n8nm(g)+n8pr(g)+n8ctl(g)+(kk?'<button type="button" class="gw-10 sh-add" data-shk="'+esc(kk)+'" data-shp="'+pr+'">'+shAddTxt(pr)+'</button>':'')+'</div></article>'}).replace('<div class="n8-foot">','<p class="gw-end">'+esc(bio().split('\n')[0]||t('shEnd'))+'</p><div class="n8-foot">')}
 /* 1) شروق الصباح: شعار المتجر شمس تشرق فوق الكثبان، والعميل يحدد عدد القطع فيرى سعر الكمية على كل منتج */
 R.sunrise=function(G){n8idx(G);var bi=bio().split('\n'),oc=gwS.oc>=0?t('gwO')[gwS.oc]:'';
   return '<header class="sr-h'+n8in()+'" id="srH"><div class="sr-sky"><i class="sr-glow" aria-hidden="true"></i><button type="button" class="sr-sun" id="srSun" aria-label="'+esc(t('srSun'))+'"><i class="sr-rays" aria-hidden="true"></i><span class="sr-lg">'+logoImg()+'</span></button>'+
@@ -10027,29 +10007,33 @@ R.sunrise=function(G){n8idx(G);var bi=bio().split('\n'),oc=gwS.oc>=0?t('gwO')[gw
    '<div class="sr-in">'+gwSoon()+shCnt()+'<div class="gw-ws"><div class="sr-pv"><div class="sr-cd" id="gwTag"><small>'+esc(t('gwFor'))+'</small><b id="gwTagN">'+esc(gwTagTxt())+'</b><em id="gwTagO">'+esc(oc)+'</em></div></div>'+gwForm()+'</div></div></header>'+shShop(G,'sunrise','sr-g','sr')};
 /* 2) معلّقة المرآة: مشهد سيارة ليلي ومعلّقة تتأرجح من المرآة باسم العميل، والعميل يختار شكلها */
 var ccP=['M50 6l13 28 31 4-23 21 6 31-27-15-27 15 6-31L6 38l31-4z','M50 90C20 68 8 51 8 34a21 21 0 0 1 42-7 21 21 0 0 1 42 7c0 17-12 34-42 56z','M50 8a42 42 0 1 0 0 84a42 42 0 1 0 0-84z','M50 6l40 44-40 44L10 50z'];
-function ccSvg(i,s){return '<svg viewBox="0 0 100 100" aria-hidden="true"><path d="'+ccP[i]+'" fill="'+(s?'currentColor':'#b5525c')+'"/>'+(s?'':'<path d="'+ccP[i]+'" transform="translate(11 11) scale(.78)" fill="none" stroke="#f6d3cc" stroke-width="1.6" stroke-dasharray="4 3"/><circle cx="50" cy="'+(i===1?30:i===2?16:15)+'" r="3" fill="#16110f"/>')+'</svg>'}
+function ccSvg(i,s){return '<svg viewBox="0 0 100 100" aria-hidden="true"><path d="'+ccP[i]+'" fill="'+(s?'currentColor':'#a0574c')+'"/>'+(s?'':'<path d="'+ccP[i]+'" transform="translate(11 11) scale(.78)" fill="none" stroke="#f8dcae" stroke-width="1.6" stroke-dasharray="4 3"/><circle cx="50" cy="'+(i===1?30:i===2?16:15)+'" r="3" fill="#3a1f1c"/>')+'</svg>'}
 R.carcharm=function(G){n8idx(G);var bi=bio().split('\n'),oc=gwS.oc>=0?t('gwO')[gwS.oc]:'',S=t('ccSh');
   return '<header class="cc-h'+n8in()+'"><div class="cc-ws"><span class="cc-mr" aria-hidden="true"></span><button type="button" class="cc-ch" id="gwTag" aria-label="'+esc(t('ccTap'))+'"><i class="cc-st" aria-hidden="true"></i><span class="cc-sh" id="ccSh">'+ccSvg(shS.shp)+'</span><span class="cc-pl"><b id="gwTagN">'+esc(gwTagTxt())+'</b><em id="gwTagO">'+esc(oc)+'</em></span></button>'+
-   '<div class="cc-db"><span class="cc-lg">'+logoImg()+'</span><h1>'+esc(v166nm())+'</h1></div></div>'+(bi[0]?'<p class="cc-bio">'+esc(bi[0])+'</p>':'')+(bi[1]?'<p class="cc-bio2">'+esc(bi[1])+'</p>':'')+
-   '<div class="cc-in"><div class="cc-sp"><p id="ccSl">'+esc(t('ccShape'))+'</p><div role="group" aria-labelledby="ccSl">'+S.map(function(s,i){return '<button type="button" data-ccs="'+i+'" aria-pressed="'+(shS.shp===i)+'">'+ccSvg(i,1)+esc(s)+'</button>'}).join('')+'</div></div>'+gwSoon()+'<div class="gw-ws">'+gwForm()+'</div>'+shCnt()+'</div></header>'+shShop(G,'carcharm','cc-g','cc')};
-/* 3) دفتر الصف: ورقة دفتر مسطّرة، وبطاقة شكر يكتبها قلم رصاص باسم المعلم أو الطالب */
-R.classdesk=function(G){n8idx(G);var bi=bio().split('\n'),oc=gwS.oc>=0?t('gwO')[gwS.oc]:'',O=t('cdTo');
-  return '<header class="cd-h'+n8in()+'"><i class="cd-sp" aria-hidden="true"></i><span class="cd-lg">'+logoImg()+'</span><h1 class="cd-nm"><span>'+esc(v166nm())+'</span></h1>'+(bi[0]?'<p class="cd-bio">'+esc(bi[0])+'</p>':'')+(bi[1]?'<p class="cd-bio2">'+esc(bi[1])+'</p>':'')+gwSoon()+
-   '<div class="gw-ws"><div class="cd-pv"><div class="cd-card" id="gwTag"><i class="cd-tape" aria-hidden="true"></i><small id="cdToT">'+esc(O[shS.to])+'</small><b id="gwTagN">'+esc(gwTagTxt())+'</b><em id="gwTagO">'+esc(oc)+'</em>'+
-   '<svg class="cd-pn" viewBox="0 0 74 24" aria-hidden="true"><path d="M0 12l14-8v16z" fill="#f2d2a8"/><path d="M0 12l5-3v6z" fill="#27344f"/><rect x="14" y="4" width="46" height="16" fill="#f6cf5a"/><path d="M14 9.5h46M14 14.5h46" stroke="#d9ae32" stroke-width="1"/><rect x="60" y="4" width="5" height="16" fill="#b9c0cc"/><rect x="65" y="4" width="9" height="16" rx="3" fill="#f7b6c4"/></svg></div>'+
-   '<div class="cd-to" role="group" aria-label="'+esc(t('cdToL'))+'">'+O.map(function(o,i){return '<button type="button" data-cdt="'+i+'" aria-pressed="'+(shS.to===i)+'">'+esc(o)+'</button>'}).join('')+'</div></div>'+gwForm()+'</div>'+shCnt()+'</header>'+shShop(G,'classdesk','cd-g','cd')};
-(function(){var SH={sunrise:1,carcharm:1,classdesk:1};
+   '<div class="cc-db"><span class="cc-lg">'+logoImg()+'</span><h1>'+esc(v166nm())+'</h1></div></div>'+(bi[0]?'<p class="sr-bio">'+esc(bi[0])+'</p>':'')+(bi[1]?'<p class="sr-bio2">'+esc(bi[1])+'</p>':'')+
+   '<p class="sr-ht">✨ '+esc(t('ccTap'))+'</p><div class="sr-in"><div class="cc-sp"><p id="ccSl">'+esc(t('ccShape'))+'</p><div role="group" aria-labelledby="ccSl">'+S.map(function(s,i){return '<button type="button" data-ccs="'+i+'" aria-pressed="'+(shS.shp===i)+'">'+ccSvg(i,1)+esc(s)+'</button>'}).join('')+'</div></div>'+gwSoon()+'<div class="gw-ws">'+gwForm()+'</div>'+shCnt()+'</div></header>'+shShop(G,'carcharm','cc-g','cc')};
+/* 3) علبة الهدية: علبة يُفك شريطها فتخرج منها بطاقة باسم المعلم أو الطالب، وصور المنتجات تُفتح كالهدايا */
+R.giftbox=function(G){n8idx(G);var bi=bio().split('\n'),oc=gwS.oc>=0?t('gwO')[gwS.oc]:'',O=t('cdTo');
+  return '<header class="gb-h'+n8in()+'"><div class="gb-top"><span class="sr-orn" aria-hidden="true">✦</span><h1 class="sr-nm">'+esc(v166nm())+'</h1>'+
+   '<div class="gb-st'+(N8M?'':' open')+'" id="gbSt"><button type="button" class="gb-bx" id="gbBox" aria-label="'+esc(t('gbTap'))+'"><span class="gb-tag" id="gwTag"><small id="cdToT">'+esc(O[shS.to])+'</small><b id="gwTagN">'+esc(gwTagTxt())+'</b><em id="gwTagO">'+esc(oc)+'</em></span><i class="gb-sp" aria-hidden="true"></i><i class="gb-bd" aria-hidden="true"></i><i class="gb-lid" aria-hidden="true"><i class="gb-bow"></i><i class="gb-kn"></i></i></button></div>'+
+   '<svg class="sr-dn" viewBox="0 0 400 70" preserveAspectRatio="none" aria-hidden="true" style="position:relative;margin:-58px -16px 0;width:calc(100% + 32px)"><path d="M0 40Q110 8 220 34T400 26V70H0z" fill="#f3dcc8"/><path d="M0 56Q120 30 240 52T400 46V70H0z" fill="#fbf2eb"/></svg></div>'+
+   (bi[0]?'<p class="sr-bio">'+esc(bi[0])+'</p>':'')+(bi[1]?'<p class="sr-bio2">'+esc(bi[1])+'</p>':'')+'<p class="sr-ht">🎁 '+esc(t('gbTap'))+'</p>'+
+   '<div class="sr-in"><div class="cd-to" role="group" aria-label="'+esc(t('cdToL'))+'">'+O.map(function(o,i){return '<button type="button" data-cdt="'+i+'" aria-pressed="'+(shS.to===i)+'">'+esc(o)+'</button>'}).join('')+'</div>'+gwSoon()+'<div class="gw-ws">'+gwForm()+'</div>'+shCnt()+'</div></header>'+shShop(G,'giftbox','gb-g','gb')};
+(function(){var SH={sunrise:1,carcharm:1,giftbox:1};
   function kick(c){if(c&&N8M){c.classList.remove('pr');void c.offsetWidth;c.classList.add('pr')}}
   $('lx').addEventListener('click',function(e){if(!SH[B.layout]||!e.target.closest)return;var b;
     if((b=e.target.closest('[data-shn]'))){shS.n=+b.getAttribute('data-shn');shSave();[].forEach.call(document.querySelectorAll('[data-shn]'),function(x){x.setAttribute('aria-pressed',+x.getAttribute('data-shn')===shS.n)});
       [].forEach.call(document.querySelectorAll('.sh-add'),function(x){x.innerHTML=shAddTxt(+x.getAttribute('data-shp')||0)});return}
     if((b=e.target.closest('[data-shk]'))){n8set(b.getAttribute('data-shk'),shS.n);b.classList.remove('ok');void b.offsetWidth;b.classList.add('ok');return}
     if(B.layout==='sunrise'&&e.target.closest('#srSun')){var h=$('srH');if(h)h.classList.toggle('dusk');return}
+    if(B.layout==='giftbox'&&e.target.closest('#gbBox')){var g=$('gbSt');if(g)g.classList.toggle('open');return}
     if(B.layout==='carcharm'){if((b=e.target.closest('[data-ccs]'))){shS.shp=+b.getAttribute('data-ccs');shSave();[].forEach.call(document.querySelectorAll('[data-ccs]'),function(x){x.setAttribute('aria-pressed',x===b)});var s=$('ccSh');if(s)s.innerHTML=ccSvg(shS.shp);kick($('gwTag'));return}
       if(e.target.closest('#gwTag')){kick($('gwTag'));return}}
-    if(B.layout==='classdesk'&&(b=e.target.closest('[data-cdt]'))){shS.to=+b.getAttribute('data-cdt');shSave();[].forEach.call(document.querySelectorAll('[data-cdt]'),function(x){x.setAttribute('aria-pressed',x===b)});var o=$('cdToT');if(o)o.textContent=t('cdTo')[shS.to];kick($('gwTag'))}});
+    if(B.layout==='giftbox'&&(b=e.target.closest('[data-cdt]'))){shS.to=+b.getAttribute('data-cdt');shSave();[].forEach.call(document.querySelectorAll('[data-cdt]'),function(x){x.setAttribute('aria-pressed',x===b)});var o=$('cdToT');if(o)o.textContent=t('cdTo')[shS.to];var g2=$('gbSt');if(g2)g2.classList.add('open');kick($('gwTag'))}});
+  /* العلبة تنفتح وحدها بعد لحظة من فتح المتجر */
+  var _w=n8wire;n8wire=function(){_w();if(B.layout==='giftbox'){var g=$('gbSt');if(g&&!g.classList.contains('open'))setTimeout(function(){var x=$('gbSt');if(x)x.classList.add('open')},N8M?1500:0)}};
   /* شكل المعلّقة ووجهة البطاقة يصلان إلى ملاحظة الطلب أيضًا */
-  var _n=gwNote;gwNote=function(){_n();var f=$('fNote');if(!f)return;var x=B.layout==='carcharm'?t('ccNote')+t('ccSh')[shS.shp]:B.layout==='classdesk'&&gwS.nm?t('cdNote')+t('cdTo')[shS.to]:'';if(!x)return;
+  var _n=gwNote;gwNote=function(){_n();var f=$('fNote');if(!f)return;var x=B.layout==='carcharm'?t('ccNote')+t('ccSh')[shS.shp]:B.layout==='giftbox'&&gwS.nm?t('cdNote')+t('cdTo')[shS.to]:'';if(!x)return;
     if(/^\[/.test(f.value))f.value=f.value.replace(/^\[([^\]]*)\]/,function(m,y){return '['+y+' · '+x+']'}).slice(0,300);else f.value=('['+x+'] '+f.value).slice(0,300)}})();
 if(DEMO&&typeof D!=='undefined'){(function(){
   function S(bg,b){return 'data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300"><rect width="300" height="300" fill="'+bg+'"/><ellipse cx="150" cy="268" rx="96" ry="10" fill="#5a3b22" opacity=".13"/>'+b+'</svg>')}
@@ -10089,10 +10073,10 @@ if(DEMO&&typeof D!=='undefined'){(function(){
   var BR={name:NM,desc:'جودة تُشرق بحياتك',sub:'مستلزمات الطباعة والتوزيعات · منتجات بسعر الجملة',accent:'#8d524a',logo:base+'shine/logo.jpg',wa:'96899887766',
    info:[{t:'سعر الجملة',b:'اختر عدد القطع في أعلى المتجر لترى سعر الكمية على كل منتج. للكميات الأكبر من 50 قطعة راسلنا.'},{t:'الاسم على التوزيعات',b:'اكتب الاسم واختر المناسبة، ويصلنا ذلك مع طلبك.'}],
    reviews:[{n:'معلمة في مسقط',t:'توزيعات يوم المعلم وصلت مرتبة والأسعار مناسبة للكميات.'},{n:'أم لطالبتين',t:'الأقلام والمقالم أعجبت البنات كثيرًا.'}]};
-  var K=['sunrise','carcharm','classdesk'],L=['شروق الصباح','معلّقة المرآة','دفتر الصف'];
-  K.forEach(function(k,i){D[k]={brand:Object.assign({},BR,{layout:k},k==='carcharm'?{accent:'#d98a8f'}:k==='classdesk'?{accent:'#e2607f'}:{}),p:P}});
+  var K=['sunrise','carcharm','giftbox'],L=['شروق الصباح','معلّقة المرآة','علبة الهدية'];
+  K.forEach(function(k,i){D[k]={brand:Object.assign({},BR,{layout:k}),p:P}});
   N8.reg(K.map(function(k,i){return [k,L[i]+' ('+NM+')']}));
-  var m=/^#demo-(sunrise|carcharm|classdesk)-solo/.exec(location.hash);if(m){var EW='96876787752';K.forEach(function(k){D[k].brand.wa=EW});
+  var m=/^#demo-(sunrise|carcharm|giftbox)-solo/.exec(location.hash);if(m){var EW='96876787752';K.forEach(function(k){D[k].brand.wa=EW});
     function solo(){var sw=document.querySelector('.demo-sw');if(sw)sw.remove();if(document.getElementById('gwPitch'))return;var d=document.createElement('div');d.id='gwPitch';d.className='gw-pitch sh-pitch';
       d.innerHTML='<span>✨ صُمم هذا المتجر خصيصًا لـ<b>'+NM+'</b> · من EMD Business</span><a href="https://wa.me/'+EW+'?text='+encodeURIComponent('مرحبًا، رأيت تصميم متجر '+NM+' وأريد تفعيله')+'" target="_blank" rel="noopener">أريد متجري</a>'+
        '<div class="sh-sw" role="group" aria-label="التصاميم الثلاثة">'+K.map(function(k,i){return '<button type="button" data-shsolo="'+k+'" aria-pressed="'+(k===m[1])+'">'+(i+1)+'. '+L[i]+'</button>'}).join('')+'</div>';
