@@ -5819,6 +5819,9 @@ html.n8-rv .hw-c.in{animation:hwCi 1s cubic-bezier(.2,.8,.2,1) var(--d,0ms) back
 .n8-intro .hw-hl{animation:hwIn 1s cubic-bezier(.2,.8,.2,1) .6s backwards}
 @media(min-width:900px){.hw-h{padding-top:30px}.hw-st{width:220px}}
 @media(prefers-reduced-motion:reduce){.hw-wv,.hw-ice,.hw-dp,.hw-sg{animation:none}.hw-lq,.hw-fb i{transition:none}}
+.hw-pitch{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 14px;background:#f3e6d3;color:#410f18;font-size:12.5px;line-height:1.5;border-bottom:1px solid #e0cdb6}
+.hw-pitch b{margin-inline-start:4px}
+.hw-pitch a{flex:none;display:inline-flex;align-items:center;min-height:36px;padding:0 14px;border-radius:999px;background:#410f18;color:#f3e6d3;font-weight:700;text-decoration:none}
 </style>
 </head>
 <body>
@@ -9131,6 +9134,11 @@ if(DEMO&&typeof D!=='undefined'){(function(){
    info:[{t:'التوصيل',b:'نوصل داخل مسقط في اليوم نفسه للطلبات قبل الساعة 4 عصرًا، وإلى باقي الولايات خلال يومين.'},{t:'الحفظ',b:'تُحفظ القوارير في الثلاجة، والأصلي يبقى حتى 5 أيام.'}],
    reviews:[{n:'سارة، مسقط',t:'أنعم كولد برو جربته، وصل باردًا جدًا.'},{n:'أحمد، السيب',t:'صندوق الأصدقاء كان هدية جميلة للمكتب.'}]},p:P};
   N8.reg([['slowbrew','التقطير البطيء (هوجس)']]);
+  /* رابط العرض للتاجر: #demo-slowbrew-solo — بلا شريط التصاميم، وزر واتساب يصل إلى EMD */
+  if(/^#demo-slowbrew-solo/.test(location.hash)){var EW='96876787752';D.slowbrew.brand.wa=EW;
+    function solo(){var sw=document.querySelector('.demo-sw');if(sw)sw.remove();if(document.getElementById('hwPitch'))return;var d=document.createElement('div');d.id='hwPitch';d.className='hw-pitch';
+      d.innerHTML='<span>✨ صُمم هذا المتجر خصيصًا لـ<b>هوجس</b> · من EMD Business</span><a href="https://wa.me/'+EW+'?text='+encodeURIComponent('مرحبًا، رأيت تصميم متجر هوجس وأريد تفعيله')+'" target="_blank" rel="noopener">أريد متجري</a>';document.body.insertBefore(d,document.body.firstChild)}
+    if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',solo);else solo();setTimeout(solo,600)}
 })()}
 
 /* ===== V182: تغيّر المتجر تلقائيًا في المناسبات (يفعّله التاجر) ===== */
