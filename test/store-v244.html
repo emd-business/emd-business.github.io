@@ -6339,6 +6339,10 @@ html[data-lx="infusion"] .n8-cat[aria-pressed="true"],html[data-lx="infusion"] .
 .bx-cup{flex:none;width:118px;border:0;background:none;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .bx-cup svg{display:block;width:100%;overflow:visible}
 #bxTea{transition:opacity 1s linear}
+.bx-bag{transform:translateY(-34px);transition:transform 1s cubic-bezier(.3,1.5,.5,1)}
+.bx-br.on .bx-bag,.bx-br.rdy .bx-bag{transform:translateY(0)}
+.bx-br.on .bx-bag{animation:bxDip 3s ease-in-out 1s infinite}
+@keyframes bxDip{50%{transform:translateY(-4px)}}
 .bx-sm{fill:none;stroke:#b9a3c2;stroke-width:3;stroke-linecap:round;opacity:0}
 .bx-br.on .bx-sm{animation:bxSm 2.4s ease-in-out infinite}
 .bx-sm path:nth-child(2){animation-delay:.5s}.bx-sm path:nth-child(3){animation-delay:1s}
@@ -6388,7 +6392,7 @@ html.n8-rv .bx-c.in{animation:bxCi .7s cubic-bezier(.2,.8,.2,1) var(--d,0ms) bac
 .n8-pt.bxp:nth-child(2n){background:#b07ac0}
 .bx-pitch{background:#6b2a7a}
 .bx-pitch a{background:#f7f1e8;color:#6b2a7a}
-@media(prefers-reduced-motion:reduce){.bx-br.on .bx-sm,.bx-br.on .bx-sm path,.bx-pb.full .bx-fl,.n8-intro .bx-lg,.bx-br.rdy .bx-cup svg{animation:none!important}}
+@media(prefers-reduced-motion:reduce){.bx-br.on .bx-sm,.bx-br.on .bx-sm path,.bx-br.on .bx-bag,.bx-pb.full .bx-fl,.n8-intro .bx-lg,}
 </style>
 </head>
 <body>
@@ -10130,11 +10134,11 @@ function bxCupSvg(){return '<svg viewBox="0 0 140 130" aria-hidden="true"><defs>
   '<path d="M26 44h88v14c0 30-18 48-44 48S26 88 26 58z" fill="#fff" stroke="#d9c6df" stroke-width="2.5"/>'+
   '<g clip-path="url(#bxCl)"><rect x="20" y="52" width="100" height="60" fill="#f6e7c2" opacity=".75"/><rect id="bxTea" x="20" y="52" width="100" height="60" fill="#8c1f3a" opacity="0"/></g>'+
   '<ellipse cx="70" cy="46" rx="44" ry="6" fill="#f1e4cf" stroke="#d9c6df" stroke-width="2"/>'+
-  '<path d="M84 46l6-26" stroke="#8aa07a" stroke-width="2"/><rect x="85" y="12" width="14" height="10" rx="2" fill="#6b2a7a" transform="rotate(14 92 17)"/><path d="M78 52l8 14h-16z" fill="#c9a24a" opacity=".9"/>'+
+  '<g class="bx-bag"><path d="M72 56L88 30" stroke="#8aa07a" stroke-width="2" fill="none"/><rect x="85" y="20" width="14" height="10" rx="2" fill="#6b2a7a" transform="rotate(14 92 25)"/><path d="M60 58h24l-2 22H62z" fill="#f3ead8" stroke="#b9a58a" stroke-width="1.5"/><path d="M62 58l10-6 10 6" fill="#e6d8bd" stroke="#b9a58a" stroke-width="1.5"/><circle cx="72" cy="70" r="3" fill="#8aa07a" opacity=".8"/></g>'+
   '<g class="bx-sm"><path d="M54 36q-8-10 0-18t0-14"/><path d="M70 34q-8-10 0-18t0-14"/><path d="M86 36q-8-10 0-18t0-14"/></g></svg>'}
 function bxMS(s){s=Math.max(0,Math.ceil(s));return (Math.floor(s/60)<10?'0':'')+Math.floor(s/60)+':'+(s%60<10?'0':'')+s%60}
 function bxPaint(){var b=$('bxBr'),tm=$('bxTm'),tx=$('bxTx'),go=$('bxGo'),te=$('bxTea');if(!b)return;var p=bxS.run?1-bxS.left/bxS.dur:(bxS.left===-1?1:0);
-  if(te)te.style.opacity=Math.min(.92,p*.92);if(tm)tm.textContent=bxS.run?bxMS(bxS.left):(bxS.left===-1?'✓':bxMS(bxS.dur));
+  if(te)te.style.opacity=(bxS.run||bxS.left===-1)?Math.min(.92,.38+p*.54):0;if(tm)tm.textContent=bxS.run?bxMS(bxS.left):(bxS.left===-1?'✓':bxMS(bxS.dur));
   b.classList.toggle('on',!!bxS.run);b.classList.toggle('rdy',bxS.left===-1);
   if(tx)tx.textContent=bxS.run?t('bxSt'):bxS.left===-1?t('bxRdy'):t('bxHint');if(go)go.textContent=bxS.run?t('bxStop'):t('bxGo')}
 function bxStop(done){clearInterval(bxS.tm);bxS.run=0;bxS.left=done?-1:0;bxPaint();if(done&&navigator.vibrate)try{navigator.vibrate([200,100,200])}catch(e){}}
