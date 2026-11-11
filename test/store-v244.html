@@ -6255,6 +6255,9 @@ html[data-lx="palace"]{--bg:#f8f3fb;--surface:#fff;--ink:#2e1d45;--muted:#7a6a8e
 html[data-lx="palace"] body{background:var(--bg)}
 html[data-lx="palace"] .n8-cat[aria-pressed="true"],html[data-lx="palace"] .n8-empty button{background:#6b3fa0;border-color:#6b3fa0;color:#fff}
 .pl-h{position:relative;overflow:hidden;padding:26px 16px 14px;text-align:center;color:#fff;isolation:isolate;background:linear-gradient(180deg,#1f1036 0%,#3b2161 34%,#7b55ad 62%,#d7bfe6 86%,#f8f3fb 100%)}
+.pl-s-pink{background:linear-gradient(180deg,#4a1640 0%,#8e3a72 32%,#d9789f 60%,#f6c6da 84%,#f8f3fb 100%)}
+.pl-s-lavender{background:linear-gradient(180deg,#3d2a6e 0%,#7a62b8 34%,#b8a2e0 62%,#e6dbf6 86%,#f8f3fb 100%)}
+.pl-s-dawn{background:linear-gradient(180deg,#2e1a52 0%,#8a3f78 34%,#e08a7a 60%,#f8cfa0 84%,#f8f3fb 100%)}
 .pl-sky{position:absolute;inset:0;z-index:-1;background:radial-gradient(60% 40% at 50% 70%,rgba(255,220,150,.22),transparent 70%)}
 .pl-st{position:absolute;inset:0 0 40%;z-index:-1;pointer-events:none}
 .pl-st i{position:absolute;left:var(--x);top:var(--y);width:var(--s);height:var(--s);border-radius:50%;background:#fff6d8;box-shadow:0 0 6px 1px rgba(255,236,180,.8);animation:plTw 3s ease-in-out var(--d) infinite}
@@ -10089,7 +10092,7 @@ function plCup(){var oc=gwS.oc>=0?t('gwO')[gwS.oc]:'';var F='';for(var i=0;i<7;i
   return '<div class="pl-cup" id="gwTag" aria-hidden="true"><svg viewBox="0 0 180 190"><ellipse cx="90" cy="182" rx="56" ry="6" fill="#3d2566" opacity=".18"/><path d="M22 22h136l-16 158H38z" fill="#fff" stroke="#e6dbef" stroke-width="2"/><rect x="16" y="14" width="148" height="12" rx="6" fill="#f4eef9" stroke="#e6dbef" stroke-width="2"/><clipPath id="plCc"><path d="M22 22h136l-16 158H38z"/></clipPath><g clip-path="url(#plCc)"><rect x="0" y="140" width="180" height="40" fill="#fbf4fb"/>'+F+'</g></svg>'+
    '<div class="pl-cl"><small>'+esc(t('gwFor'))+'</small><b id="gwTagN">'+esc(gwTagTxt())+'</b><em id="gwTagO">'+esc(oc)+'</em></div></div>'}
 R.palace=function(G){n8idx(G);var bi=bio().split('\n'),O=t('gwO'),l=plLit();
-  var h='<header class="pl-h'+n8in()+(l>=10?' pl-full':'')+'" id="plH"><div class="pl-sky" data-plsky="1" aria-hidden="true"></div>'+plStars()+
+  var h='<header class="pl-h pl-s-'+(/^(night|pink|lavender|dawn)$/.test(B.plSky||'')?B.plSky:'night')+n8in()+(l>=10?' pl-full':'')+'" id="plH"><div class="pl-sky" data-plsky="1" aria-hidden="true"></div>'+plStars()+
    '<div class="pl-tx"><span class="pl-lg">'+logoImg()+'</span><h1>'+esc(v166nm())+'</h1>'+(bi[0]?'<p>'+esc(bi[0])+'</p>':'')+(bi[1]?'<small>'+esc(bi[1])+'</small>':'')+'</div>'+
    plCastle(l)+'<p class="pl-sts" id="plSt" role="status">✨ <span>'+esc(plStT(l))+'</span></p></header>'+
    '<section class="pl-ws"><h2>'+esc(t('plWs'))+'</h2><p class="pl-wse">'+esc(t('plWsE'))+'</p>'+gwSoon()+'<div class="pl-wg">'+plCup()+
@@ -10119,7 +10122,7 @@ if(DEMO&&typeof D!=='undefined'){(function(){
    ['توزيعة العودة للمدرسة (6 قطع)',2.2,'عودًا حميدًا','pl:bag',BG,'#5b8fd0','ملصقات وأدوات مطبوعة بالاسم.'],['دفتر صغير مطبوع بالاسم',0.5,'عودًا حميدًا','pl:note',BG,'#5b8fd0',''],['ملصقات أسماء للأدوات المدرسية',0.8,'عودًا حميدًا','pl:stk',BG,'#5b8fd0',''],
    ['أكياس حول حول القاسم',0.3,'المناسبات','pl:bag',BG,'#c45b8a',''],['أكواب ضيافة مطبوعة للمناسبات',0.2,'المناسبات','pl:cup',BG,'#c45b8a',''],['صندوق ضيافة بزخرفة الزهور',3.5,'المناسبات','pl:box',BG,PU,''],['بطاقات شكر بالاسم',0.15,'المناسبات','pl:card',BG,'#c45b8a',''],
    ['تصميم بطاقة دعوة',3,'التصميم والطباعة','pl:card',BG,PU,'تصميم خاص يُرسل لك ملفًا جاهزًا للطباعة.'],['طباعة ملصقات حسب الطلب (ورقة A4)',1,'التصميم والطباعة','pl:stk',BG,'#3d2566',''],['مخطط أسبوعي مطبوع',1.5,'التصميم والطباعة','pl:note',BG,PU,'']];
-  D.palace={brand:{name:'Mudon',desc:'نحوّل أفكاركم إلى تفاصيل لا تُنسى',sub:'تصميم وطباعة وصناعات ورقية · توزيعات تناسب جميع المناسبات',layout:'palace',accent:PU,logo:location.href.replace(/[?#].*$/,'').replace(/[^\/]*$/,'')+'mudon/logo.jpg',wa:'96899887766',
+  D.palace={brand:{name:'Mudon',desc:'نحوّل أفكاركم إلى تفاصيل لا تُنسى',sub:'تصميم وطباعة وصناعات ورقية · توزيعات تناسب جميع المناسبات',layout:'palace',plSky:((/[?&]sky=(\w+)/.exec(location.search)||[])[1]||'pink'),accent:PU,logo:location.href.replace(/[?#].*$/,'').replace(/[^\/]*$/,'')+'mudon/logo.jpg',wa:'96899887766',
    info:[{t:'طلبات الكميات',b:'نجهّز التوزيعات بالكميات التي تحتاجها، راسلنا قبل المناسبة بوقت كافٍ.'},{t:'التوصيل',b:'نوصل لجميع ولايات السلطنة.'}],
    reviews:[{n:'أم سارة',t:'أكواب التخرّج كانت أجمل من توقعي، وكل التفاصيل مرتبة.'}]},p:P};
   N8.reg([['palace','قصر الحكايات (Mudon)']]);
