@@ -16,7 +16,7 @@ window.EMDErrLog={list:function(){var c=Date.now()-3*864e5;return L().filter(fun
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V233</title>
+<title>EMD Business — Standalone V235</title>
 <!-- EMD V158: شاشة افتتاح تغطي التطبيق حتى تكتمل الواجهة الأخيرة، فلا تظهر الأشكال والأزرار القديمة أثناء التحميل -->
 <style id="EMD-V158-boot">
 html.emd-boot{background:#0f172a!important}
@@ -33311,7 +33311,7 @@ body.e232-q .emd103-toast{display:none!important}
 .e232-toast{position:fixed;left:50%;bottom:86px;transform:translateX(-50%);z-index:100000;background:#0f172a;color:#fff;border-radius:14px;padding:12px 14px;font-size:13.5px;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.25);max-width:92vw;display:flex;gap:12px;align-items:center;direction:rtl;transition:opacity .4s}
 .e232-toast button{border:0;background:#d4a017;color:#0f172a;border-radius:10px;padding:7px 12px;font:inherit;font-weight:800;cursor:pointer;white-space:nowrap}
 </style>
-<script id="EMD-V232-parse-learn">
+<script id="EMD-V232-parse-learn">/* EMD-V235 */
 (function(){
 'use strict';
 if(window.__EMD_V232__)return;window.__EMD_V232__=true;
@@ -33344,13 +33344,16 @@ function tokNorm(t){t=N(t).replace(/^[^ء-يa-z0-9]+|[^ء-يa-z0-9]+$/g,'');retu
 function lev(a,b,cap){if(Math.abs(a.length-b.length)>cap)return cap+1;var p=[],i,j;for(j=0;j<=b.length;j++)p[j]=j;
   for(i=1;i<=a.length;i++){var c=[i],mn=i;for(j=1;j<=b.length;j++){c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));if(c[j]<mn)mn=c[j]}if(mn>cap)return cap+1;p=c}return p[b.length]}
 var IDX=null,IDXsig='';
+function wawAlt(t){if(!/^و\S{3,}$/.test(t)||QW[t])return '';return stripAl(t.slice(1))}
+function wHas(hits,t){return hits.indexOf(t)>=0||(wawAlt(t)&&hits.indexOf(wawAlt(t))>=0)}
 function index(){var P=prods(),sig=P.join('|');if(IDX&&IDXsig===sig)return IDX;
-  var items=P.map(function(p){var w=N(p).split(' ').map(tokNorm).filter(Boolean).map(stripAl);return {p:p,w:w}});
-  var df={};items.forEach(function(it){var seen={};it.w.forEach(function(t){if(!seen[t]){seen[t]=1;df[t]=(df[t]||0)+1}})});
+  /* EMD-V235: «وجزء» في اسم المنتج تُفهم أيضًا «جزء» */
+  var items=P.map(function(p){var w=N(p).split(' ').map(tokNorm).filter(Boolean).map(stripAl),v=w.slice();w.forEach(function(t){var b=wawAlt(t);if(b&&v.indexOf(b)<0)v.push(b)});return {p:p,w:w,v:v}});
+  var df={};items.forEach(function(it){var seen={};it.v.forEach(function(t){if(!seen[t]){seen[t]=1;df[t]=(df[t]||0)+1}})});
   IDX={items:items,df:df};IDXsig=sig;return IDX}
 /* ما المنتجات التي تحتوي هذه الكلمة؟ يرجع {set, dual} */
 function tokProds(raw){var I=index(),t=stripAl(tokNorm(raw));if(!t||t.length<2||/^\d+$/.test(t))return null;
-  function look(x){var out=[];I.items.forEach(function(it,ix){if(it.w.indexOf(x)>=0)out.push(ix)});return out}
+  function look(x){var out=[];I.items.forEach(function(it,ix){if(it.v.indexOf(x)>=0)out.push(ix)});return out}
   var s=look(t);if(s.length)return {s:s,q:0,t:t};
   if(PLUR[t]){s=look(PLUR[t]);if(s.length)return {s:s,q:0,t:PLUR[t]}}
   /* المثنى: شيلتين، جزئين، عطرين */
@@ -33360,7 +33363,10 @@ function tokProds(raw){var I=index(),t=stripAl(tokNorm(raw));if(!t||t.length<2||
   /* خطأ إملائي بسيط في كلمة طويلة */
   if(t.length>=4&&!STOP[t]&&!PLWORD(t)){var best=null;Object.keys(I.df).forEach(function(k){if(k.length<4||k[0]!==t[0])return;if((t.length>=5||k.length===t.length+1)&&lev(t,k,1)===1&&!best)best=k});if(best){s=look(best);return {s:s,q:0,t:best,fz:1}}}
   return null}
-function aliasList(){var A=loadA().alias,P=prods();return Object.keys(A).filter(function(k){return A[k]&&P.indexOf(A[k].p)>=0}).map(function(k){return {w:k.split(' ').map(tokNorm),p:A[k].p}}).sort(function(a,b){return b.w.length-a.w.length})}
+function junkKey(k){return N(dg(k)).replace(/[^ء-يa-z]/g,'').length<2}
+/* EMD-V235: تنظيف ما تعلّمه التطبيق خطأً (رقم أو رمز بدل اسم منتج) */
+function cleanA(){try{var raw=lsGet(AK);if(!raw)return;var d=JSON.parse(raw)||{},A=d.alias||{},bad=Object.keys(A).filter(junkKey);if(!bad.length)return;bad.forEach(function(k){delete A[k]});lsSet(AK,JSON.stringify(d))}catch(e){}}
+function aliasList(){var A=loadA().alias,P=prods();return Object.keys(A).filter(function(k){return A[k]&&P.indexOf(A[k].p)>=0&&!junkKey(k)}).map(function(k){return {w:k.split(' ').map(tokNorm),p:A[k].p}}).sort(function(a,b){return b.w.length-a.w.length})}
 var COLORS=/^(?:ابيض|اسود|سوداء|سودا|احمر|حمراء|ازرق|زرقاء|اخضر|خضراء|بيج|رمادي|ذهبي|فضي|وردي|بني|كحلي|عنابي|كبير|صغير|وسط)$/;
 
 /* ---------- تحليل سطر فيه منتجات ---------- */
@@ -33374,7 +33380,16 @@ function findMentions(line){
   /* ١) ما تعلّمه التطبيق */
   for(var i=0;i<T.length;i++){if(used[i])continue;for(var a=0;a<AL.length;a++){var w=AL[a].w,ok=true;
       for(var z=0;z<w.length;z++){var tk=T[i+z];if(!tk){ok=false;break}var n=tokNorm(tk);if(z===0)n=n.replace(/^و(?=\S{2})/,function(m){return n===w[0]?'و':''});if(n!==w[z]&&stripAl(n)!==stripAl(w[z])&&n.replace(/^و/,'')!==w[z]){ok=false;break}}
-      if(ok){M.push({i:i,j:i+w.length,p:AL[a].p,al:1});for(var y=i;y<i+w.length;y++)used[y]=1;i+=w.length-1;break}}}
+      if(ok){var ap=AL[a].p,pi=-1;I.items.forEach(function(it,ix){if(it.p===ap)pi=ix});
+        /* EMD-V235: «رحلتي مع» + «جزء عم» = نفس المنتج؛ و«سوره البقره» + «صغير» = المنتج الأدق */
+        var s0=i,e0=i+w.length,ext=[];
+        while(s0>0&&!used[s0-1]&&ext.length<6){var rl=tokProds(T[s0-1]);if(!rl)break;ext.push(rl);s0--}
+        while(e0<T.length&&!used[e0]&&ext.length<8){var rr=tokProds(T[e0]);if(!rr)break;ext.push(rr);e0++}
+        if(ext.length&&pi>=0){
+          if(ext.every(function(r){return r.s.indexOf(pi)>=0})){M.push({i:s0,j:e0,p:ap,al:1});for(var y5=s0;y5<e0;y5++)used[y5]=1;i=e0-1;break}
+          var SS=null;for(var y6=s0;y6<e0;y6++){var r6=tokProds(T[y6]);if(!r6)continue;SS=SS?SS.filter(function(x){return r6.s.indexOf(x)>=0}):r6.s.slice()}
+          if(SS&&SS.length===1&&SS[0]!==pi){M.push({i:s0,j:e0,p:I.items[SS[0]].p});for(var y7=s0;y7<e0;y7++)used[y7]=1;i=e0-1;break}}
+        M.push({i:i,j:i+w.length,p:ap,al:1});for(var y=i;y<i+w.length;y++)used[y]=1;i+=w.length-1;break}}}
   /* ٢) كلمات أسماء المنتجات */
   for(i=0;i<T.length;i++){if(used[i])continue;var r=tokProds(T[i]),waw=false;
     if(!r&&isWaw(T[i])){r=tokProds(T[i].replace(/^و/,''));waw=!!r}
@@ -33383,8 +33398,8 @@ function findMentions(line){
     while(j<T.length&&!used[j]){var r2=tokProds(T[j]);if(!r2)break;var S2=S.filter(function(x){return r2.s.indexOf(x)>=0});if(!S2.length)break;S=S2;hits.push(r2.t);if(r2.q)dual=r2.q;j++}
     var pick=null;
     if(S.length===1)pick=S[0];
-    else{var full=S.filter(function(x){return I.items[x].w.every(function(t){return hits.indexOf(t)>=0})});if(full.length===1)pick=full[0]}
-    if(pick!=null){var it=I.items[pick],distinct=hits.some(function(t){return I.df[t]===1}),allc=it.w.every(function(t){return hits.indexOf(t)>=0});
+    else{var full=S.filter(function(x){return I.items[x].w.every(function(t){return wHas(hits,t)})});if(full.length===1)pick=full[0]}
+    if(pick!=null){var it=I.items[pick],distinct=hits.some(function(t){return I.df[t]===1}),allc=it.w.every(function(t){return wHas(hits,t)});
       if(!distinct&&!allc)pick=null;
       /* كلمة وحدة (لون أو صفة) بعد منتج آخر = صفة له، ليست منتجًا جديدًا */
       else if(hits.length===1&&it.w.length>1&&(COLORS.test(hits[0])||hits[0].length<3))pick=null;
@@ -33460,6 +33475,7 @@ function pre(raw){
     out.push('المكان: '+pv);info.place=pv}
   function proc(l0,depth){
     var t=stripWA(l0).trim();if(!t){out.push(l0);return}
+    if(/^[\-–—•*▪️]+\s*[(\[]?\s*[\d٠-٩]{1,3}\s*[)\]]?\s*$/.test(t))return;
     var bare=t.replace(/^[^\p{L}\p{N}]+/u,'');
     if(GREET.test(N(bare)))return;
     var sm=bare.match(/^(?:و?(?:ب?نفس)\s+(?:الشي|الشيء|العدد|الكميه|الكمية)|و?مثله|و?مثلها|و?زيه|و?زيها)\s+(.+)$/),same=0;if(sm&&info.mentions.length){same=info.mentions[info.mentions.length-1].q;bare=sm[1]}
@@ -33561,7 +33577,7 @@ function post(c,orig){
     var sel=m.row!=null&&$('prod'+m.row);if(!sel)return;m.done=1;
     if(P.indexOf(sel.value)>=0||!sel.value||N(sel.value)===N(m.raw)){sel.value='';sel.classList.add('emd103-warn')}
     var row=sel.closest('.emd-parsed-product'),mu=row&&row.querySelector('.muted');if(mu)mu.textContent='من الرسالة: '+m.raw;
-    var I=index(),opts=I.items.filter(function(it){return tokNorm(m.raw).split(' ').some(function(t){return it.w.indexOf(stripAl(t))>=0})}).map(function(it){return it.p});
+    var I=index(),opts=I.items.filter(function(it){return tokNorm(m.raw).split(' ').some(function(t){return it.v.indexOf(stripAl(t))>=0})}).map(function(it){return it.p});
     var host=sel.parentNode;if(host&&!host.querySelector('.e232-amb')){var d=document.createElement('div');d.className='e232-amb';d.style.cssText='font-size:12px;color:#92400e;margin-top:5px;font-weight:700';d.textContent=opts.length?'«'+m.raw+'» يحتمل: '+opts.slice(0,4).join(' أو ')+'. اختر الصحيح وسيتذكّره التطبيق.':'«'+m.raw+'» غير مسجّل باسمه. اختر المنتج الصحيح وسيتذكّره التطبيق.';host.appendChild(d)}
     m.forceQ=1});
   /* الكميات كما فُهمت من الرسالة (طبقات قديمة تقرأ النص الأصلي وتخلط «مقاس 56» بالكمية) */
@@ -33622,7 +33638,7 @@ function toast(items,undo){var e=document.createElement('div');e.className='e232
 function copy(f,g){try{for(var k in f)g[k]=f[k]}catch(e){}}
 var BUSY=false,BUSYS=false;
 function wrapParse(){var f=window.parse;if(typeof f!=='function'||f.__v232)return;
-  var g=function(){var ta=$('raw');if(!ta||BUSY)return f.apply(this,arguments);BUSY=true;try{var orig=ta.value,c={text:orig,extra:[],info:{mentions:[],names:[]}};
+  var g=function(){var ta=$('raw');if(!ta||BUSY)return f.apply(this,arguments);BUSY=true;cleanA();try{var orig=ta.value,c={text:orig,extra:[],info:{mentions:[],names:[]}};
     try{c=pre(orig)}catch(e){console.warn('V232 pre',e)}
     ta.value=c.text;var r;try{r=f.apply(this,arguments)}finally{ta.value=orig}
     S=null;
@@ -33636,7 +33652,7 @@ function wrapParse(){var f=window.parse;if(typeof f!=='function'||f.__v232)retur
 function wrapSave(){var f=window.confirmSave;if(typeof f!=='function'||f.__v232)return;
   var g=function(){if(BUSYS)return f.apply(this,arguments);BUSYS=true;try{var n0=0;try{n0=(window.db&&db.orders||[]).length}catch(e){}
     var res={items:[],undo:[]},A0=S&&S.a0,ph=(($('pphone')||{}).value||'').replace(/\D/g,'').slice(-8);
-    var r=f.apply(this,arguments);
+    var r=f.apply(this,arguments);cleanA();
     var saved=false;try{saved=db.orders.length>n0||db.orders.some(function(o){return String(o.phone||'').replace(/\D/g,'').slice(-8)===ph&&Date.now()-new Date(o.created).getTime()<8000})}catch(e){}
     if(saved&&S){try{res=learn()}catch(e){console.warn('V232 learn',e)}
       /* ما تعلّمه التصحيح من القائمة (V103) يظهر في نفس الرسالة */
@@ -33646,7 +33662,7 @@ function wrapSave(){var f=window.confirmSave;if(typeof f!=='function'||f.__v232)
     return r}finally{BUSYS=false}};
   copy(f,g);['__emd103','__emd105','__emd82','__emd95','__v108stamp','__v418','__v45'].forEach(function(k){g[k]=true});g.__v232=true;window.confirmSave=g}
 window.EMDParseV232={pre:pre,find:findMentions,learn:loadL};
-function wrapAll(){wrapParse();wrapSave()}
+function wrapAll(){cleanA();wrapParse();wrapSave()}
 wrapAll();
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',wrapAll);
 window.addEventListener('load',function(){setTimeout(wrapAll,0);setTimeout(wrapAll,2000);setTimeout(wrapAll,5000)});
