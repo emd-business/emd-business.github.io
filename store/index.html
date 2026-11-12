@@ -10413,6 +10413,19 @@ if(typeof rpcOrder==='function'){var _rpc247=rpcOrder;rpcOrder=function(b){if(DE
   return ts229().then(function(tk){body.ts=tk;return fetch(API+'/functions/v1/store-custom',{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify(body)})})
    .then(function(r){return r.json().catch(function(){return {error_code:'net'}})}).then(function(r){if(!r||r.error_code)throw new Error((r&&r.error_code)||'net');PZ={};PZD={};pzSave();return r})};}
 
+/* V249: إيصال أخف وأوضح + حقل اختياري لرقم الحوالة */
+(function(){
+var _qrFile=qrFile,_qrSend=qrSend;
+/* درجة الوضوح: تباين الحواف على نسخة رمادية صغيرة؛ القيمة الصغيرة تعني صورة ضبابية أو باهتة */
+function sharp(c0){try{var M=420,k=Math.min(1,M/Math.max(c0.width,c0.height)),c=document.createElement('canvas');c.width=Math.max(8,Math.round(c0.width*k));c.height=Math.max(8,Math.round(c0.height*k));var g=c.getContext('2d',{willReadFrequently:true});g.drawImage(c0,0,0,c.width,c.height);var d=g.getImageData(0,0,c.width,c.height).data,W=c.width,H=c.height,G=new Float32Array(W*H),i;for(i=0;i<W*H;i++)G[i]=(d[i*4]*77+d[i*4+1]*151+d[i*4+2]*28)>>8;var s=0,s2=0,n=0;for(var y=1;y<H-1;y++)for(var x=1;x<W-1;x++){var v=4*G[y*W+x]-G[y*W+x-1]-G[y*W+x+1]-G[(y-1)*W+x]-G[(y+1)*W+x];s+=v;s2+=v*v;n++}var m=s/n;return s2/n-m*m}catch(e){return 1e9}}
+qrFile=function(f){if(!f)return;var e=$('qkRe');if(e)e.textContent='';if(!/^image\//.test(f.type||'image/')){if(e)e.textContent='اختر صورة للإيصال.';return}var u=URL.createObjectURL(f),im=new Image();im.onload=function(){var M=1400,sc=Math.min(1,M/Math.max(im.width,im.height)),c=document.createElement('canvas'),q=.8,d;c.width=Math.max(1,Math.round(im.width*sc));c.height=Math.max(1,Math.round(im.height*sc));var g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height);g.imageSmoothingQuality='high';g.drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);d=c.toDataURL('image/jpeg',q);while(d.length>600000&&q>.4){q-=.1;d=c.toDataURL('image/jpeg',q)}if(d.length>690000){if(e)e.textContent='الصورة كبيرة جدًا، اختر صورة أصغر.';return}
+  QS.rc=d;var p=$('qkRp');if(p){p.src=d;p.hidden=false}var l=$('qkRt');if(l)l.textContent='✓ تم إرفاق الإيصال، اضغط لتغييره';
+  var sh=sharp(c),small=Math.max(im.width,im.height)<700;if(e&&(sh<120||small))e.textContent=small?'الصورة صغيرة؛ يُفضَّل حفظ الإيصال من تطبيق البنك مباشرة ليُقرأ بوضوح.':'الصورة تبدو غير واضحة؛ يُفضَّل حفظ الإيصال من تطبيق البنك أو تصويره بوضوح.';
+  var box=$('qkRl');if(box&&!$('qkRn')){var w=document.createElement('label');w.className='ql';w.style.marginTop='8px';w.innerHTML='رقم الحوالة أو المرجع (اختياري، يسرّع التأكيد)<input id="qkRn" class="qin" inputmode="text" dir="ltr" maxlength="40" autocomplete="off" placeholder="مثال: BMCT0159…">';box.appendChild(w)}
+  q173bar()};im.onerror=function(){URL.revokeObjectURL(u);if(e)e.textContent='تعذّر فتح الصورة، جرّب صورة أخرى.'};im.src=u};
+qrSend=function(r){var n=$('qkRn'),cref=n?String(n.value||'').replace(/[^A-Za-z0-9]/g,'').toUpperCase().slice(0,40):'';return fetch(API+'/functions/v1/store-receipt',{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify({action:'submit',slug:SLUG,token:r.token,data:String(QS.rc).split(',')[1],cref:cref})}).then(function(x){return x.json().then(function(j){if(!x.ok||!j.ok)throw new Error(j.error||'upload');return j})})};
+})();
+
 boot();
 })();
 </script>

@@ -16,7 +16,7 @@ window.EMDErrLog={list:function(){var c=Date.now()-3*864e5;return L().filter(fun
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V247</title>
+<title>EMD Business — Standalone V249</title>
 <!-- EMD V158: شاشة افتتاح تغطي التطبيق حتى تكتمل الواجهة الأخيرة، فلا تظهر الأشكال والأزرار القديمة أثناء التحميل -->
 <style id="EMD-V158-boot">
 html.emd-boot{background:#0f172a!important}
@@ -33137,54 +33137,168 @@ body:has(#emd411Store.show) #emd410Bar{display:none!important}
 .e215b{display:block;font-weight:800;margin-bottom:3px}.e215b.g{color:#15803d}.e215b.y{color:#b45309}.e215b.r{color:#b91c1c}
 .e215s{display:block;color:var(--muted,#687384);font-size:12px;line-height:1.5}
 .e215m{display:flex;gap:6px;margin-top:7px}.e215m input{flex:1;min-width:0;min-height:40px;padding:6px 9px;border:1px solid var(--line,#d6dce6);border-radius:9px;background:var(--card,#fff);color:inherit;direction:ltr}.e215m button{min-height:40px;padding:0 11px;border:1px solid var(--line,#d6dce6);border-radius:9px;background:var(--card,#fff);color:inherit;font-weight:700;cursor:pointer}
+.e249d{display:inline-block;margin-top:4px;padding:0;border:0;background:none;color:var(--muted,#687384);font-size:12px;text-decoration:underline;cursor:pointer;font-family:inherit}
+.e249i{margin-top:3px}
+.e249h{margin-top:8px;padding:7px 9px;border-radius:9px;background:rgba(245,158,11,.1);color:inherit;font-size:12.5px;line-height:1.6}
+.e249h button{min-height:30px;margin:2px 0 0 6px;padding:0 10px;border:1px solid var(--line,#d6dce6);border-radius:8px;background:var(--card,#fff);color:inherit;font-weight:700;cursor:pointer;font-family:inherit}
 #e215Z{position:fixed;inset:0;z-index:100900;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;padding:12px}#e215Z img{max-width:100%;max-height:100%;border-radius:8px}
 </style>
 <script id="EMD-V215-receipt">
+/* EMD249: فحص الإيصال V249 (يحل محل V215/V218/V225) */
 (function(){'use strict';
-var FN='https://pfkstppvnebagbdckgbu.supabase.co/functions/v1/store-receipt',KEY='sb_publishable__tfVZiyph-xyB87GzmHrkQ_9DVpPHJ0',C={},Q=[],busy=false,asked={},OCR='https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js',OCR_SRI='sha384-GJqSu7vueQ9qN0E9yLPb3Wtpd7OrgK8KmYzC8T1IysG1bcvxvIO4qtYR/D3A991F';
-/* V215: استخراج رقم الحوالة والمبلغ من نص الإيصال */
-function e215ext(text,total){var A='٠١٢٣٤٥٦٧٨٩',P='۰۱۲۳۴۵۶۷۸۹',s=String(text||'').replace(/[٠-٩۰-۹]/g,function(c){var i=A.indexOf(c);return String(i>-1?i:P.indexOf(c))}).replace(/[٫]/g,'.'),L=s.split(/\r?\n/).map(function(x){return x.trim()}).filter(Boolean);
-  var LB=/(reference|\bref\b|txn|transaction|\btrn\b|\butr\b|رقم\s*المرجع|الرقم\s*المرجعي|المرجع|مرجع|رقم\s*العملية|رقم\s*الحوالة|رقم\s*التحويل|رقم\s*المعاملة)/i,TK=/[A-Za-z0-9][A-Za-z0-9\-\/]{4,}[A-Za-z0-9]/g,ref='',how='';
-  function ok(t){return /\d/.test(t)&&(t.match(/\d/g)||[]).length>=5&&!/^OM\d/i.test(t)&&!/^(00968|968)?[79]\d{7}$/.test(t)&&!/^\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}$/.test(t)&&!/^20\d{2}[\/\-]\d{1,2}/.test(t)}
-  for(var i=0;i<L.length&&!ref;i++){if(!LB.test(L[i]))continue;var c=(L[i].match(TK)||[]).filter(ok);if(!c.length&&L[i+1])c=(L[i+1].match(TK)||[]).filter(ok);if(!c.length&&L[i-1])c=(L[i-1].match(TK)||[]).filter(ok);if(c.length){ref=c.sort(function(a,b){return b.length-a.length})[0];how='label'}}
-  if(!ref){var all=(s.match(TK)||[]).filter(ok).filter(function(t){return t.replace(/\D/g,'').length>=8&&!/^(\+?968)?[79]\d{7}$/.test(t)});var U=all.filter(function(t,i){return all.indexOf(t)===i});if(U.length){ref=U.sort(function(a,b){return b.length-a.length})[0];how=U.length===1?'label':'guess'}}
-  var am=null,T=+total;if(T>0){var N=(s.replace(/\b\d{1,4}[\/\-]\d{1,2}[\/\-]\d{1,4}\b/g,' ').replace(/\b\d{1,2}:\d{2}(?::\d{2})?\b(?!\d)/g,' ').replace(/(\d):(\d{3})\b/g,'$1.$2').replace(/,/g,'').match(/\d+(?:\.\d{1,3})?/g)||[]).map(Number);am=N.some(function(n){return Math.abs(n-T)<.0011})}
-  return {ref:ref.replace(/[^A-Za-z0-9]/g,'').toUpperCase(),how:how,amount:am}}
+var FN='https://pfkstppvnebagbdckgbu.supabase.co/functions/v1/store-receipt',KEY='sb_publishable__tfVZiyph-xyB87GzmHrkQ_9DVpPHJ0',C={},Q=[],busy=false,asked={};
+/* ═══════════════ V249: محرك القراءة ═══════════════
+   الأدوات (المكتبة، والمحرك، وملفات اللغة) تُحمَّل مرة واحدة فقط وتُحفظ في المتصفح بعد التحقق من بصمتها،
+   ثم تُمرَّر إلى إطار معزول لا يصل إلى بيانات التطبيق. قبل V249 كانت تُحمَّل نحو 16 ميجابايت مع كل إيصال. */
+var CDN=window.EMD249_CDN||'https://cdn.jsdelivr.net/npm/',AS={
+ lib:{u:'tesseract.js@5.1.1/dist/tesseract.min.js',h:'GJqSu7vueQ9qN0E9yLPb3Wtpd7OrgK8KmYzC8T1IysG1bcvxvIO4qtYR/D3A991F'},
+ wk:{u:'tesseract.js@5.1.1/dist/worker.min.js',h:'zxn+VqofFzXpH99dUb3fa4ywoSBQJPy6/6oEaJHPlblZXr53a0g1Jl6720vgSzB7'},
+ core:{u:'tesseract.js-core@5.1.1/tesseract-core-simd-lstm.wasm.js',h:'YM1G+zaWYy9VSRP2C101LCgzh7n3Hqb6OEm9qDoZYgCADsni3nnECskC3WialQB7'},
+ core0:{u:'tesseract.js-core@5.1.1/tesseract-core-lstm.wasm.js',h:'EKWY5JDwphQoyxhvYU7eaCcyQ0EdV6fZK3L2vzfZcv2ichRdNd6pSnyWPNv6fMuR'},
+ eng:{u:'@tesseract.js-data/eng@1.0.0/4.0.0_best_int/eng.traineddata.gz',h:'JI+fraGAoc5GBGIliuqzHRnP1nJyrukg5ggNSBv/TO+YOVj+6Te6XXQOx7ia10xq'},
+ ara:{u:'@tesseract.js-data/ara@1.0.0/4.0.0_best_int/ara.traineddata.gz',h:'AEeU1lslaSdW3R58wLuzGm13NvVStYvTfcs0PtmHzxu4m+CtUW9lXxlU8+i8Nqsn'}},
+ SIMD=(function(){try{return WebAssembly.validate(new Uint8Array([0,97,115,109,1,0,0,0,1,5,1,96,0,1,123,3,2,1,0,10,10,1,8,0,65,0,253,15,253,98,11]))}catch(e){return false}})(),
+ CK='emd-ocr-5.1.1',PROG=null;
+function b64(buf){var u=new Uint8Array(buf),s='';for(var i=0;i<u.length;i++)s+=String.fromCharCode(u[i]);return btoa(s)}
+function verify(buf,h){return crypto.subtle.digest('SHA-384',buf).then(function(d){if(b64(d)!==h)throw new Error('sri');return buf})}
+function asset(k){var a=AS[k],u=CDN+a.u;
+  function get(){return fetch(u,{cache:'force-cache'}).then(function(r){if(!r.ok)throw new Error('dl');return r.arrayBuffer()})}
+  if(!window.caches)return get().then(function(b){return verify(b,a.h)});
+  return caches.open(CK).then(function(c){return c.match(u).then(function(r){if(r)return r.arrayBuffer().then(function(b){return verify(b,a.h)}).catch(function(){return c.delete(u).then(get).then(function(b){return verify(b,a.h)})});
+    return get().then(function(b){return verify(b,a.h)}).then(function(b){return c.put(u,new Response(b.slice(0),{headers:{'Content-Type':'application/octet-stream'}})).catch(function(){}).then(function(){return b})})})},function(){return get().then(function(b){return verify(b,a.h)})})}
+function assets(langs){var ks=['lib','wk',SIMD?'core':'core0'].concat(langs),n=0,out={};return Promise.all(ks.map(function(k){return asset(k).then(function(b){n++;if(PROG)PROG(n,ks.length);out[k==='core0'?'core':k]=b})})).then(function(){return out})}
+/* الإطار المعزول: يبقى حيًّا ما دامت هناك إيصالات في الطابور، ويُغلق بعد دقيقتين من الخمول لتحرير الذاكرة */
+var RUN='<!doctype html><meta charset="utf-8"><script>(function(){var W={},wk,core,L={};function bu(b,t){return URL.createObjectURL(new Blob([b],{type:t||"text/javascript"}))}'+
+ 'addEventListener("message",function(e){if(e.source!==parent)return;var d=e.data||{};'+
+ 'if(d.t==="init"){try{var t=new TextDecoder().decode(d.wk).replace(\'t:t.data})).join("+")\',\'t:t.code})).join("+")\');wk=bu(t);core=bu(d.core)+"#core.js";L=d.langs;var s=document.createElement("script");s.src=bu(d.lib);s.onload=function(){parent.postMessage({t:"ready"},"*")};s.onerror=function(){parent.postMessage({t:"err",e:"lib"},"*")};document.head.appendChild(s)}catch(x){parent.postMessage({t:"err",e:"init"},"*")}}'+
+ 'else if(d.t==="job"){var k=d.langs.join("+"),p=W[k]||(W[k]=Tesseract.createWorker(d.langs.map(function(c){return {code:c,data:new Uint8Array(L[c])}}),1,{workerPath:wk,corePath:core,workerBlobURL:false,cacheMethod:"none",gzip:true}));'+
+ 'p.then(function(w){return w.recognize(d.img)}).then(function(r){parent.postMessage({t:"done",id:d.id,text:r.data.text||"",conf:r.data.confidence||0},"*")},function(x){delete W[k];parent.postMessage({t:"err",id:d.id,e:String(x&&x.message||x).slice(0,80)},"*")})}});'+
+ 'parent.postMessage({t:"boot"},"*")})();<\/script>';
+var FR=null;
+function frameFor(langs){if(FR&&langs.every(function(l){return FR.langs.indexOf(l)>-1})){clearTimeout(FR.idle);return FR.ready}
+  if(FR)killFrame();var fr={langs:langs.slice(),jobs:{},n:0};FR=fr;
+  fr.ready=assets(langs).then(function(A){return new Promise(function(ok,no){var f=document.createElement('iframe');fr.f=f;f.setAttribute('sandbox','allow-scripts');f.setAttribute('aria-hidden','true');f.style.cssText='position:fixed;width:1px;height:1px;left:0;top:0;opacity:0;pointer-events:none;border:0;z-index:-1';
+    var T=setTimeout(function(){no(new Error('timeout'));killFrame()},60000);
+    fr.on=function(e){if(e.source!==f.contentWindow)return;var d=e.data||{};
+      if(d.t==='boot'){var L={};langs.forEach(function(l){L[l]=A[l]});f.contentWindow.postMessage({t:'init',lib:A.lib,wk:A.wk,core:A.core,langs:L},'*')}
+      else if(d.t==='ready'){clearTimeout(T);ok(fr)}
+      else if(d.id!=null&&fr.jobs[d.id]){var j=fr.jobs[d.id];delete fr.jobs[d.id];clearTimeout(j.T);if(d.t==='done')j.ok({text:String(d.text||''),conf:+d.conf||0});else j.no(new Error(d.e||'ocr'));touch()}
+      else if(d.t==='err'){clearTimeout(T);no(new Error(d.e||'ocr'));killFrame()}};
+    addEventListener('message',fr.on);f.srcdoc=RUN;document.body.appendChild(f)})});
+  function touch(){clearTimeout(fr.idle);fr.idle=setTimeout(function(){if(FR===fr&&!Object.keys(fr.jobs).length)killFrame()},120000)}
+  fr.ready.then(touch,function(){});return fr.ready}
+function killFrame(){var fr=FR;if(!fr)return;FR=null;clearTimeout(fr.idle);try{removeEventListener('message',fr.on)}catch(e){}try{fr.f&&fr.f.remove()}catch(e){}Object.keys(fr.jobs).forEach(function(k){clearTimeout(fr.jobs[k].T);fr.jobs[k].no(new Error('closed'))})}
+function ocr(blob,langs){return frameFor(langs).then(function(fr){return new Promise(function(ok,no){var id=++fr.n;fr.jobs[id]={ok:ok,no:no,T:setTimeout(function(){delete fr.jobs[id];no(new Error('timeout'));killFrame()},150000)};fr.f.contentWindow.postMessage({t:'job',id:id,img:blob,langs:langs},'*')})})}
 
-/* V218: تاريخ الإيصال والمستفيد */
-function e215date(text,orderAt){var A='٠١٢٣٤٥٦٧٨٩',P='۰۱۲۳۴۵۶۷۸۹',s=String(text||'').replace(/[٠-٩۰-۹]/g,function(c){var i=A.indexOf(c);return String(i>-1?i:P.indexOf(c))}),F=[],M={jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12,'يناير':1,'فبراير':2,'مارس':3,'أبريل':4,'ابريل':4,'مايو':5,'يونيو':6,'يوليو':7,'أغسطس':8,'اغسطس':8,'سبتمبر':9,'أكتوبر':10,'اكتوبر':10,'نوفمبر':11,'ديسمبر':12},now=Date.now();
+/* ═══════════════ الصورة: نسخة رمادية خفيفة للقراءة + بصمة بصرية ═══════════════ */
+function loadImg(src){return new Promise(function(ok,no){var im=new Image();im.onload=function(){if(im.naturalWidth>6000||im.naturalHeight>6000)no(new Error('big'));else ok(im)};im.onerror=function(){no(new Error('img'))};im.src=src})}
+function gray(im,M){var mx=Math.max(im.naturalWidth,im.naturalHeight),k=mx<1100?Math.min(2,M/mx):Math.min(1,M/mx),c=document.createElement('canvas');c.width=Math.max(1,Math.round(im.naturalWidth*k));c.height=Math.max(1,Math.round(im.naturalHeight*k));var g=c.getContext('2d',{willReadFrequently:true});g.imageSmoothingQuality='high';g.drawImage(im,0,0,c.width,c.height);var D=g.getImageData(0,0,c.width,c.height),d=D.data;for(var i=0;i<d.length;i+=4){var v=(d[i]*77+d[i+1]*151+d[i+2]*28)>>8;d[i]=d[i+1]=d[i+2]=v}g.putImageData(D,0,0);return c}
+function toBlob(c,q){return new Promise(function(ok){if(c.toBlob)c.toBlob(function(b){ok(b)},'image/jpeg',q);else{var s=c.toDataURL('image/jpeg',q),bin=atob(s.split(',')[1]),u=new Uint8Array(bin.length);for(var i=0;i<u.length;i++)u[i]=bin.charCodeAt(i);ok(new Blob([u],{type:'image/jpeg'}))}})}
+/* بصمة المحتوى: كل الأرقام الطويلة في الإيصال (المرجع والحساب والوقت…) مرتبة. الصورة نفسها بعد قصّ أو إعادة حفظ أو لقطة جديدة تعطي البصمة نفسها، وإيصال آخر من التطبيق نفسه يعطي بصمة مختلفة */
+function txtsig(text){var t=(norm(text).replace(/(\d)[ \-](?=\d)/g,'$1').match(/\d{5,}/g)||[]).filter(function(x,i,a){return a.indexOf(x)===i}).sort();return t.length>=2?t.join('|'):''}
+function rotate(c,dir){var r=document.createElement('canvas');r.width=c.height;r.height=c.width;var g=r.getContext('2d');g.translate(r.width/2,r.height/2);g.rotate((dir||1)*Math.PI/2);g.drawImage(c,-c.width/2,-c.height/2);return r}
+/* تهيئة الصورة: يبرز النص أيًّا كان لونه وخلفيته، حتى في الإيصالات الداكنة */
+function prep(c0){var W=c0.width,H=c0.height,c=document.createElement('canvas');c.width=W;c.height=H;var g=c.getContext('2d',{willReadFrequently:true});g.drawImage(c0,0,0);var D=g.getImageData(0,0,W,H),d=D.data,W1=W+1,I=new Float64Array(W1*(H+1)),G=new Float32Array(W*H),x,y,i;for(y=0;y<H;y++){var row=0;for(x=0;x<W;x++){i=(y*W+x)*4;var v=d[i];G[y*W+x]=v;row+=v;I[(y+1)*W1+x+1]=I[y*W1+x+1]+row}}var R=40,mx=1,O=new Float32Array(W*H);for(y=0;y<H;y++){var y0=Math.max(0,y-R),y1=Math.min(H,y+R+1);for(x=0;x<W;x++){var x0=Math.max(0,x-R),x1=Math.min(W,x+R+1),m=(I[y1*W1+x1]-I[y0*W1+x1]-I[y1*W1+x0]+I[y0*W1+x0])/((x1-x0)*(y1-y0)),a=Math.abs(G[y*W+x]-m);O[y*W+x]=a;if(a>mx)mx=a}}for(i=0;i<O.length;i++){var o=255-Math.min(255,O[i]*255/mx);d[i*4]=d[i*4+1]=d[i*4+2]=o;d[i*4+3]=255}g.putImageData(D,0,0);return c}
+
+/* ═══════════════ الاستخراج من النص ═══════════════ */
+function norm(text){var A='٠١٢٣٤٥٦٧٨٩',P='۰۱۲۳۴۵۶۷۸۹';return String(text||'').replace(/[٠-٩۰-۹]/g,function(c){var i=A.indexOf(c);return String(i>-1?i:P.indexOf(c))}).replace(/[٫]/g,'.').replace(/[،]/g,',')}
+var ACC=/(iban|account|acc(?:ount)?\s*(?:no|number|#)|a\/c|\bac\b|حساب|الحساب|آيبان|ايبان|card|بطاقة)/i,LB=/(reference|\bref\b|txn|transaction|\btrn\b|\butr\b|\btrx\b|رقم\s*المرجع|الرقم\s*المرجعي|المرجع|مرجع|رقم\s*العملية|رقم\s*الحوالة|رقم\s*التحويل|رقم\s*المعاملة|رقم\s*الطلب|order\s*(?:id|no)|payment\s*id|transfer\s*(?:id|no))/i,KN=/\b(BMCT|FT|TRN|TXN|TRX|MB|IB)[A-Z0-9]{6,}\b/i,TK=/[A-Za-z0-9][A-Za-z0-9\-\/]{4,}[A-Za-z0-9]/g;
+/* V215+V249: استخراج رقم الحوالة. الأولوية: صيغة بنك معروفة، ثم رقم بجانب كلمة «المرجع»، ثم أطول رقم بعيدًا عن سطور الحساب */
+function e215ext(text,total){var s=norm(text),L=s.split(/\r?\n/).map(function(x){return x.trim()}).filter(Boolean),ref='',how='';
+  function ok(t){var d=(t.match(/\d/g)||[]).length;return d>=5&&!/^OM\d/i.test(t)&&!/^(00968|968)?[79]\d{7}$/.test(t)&&!/^\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}$/.test(t)&&!/^20\d{2}[\/\-]\d{1,2}/.test(t)}
+  var m=s.match(KN);if(m){ref=m[0];how='label'}
+  for(var i=0;i<L.length&&!ref;i++){if(!LB.test(L[i]))continue;var c=(L[i].match(TK)||[]).filter(ok);if(!c.length&&L[i+1]&&!ACC.test(L[i+1]))c=(L[i+1].match(TK)||[]).filter(ok);if(!c.length&&L[i-1]&&!ACC.test(L[i-1]))c=(L[i-1].match(TK)||[]).filter(ok);if(c.length){ref=c.sort(function(a,b){return b.length-a.length})[0];how='label'}}
+  if(!ref){var all=[];L.forEach(function(ln){if(ACC.test(ln)&&!LB.test(ln))return;(ln.match(TK)||[]).filter(ok).forEach(function(t){if(t.replace(/\D/g,'').length>=8&&!/^(\+?968)?[79]\d{7}$/.test(t))all.push(t)})});var U=all.filter(function(t,i){return all.indexOf(t)===i});
+    if(U.length){U.sort(function(a,b){var la=/[A-Za-z]/.test(a)&&/\d{6}/.test(a)?1:0,lb=/[A-Za-z]/.test(b)&&/\d{6}/.test(b)?1:0;return (lb-la)||(b.length-a.length)});ref=U[0];how=U.length===1?'label':'guess'}}
+  var am=null,T=+total;if(T>0){var N=numsOf(s);am=N.some(function(n){return Math.abs(n-T)<.0011})}
+  return {ref:ref.replace(/[^A-Za-z0-9]/g,'').toUpperCase(),how:how,amount:am}}
+function numsOf(s){return (s.replace(/\b\d{1,4}[\/\-.]\d{1,2}[\/\-.]\d{1,4}\b/g,' ').replace(/\b\d{1,2}:\d{2}(?::\d{2})?\b(?!\d)/g,' ').replace(/(\d):(\d{3})\b/g,'$1.$2').replace(/(\d),(\d{3})\b/g,'$1.$2').replace(/,/g,'').match(/\d+(?:\.\d{1,3})?/g)||[]).map(Number)}
+/* V249: قراءة المبلغ فعليًّا ومقارنته بقيمة الطلب. tots = القيم المقبولة (الإجمالي، أو المنتجات فقط عند دفع التوصيل للمندوب) */
+var AMT=/(amount|total|المبلغ|مبلغ|الإجمالي|الاجمالي|الإجمالى|قيمة|omr|ر\.?\s*ع|\brо\b|\bro\b|rial|ريال|بيسة|baisa)/i;
+function e249amt(text,tots){var s=norm(text),L=s.split(/\r?\n/).map(function(x){return x.trim()}).filter(Boolean),T=(tots||[]).map(Number).filter(function(x){return x>0}),cand=[],i;
+  function eq(n){return T.some(function(t){return Math.abs(n-t)<.0011})}
+  for(i=0;i<L.length;i++){if(!AMT.test(L[i])||ACC.test(L[i]))continue;var N=numsOf(L[i].replace(AMT,' '));if(!N.length&&L[i+1]&&!LB.test(L[i+1])&&!ACC.test(L[i+1]))N=numsOf(L[i+1]);N=N.filter(function(n){return n>0&&n<100000&&!(Number.isInteger(n)&&n>=1900&&n<=2100)});if(N.length)cand.push(N[0])}
+  var decs=(s.replace(/(\d):(\d{3})\b/g,'$1.$2').replace(/(\d),(\d{3})\b/g,'$1.$2').match(/\d+\.\d{2,3}\b/g)||[]).map(Number);
+  var all=numsOf(s).filter(function(n){return n>0&&n<100000});
+  if(!T.length)return {read:cand.length?cand[0]:null,state:'off'};
+  if(cand.some(eq)||all.some(eq))return {read:T.filter(function(t){return cand.some(function(n){return Math.abs(n-t)<.0011})||all.some(function(n){return Math.abs(n-t)<.0011})})[0],state:'ok'};
+  var r=cand.length?cand[0]:(decs.length===1?decs[0]:null);
+  if(r==null)return {read:null,state:'none'};
+  if(r>=Math.min.apply(null,T)-.0011)return {read:r,state:'ok'};
+  /* نحكم بـ«أقل» فقط إذا قُرئ المبلغ بكسوره (مثل 2.000)؛ رقم صحيح مجرد قد يكون خطأ قراءة */
+  return {read:r,state:decs.some(function(n){return Math.abs(n-r)<.0011})?'low':'none'}}
+/* V218+V249: تاريخ الإيصال ووقته. مع الوقت: مشكوك إذا سبق إنشاء الطلب بأكثر من 12 ساعة؛ بلا وقت: بالأيام كما قبل */
+function e215date(text,orderAt){var s=norm(text),F=[],M={jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12,'يناير':1,'فبراير':2,'مارس':3,'أبريل':4,'ابريل':4,'مايو':5,'يونيو':6,'يوليو':7,'أغسطس':8,'اغسطس':8,'سبتمبر':9,'أكتوبر':10,'اكتوبر':10,'نوفمبر':11,'ديسمبر':12},now=Date.now();
   function add(y,m,d){y=+y;if(y<100)y+=2000;m=+m;d=+d;if(m<1||m>12||d<1||d>31)return false;var t=Date.UTC(y,m-1,d);if(new Date(t).getUTCDate()!==d||t>now+864e5*2||t<now-864e5*1500)return false;F.push(t);return true}
   s.replace(/\b(20\d{2})[\/.\-](\d{1,2})[\/.\-](\d{1,2})\b/g,function(a,y,m,d){add(y,m,d);return ''}).replace(/\b(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{2,4})\b/g,function(a,d,m,y){if(!add(y,m,d))add(y,d,m);return ''});
   s.replace(/(\d{1,2})\s*[-\s]\s*([A-Za-z]{3,9}|[ء-ي]{3,8})\s*[-,\s]\s*(20\d{2})/g,function(a,d,m,y){var k=M[m]||M[m.slice(0,3).toLowerCase()];if(k)add(y,k,d);return ''});
-  if(!F.length)return {state:'none',date:''};var t=Math.max.apply(null,F),o=new Date(orderAt||now),od=Date.UTC(o.getUTCFullYear(),o.getUTCMonth(),o.getUTCDate());return {state:t<od-864e5?'old':'ok',date:new Date(t).toISOString().slice(0,10)}}
-function e215who(text,list,hasRef){var V=String(list||'').split(/[,،\n]/).map(function(v){return v.trim()}).filter(Boolean);if(!V.length)return 'off';var A='٠١٢٣٤٥٦٧٨٩',s=String(text||'').replace(/[٠-٩]/g,function(c){return String(A.indexOf(c))}).toUpperCase(),dg=s.replace(/\D/g,''),al=s.replace(/[^A-Z0-9ء-ي]/g,'');
+  s.replace(/([A-Za-z]{3,9})\s+(\d{1,2}),?\s+(20\d{2})/g,function(a,m,d,y){var k=M[m.slice(0,3).toLowerCase()];if(k)add(y,k,d);return ''});
+  var tm=null,mt=s.match(/\b([01]?\d|2[0-3]):([0-5]\d)(?::[0-5]\d)?\s*(AM|PM|ص|م|صباحًا|مساءً)?/i);if(mt){var hh=+mt[1],ap=(mt[3]||'').toUpperCase();if((ap==='PM'||ap==='م'||ap==='مساءً')&&hh<12)hh+=12;if((ap==='AM'||ap==='ص'||ap==='صباحًا')&&hh===12)hh=0;tm=hh*60+(+mt[2])}
+  if(!F.length)return {state:'none',date:'',time:''};
+  var t=Math.max.apply(null,F),o=new Date(orderAt||now),od=Date.UTC(o.getUTCFullYear(),o.getUTCMonth(),o.getUTCDate()),st;
+  if(tm!=null){var ts=t+tm*60000-4*3600000;st=ts<o.getTime()-12*3600000?'old':'ok'}else st=t<od-864e5?'old':'ok';
+  return {state:st,date:new Date(t).toISOString().slice(0,10),time:tm==null?'':(('0'+Math.floor(tm/60)).slice(-2)+':'+('0'+tm%60).slice(-2))}}
+function e215who(text,list,hasRef){var V=String(list||'').split(/[,،\n]/).map(function(v){return v.trim()}).filter(Boolean);if(!V.length)return 'off';var s=norm(text).toUpperCase(),dg=s.replace(/\D/g,''),al=s.replace(/[^A-Z0-9ء-ي]/g,'');
   var ok=V.some(function(v){var d=v.replace(/\D/g,'');if(d.length>=4&&d.length>=v.replace(/\s/g,'').length-1)return dg.indexOf(d.slice(-8))>-1;var W=v.toUpperCase().split(/\s+/).map(function(w){return w.replace(/[^A-Z0-9ء-ي]/g,'')}).filter(function(w){return w.length>=2});if(!W.length)return false;return al.indexOf(W[0])>-1&&al.indexOf(W[W.length-1])>-1});
   return ok?'ok':hasRef?'no':'none'}
+function needsAra(){return /[ء-ي]/.test(rcWho())}
+/* إخفاء الأرقام الطويلة (هواتف وحسابات) قبل حفظ النص في الخادم */
+function maskTxt(t){return norm(t).replace(/\d{9,}/g,function(m){return '•'.repeat(m.length-4)+m.slice(-4)}).replace(/\s+/g,' ').slice(0,800)}
 
+/* ═══════════════ القراءة الكاملة لإيصال ═══════════════ */
+function readAll(url,id){var t0=Date.now(),info={passes:0,langs:'eng'};
+  return fetch(url).then(function(r){if(!r.ok)throw new Error('img');return r.blob()}).then(function(b){var u=URL.createObjectURL(b);return loadImg(u).then(function(im){URL.revokeObjectURL(u);return im},function(e){URL.revokeObjectURL(u);throw e})})
+  .then(function(im){var c=gray(im,1400),need=needsAra();
+    function pass(canvas,langs){info.passes++;info.langs=langs.join('+');return toBlob(canvas,.9).then(function(bl){return ocr(bl,langs)}).then(function(r){return r.text})}
+    function done(txt){var o=e215ext(txt,0);return !!o.ref&&o.how==='label'}
+    function alnum(t){return (t.match(/[A-Za-z0-9ء-ي]/g)||[]).length}
+    /* صورة عرضية = غالبًا إيصال مدوّر: نجرّب الاتجاهين ونأخذ الأوضح */
+    var first=c.width>c.height*1.15?Promise.all([rotate(c,1),rotate(c,-1)].map(function(r){return pass(r,['eng']).then(function(t){return {c:r,t:t}})})).then(function(R){var b=R.sort(function(a,b){return alnum(b.t)-alnum(a.t)})[0];c=b.c;info.rot=1;return b.t}):pass(c,['eng']);
+    return first.then(function(t1){if(done(t1)&&!need)return t1;
+      return pass(c,need||!done(t1)?['ara','eng']:['eng']).then(function(t2){var t=t1+'\n'+t2;if(done(t2)||e215ext(t,0).ref)return t;
+        var pc=prep(c);return pass(pc,['eng']).then(function(t3){var tt=t+'\n'+t3;if(e215ext(tt,0).ref)return tt;return info.rot?tt:pass(rotate(c,-1),['eng']).then(function(t4){return tt+'\n'+t4})})})})
+  }).then(function(txt){info.ms=Date.now()-t0;info.sig=txtsig(txt);return {text:txt,info:info}})}
+
+/* ═══════════════ الواجهة ═══════════════ */
 function esc(x){return String(x==null?'':x).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function call(action,b){var c=window.EMDCloudV93&&window.EMDCloudV93.api;if(!c)return Promise.reject(new Error('auth'));b=b||{};b.action=action;return c.token().then(function(t){return fetch(FN,{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json','x-emd-token':t},body:JSON.stringify(b)})}).then(function(r){return r.json().then(function(j){if(!r.ok||!j.ok)throw new Error(j.error||('HTTP '+r.status));return j})})}
-function verdict(x){if(x.img_dup>0)return ['r','🔴 مشكوك فيه: الصورة نفسها استُخدمت من قبل','عند الاعتماد لن يُسجَّل مدفوعًا.'];if(x.ref_dup>0)return ['r','🔴 مشكوك فيه: رقم الحوالة استُخدم من قبل','الرقم المنتهي بـ '+x.ref_last+'. عند الاعتماد لن يُسجَّل مدفوعًا.'];if(x.date_state==='old')return ['r','🔴 مشكوك فيه: الإيصال أقدم من الطلب','تاريخ الإيصال '+x.rc_date+'. عند الاعتماد لن يُسجَّل مدفوعًا.'];if(x.who_state==='no')return ['r','🔴 مشكوك فيه: لم نجد الاسم أو الرقم الذي حددته','عند الاعتماد لن يُسجَّل مدفوعًا.'];if(x.reading)return ['y','⏳ جارٍ قراءة الإيصال…','قد يستغرق ذلك دقيقة في أول مرة.'];if(!x.ref_last)return ['y','🟡 يحتاج مراجعة: لم نقرأ رقم الحوالة','اكتب الرقم من الصورة لفحص تكراره'+(x.failed?'، أو أعد القراءة.':'.')];if(x.amount_ok===false)return ['y','🟡 يحتاج مراجعة: لم نجد مبلغ الطلب في الإيصال','رقم الحوالة ينتهي بـ '+x.ref_last+'، ولم يُستخدم من قبل.'];if(x.who_state==='none')return ['y','🟡 يحتاج مراجعة: لم نتأكد من الاسم أو الرقم المحدد','قراءة الإيصال غير كافية.'];if(x.date_state==='none')return ['y','🟡 يحتاج مراجعة: لم نقرأ تاريخ الإيصال','تأكد بنفسك أنه ليس إيصالًا قديمًا.'];if(x.ref_how==='guess')return ['y','🟡 يحتاج مراجعة: تأكد من رقم الحوالة','قرأنا رقمًا ينتهي بـ '+x.ref_last+'، ولم يُستخدم من قبل.'];return ['g','🟢 مطابق ظاهريًا','رقم الحوالة ينتهي بـ '+x.ref_last+'، ولم يُستخدم من قبل.']}
-function draw(id){var e=document.querySelector('.e215r[data-rid="'+id+'"]'),x=C[id];if(!e)return;if(x===0){e.innerHTML='<span class="e215b y">🧾 لم يُرفق الزبون إيصالًا</span>';return}if(!x)return;var v=verdict(x),typed=e.querySelector('input'),val=typed?typed.value:'';
-  e.innerHTML='<div class="e215t"><img alt="إيصال الدفع" src="'+esc(x.url)+'" data-e215z="1"><div><span class="e215b '+v[0]+'">'+esc(v[1])+'</span>'+(v[2]?'<span class="e215s">'+esc(v[2])+'</span>':'')+'<span class="e215s">هذا الفحص لا يثبت وصول المال. تأكد من حسابك البنكي قبل الاعتماد.</span></div></div><div class="e215m"><input inputmode="text" placeholder="رقم الحوالة (إن لم يُقرأ)" value="'+esc(val)+'" aria-label="رقم الحوالة"><button type="button" data-e215s="'+id+'">فحص</button>'+(x.reading||x.ref_last?'':'<button type="button" data-e215o="'+id+'">🔄 قراءة</button>')+'</div>'}
-/* القراءة تجري داخل إطار معزول: لا يصل إلى بيانات التطبيق ولا جلسة التاجر حتى لو اختُرقت المكتبة الخارجية */
-function sand(imgs){return new Promise(function(ok,no){var f=document.createElement('iframe'),T=setTimeout(function(){fin(new Error('timeout'))},240000);f.setAttribute('sandbox','allow-scripts');f.setAttribute('aria-hidden','true');f.style.cssText='position:fixed;width:1px;height:1px;left:0;top:0;opacity:0;pointer-events:none;border:0;z-index:-1';
-  function fin(e,v){clearTimeout(T);removeEventListener('message',on);try{f.remove()}catch(x){}if(e)no(e);else ok(v)}
-  function on(e){if(e.source!==f.contentWindow)return;var d=e.data||{};if(d.t==='ready')f.contentWindow.postMessage({t:'go',imgs:imgs},'*');else if(d.t==='done')fin(null,String(d.text||''));else if(d.t==='err')fin(new Error('ocr'))}
-  addEventListener('message',on);
-  f.srcdoc='<!doctype html><meta charset="utf-8"><script src="'+OCR+'" integrity="'+OCR_SRI+'" crossorigin="anonymous"><\/script><script>addEventListener("message",function(e){if(!e.data||e.data.t!=="go")return;var I=e.data.imgs,o="";(function n(i){if(i>=I.length){parent.postMessage({t:"done",text:o},"*");return}Tesseract.recognize(I[i],"ara+eng",{cacheMethod:"none"}).then(function(r){o+=(r.data&&r.data.text||"")+"\\n";n(i+1)}).catch(function(){parent.postMessage({t:"err"},"*")})})(0)});parent.postMessage(window.Tesseract?{t:"ready"}:{t:"err"},"*");<\/script>';
-  document.body.appendChild(f)})}
-function shot(src,M){return new Promise(function(ok,no){var im=new Image();im.onload=function(){if(im.naturalWidth>6000||im.naturalHeight>6000){no(new Error('big'));return}var k=Math.min(1,M/Math.max(im.naturalWidth,im.naturalHeight)),c=document.createElement('canvas');c.width=Math.round(im.naturalWidth*k);c.height=Math.round(im.naturalHeight*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);ok(c.toDataURL('image/jpeg',.92))};im.onerror=function(){no(new Error('img'))};im.src=src})}
-function readAll(url){return fetch(url).then(function(r){if(!r.ok)throw new Error('img');return r.blob()}).then(function(b){var u=URL.createObjectURL(b);return shot(u,1600).then(function(a){URL.revokeObjectURL(u);return sand([a]).then(function(t1){if(e215ext(t1,0).ref)return t1;return new Promise(function(ok){setTimeout(ok,50)}).then(function(){return prep(a)}).then(function(c){return sand([c.toDataURL?c.toDataURL('image/jpeg',.9):a]).then(function(t2){return t1+'\n'+t2})})})},function(e){URL.revokeObjectURL(u);throw e})})}
-/* تهيئة الصورة: يبرز النص أيًّا كان لونه وخلفيته، حتى في الإيصالات الداكنة */
-function prep(url){return new Promise(function(ok){var im=new Image();im.crossOrigin='anonymous';im.onload=function(){try{var k=Math.min(2,2400/Math.max(im.width,im.height)),W=Math.round(im.width*k),H=Math.round(im.height*k),c=document.createElement('canvas');c.width=W;c.height=H;var g=c.getContext('2d',{willReadFrequently:true});g.imageSmoothingQuality='high';g.drawImage(im,0,0,W,H);var D=g.getImageData(0,0,W,H),d=D.data,W1=W+1,I=new Float64Array(W1*(H+1)),G=new Float32Array(W*H),x,y,i;for(y=0;y<H;y++){var row=0;for(x=0;x<W;x++){i=(y*W+x)*4;var v=.299*d[i]+.587*d[i+1]+.114*d[i+2];G[y*W+x]=v;row+=v;I[(y+1)*W1+x+1]=I[y*W1+x+1]+row}}var R=40,mx=1,O=new Float32Array(W*H);for(y=0;y<H;y++){var y0=Math.max(0,y-R),y1=Math.min(H,y+R+1);for(x=0;x<W;x++){var x0=Math.max(0,x-R),x1=Math.min(W,x+R+1),m=(I[y1*W1+x1]-I[y0*W1+x1]-I[y1*W1+x0]+I[y0*W1+x0])/((x1-x0)*(y1-y0)),a=Math.abs(G[y*W+x]-m);O[y*W+x]=a;if(a>mx)mx=a}}for(i=0;i<O.length;i++){var o=255-Math.min(255,O[i]*255/mx);d[i*4]=d[i*4+1]=d[i*4+2]=o;d[i*4+3]=255}g.putImageData(D,0,0);ok(c)}catch(e){ok(url)}};im.onerror=function(){ok(url)};im.src=url})}
+function omr(n){return (+n||0).toFixed(3)+' ر.ع'}
+function verdict(x){
+  if(x.img_dup>0)return ['r','🔴 مشكوك فيه: الصورة نفسها استُخدمت من قبل','عند الاعتماد لن يُسجَّل مدفوعًا.'];
+  if(x.img_sim>0)return ['r','🔴 مشكوك فيه: صورة مشابهة جدًّا لإيصال سابق','قد تكون الصورة نفسها بعد قصّ أو إعادة حفظ. عند الاعتماد لن يُسجَّل مدفوعًا.'];
+  if(x.ref_dup>0)return ['r','🔴 مشكوك فيه: رقم الحوالة استُخدم من قبل','الرقم المنتهي بـ '+x.ref_last+'. عند الاعتماد لن يُسجَّل مدفوعًا.'];
+  if(x.amount_state==='low')return ['r','🔴 مشكوك فيه: المبلغ في الإيصال أقل من قيمة الطلب','قرأنا '+omr(x.amount_read)+' والمطلوب '+omr(x.need)+'. عند الاعتماد لن يُسجَّل مدفوعًا.'];
+  if(x.date_state==='old')return ['r','🔴 مشكوك فيه: الإيصال أقدم من الطلب','تاريخ الإيصال '+x.rc_date+(x.rc_time?' '+x.rc_time:'')+'. عند الاعتماد لن يُسجَّل مدفوعًا.'];
+  if(x.who_state==='no')return ['r','🔴 مشكوك فيه: لم نجد الاسم أو الرقم الذي حددته','عند الاعتماد لن يُسجَّل مدفوعًا.'];
+  if(x.reading)return ['y',x.dl?'⏳ جارٍ تحميل أدوات القراءة لأول مرة ('+x.dl+')…':'⏳ جارٍ قراءة الإيصال…',x.dl?'نحو 9 ميجابايت تُحمَّل مرة واحدة فقط ثم تبقى في الجهاز.':'ثوانٍ قليلة.'];
+  if(!x.ref_last)return ['y','🟡 يحتاج مراجعة: لم نقرأ رقم الحوالة','اكتب الرقم من الصورة لفحص تكراره'+(x.failed?'، أو أعد القراءة.':'.')];
+  if(x.cust_match===false)return ['y','🟡 يحتاج مراجعة: الرقم الذي كتبه الزبون يختلف عن الإيصال','تأكد من الرقم في الصورة بنفسك.'];
+  if(x.amount_state==='none'||(x.amount_state!=='ok'&&x.amount_ok===false))return ['y','🟡 يحتاج مراجعة: لم نجد مبلغ الطلب في الإيصال','رقم الحوالة ينتهي بـ '+x.ref_last+'، ولم يُستخدم من قبل.'];
+  if(x.who_state==='none')return ['y','🟡 يحتاج مراجعة: لم نتأكد من الاسم أو الرقم المحدد','قراءة الإيصال غير كافية.'];
+  if(x.date_state==='none')return ['y','🟡 يحتاج مراجعة: لم نقرأ تاريخ الإيصال','تأكد بنفسك أنه ليس إيصالًا قديمًا.'];
+  if(x.ref_how==='guess')return ['y','🟡 يحتاج مراجعة: تأكد من رقم الحوالة','قرأنا رقمًا ينتهي بـ '+x.ref_last+'، ولم يُستخدم من قبل.'];
+  return ['g','🟢 مطابق ظاهريًا','رقم الحوالة ينتهي بـ '+x.ref_last+(x.amount_state==='ok'?'، والمبلغ '+omr(x.amount_read)+' مطابق':'')+'، ولم يُستخدم من قبل.']}
+function hintOff(){try{return !!localStorage.getItem('emd249_whohint')}catch(e){return false}}
+function details(x){var p=[];if(x.amount_read!=null)p.push('المبلغ المقروء '+omr(x.amount_read));if(x.rc_date)p.push('التاريخ '+x.rc_date+(x.rc_time?' '+x.rc_time:''));if(x.ref_last)p.push('الرقم ينتهي بـ '+x.ref_last+(x.ref_how==='manual'?' (يدوي)':x.ref_how==='guess'?' (تخمين)':''));if(x.cust_match===true)p.push('يطابق ما كتبه الزبون');if(x.who_state==='ok')p.push('الاسم المحدد ظاهر');if(x.read_ms)p.push('زمن القراءة '+(x.read_ms/1000).toFixed(1)+' ث'+(x.langs?' ('+x.langs+')':''));return p.length?p.join(' · '):'لا تفاصيل بعد.'}
+function draw(id){var e=document.querySelector('.e215r[data-rid="'+id+'"]'),x=C[id];if(!e)return;if(x===0){e.innerHTML='<span class="e215b y">🧾 لم يُرفق الزبون إيصالًا</span>';return}if(!x)return;var v=verdict(x),typed=e.querySelector('input'),val=typed?typed.value:'',open=e.querySelector('.e249i:not([hidden])');
+  e.innerHTML='<div class="e215t"><img alt="إيصال الدفع" src="'+esc(x.url)+'" data-e215z="1"><div><span class="e215b '+v[0]+'">'+esc(v[1])+'</span>'+(v[2]?'<span class="e215s">'+esc(v[2])+'</span>':'')+'<span class="e215s">هذا الفحص لا يثبت وصول المال. تأكد من حسابك البنكي قبل الاعتماد.</span>'+(x.reading?'':'<button type="button" class="e249d" data-e249d="'+id+'" aria-expanded="'+(open?'true':'false')+'">'+(open?'إخفاء التفاصيل':'التفاصيل')+'</button><div class="e249i e215s"'+(open?'':' hidden')+'>'+esc(details(x))+'</div>')+'</div></div>'+
+  (rcWho()||hintOff()||x.reading?'':'<div class="e249h">💡 حدد اسم حسابك البنكي كما يظهر في الإيصال ليتأكد الفحص أن التحويل إليك. <button type="button" data-e249w="1">تحديد</button><button type="button" data-e249x="1">لاحقًا</button></div>')+
+  '<div class="e215m"><input inputmode="text" placeholder="رقم الحوالة (إن لم يُقرأ)" value="'+esc(val)+'" aria-label="رقم الحوالة"><button type="button" data-e215s="'+id+'">فحص</button>'+(x.reading||x.ref_last?'':'<button type="button" data-e215o="'+id+'">🔄 قراءة</button>')+'</div>'}
 function ord(id){var o=[];try{o=window.EMDStoreV411.orders()||[]}catch(e){}if(!Array.isArray(o))o=[];for(var i=0;i<o.length;i++)if(String(o[i].id)===String(id))return o[i];return null}
 function total(id){var o=ord(id);if(!o)return 0;return String(o.customer&&o.customer.note||'').indexOf('رسوم التوصيل للمندوب')>-1?+o.subtotal:+o.total}
 function rcWho(){try{return (JSON.parse(localStorage.getItem('emd173_quick')||'{}')||{}).rcWho||''}catch(e){return ''}}
-function next(){if(busy||!Q.length)return;var id=Q.shift(),x=C[id];if(!x)return next();busy=true;x.reading=true;draw(id);x.failed=false;Promise.resolve().then(function(){return readAll(x.url)}).then(function(txt){var o=e215ext(txt,total(id)),od=ord(id),dt=e215date(txt,od&&od.created_at),wh=e215who(txt,rcWho(),!!o.ref);return call('ref',{id:id,ref:o.ref,how:o.how,amount_ok:o.amount,rc_date:dt.date,date_state:dt.state,who_state:wh}).then(function(j){x.ref_last=j.ref_last||'';x.ref_dup=j.ref_dup||0;x.ref_how=o.how;x.amount_ok=o.amount;x.tried=true;x.rc_date=dt.date;x.date_state=dt.state;x.who_state=wh})}).catch(function(){x.tried=true;x.failed=true}).then(function(){x.reading=false;busy=false;draw(id);next()})}
-function scan(){var E=document.querySelectorAll('.e215r[data-rid]'),need=[];[].forEach.call(E,function(e){var id=e.getAttribute('data-rid');if(C[id]!==undefined)draw(id);else if(!asked[id]){asked[id]=1;need.push(+id)}});if(!need.length)return;call('list',{ids:need}).then(function(j){need.forEach(function(id){var r=(j.rows||[]).filter(function(x){return +x.id===id})[0];C[id]=r||0;draw(id);if(r&&!r.ref_last&&((function(){var m={};try{m=JSON.parse(localStorage.getItem('emd225_rc')||'{}')||{}}catch(e){}var n=m[id]||0;if(n>=2)return false;m[id]=n+1;try{localStorage.setItem('emd225_rc',JSON.stringify(m))}catch(e){}return true})()))Q.push(id)});next()}).catch(function(){need.forEach(function(id){delete asked[id]})})}
-document.addEventListener('click',function(e){var t=e.target;if(!t.closest)return;var z=t.closest('[data-e215z]');if(z){var d=document.createElement('div');d.id='e215Z';d.innerHTML='<img alt="إيصال الدفع" src="'+esc(z.src)+'">';d.onclick=function(){d.remove()};document.body.appendChild(d);return}var rd=t.closest('[data-e215o]');if(rd){Q.push(+rd.getAttribute('data-e215o'));next();return}var b=t.closest('[data-e215s]');if(b){var id=+b.getAttribute('data-e215s'),inp=b.parentNode.querySelector('input'),v=String(inp.value||'').replace(/[^A-Za-z0-9]/g,'').toUpperCase();if(v.length<5)return;b.disabled=true;call('ref',{id:id,ref:v,how:'manual'}).then(function(j){var x=C[id];x.ref_last=j.ref_last;x.ref_dup=j.ref_dup;x.ref_how='manual';x.tried=true;inp.value='';draw(id)}).catch(function(){b.disabled=false})}});
-function pay(id){var x=C[id];if(!x)return null;var red=x.img_dup>0||x.ref_dup>0||x.date_state==='old'||x.who_state==='no';return {ok:!red,red:red,last:x.ref_last||''}}
-window.E215={scan:scan,ext:e215ext,prep:prep,pay:pay};
+function next(){if(busy||!Q.length)return;var id=Q.shift(),x=C[id];if(!x)return next();busy=true;x.reading=true;x.dl='';draw(id);x.failed=false;PROG=function(n,t){x.dl=n+'/'+t;draw(id)};
+  Promise.resolve().then(function(){return readAll(x.url,id)}).then(function(R){PROG=null;x.dl='';var txt=R.text,T=total(id),od=ord(id),o=e215ext(txt,T),am=e249amt(txt,od?[T,+od.total,+od.subtotal]:[T]),dt=e215date(txt,od&&od.created_at),wh=e215who(txt,rcWho(),!!o.ref);
+    return call('ref',{id:id,ref:o.ref,how:o.how,amount_ok:am.state==='ok'?true:am.state==='off'?o.amount:false,amount_state:am.state,amount_read:am.read,rc_date:dt.date,rc_time:dt.time,date_state:dt.state,who_state:wh,sig:R.info.sig,text:maskTxt(txt),langs:R.info.langs,read_ms:R.info.ms}).then(function(j){x.ref_last=j.ref_last||'';x.ref_dup=j.ref_dup||0;x.img_sim=j.img_sim||0;x.cust_match=j.cust_match;x.ref_how=o.how;x.amount_ok=am.state==='ok';x.amount_state=am.state;x.amount_read=am.read;x.need=T;x.tried=true;x.rc_date=dt.date;x.rc_time=dt.time;x.date_state=dt.state;x.who_state=wh;x.read_ms=R.info.ms;x.langs=R.info.langs})})
+  .catch(function(e){PROG=null;x.dl='';x.tried=true;x.failed=true;try{console.warn('rc249',e&&e.message)}catch(_){}}).then(function(){x.reading=false;busy=false;draw(id);next()})}
+function scan(){var E=document.querySelectorAll('.e215r[data-rid]'),need=[];[].forEach.call(E,function(e){var id=e.getAttribute('data-rid');if(C[id]!==undefined)draw(id);else if(!asked[id]){asked[id]=1;need.push(+id)}});if(!need.length)return;call('list',{ids:need}).then(function(j){need.forEach(function(id){var r=(j.rows||[]).filter(function(x){return +x.id===id})[0];C[id]=r||0;if(r)r.need=total(id);draw(id);if(r&&!r.ref_last&&((function(){var m={};try{m=JSON.parse(localStorage.getItem('emd225_rc')||'{}')||{}}catch(e){}var n=m[id]||0;if(n>=2)return false;m[id]=n+1;try{localStorage.setItem('emd225_rc',JSON.stringify(m))}catch(e){}return true})()))Q.push(id)});next()}).catch(function(){need.forEach(function(id){delete asked[id]})})}
+document.addEventListener('click',function(e){var t=e.target;if(!t.closest)return;var z=t.closest('[data-e215z]');if(z){var d=document.createElement('div');d.id='e215Z';d.innerHTML='<img alt="إيصال الدفع" src="'+esc(z.src)+'">';d.onclick=function(){d.remove()};document.body.appendChild(d);return}
+  var dd=t.closest('[data-e249d]');if(dd){var box=dd.nextElementSibling,o=box.hasAttribute('hidden');if(o)box.removeAttribute('hidden');else box.setAttribute('hidden','');dd.textContent=o?'إخفاء التفاصيل':'التفاصيل';dd.setAttribute('aria-expanded',o?'true':'false');return}
+  if(t.closest('[data-e249x]')){try{localStorage.setItem('emd249_whohint','1')}catch(x){}[].forEach.call(document.querySelectorAll('.e249h'),function(h){h.remove()});return}
+  if(t.closest('[data-e249w]')){try{window.EMDQuickV173.open();setTimeout(function(){var dt=document.querySelector('#e173 details');if(dt)dt.open=true;var inp=document.querySelector('#e173 [data-o="rcWho"]');if(inp){try{inp.scrollIntoView({block:'center',behavior:'smooth'})}catch(x){}inp.focus()}},350)}catch(x){}return}
+  var rd=t.closest('[data-e215o]');if(rd){Q.push(+rd.getAttribute('data-e215o'));next();return}var b=t.closest('[data-e215s]');if(b){var id=+b.getAttribute('data-e215s'),inp=b.parentNode.querySelector('input'),v=String(inp.value||'').replace(/[^A-Za-z0-9]/g,'').toUpperCase();if(v.length<5)return;b.disabled=true;call('ref',{id:id,ref:v,how:'manual'}).then(function(j){var x=C[id];x.ref_last=j.ref_last;x.ref_dup=j.ref_dup;x.cust_match=j.cust_match;x.ref_how='manual';x.tried=true;inp.value='';draw(id)}).catch(function(){b.disabled=false})}});
+function pay(id){var x=C[id];if(!x)return null;var red=x.img_dup>0||x.img_sim>0||x.ref_dup>0||x.amount_state==='low'||x.date_state==='old'||x.who_state==='no';return {ok:!red,red:red,last:x.ref_last||''}}
+window.E215={scan:scan,ext:e215ext,amt:e249amt,date:e215date,who:e215who,prep:prep,pay:pay,ocr:ocr,readAll:readAll,sig:txtsig,gray:gray,loadImg:loadImg,kill:killFrame,demo:function(id,x){C[id]=x;draw(id)}};
 /* V221: الزبون الموثوق؛ يحدده التاجر ويصل إشعار للمالك من الخادم */
 var GFN='https://pfkstppvnebagbdckgbu.supabase.co/functions/v1/store-guard',TR=null,TRq=false;
 function gcall(b){var c=window.EMDCloudV93&&window.EMDCloudV93.api;if(!c)return Promise.reject(new Error('auth'));return c.token().then(function(t){return fetch(GFN,{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json','x-emd-token':t},body:JSON.stringify(b)})}).then(function(r){return r.json().then(function(j){if(!r.ok||!j.ok)throw new Error(j.error||'x');return j})})}
