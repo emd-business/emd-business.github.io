@@ -5559,6 +5559,25 @@ html.nS main#lx{position:relative}
 .nS-cf{position:fixed;z-index:43;top:-14px;left:var(--l);width:8px;height:13px;border-radius:2px;background:var(--c);pointer-events:none;animation:nScf calc(2.6s + var(--i)*.09s) linear calc(var(--i)*.09s) both}
 @keyframes nScf{to{transform:translate(var(--x),105vh) rotate(720deg)}}
 @media(prefers-reduced-motion:reduce){.nS-ln,.nS-bt,#nSrb.in{animation:none}.nS-cf{display:none}}
+/* V247: تخصيص المنتج */
+.pz-st{margin-top:14px;border:1.5px dashed color-mix(in srgb,var(--accent) 55%,var(--line));border-radius:16px;padding:12px;display:grid;gap:11px;background:color-mix(in srgb,var(--accent) 5%,transparent)}
+.pz-hd{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}.pz-hd b{font-size:15px}.pz-hd small{font-size:12px;color:var(--muted);font-weight:700}
+.pz-st label,.pz-lb{display:grid;gap:6px;font-weight:700;font-size:14px}.pz-st i{font-style:normal;font-weight:600;font-size:11.5px;color:var(--muted)}
+.pz-st input:not([type=file]),.pz-st textarea{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:12px;padding:11px 12px;font:inherit;font-size:16px;background:var(--bg);color:var(--ink);resize:vertical}
+.pz-f{display:grid;gap:6px}.pz-f small{font-size:11.5px;color:var(--muted)}.pz-fl{display:flex;gap:8px;flex-wrap:wrap}
+.pz-th,.pz-add{position:relative;width:64px;height:64px;border-radius:12px;border:1px solid var(--line);overflow:hidden;display:grid;place-items:center;background:var(--surface)}
+.pz-th img{width:100%;height:100%;object-fit:cover}.pz-th b{font-size:13px;color:#c0392b}
+.pz-th button{position:absolute;top:3px;inset-inline-end:3px;width:22px;height:22px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#fff;font-size:15px;line-height:1;cursor:pointer;padding:0}
+.pz-th.up::after{content:"";position:absolute;inset:0;background:rgba(255,255,255,.55)}.pz-th em{position:absolute;bottom:3px;inset-inline:0;text-align:center;font-style:normal;font-size:9.5px;font-weight:800;z-index:1;color:#111}
+.pz-add{cursor:pointer;border-style:dashed;border-width:1.5px;border-color:color-mix(in srgb,var(--accent) 60%,var(--line))}.pz-add span{font-size:26px;color:var(--accent);font-weight:300}
+.pz-err{margin:0;min-height:0;color:#c0392b;font-size:13px;font-weight:700}.pz-err:empty{display:none}
+.pz-ov{position:absolute;inset-inline:8%;bottom:16%;text-align:center;font-weight:800;font-size:clamp(16px,5vw,26px);color:#1f1f1f;text-shadow:0 1px 0 rgba(255,255,255,.7);pointer-events:none;word-break:break-word}
+.pz-in{margin-top:10px;font-size:12.5px;color:var(--muted);display:grid;gap:4px}
+.pz-ln{display:grid;gap:6px;margin:-2px 0 10px;padding-inline-start:12px;border-inline-start:2px solid color-mix(in srgb,var(--accent) 45%,transparent)}
+.pz-e{display:flex;align-items:center;gap:8px;font-size:12.5px}.pz-e img{width:28px;height:28px;border-radius:7px;object-fit:cover;flex:none}.pz-e span{flex:1;min-width:0;overflow-wrap:anywhere}
+.pz-e button{border:0;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:0 4px}
+.pz-do{justify-self:start;border:1px dashed var(--accent);background:transparent;color:var(--ink);border-radius:999px;padding:6px 12px;font:inherit;font-size:12.5px;font-weight:800;cursor:pointer}
+.pz-do small{font-weight:600;color:var(--muted)}.pz-do.need{background:color-mix(in srgb,var(--accent) 14%,transparent)}
 </style>
 <style id="emd176">/* ===== V176: إصلاحات صفحة المتجر ===== */
 /* 1) شريط الأقسام لا يوسّع الصفحة (كان يسبب اهتزازًا جانبيًا في عود وبخور وبوتيك وصور أولًا) */
@@ -10276,6 +10295,123 @@ function my234added(k,n){var p=null;for(var i=0;i<P.length;i++)if(P[i].key===k){
    '<button type="button" class="a2go" data-a234>'+esc(LANG==='en'?'Checkout':'إتمام الطلب')+' ('+c+')</button>';
   el.classList.remove('in');void el.offsetWidth;el.classList.add('in');clearTimeout(my234added.tm);my234added.tm=setTimeout(function(){el.classList.remove('in')},4500)}
 document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-a234]');if(!b)return;var el=$('add234');if(el)el.classList.remove('in');drawer(true)});
+
+
+/* ===== V247: تخصيص المنتج (اسم + صورة أو PDF + ملاحظة) لكل منتج يفعّله التاجر =====
+   الإعدادات من الدالة store-custom (cfg)، والملفات تُرفع إلى مخزن خاص، والطلب يمر عبر store-custom (order) ليتحقق الخادم من التخصيص ويضيف رسومه.
+   في الحقيبة: لكل منتج قائمة تخصيصات PZ[key]=[{q,t,n,f:[{id,m,th,nm}]}]، ومجموع q لا يتجاوز الكمية. */
+Object.assign(T.ar,{pzT:'✍️ خصّص طلبك',pzName:'الاسم أو العبارة',pzNamePh:'اكتب الاسم أو العبارة',pzFile:'📎 أرفق صورة أو PDF',pzFileS:'حتى %s ملفات، 5 ميغا للملف',pzNote:'ملاحظة للمتجر',pzNotePh:'مثلًا: اللون المفضل أو مكان الاسم',pzReq:'إلزامي',pzOpt:'اختياري',pzFee:'رسوم التخصيص %s للقطعة',
+  pzUp:'جارٍ الرفع…',pzWait:'انتظر حتى ينتهي رفع الملف',pzNeedT:'اكتب الاسم أو العبارة أولًا',pzNeedF:'أرفق الصورة أو الملف أولًا',pzBig:'الملف أكبر من 5 ميغا',pzType:'المسموح: صورة (JPG أو PNG أو WEBP) أو PDF',pzFail:'تعذر رفع الملف، حاول مرة أخرى',pzLimit:'رفعت ملفات كثيرة، حاول بعد قليل',
+  pzDo:'✍️ خصّص',pzLeft:'%s بلا تخصيص',pzMust:'أكمل تخصيص «%s» قبل إتمام الطلب',pzFees:'رسوم التخصيص',pzPdf:'PDF',pzImg:'صورة',pzDel:'حذف',pzDemo:'معاينة فقط: الملف لم يُرفع'});
+Object.assign(T.en,{pzT:'✍️ Personalize your order',pzName:'Name or phrase',pzNamePh:'Type the name or phrase',pzFile:'📎 Attach an image or PDF',pzFileS:'Up to %s files, 5 MB each',pzNote:'Note to the store',pzNotePh:'e.g. preferred color or name position',pzReq:'Required',pzOpt:'Optional',pzFee:'Personalization fee %s per piece',
+  pzUp:'Uploading…',pzWait:'Please wait for the upload to finish',pzNeedT:'Type the name or phrase first',pzNeedF:'Attach the image or file first',pzBig:'The file is larger than 5 MB',pzType:'Allowed: image (JPG, PNG, WEBP) or PDF',pzFail:'Upload failed, please try again',pzLimit:'Too many uploads, try again shortly',
+  pzDo:'✍️ Personalize',pzLeft:'%s not personalized',pzMust:'Finish personalizing “%s” before checkout',pzFees:'Personalization',pzPdf:'PDF',pzImg:'Image',pzDel:'Remove',pzDemo:'Preview only: the file was not uploaded'});
+Object.assign(ERRS,{pz_need_text:'pzNeedT',pz_need_file:'pzNeedF',pz_file:'pzFail'});
+var PZC={},PZ={},PZD={},PZK='emdStorePz:'+SLUG,PZBUSY=0;
+try{PZ=JSON.parse(localStorage.getItem(PZK)||'{}')||{}}catch(e){PZ={}}
+function pzSave(){try{localStorage.setItem(PZK,JSON.stringify(PZ))}catch(e){}}
+function pzc(k){return PZC[k]||null}
+function pzSum(k){return (PZ[k]||[]).reduce(function(a,e){return a+(+e.q||0)},0)}
+/* الكمية في الحقيبة قد تنقص من أزرار التصميم: نقص التخصيصات من الآخر لتبقى مطابقة */
+function pzTrim(){var ch=0;for(var k in PZ){var L=PZ[k]||[],c=cart[k]||0,s=0;if(!pzc(k)||!c){delete PZ[k];ch=1;continue}
+  for(var i=0;i<L.length;i++){if(s+L[i].q>c){L[i].q=c-s;ch=1}s+=L[i].q}PZ[k]=L.filter(function(e){return e.q>0})}if(ch)pzSave()}
+function pzFee(){var f=0;for(var k in PZ){var c=pzc(k);if(c&&c.fee&&cart[k])f+=(+c.fee)*pzSum(k)}return f}
+function pzDesc(e){var a=[];if(e.t)a.push('«'+e.t+'»');(e.f||[]).forEach(function(f){a.push('📎 '+(f.m==='application/pdf'?t('pzPdf'):t('pzImg')))});if(e.n)a.push('📝 '+e.n.slice(0,40));return a.join(' · ')}
+function pzOpen(k){var G=groups();for(var i=0;i<G.length;i++)for(var j=0;j<G[i].v.length;j++)if(G[i].v[j].p.key===k){drawer(false);openP(G[i]);PS.v=j;drawP();return true}return false}
+function pzMissing(){for(var k in cart){var c=pzc(k);if(!c||!cart[k]||!item(k))continue;if((c.tr||c.fr)&&pzSum(k)<cart[k])return k}return ''}
+function pzToast(s){if(typeof t7toast==='function')t7toast(s);else alert(s)}
+
+/* تحميل الإعدادات: من الخادم للمتجر الحقيقي، ومن بيانات المعاينة داخل التطبيق، وفي العروض التجريبية فقط مع ?pz=1 */
+function pzLoad(){
+  if(window.__PV){PZC=(B&&B.pzPrev&&typeof B.pzPrev==='object')?B.pzPrev:{};pzAfter();return}
+  if(DEMO){if(/[?&]pz=1/.test(location.search)){PZC={};P.slice(0,3).forEach(function(p,i){PZC[p.key]=i===0?{t:1,tr:1,max:20,f:2,n:1,fee:0.5,l:'اكتب الاسم الذي نطبعه'}:i===1?{f:1,fr:1,n:1}:{t:1,max:30}})}pzAfter();return}
+  if(!SLUG)return;
+  fetch(API+'/functions/v1/store-custom',{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify({action:'cfg',slug:SLUG})})
+   .then(function(r){return r.json()}).then(function(j){if(j&&j.ok&&j.pz&&typeof j.pz==='object'){PZC=j.pz;pzAfter()}}).catch(function(){})}
+function pzAfter(){pzTrim();try{paint()}catch(e){}var ps=$('psheet');if(ps&&ps.classList.contains('show')&&PS.g)drawP()}
+var _show247=show;show=function(){_show247.apply(this,arguments);pzLoad()};
+
+/* صفحة المنتج: قسم «خصّص طلبك» */
+function pzForm(k,c){var d=PZD[k]||(PZD[k]={t:'',n:'',f:[]});
+  var h='<div class="pz-st" data-pzk="'+esc(k)+'"><div class="pz-hd"><b>'+esc(t('pzT'))+'</b>'+(c.fee?'<small>'+esc(t('pzFee',money(c.fee)))+'</small>':'')+'</div>';
+  if(c.t)h+='<label><span>'+esc(t('pzName'))+' <i>'+esc(c.tr?t('pzReq'):t('pzOpt'))+'</i></span><input id="pzT" maxlength="'+(+c.max||30)+'" placeholder="'+esc(c.l||t('pzNamePh'))+'" value="'+esc(d.t)+'"></label>';
+  if(c.f){h+='<div class="pz-f"><span class="pz-lb"><span>'+esc(t('pzFile'))+' <i>'+esc(c.fr?t('pzReq'):t('pzOpt'))+'</i></span></span><div class="pz-fl">'+
+    d.f.map(function(f,i){return '<span class="pz-th'+(f.up?' up':'')+'">'+(f.th?'<img src="'+f.th+'" alt="">':'<b>PDF</b>')+(f.up?'<em>'+esc(t('pzUp'))+'</em>':'<button type="button" data-pzdel="'+i+'" aria-label="'+esc(t('pzDel'))+'">×</button>')+'</span>'}).join('')+
+    (d.f.length<(+c.f||1)?'<label class="pz-add"><input type="file" id="pzF" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,application/pdf,.pdf" hidden><span>＋</span></label>':'')+
+    '</div><small>'+esc(t('pzFileS',+c.f||1))+'</small></div>'}
+  if(c.n)h+='<label><span>'+esc(t('pzNote'))+' <i>'+esc(t('pzOpt'))+'</i></span><textarea id="pzN" maxlength="300" rows="2" placeholder="'+esc(t('pzNotePh'))+'">'+esc(d.n)+'</textarea></label>';
+  return h+'<p class="pz-err" id="pzErr" role="alert"></p></div>'}
+var _dp247=drawP;drawP=function(){_dp247.apply(this,arguments);try{if(!PS.g)return;var x=PS.g.v[PS.v].p,c=pzc(x.key);if(!c)return;var box=$('pBox');
+  [].forEach.call(box.querySelectorAll('.t7-st,#t7Ov'),function(e){e.remove()});
+  var r2=box.querySelector('.pin .row2');if(!r2)return;r2.insertAdjacentHTML('beforebegin',pzForm(x.key,c));
+  var d=PZD[x.key],im=box.querySelector('.pimg');if(c.t&&im){im.style.position='relative';im.insertAdjacentHTML('beforeend','<span class="pz-ov" id="pzOv">'+esc(d.t)+'</span>')}
+  var L=PZ[x.key]||[];if(L.length){r2.insertAdjacentHTML('afterend','<div class="pz-in">'+L.map(function(e){return '<div>✓ '+esc(pzDesc(e))+(e.q>1?' ×'+e.q:'')+'</div>'}).join('')+'</div>')}}catch(e){}};
+(function(){var ps=$('psheet');
+  ps.addEventListener('input',function(e){if(!PS.g)return;var k=PS.g.v[PS.v].p.key,d=PZD[k];if(!d)return;
+    if(e.target.id==='pzT'){d.t=e.target.value;var o=$('pzOv');if(o)o.textContent=d.t}else if(e.target.id==='pzN')d.n=e.target.value},true);
+  ps.addEventListener('change',function(e){if(e.target.id!=='pzF'||!PS.g)return;var k=PS.g.v[PS.v].p.key,f=e.target.files&&e.target.files[0];e.target.value='';if(f)pzUpload(k,f)},true);
+  ps.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-pzdel]');if(b&&PS.g){e.stopPropagation();var k=PS.g.v[PS.v].p.key;PZD[k].f.splice(+b.getAttribute('data-pzdel'),1);drawP();return}
+    var a=e.target.closest&&e.target.closest('[data-padd]');if(!a||!PS.g)return;var k2=PS.g.v[PS.v].p.key,c=pzc(k2);if(!c)return;var d=PZD[k2]||{t:'',n:'',f:[]},err=$('pzErr');
+    function stop(m){e.stopImmediatePropagation();e.preventDefault();if(err)err.textContent=m;else pzToast(m)}
+    if(d.f.some(function(f){return f.up}))return stop(t('pzWait'));
+    var tv=String(d.t||'').trim().slice(0,+c.max||30),nv=String(d.n||'').trim().slice(0,300),fl=d.f.filter(function(f){return f.id});
+    if(c.t&&c.tr&&!tv)return stop(t('pzNeedT'));if(c.f&&c.fr&&!fl.length)return stop(t('pzNeedF'));
+    if(tv||nv||fl.length){(PZ[k2]=PZ[k2]||[]).push({q:PS.n,t:c.t?tv:'',n:c.n?nv:'',f:fl.map(function(f){return {id:f.id,m:f.m,th:f.th||''}})});pzSave();PZD[k2]={t:'',n:'',f:[]}}},true)})();
+
+/* تجهيز الملف ثم رفعه: الصور يُعاد رسمها (تصغير حتى 3000 بكسل وإزالة معلومات الموقع المخفية)، وPDF كما هو */
+function pzPrep(f){var ty=String(f.type||'').toLowerCase(),nm=String(f.name||'').toLowerCase();
+  if(ty==='application/pdf'||/\.pdf$/.test(nm)){if(f.size>5242880)return Promise.reject(new Error('big'));return Promise.resolve({blob:f,m:'application/pdf',th:''})}
+  if(!/^image\//.test(ty)&&!/\.(jpe?g|png|webp|heic|heif)$/.test(nm))return Promise.reject(new Error('type'));
+  var load=window.createImageBitmap?createImageBitmap(f):Promise.reject();
+  return load.catch(function(){return new Promise(function(ok,no){var u=URL.createObjectURL(f),i=new Image();i.onload=function(){ok(i)};i.onerror=function(){no(new Error('type'))};i.src=u})}).then(function(im){
+    var w=im.width,h=im.height,s=Math.min(1,3000/Math.max(w,h)),cv=document.createElement('canvas');cv.width=Math.round(w*s);cv.height=Math.round(h*s);cv.getContext('2d').drawImage(im,0,0,cv.width,cv.height);
+    var tc=document.createElement('canvas'),ts=Math.min(1,160/Math.max(w,h));tc.width=Math.max(1,Math.round(w*ts));tc.height=Math.max(1,Math.round(h*ts));tc.getContext('2d').drawImage(im,0,0,tc.width,tc.height);var th=tc.toDataURL('image/jpeg',0.7);
+    var png=ty==='image/png';
+    function enc(m,q){return new Promise(function(ok){cv.toBlob(function(b){ok(b)},m,q)})}
+    return enc(png?'image/png':'image/jpeg',0.92).then(function(b){if(b&&b.size<=5242880)return b;return enc('image/jpeg',0.85)}).then(function(b){
+      if(!b||b.size>5242880)throw new Error('big');return {blob:b,m:b.type||'image/jpeg',th:th}})})}
+function pzUpload(k,f){var d=PZD[k]||(PZD[k]={t:'',n:'',f:[]}),c=pzc(k)||{};if(d.f.length>=(+c.f||1))return;
+  var ent={up:1,th:'',m:''};d.f.push(ent);PZBUSY++;drawP();
+  function fail(m){var i=d.f.indexOf(ent);if(i>-1)d.f.splice(i,1);PZBUSY--;drawP();var er=$('pzErr');if(er)er.textContent=m;else pzToast(m)}
+  pzPrep(f).then(function(x){ent.th=x.th;ent.m=x.m;drawP();
+    if(DEMO||window.__PV){return new Promise(function(ok){setTimeout(function(){ok({ok:true,id:'demo-'+Date.now().toString(36),m:x.m})},500)})}
+    return fetch(API+'/functions/v1/store-custom?a=up&s='+encodeURIComponent(SLUG)+'&k='+encodeURIComponent(k),{method:'POST',headers:{apikey:KEY,'Content-Type':'application/octet-stream'},body:x.blob})
+      .then(function(r){return r.json().catch(function(){return {ok:false,error:'net'}})})})
+  .then(function(j){if(!j||!j.ok){var e=j&&j.error;fail(e==='too_big'?t('pzBig'):e==='bad_type'?t('pzType'):e==='limit'?t('pzLimit'):t('pzFail'));return}
+    ent.id=j.id;ent.m=j.m||ent.m;delete ent.up;PZBUSY--;drawP();if(DEMO||window.__PV)pzToast(t('pzDemo'))})
+  .catch(function(e){var m=String(e&&e.message||'');fail(m==='big'?t('pzBig'):m==='type'?t('pzType'):t('pzFail'))})}
+
+/* الحقيبة: تحت كل منتج قابل للتخصيص يظهر تخصيص كل قطعة، وزر «خصّص» لما بقي */
+var _tot247=totals;totals=function(){var o=_tot247.apply(this,arguments);try{pzTrim();var f=pzFee();if(f>0&&o.ids.length){o.sub+=f;o.tot+=f;o.pzf=f}}catch(e){}return o};
+var _ln247=lines;lines=function(){var o=_ln247.apply(this,arguments);try{var box=$('lines');if(!box)return o;
+  [].forEach.call(box.querySelectorAll('.line'),function(li){var b=li.querySelector('[data-id]');if(!b)return;var k=b.getAttribute('data-id'),c=pzc(k);if(!c)return;
+    var L=PZ[k]||[],left=(cart[k]||0)-pzSum(k),h='<div class="pz-ln">'+L.map(function(e,i){return '<div class="pz-e">'+(e.f&&e.f[0]&&e.f[0].th?'<img src="'+e.f[0].th+'" alt="">':'')+'<span>✍️ '+esc(pzDesc(e))+(e.q>1?' ×'+e.q:'')+'</span><button type="button" data-pzrm="'+esc(k)+'" data-i="'+i+'" aria-label="'+esc(t('pzDel'))+'">×</button></div>'}).join('');
+    if(left>0)h+='<button type="button" class="pz-do'+((c.tr||c.fr)?' need':'')+'" data-pzdo="'+esc(k)+'">'+esc(t('pzDo'))+' <small>'+esc(t('pzLeft',left))+'</small></button>';
+    li.insertAdjacentHTML('afterend',h+'</div>')});
+  if(o.pzf){var s0=$('sub');if(s0)s0.textContent=money(o.sub-o.pzf)}
+  if(o.pzf){var s=$('sub');if(s&&s.parentNode&&!$('pzFeeRow')){var r=s.parentNode.cloneNode(false);r.id='pzFeeRow';r.innerHTML='<span>'+esc(t('pzFees'))+'</span><b>'+money(o.pzf)+'</b>';s.parentNode.insertAdjacentElement('afterend',r)}}
+  else{var fr=$('pzFeeRow');if(fr)fr.remove()}
+  var fr2=$('pzFeeRow');if(fr2&&o.pzf)fr2.lastChild.textContent=money(o.pzf)}catch(e){}return o};
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-pzrm],[data-pzdo]');if(!b)return;
+  if(b.hasAttribute('data-pzrm')){var k=b.getAttribute('data-pzrm');(PZ[k]||[]).splice(+b.getAttribute('data-i'),1);pzSave();paint();return}
+  pzOpen(b.getAttribute('data-pzdo'))});
+
+/* زر «أضف» السريع في الشبكة الكلاسيكية: المنتج القابل للتخصيص يفتح صفحته أولًا */
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('#grid .add[data-id]');if(!b||b.disabled)return;var k=b.getAttribute('data-id');if(!pzc(k))return;e.stopImmediatePropagation();e.preventDefault();pzOpen(k)},true);
+/* قبل إتمام الطلب: لا يكمل إذا بقي منتج تخصيصه إلزامي بلا تخصيص */
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('#checkout,[data-a234]');if(!b)return;var k=pzMissing();if(!k)return;
+  if(b.id!=='checkout')return;e.stopImmediatePropagation();e.preventDefault();var x=item(k);pzToast(t('pzMust',x?x.name:''));pzOpen(k)},true);
+
+/* الطلب: إذا كان في المتجر تخصيص يمر عبر store-custom ليتحقق الخادم منه ويربط الملفات */
+if(typeof rpcOrder==='function'){var _rpc247=rpcOrder;rpcOrder=function(b){if(DEMO||window.__PV||!Object.keys(PZC).length||!b||!Array.isArray(b.p_items))return _rpc247(b);
+  if(!b.p_items.some(function(i){return pzc(i.key)}))return _rpc247(b);
+  var items=[];b.p_items.forEach(function(it){var L=PZ[it.key]||[],c=pzc(it.key),q=+it.qty||1,s=0;
+    if(c)L.forEach(function(e){var n=Math.min(e.q,q-s);if(n<=0)return;s+=n;items.push({key:it.key,qty:n,pz:{t:e.t||'',n:e.n||'',f:(e.f||[]).map(function(f){return f.id}).filter(Boolean)}})});
+    if(q-s>0)items.push({key:it.key,qty:q-s})});
+  if(items.length>30)return Promise.reject(new Error('bad_items'));
+  var body=Object.assign({},b,{p_items:items,action:'order'});
+  return ts229().then(function(tk){body.ts=tk;return fetch(API+'/functions/v1/store-custom',{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify(body)})})
+   .then(function(r){return r.json().catch(function(){return {error_code:'net'}})}).then(function(r){if(!r||r.error_code)throw new Error((r&&r.error_code)||'net');PZ={};PZD={};pzSave();return r})};}
 
 boot();
 })();
