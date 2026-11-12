@@ -6439,6 +6439,20 @@ html[data-lx="bottlerack"] .n8-cat[aria-pressed="true"],html[data-lx="bottlerack
 .kr-mm i{font-style:normal;color:#c9a27a}
 .n8-intro .kr-mm span{animation:krW .8s ease-out calc(.4s + var(--i)*.35s) backwards}
 @keyframes krW{from{opacity:0;transform:translateY(8px);filter:blur(3px)}}
+.kr-dr{max-width:400px;margin:16px auto 0;padding:10px 8px 6px;border-radius:18px;background:linear-gradient(180deg,#f6ecdd,#efe3d0);box-shadow:inset 0 0 0 1px #e0d1bb,0 14px 26px -22px rgba(43,27,19,.8)}
+.kr-dr svg{display:block;width:100%;font-family:var(--body);direction:ltr}
+.kr-dp{transform-box:fill-box;transform-origin:center;opacity:0;animation:krDp 1.6s ease-in infinite}
+.kr-dp.d2{animation-delay:.8s}
+.kr-dp:not(.k){--y:20px}.kr-dp.k{--y:12px;animation-duration:2.2s}.kr-dp.k.d2{animation-delay:1.1s}
+@keyframes krDp{0%{opacity:0;transform:translateY(0) scale(.6)}15%{opacity:1}85%{opacity:1;transform:translateY(var(--y)) scale(1)}100%{opacity:0;transform:translateY(var(--y)) scale(1.2)}}
+.kr-cl{stroke-dasharray:6 8;animation:krFl 1.4s linear infinite}
+@keyframes krFl{to{stroke-dashoffset:-28}}
+.kr-cf{transform-box:fill-box;transform-origin:bottom;transform:scaleY(.62);animation:krFi 7s cubic-bezier(.3,.1,.3,1) .6s backwards}
+@keyframes krFi{from{transform:scaleY(0)}}
+.kr-wl{transform-box:fill-box;transform-origin:bottom;transform:scaleY(.55);animation:krWl 7s ease-in-out .6s backwards}
+@keyframes krWl{from{transform:scaleY(1)}}
+.kr-sl{opacity:1;animation:krSl .6s ease-out calc(.5s + var(--i)*1.3s) backwards}
+@keyframes krSl{from{opacity:0;transform:translateY(6px)}}
 .kr-ht{margin:18px 0 0;font:700 19px var(--display);color:#3b2216}
 .kr-rk{position:relative;max-width:420px;margin:6px auto 0;padding-top:10px}
 .kr-row{display:flex;justify-content:center;align-items:flex-end;gap:6px;position:relative}
@@ -6495,7 +6509,7 @@ html.n8-rv .kr-c.in{animation:krCi .6s cubic-bezier(.2,.8,.2,1) var(--d,0ms) bac
 .n8-pt.krp:nth-child(2n){background:#d9b98c}
 .kr-pitch{background:#2b1b13}
 .kr-pitch a{background:#d9b98c;color:#2b1b13}
-@media(prefers-reduced-motion:reduce){.n8-intro .kr-b,.n8-intro .kr-mm span,.kr-cr i.on,.kr-pk.in{animation:none!important}.kr-b{transition:none}}
+@media(prefers-reduced-motion:reduce){.kr-dp,.kr-cl,.kr-cf,.kr-wl,.kr-sl{animation:none!important}.kr-dp{opacity:0}.n8-intro .kr-b,.n8-intro .kr-mm span,.kr-cr i.on,.kr-pk.in{animation:none!important}.kr-b{transition:none}}
 </style>
 </head>
 <body>
@@ -10286,8 +10300,8 @@ if(DEMO&&typeof D!=='undefined'){(function(){
 /* ===== V246: «رفّ الزجاجات» — تصميم خاص لمتاجر القهوة الباردة والمشروبات المعبأة (صُمم أولًا لـ Caelio) ===== */
 LX.bottlerack=1;N8K.bottlerack=1;
 Object.assign(N8.pt,{bottlerack:'krp'});
-Object.assign(T.ar,{krPick:'اختر زجاجتك من الرف',krTap:'المس أي زجاجة لتتعرف عليها',krBox:'صندوق كايليو',krBox0:'صندوقك فارغ، أضف زجاجاتك',krBoxN:'في صندوقك: %s',krBoxF:'صندوقك ممتلئ، جاهز للطلب',krEnd:'Coffee • Mood • Moments'});
-if(T.en)Object.assign(T.en,{krPick:'Pick your bottle from the shelf',krTap:'Tap any bottle to meet it',krBox:'Your crate',krBox0:'Your crate is empty',krBoxN:'%s bottles in your crate',krBoxF:'Your crate is full and ready',krEnd:'Coffee • Mood • Moments'});
+Object.assign(T.ar,{krPick:'اختر زجاجتك من الرف',krTap:'المس أي زجاجة لتتعرف عليها',krBox:'صندوق كايليو',krBox0:'صندوقك فارغ، أضف زجاجاتك',krBoxN:'في صندوقك: %s',krBoxF:'صندوقك ممتلئ، جاهز للطلب',krEnd:'Coffee • Mood • Moments',krPath:'مسار استخلاص القهوة الباردة',krS1:'ماء بارد',krS2:'قهوة مطحونة',krS3:'تقطير بطيء',krS4:'قهوتك جاهزة'});
+if(T.en)Object.assign(T.en,{krPick:'Pick your bottle from the shelf',krTap:'Tap any bottle to meet it',krBox:'Your crate',krBox0:'Your crate is empty',krBoxN:'%s bottles in your crate',krBoxF:'Your crate is full and ready',krEnd:'Coffee • Mood • Moments',krPath:'Cold brew path',krS1:'Cold water',krS2:'Ground coffee',krS3:'Slow drip',krS4:'Your coffee'});
 var krS={sel:-1,G:[]};
 function krFr(n){n=String(n||'');var f=[];if(/ليمون|lemon/i.test(n))f.push('🍋');if(/خوخ|peach/i.test(n))f.push('🍑');if(/مانج|mango/i.test(n))f.push('🥭');if(/فراول|strawberr/i.test(n))f.push('🍓');if(/توت|berr/i.test(n))f.push('🫐');if(f.length)return f.slice(0,2).join('');
   return /فانيل|vanilla/i.test(n)?'🌼':/كراميل|caramel/i.test(n)?'🍯':/صندوق|علبة|هدية|box/i.test(n)?'🎁':/كوب|glass/i.test(n)?'🧊':'☕'}
@@ -10301,9 +10315,21 @@ function krN(){var n=0;for(var k in cart)if(item(k))n+=cart[k];return n}
 function krBox(){var n=krN(),h='';for(var i=0;i<6;i++)h+='<i class="'+(i<n?'on':'')+'" style="--i:'+i+'"></i>';
   return '<div class="kr-bx" id="krBx" role="status"><div class="kr-cr" aria-hidden="true">'+h+(n>6?'<b>+'+(n-6)+'</b>':'')+'</div><div><b>📦 '+esc(t('krBox'))+'</b><small>'+esc(n>=6?t('krBoxF'):n?t('krBoxN',n+' '+(n===1?'زجاجة واحدة':n===2?'زجاجتان':n<=10?'زجاجات':'زجاجة').replace(/^1 زجاجة واحدة$/,'زجاجة واحدة').replace(/^2 زجاجتان$/,'زجاجتان')):t('krBox0'))+'</small></div></div>'}
 function krTag(s){s=String(s||'');if(s.indexOf('•')<0)return '<p>'+esc(s)+'</p>';return '<p class="kr-mm">'+s.split('•').map(function(w,i){return '<span style="--i:'+i+'">'+esc(w.trim())+'</span>'}).join('<i>•</i>')+'</p>'}
+function krDrip(){var L=[t('krS1'),t('krS2'),t('krS3'),t('krS4')];
+  function lb(i,x,y,ax,ay,end){return '<g class="kr-sl" style="--i:'+i+'"><path d="M'+ax+' '+ay+'L'+(end?x-4:x+4)+' '+y+'" stroke="#b9976f" stroke-width="1" stroke-dasharray="2 2" fill="none"/><circle cx="'+x+'" cy="'+y+'" r="9" fill="#7a4a2c"/><text x="'+x+'" y="'+(y+3.5)+'" text-anchor="middle" font-size="10" font-weight="700" fill="#fbf6ee">'+(i+1)+'</text><text x="'+(end?x-14:x+14)+'" y="'+(y+4)+'" text-anchor="'+(end?'end':'start')+'" font-size="11.5" font-weight="700" fill="#3b2216">'+esc(L[i])+'</text></g>'}
+  return '<figure class="kr-dr" aria-label="'+esc(t('krPath'))+'"><svg viewBox="0 0 360 236" role="img" direction="ltr"><defs><linearGradient id="krW" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e8f3f6"/><stop offset="1" stop-color="#cfe5ec"/></linearGradient><linearGradient id="krG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6b4430"/><stop offset="1" stop-color="#2b1b13"/></linearGradient><clipPath id="krCf"><path d="M158 196h44l6 32q0 6-6 6h-44q-6 0-6-6z"/></clipPath></defs>'+
+   '<rect x="34" y="4" width="10" height="230" rx="3" fill="#a87a4c"/><rect x="316" y="4" width="10" height="230" rx="3" fill="#a87a4c"/><rect x="28" y="4" width="304" height="9" rx="3" fill="#c79a68"/><rect x="28" y="226" width="304" height="10" rx="3" fill="#c79a68"/><rect x="44" y="96" width="70" height="6" rx="2" fill="#c79a68"/><rect x="246" y="96" width="70" height="6" rx="2" fill="#c79a68"/>'+
+   '<g opacity=".9"><rect x="58" y="62" width="22" height="34" rx="4" fill="#efe1c8" stroke="#cdb594"/><rect x="56" y="56" width="26" height="8" rx="2" fill="#a87a4c"/><g fill="#5a3a26">'+[0,1,2,3,4,5].map(function(i){return '<ellipse cx="'+(63+(i%3)*6)+'" cy="'+(74+Math.floor(i/3)*10)+'" rx="2.4" ry="1.6"/>'}).join('')+'</g><rect x="270" y="58" width="14" height="38" rx="5" fill="#2b1b13"/><rect x="273" y="50" width="8" height="10" rx="2" fill="#d9b98c"/><rect x="272" y="72" width="10" height="12" fill="#f3e8d6"/></g>'+
+   '<rect x="170" y="13" width="20" height="4" fill="#8a6a50"/><rect x="152" y="17" width="56" height="48" rx="10" fill="url(#krW)" stroke="#b7cfd6" stroke-width="2"/><rect class="kr-wl" x="155" y="28" width="50" height="34" rx="7" fill="#bcdde6" opacity=".7"/><path d="M160 30h40" stroke="#fff" stroke-width="2" opacity=".8"/>'+
+   '<rect x="174" y="65" width="12" height="8" rx="2" fill="#8a6a50"/><circle class="kr-dp" cx="180" cy="78" r="2.6" fill="#9cc8d4"/><circle class="kr-dp d2" cx="180" cy="78" r="2.6" fill="#9cc8d4"/>'+
+   '<rect x="156" y="100" width="48" height="40" rx="4" fill="#fff" opacity=".55" stroke="#d6c4ac" stroke-width="2"/><rect x="158" y="114" width="44" height="24" rx="2" fill="url(#krG)"/><rect x="158" y="110" width="44" height="5" fill="#f6efe3"/>'+
+   '<circle class="kr-dp k" cx="180" cy="144" r="2.4" fill="#4a2a1a"/><circle class="kr-dp k d2" cx="180" cy="144" r="2.4" fill="#4a2a1a"/>'+
+   '<path d="M180 150q22 5 0 10q-22 5 0 10q22 5 0 10q-22 5 0 10" fill="none" stroke="#e7dccd" stroke-width="7" stroke-linecap="round"/><path class="kr-cl" d="M180 150q22 5 0 10q-22 5 0 10q22 5 0 10q-22 5 0 10" fill="none" stroke="#5a3826" stroke-width="3.5" stroke-linecap="round"/>'+
+   '<path d="M158 196h44l6 32q0 6-6 6h-44q-6 0-6-6z" fill="#fff" opacity=".5" stroke="#d6c4ac" stroke-width="2"/><g clip-path="url(#krCf)"><rect class="kr-cf" x="150" y="196" width="60" height="40" fill="#3b2216"/></g><rect x="172" y="190" width="16" height="7" rx="2" fill="#d6c4ac"/>'+
+   lb(0,236,30,208,36,0)+lb(1,124,122,156,120,1)+lb(2,236,170,202,170,0)+lb(3,124,214,154,214,1)+'</svg></figure>'}
 R.bottlerack=function(G){n8idx(G);var bi=bio().split('\n');if(krS.sel>=0&&!G[krS.sel])krS.sel=-1;
   return '<header class="kr-h'+n8in()+'"><div class="kr-tx"><span class="kr-lg">'+logoImg()+'</span><h1>'+esc(v166nm())+'</h1>'+(bi[0]?'<p class="kr-d">'+esc(bi[0])+'</p>':'')+(bi[1]?krTag(bi[1]):'')+'</div>'+
-   '<h2 class="kr-ht">'+esc(t('krPick'))+'</h2>'+krRack(G)+'</header>'+
+   krDrip()+'<h2 class="kr-ht">'+esc(t('krPick'))+'</h2>'+krRack(G)+'</header>'+
    '<div class="kr-bw">'+krBox()+'</div>'+
    n8shop(G,'bottlerack','kr-g',function(g){return '<article class="n8-c kr-c">'+n8pic(g)+'<div class="kr-cb"><small class="kr-cs">COLD BREW · '+krFr(g.base)+'</small>'+n8nm(g)+n8pr(g)+n8ctl(g)+'</div></article>'}).replace('<div class="n8-foot">','<p class="kr-end">'+esc(t('krEnd'))+'</p><div class="n8-foot">')};
 (function(){var _l=lines;lines=function(){var o=_l.apply(this,arguments);if(B.layout==='bottlerack'){var b=$('krBx');if(b)b.outerHTML=krBox();var p=$('krPk');if(p&&krS.sel>=0)p.innerHTML=krPick()}return o};
