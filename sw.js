@@ -2,12 +2,10 @@
    لا يلمس أي طلبات خارجية (التتبع/المزامنة/الدعم) ولا صفحات أخرى مثل owner.html
    V158: الجلب من الشبكة يتجاوز ذاكرة المتصفح المؤقتة (كانت تُبقي النسخة القديمة حتى 10 دقائق بعد النشر)،
    ورقم النسخة هنا (emd-app-vNNN) هو ما يقارنه التطبيق ليعرف أن هناك تحديثًا. */
-var C='emd-app-v300';
-/* النسخة الجديدة: ملفات تُحمَّل عند الحاجة (الأرشيف، الملصق، الإنجليزية…) تُحفظ أيضًا حتى تعمل بلا إنترنت */
-var LAZY=["/archive.js", "/company.js", "/direct.js", "/direct453.js", "/docs.js", "/icons.js", "/label.js", "/lang.js", "/lock.js", "/look.js", "/modes.js", "/money.js", "/notify.js", "/parse.js", "/pos.js", "/qrcode.js", "/settings.js", "/staff.js", "/store.js", "/support.js", "/wactl.js"];
-var SHELL=['/','/manifest.webmanifest','/icon-192.png','/icon-512.png','/icon-maskable-512.png','/apple-touch-icon.png','/logo.svg'];
+var C='emd-app-v252';
+var SHELL=['/','/manifest.webmanifest','/icon-192.png','/icon-512.png','/icon-maskable-512.png','/apple-touch-icon.png'];
 self.addEventListener('install',function(e){
-  e.waitUntil(caches.open(C).then(function(c){return Promise.all(SHELL.concat(LAZY).map(function(u){
+  e.waitUntil(caches.open(C).then(function(c){return Promise.all(SHELL.map(function(u){
     return fetch(u,{cache:'no-store'}).then(function(x){if(x&&x.ok)return c.put(u,x)}).catch(function(){})}))}).then(function(){return self.skipWaiting()}));
 });
 self.addEventListener('activate',function(e){
@@ -37,7 +35,6 @@ self.addEventListener('fetch',function(e){
     if(u.pathname==='/'||u.pathname==='/index.html'){e.respondWith(networkFirst(r))}
     return;
   }
-  if(LAZY.indexOf(u.pathname)>=0){e.respondWith(fetch(new Request(r,{cache:'no-store'})).then(function(x){if(x&&x.ok){var cp=x.clone();caches.open(C).then(function(c){c.put(u.pathname,cp)})}return x}).catch(function(){return caches.match(u.pathname).then(function(m){return m||Response.error()})}));return}
   if(SHELL.indexOf(u.pathname)>0){e.respondWith(caches.match(r).then(function(m){return m||fetch(r)}))}
 });
 /* V161: إشعارات الجوال — استقبال الإشعار وعرضه، وفتح التطبيق على ما يخصه عند الضغط */
