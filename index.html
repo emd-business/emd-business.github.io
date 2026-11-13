@@ -16,7 +16,7 @@ window.EMDErrLog={list:function(){var c=Date.now()-3*864e5;return L().filter(fun
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V254</title>
+<title>EMD Business — Standalone V255</title>
 <!-- EMD V158: شاشة افتتاح تغطي التطبيق حتى تكتمل الواجهة الأخيرة، فلا تظهر الأشكال والأزرار القديمة أثناء التحميل -->
 <style id="EMD-V158-boot">
 html.emd-boot{background:#0f172a!important}
@@ -34034,13 +34034,15 @@ function prodNames(text){var P=[];try{P=((window.db&&window.db.products)||[]).ma
 function setV(id,v){var e=$(id);if(!e)return;e.value=v;e.dispatchEvent(new Event('input',{bubbles:true}));e.dispatchEvent(new Event('change',{bubbles:true}))}
 function val(id){var e=$(id);return e?String(e.value||''):''}
 function wait(ms){return new Promise(function(r){setTimeout(r,ms)})}
-var LAST=null;
+var LAST=null,OBS=[];
+/* V255: الملاحظات لما كتبه العميل فقط؛ ما لا تظهر كلماته في رسالة العميل يُعدّ تعليقًا من الذكاء الاصطناعي فلا يُكتب فيها */
+function noteOk(nt){var r=' '+N(LAST||'')+' ',w=N(nt).split(/\s+/).filter(function(x){return x.length>=3});if(!w.length)return true;var h=0;w.forEach(function(x){var y=x.replace(/^و(?=.{3})/,'');if(r.indexOf(x)>=0||r.indexOf(y)>=0)h++});return h/w.length>=0.6}
 function runParse(raw){var r=$('raw');r.value=raw;try{window.parse()}catch(e){}return wait(450)}
 function apply(o){
   var ch=[];
   function put(id,v,label){v=String(v||'').trim();if(!v)return;var old=val(id);if(N(old)===N(v))return;setV(id,v);ch.push(label)}
   if(!/\[/.test(o.name||''))put('pname',o.name,'الاسم');if(!/\[/.test(o.phone||''))put('pphone',o.phone,'الرقم');put('pplace',o.place,'المكان');put('ppaymentMethod',o.payment,'طريقة الدفع');put('ptransfer',o.transfer,'رقم التحويل');
-  var nt=String(o.note||'').trim();if(nt){var cur=val('pnote');if(/^📝/.test(cur.trim()))cur='';/* ما خمّنه التحليل العادي يُستبدل بما فهمه الذكاء الاصطناعي */if(N(cur).indexOf(N(nt))<0){setV('pnote',cur?cur+' — '+nt:nt);ch.push('الملاحظات')}}
+  var nt=String(o.note||'').trim();if(nt&&!noteOk(nt)){OBS.push(nt);nt=''}if(nt){var cur=val('pnote');if(/^📝/.test(cur.trim()))cur='';/* ما خمّنه التحليل العادي يُستبدل بما فهمه الذكاء الاصطناعي */if(N(cur).indexOf(N(nt))<0){setV('pnote',cur?cur+' — '+nt:nt);ch.push('الملاحظات')}}
   var items=Array.isArray(o.items)?o.items:[],host=$('emdParsedProducts'),miss=[];
   if(items.length&&host){
     var rows=[].slice.call(host.querySelectorAll('.emd-parsed-product')),before=rows.map(function(r){var i=r.getAttribute('data-product-index');return val('prod'+i)+'×'+val('q'+i)}).join('|');
@@ -34048,8 +34050,8 @@ function apply(o){
     rows=[].slice.call(host.querySelectorAll('.emd-parsed-product'));
     rows.slice(items.length).forEach(function(r){try{window.removeParsedProductV45(r.getAttribute('data-product-index'))}catch(e){r.remove()}});
     items.forEach(function(it,j){var r=rows[j];if(!r)return;var i=r.getAttribute('data-product-index');
-      setV('prod'+i,it.product||'');setV('q'+i,String(it.qty||1));
-      var lb=r.querySelector('.muted');if(lb)lb.textContent='✨ قراءة ذكية: '+(it.said||it.product)+' × '+(it.qty||1);
+      var amb=isAmb(it);setV('prod'+i,amb?'':(it.product||''));setV('q'+i,String(it.qty||1));
+      var lb=r.querySelector('.muted');if(lb)lb.textContent='✨ قراءة ذكية: '+(it.said||it.product)+' × '+(it.qty||1)+(amb?' — يحتمل أكثر من منتج، اختر الصحيح':'');
       if(!it.product)miss.push(it.said)});
     rows=[].slice.call(host.querySelectorAll('.emd-parsed-product'));
     var after=rows.map(function(r){var i=r.getAttribute('data-product-index');return val('prod'+i)+'×'+val('q'+i)}).join('|');
@@ -34061,8 +34063,10 @@ function apply(o){
   if(!c){c=document.createElement('div');c.id='e454Card';c.className='e454card';var h=p.querySelector('h3');if(h)h.insertAdjacentElement('afterend',c);else p.insertBefore(c,p.firstChild)}
   c.innerHTML='<b>✨ القراءة الذكية</b>: '+(ch.length?'صُحِّح '+esc(ch.join('، '))+'.':'وافقت التحليل العادي، ولم يتغير شيء.')+
     (miss.length?'<br>⚠️ لم أجد في منتجاتك: '+miss.map(function(x){return '<span class="e454u">'+esc(x)+'</span>'}).join(' ')+'، اختره من القائمة.':'')+
+    (AMB.length?'<br>⚠️ يحتمل أكثر من منتج، فاختره بنفسك وسيتذكّره التطبيق: '+AMB.map(function(x){return '<span class="e454u">'+esc(x.src)+'</span> (اقتراح: '+esc(x.p)+')'}).join('، '):'')+
+    (OBS.length?'<br>💬 ملاحظة القراءة الذكية (لم تُكتب في خانة الملاحظات لأنها ليست من العميل): '+OBS.map(esc).join('، '):'')+
     (un.length?'<br>كلمات غير واضحة: '+un.map(function(x){return '<span class="e454u">'+esc(x)+'</span>'}).join(' '):'')+
-    (PEND.length?'<br>🧠 عند الحفظ سيتعلّم التطبيق: '+PEND.map(function(x){return '<span class="e454u">'+esc(x.src)+'</span> = '+esc(x.p)}).join('، '):'')+'<br><small>راجع الخانات قبل الحفظ.</small><div class="e454x"><button type="button" data-e454undo="1">↩️ تراجع</button></div>'}
+    (PEND.length?'<br>🧠 عند الحفظ سيتعلّم التطبيق: '+PEND.map(function(x){return '<span class="e454u">'+esc(x.src)+'</span> = '+esc(x.p)}).join('، '):'')+'<br><small>راجع الخانات قبل الحفظ.</small><div class="e454x"><button type="button" data-e454undo="1">↩️ تراجع</button></div>';OBS=[]}
 var MASKNOTE='(ملاحظة: [الاسم] و[رقم] بيانات أخفاها التطبيق عمدًا، فاترك name وphone فارغين ولا تخمّنهما.)\n';
 function rx(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}
 function mask(text,name){
@@ -34081,7 +34085,13 @@ function mask(text,name){
    بعدها يفهم التحليل العادي هذه الكلمات وحده، بلا إنترنت وبلا تكلفة. */
 var RULE=[],PEND=[];
 function rowsNow(){var h=$('emdParsedProducts');if(!h)return [];return [].slice.call(h.querySelectorAll('.emd-parsed-product')).map(function(r){var i=r.getAttribute('data-product-index');return {i:i,p:val('prod'+i)}})}
-function plan(o){PEND=[];(o.items||[]).forEach(function(it){var said=String(it.said||'').replace(/[0-9٠-٩۰-۹×x*]+/g,' ').replace(/\s+/g,' ').trim(),p=it.product;
+/* V255: كلمة تطابق أكثر من منتج (مثل «جزء عم» مع «حفظ جزء عم» و«رحلتي مع الفاتحة وجزء عم») لا يختارها الذكاء الاصطناعي ولا يتعلّمها؛ يختارها التاجر */
+var AMB=[];
+function tokz(s){return N(s).split(' ').map(function(w){w=w.replace(/^و(?=\S{3})/,'');return w.length>3?w.replace(/^ال/,''):w}).filter(Boolean)}
+function ambOf(said){var t=tokz(said);if(!t.length)return [];return prodNames('').filter(function(p){var q=tokz(p);return t.every(function(w){return q.indexOf(w)>=0})})}
+function isAmb(it){for(var i=0;i<AMB.length;i++)if(AMB[i].p===it.product&&AMB[i].src===String(it.said||'').trim())return true;return false}
+function plan(o){PEND=[];AMB=[];(o.items||[]).forEach(function(it){var said=String(it.said||'').replace(/[0-9٠-٩۰-۹×x*]+/g,' ').replace(/\s+/g,' ').trim(),p=it.product;
+  if(p&&said&&N(said)!==N(p)){var op=ambOf(said);if(op.length>=2&&op.indexOf(p)>=0){AMB.push({src:String(it.said||'').trim(),p:p,n:op.length});return}}
   if(!p||!said||RULE.indexOf(p)>=0)return;var k=N(said);if(k.replace(/[^ء-يa-z]/g,'').length<3||k.split(' ').length>5||k===N(p))return;PEND.push({k:k,src:said,p:p})})}
 function teach(){if(!PEND.length)return;var now=rowsNow().map(function(x){return x.p}),ok=PEND.filter(function(x){return now.indexOf(x.p)>=0});PEND=[];if(!ok.length)return;
   var d;try{d=JSON.parse(localStorage.getItem('emd_v103_learn')||'{}')||{}}catch(e){d={}}d.alias=d.alias||{};
@@ -34142,7 +34152,7 @@ function rcGo(id){var box=document.querySelector('.e215r[data-rid="'+id+'"]'),im
 
 document.addEventListener('click',function(e){var t=e.target;if(!t||!t.closest)return;
   if(t.closest('[data-e454go]')){e.preventDefault();smart();return}
-  if(t.closest('[data-e454undo]')){PEND=[];if(LAST!=null){runParse(LAST).then(function(){var c=$('e454Card');if(c)c.remove()})}return}
+  if(t.closest('[data-e454undo]')){PEND=[];AMB=[];if(LAST!=null){runParse(LAST).then(function(){var c=$('e454Card');if(c)c.remove()})}return}
   var rb=t.closest('[data-e454rc]');if(rb){rcGo(rb.getAttribute('data-e454rc'));return}});
 var pend=false;new MutationObserver(function(){if(pend)return;pend=true;requestAnimationFrame(function(){pend=false;addBtn();addTry();rcBtns()})}).observe(document.documentElement,{childList:true,subtree:true});
 addBtn();
@@ -34187,6 +34197,13 @@ function hWrap(){var f=window.askEMDV92FromModal;if(HW||typeof f!=='function')re
   window.askEMDV92FromModal=HW}
 document.addEventListener('click',function(e){var t=e.target;if(t&&t.closest&&t.closest('[data-e454help]')){e.preventDefault();if(HQ)hAsk(HQ)}});
 if(document.readyState==='complete')setTimeout(hWrap,1200);else window.addEventListener('load',function(){setTimeout(hWrap,1200)});
+/* V255: تنظيف قالب الرسالة قبل التحليل. منظّف V120 (تنبيهات القالب، «لتثبيت الطلب حوّل على…»، و«🧹 جمل يتجاهلها التحليل»)
+   لم يكن يعمل منذ V232 لأن غلاف V232 يحمل علامته فلا يلتف V120 حوله. نلفّه هنا مرة واحدة فوق الغلاف الأخير. */
+function cleanWrap(){var f=window.parse,C=window.EMDParseCleanV120;if(typeof f!=='function'||f.__v255||!C||typeof C.clean!=='function')return;
+  var g=function(){var ta=$('raw');if(!ta)return f.apply(this,arguments);var orig=ta.value,cl=orig;try{cl=C.clean(orig)}catch(e){}if(cl===orig)return f.apply(this,arguments);
+    ta.value=cl;try{return f.apply(this,arguments)}finally{ta.value=orig}};
+  Object.keys(f).forEach(function(k){try{g[k]=f[k]}catch(e){}});g.__v255=true;window.parse=g}
+if(document.readyState==='complete')setTimeout(cleanWrap,2500);else window.addEventListener('load',function(){setTimeout(cleanWrap,2500)});
 window.EMDAIV454={mask:mask,call:call,apply:apply,verdict:verdict,hmask:hmask,hctx:hctx,hAsk:hAsk,demoRc:function(id,r){AIR[id]={r:r};rcBtns()}};
 })();
 </script>

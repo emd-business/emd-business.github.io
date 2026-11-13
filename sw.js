@@ -2,7 +2,7 @@
    لا يلمس أي طلبات خارجية (التتبع/المزامنة/الدعم) ولا صفحات أخرى مثل owner.html
    V158: الجلب من الشبكة يتجاوز ذاكرة المتصفح المؤقتة (كانت تُبقي النسخة القديمة حتى 10 دقائق بعد النشر)،
    ورقم النسخة هنا (emd-app-vNNN) هو ما يقارنه التطبيق ليعرف أن هناك تحديثًا. */
-var C='emd-app-v254';
+var C='emd-app-v255';
 var SHELL=['/','/manifest.webmanifest','/icon-192.png','/icon-512.png','/icon-maskable-512.png','/apple-touch-icon.png'];
 self.addEventListener('install',function(e){
   e.waitUntil(caches.open(C).then(function(c){return Promise.all(SHELL.map(function(u){
