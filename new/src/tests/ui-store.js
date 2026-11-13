@@ -19,7 +19,7 @@ console.log('accept blocked: toast',JSON.stringify(await p.evaluate(()=>(documen
 await p.click('#emd411Store [data-tab=design]');await p.waitForTimeout(300);await p.screenshot({path:'/tmp/store-design.png'});
 await p.click('#emd411Store [data-tab=pub]');await p.waitForTimeout(300);
 const pub=await p.$('#emd411Store [data-a=publish]');if(pub){await pub.click();await p.waitForTimeout(800)}
-console.log('publish blocked:',JSON.stringify(await p.evaluate(()=>{const e=document.querySelector('#emd411Store .err,#emd411Store .bad,#emd411Store [class*=err]');return e&&e.textContent.slice(0,80)})),'| writes',calls.filter(a=>a!=='orders').length);
+console.log('publish blocked:',JSON.stringify(await p.evaluate(()=>{const e=document.querySelector('#emd411Store .err,#emd411Store .bad,#emd411Store [class*=err]');return e&&e.textContent.slice(0,80)})),'| writes',calls.filter(a=>a!=='orders'&&a!=='mine'&&a!=='state').length,'| reads',calls.filter(a=>a==='mine'||a==='state').length);// ders').length);
 console.log('calls',calls.join(','));
 const pv=await p.$('#emd411Store [data-a=pv]');if(pv){await pv.click();await p.waitForTimeout(1500);console.log('preview:',await p.evaluate(()=>{const f=document.querySelector('#emd414Pv iframe');return f&&f.srcdoc.length>100000&&f.srcdoc.includes('__PV')}))}else console.log('no preview button on this tab');
 await p.screenshot({path:'/tmp/store-pv.png'});

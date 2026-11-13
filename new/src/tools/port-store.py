@@ -68,7 +68,32 @@ for i in ['EMD-V166-thumbs-js','EMD-V150-design','EMD-V182-season','EMD-V156-zon
     left=sorted(set(re.findall(r'window\.(EMDCloudV93|db|save|render)\b',x)))
     print(i,len(x),'leftovers',left,'SI',x.count('setInterval'),'MO',x.count('MutationObserver'))
     mods.append('/* ===== '+i+' ===== */\n'+x)
-css='\n'.join(style(i) for i in ['EMD-V173-quick-css','EMD-V411-store-css','EMD-V413-store-css','emd414-css','emd415-css','EMD-V150-design-css','EMD-V166-thumbs','EMD-V208-picker-css','EMD-V209-modal-fix','EMD-V215-css'])
+# ----- V246: التصاميم الخاصة بكود سري -----
+x=script('EMD-V246-dz')
+x=rep(x,"if(window.__EMD_V246__)return;window.__EMD_V246__=1;\n","")
+x=rep(x,"function api(){var c=window.EMDCloudV93;return c&&c.api}","function api(){return EMDH.cloud}")
+x=rep(x,"function call(action,b){var c=api();","function call(action,b){if(action!=='state'&&!EMDH.canWrite())return Promise.reject(new Error('🧪 في التجربة لا يُفعَّل كود حقيقي'));var c=api();")
+x=rep(x,"if(n++<120)setTimeout(hook,250);return","return")
+x=rep(x,"LK='emd246_dz';","LK=EMDH.lk('emd246_dz');")
+x=rep(x,"function(e){go.disabled=false;say(e&&e.auth?","function(e){go.disabled=false;say(e&&e.sb?e.message:e&&e.auth?")
+x=rep(x,"return Promise.reject(new Error('🧪 في التجربة لا يُفعَّل كود حقيقي'));","return Promise.reject(Object.assign(new Error('🧪 في التجربة لا يُفعَّل كود حقيقي.'),{sb:1}));")   # الوحدات في ملف واحد مرتّب: EMD150 موجود عند التشغيل
+print('EMD-V246-dz',len(x),'SI',x.count('setInterval'))
+mods.append('/* ===== EMD-V246-dz ===== */\n'+x)
+# ----- V247: تخصيص المنتج (كتلة بلا معرّف: تُستخرج من تعليق البداية) -----
+_a=s.index('<!-- ===== V247');_b=s.index('</script>',_a);_blk=s[_a:_b]
+v247css=_blk[_blk.index('<style>')+7:_blk.index('</style>')]
+x=_blk[_blk.index('<script>')+8:]
+x=x.replace("window.db","EMDH.db()")
+x=rep(x,"function call(body){var a=A(),c=a&&a.C();if(!c)return Promise.reject(new Error('auth'));","function call(body){if(body&&body.action!=='sign'&&!EMDH.canWrite())return Promise.reject(new Error('🧪 في التجربة لا يُحفظ التخصيص في المتجر الحقيقي'));var a=A(),c=a&&a.C();if(!c)return Promise.reject(new Error('auth'));")
+# تفاصيل الطلب في التطبيق الجديد: نافذة الطلب تطلق حدث emd:orderOpen بدل تغليف openOrderV26 ومؤقت دوري
+k=x.find("function wrapOpen(){");e=x.find("\n\n",k);assert k>0 and e>k
+x=x[:k]+"document.addEventListener('emd:orderOpen',function(e){detail(e.detail&&e.detail.id)});"+x[e:]
+x=rep(x,"document.getElementById('emdOrderBodyV26')","document.getElementById('frm')")
+assert 'setInterval' not in x and 'openOrderV26' not in x
+print('V247',len(x))
+mods.append('/* ===== V247 product customization ===== */\n'+x)
+css='\n'.join(style(i) for i in ['EMD-V245-new','EMD-V246-dz-css','EMD-V173-quick-css','EMD-V411-store-css','EMD-V413-store-css','emd414-css','emd415-css','EMD-V150-design-css','EMD-V166-thumbs','EMD-V208-picker-css','EMD-V209-modal-fix','EMD-V215-css'])
+css+='\n'+v247css
 head='''/* «🛍️ متجري»: منشئ المتجر وطلباته. يُحمَّل عند الحاجة فقط.
    نُقل من التطبيق الحالي كوحدة واحدة، مع ربطه بالتطبيق الجديد عبر EMDH، وبلا نسخة مضمّنة من صفحة المتجر:
    المعاينة تقرأ صفحة المتجر الحالية نفسها (../store/). في التجربة: لا نشر ولا اعتماد طلبات (القراءة فقط). */
@@ -78,7 +103,7 @@ var st=document.createElement('style');st.id='emdStoreCss';st.textContent='''+js
 '''
 body='\n'.join(mods)
 # مفاتيح الجهاز الجانبية: في التجربة تُكتب بأسماء منفصلة
-for k in ['emd225_rc','emd415_rej','emd_v72_customer_events','emd173_quick']:
+for k in ['emd225_rc','emd415_rej','emd_v72_customer_events','emd173_quick','emd249_whohint','emd246_dz']:
     body=body.replace("localStorage.getItem('"+k+"'","localStorage.getItem(EMDH.lk('"+k+"')").replace("localStorage.setItem('"+k+"'","localStorage.setItem(EMDH.lk('"+k+"')")
 assert not re.search(r"localStorage\.(setItem|removeItem)\('",body),re.findall(r"localStorage\.(?:setItem|removeItem)\('[^']*'",body)
 out=head+body+'\n})();\n'

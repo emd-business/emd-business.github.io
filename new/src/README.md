@@ -15,4 +15,4 @@
 
 قواعد يفحصها build.py: كل دالة تُعرّف مرة واحدة، لا MutationObserver، لا setInterval إلا الساعة.
 
-# اختبارات الواجهة (Playwright): شغّل خادمًا على مجلد stage1 بالمنفذ 8131 ثم: node tests/ui-import.js و tests/ui-new-order.js و tests/ui-screens.js
+# اختبارات الواجهة (Playwright): شغّل خادمًا على مجلد stage1 بالمنفذ 8131 ثم: node tests/ui-import.js و tests/ui-new-order.js و tests/ui-screens.js و tests/ui-store*.js

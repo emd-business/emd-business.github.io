@@ -132,6 +132,7 @@ function openOrder(id){
     '<div class="foot" style="margin-top:4px"><button class="btn" type="button" data-act="label" data-id="'+esc(id)+'">🏷️ ملصق الشحن</button>'+(qlOpt().modal?'<button class="btn" type="button" data-act="qlabel" data-id="'+esc(id)+'">🏷️ ملصق سريع</button>':'')+'<button class="btn" type="button" data-act="invoice" data-id="'+esc(id)+'">🧾 الفاتورة</button></div>'+
     (s!=='cancelled'?'<button class="btn red" type="button" data-act="cancelOrder" data-id="'+esc(id)+'" style="width:100%;margin-top:4px">❌ إلغاء الطلب</button>':'')+'</form>');
   var box=d.querySelector('#frm');bindForm(box,o);
+  try{document.dispatchEvent(new CustomEvent('emd:orderOpen',{detail:{id:id}}))}catch(e){}  /* وحدات لاحقة (مثل تخصيص المتجر) تضيف صندوقها هنا */
   box.addEventListener('submit',function(e){
     e.preventDefault();if(stDeny('edit'))return;
     var before=JSON.stringify(o);
