@@ -16,7 +16,7 @@ window.EMDErrLog={list:function(){var c=Date.now()-3*864e5;return L().filter(fun
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V252</title>
+<title>EMD Business — Standalone V254</title>
 <!-- EMD V158: شاشة افتتاح تغطي التطبيق حتى تكتمل الواجهة الأخيرة، فلا تظهر الأشكال والأزرار القديمة أثناء التحميل -->
 <style id="EMD-V158-boot">
 html.emd-boot{background:#0f172a!important}
@@ -34015,14 +34015,16 @@ function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){retur
 function dg(s){return String(s==null?'':s).replace(/[٠-٩]/g,function(d){return '٠١٢٣٤٥٦٧٨٩'.indexOf(d)}).replace(/[۰-۹]/g,function(d){return '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)})}
 function N(s){return dg(s).toLowerCase().replace(/[ً-ٰٟـ]/g,'').replace(/[أإآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/\s+/g,' ').trim()}
 var TT=null;function toast(t){var e=$('e454T');if(!e){e=document.createElement('div');e.id='e454T';e.setAttribute('role','status');document.body.appendChild(e)}e.textContent=t;e.hidden=false;clearTimeout(TT);TT=setTimeout(function(){e.hidden=true},4200)}
-var MSG={auth:'القراءة الذكية تحتاج حسابًا سحابيًّا. سجّل الدخول من الإعدادات أولًا.',nokey:'القراءة الذكية لم تُفعَّل بعد في الخادم.',limit:'انتهت القراءات الذكية لهذا اليوم، وتتجدد غدًا.',busy:'الخدمة مشغولة الآن. أعد المحاولة بعد دقيقة.',image:'تعذّر تجهيز صورة الإيصال.',net:'لا يوجد اتصال بالإنترنت.',budget:'توقف الذكاء الاصطناعي لهذا الشهر لبلوغ الميزانية، ويبقى التحليل العادي يعمل.'};
+var MSG={auth:'القراءة الذكية تحتاج حسابًا سحابيًّا. سجّل الدخول من الإعدادات أولًا.',nokey:'القراءة الذكية لم تُفعَّل بعد في الخادم.',limit:'انتهت القراءات الذكية لهذا اليوم، وتتجدد غدًا.',busy:'الخدمة مشغولة الآن. أعد المحاولة بعد دقيقة.',image:'تعذّر تجهيز صورة الإيصال.',net:'تعذّر الوصول إلى الخادم. تحقّق من الإنترنت وأعد المحاولة.',session:'انتهت جلسة الدخول أو تعذّر تجديدها. افتح «☁️ الحساب» وسجّل الدخول مرة أخرى.',budget:'توقف الذكاء الاصطناعي لهذا الشهر لبلوغ الميزانية، ويبقى التحليل العادي يعمل.'};
 function errMsg(e){var k=e&&e.code||'';return MSG[k]||'تعذّرت القراءة الذكية. أعد المحاولة.'}
-function call(body){
+function call(body,again){
   var c=window.EMDCloudV93&&window.EMDCloudV93.api;if(!c||typeof c.token!=='function')return Promise.reject({code:'auth'});
   if(navigator.onLine===false)return Promise.reject({code:'net'});
-  return Promise.resolve(c.token()).then(function(t){if(!t)throw {code:'auth'};
-    return fetch(FN,{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json','x-emd-token':t},body:JSON.stringify(body)})})
-   .then(function(r){return r.json().catch(function(){return {}}).then(function(j){if(!r.ok||!j.ok)throw {code:j.error||'x'};return j})},function(e){throw e&&e.code?e:{code:'net'}})}
+  /* V254: خطأ تسجيل الدخول يظهر كخطأ دخول لا كانقطاع إنترنت، ومحاولة ثانية تلقائية عند تعثّر الشبكة */
+  return Promise.resolve().then(function(){return c.token()}).then(function(t){if(!t)throw {code:'auth'};return t},function(e){try{console.warn('emd-ai token',e&&e.message)}catch(_){}throw {code:e&&e.auth?'auth':'session'}})
+   .then(function(t){return fetch(FN,{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json','x-emd-token':t},body:JSON.stringify(body)}).catch(function(e){try{console.warn('emd-ai fetch',e&&e.message)}catch(_){}throw {code:'net',retry:1}})})
+   .then(function(r){return r.json().catch(function(){return {}}).then(function(j){if(!r.ok||!j.ok)throw {code:j.error||(r.status>=500?'busy':'x')};return j})})
+   .catch(function(e){if(e&&e.retry&&!again&&navigator.onLine!==false)return new Promise(function(ok){setTimeout(ok,1500)}).then(function(){return call(body,1)});throw e&&e.code?e:{code:'x'}})}
 
 /* ═════════ ١) رسالة الطلب ═════════ */
 function prodNames(text){var P=[];try{P=((window.db&&window.db.products)||[]).map(function(p){return String(p&&p.name||'').trim()}).filter(Boolean)}catch(e){}
