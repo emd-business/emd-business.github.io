@@ -16,7 +16,7 @@ window.EMDErrLog={list:function(){var c=Date.now()-3*864e5;return L().filter(fun
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V255</title>
+<title>EMD Business — Standalone V256</title>
 <!-- EMD V158: شاشة افتتاح تغطي التطبيق حتى تكتمل الواجهة الأخيرة، فلا تظهر الأشكال والأزرار القديمة أثناء التحميل -->
 <style id="EMD-V158-boot">
 html.emd-boot{background:#0f172a!important}
@@ -34063,6 +34063,7 @@ function apply(o){
   if(!c){c=document.createElement('div');c.id='e454Card';c.className='e454card';var h=p.querySelector('h3');if(h)h.insertAdjacentElement('afterend',c);else p.insertBefore(c,p.firstChild)}
   c.innerHTML='<b>✨ القراءة الذكية</b>: '+(ch.length?'صُحِّح '+esc(ch.join('، '))+'.':'وافقت التحليل العادي، ولم يتغير شيء.')+
     (miss.length?'<br>⚠️ لم أجد في منتجاتك: '+miss.map(function(x){return '<span class="e454u">'+esc(x)+'</span>'}).join(' ')+'، اختره من القائمة.':'')+
+    (SER.length?'<br>🔗 اخترتُ من نفس سلسلة بقية الطلب، فغيّره إن لم يكن صحيحًا: '+SER.map(function(x){return '<span class="e454u">'+esc(x.src)+'</span> = '+esc(x.p)}).join('، '):'')+
     (AMB.length?'<br>⚠️ يحتمل أكثر من منتج، فاختره بنفسك وسيتذكّره التطبيق: '+AMB.map(function(x){return '<span class="e454u">'+esc(x.src)+'</span> (اقتراح: '+esc(x.p)+')'}).join('، '):'')+
     (OBS.length?'<br>💬 ملاحظة القراءة الذكية (لم تُكتب في خانة الملاحظات لأنها ليست من العميل): '+OBS.map(esc).join('، '):'')+
     (un.length?'<br>كلمات غير واضحة: '+un.map(function(x){return '<span class="e454u">'+esc(x)+'</span>'}).join(' '):'')+
@@ -34090,8 +34091,14 @@ var AMB=[];
 function tokz(s){return N(s).split(' ').map(function(w){w=w.replace(/^و(?=\S{3})/,'');return w.length>3?w.replace(/^ال/,''):w}).filter(Boolean)}
 function ambOf(said){var t=tokz(said);if(!t.length)return [];return prodNames('').filter(function(p){var q=tokz(p);return t.every(function(w){return q.indexOf(w)>=0})})}
 function isAmb(it){for(var i=0;i<AMB.length;i++)if(AMB[i].p===it.product&&AMB[i].src===String(it.said||'').trim())return true;return false}
-function plan(o){PEND=[];AMB=[];(o.items||[]).forEach(function(it){var said=String(it.said||'').replace(/[0-9٠-٩۰-۹×x*]+/g,' ').replace(/\s+/g,' ').trim(),p=it.product;
-  if(p&&said&&N(said)!==N(p)){var op=ambOf(said);if(op.length>=2&&op.indexOf(p)>=0){AMB.push({src:String(it.said||'').trim(),p:p,n:op.length});return}}
+var SER=[];
+/* V256: إذا احتملت الكلمة أكثر من منتج، يُختار المنتج الذي يشارك بقية منتجات الطلب اسم السلسلة (مثل «رحلتي مع …») */
+function sayOf(it){return String(it.said||'').replace(/[0-9٠-٩۰-۹×x*]+/g,' ').replace(/\s+/g,' ').trim()}
+function serPick(op,said,sure){if(!sure.length)return '';var st=tokz(said),best='',bs=0,tie=false;op.forEach(function(c){var ct=tokz(c).filter(function(w){return st.indexOf(w)<0}),sc=0;sure.forEach(function(sp){var t=tokz(sp);ct.forEach(function(w){if(t.indexOf(w)>=0)sc++})});if(sc>bs){bs=sc;best=c;tie=false}else if(sc===bs&&sc>0)tie=true});return bs>0&&!tie?best:''}
+function plan(o){PEND=[];AMB=[];SER=[];var its=o.items||[],sure=[];its.forEach(function(it){var said=sayOf(it);if(it.product&&said&&!(ambOf(said).length>=2))sure.push(it.product)});
+  its.forEach(function(it){var said=sayOf(it),p=it.product;
+  if(said){var op=ambOf(said);if(op.length>=2&&(!p||op.indexOf(p)>=0)){var b=serPick(op,said,sure);if(b){it.product=b;SER.push({src:String(it.said||'').trim(),p:b});return}if(p){AMB.push({src:String(it.said||'').trim(),p:p,n:op.length});return}}}
+  if(p&&said&&N(said)!==N(p)){var op2=ambOf(said);if(op2.length>=2&&op2.indexOf(p)>=0){AMB.push({src:String(it.said||'').trim(),p:p,n:op2.length});return}}
   if(!p||!said||RULE.indexOf(p)>=0)return;var k=N(said);if(k.replace(/[^ء-يa-z]/g,'').length<3||k.split(' ').length>5||k===N(p))return;PEND.push({k:k,src:said,p:p})})}
 function teach(){if(!PEND.length)return;var now=rowsNow().map(function(x){return x.p}),ok=PEND.filter(function(x){return now.indexOf(x.p)>=0});PEND=[];if(!ok.length)return;
   var d;try{d=JSON.parse(localStorage.getItem('emd_v103_learn')||'{}')||{}}catch(e){d={}}d.alias=d.alias||{};
@@ -34152,7 +34159,7 @@ function rcGo(id){var box=document.querySelector('.e215r[data-rid="'+id+'"]'),im
 
 document.addEventListener('click',function(e){var t=e.target;if(!t||!t.closest)return;
   if(t.closest('[data-e454go]')){e.preventDefault();smart();return}
-  if(t.closest('[data-e454undo]')){PEND=[];AMB=[];if(LAST!=null){runParse(LAST).then(function(){var c=$('e454Card');if(c)c.remove()})}return}
+  if(t.closest('[data-e454undo]')){PEND=[];AMB=[];SER=[];if(LAST!=null){runParse(LAST).then(function(){var c=$('e454Card');if(c)c.remove()})}return}
   var rb=t.closest('[data-e454rc]');if(rb){rcGo(rb.getAttribute('data-e454rc'));return}});
 var pend=false;new MutationObserver(function(){if(pend)return;pend=true;requestAnimationFrame(function(){pend=false;addBtn();addTry();rcBtns()})}).observe(document.documentElement,{childList:true,subtree:true});
 addBtn();
