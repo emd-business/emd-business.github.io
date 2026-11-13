@@ -38175,7 +38175,7 @@ function runParse(raw){var r=$('raw');r.value=raw;try{window.parse()}catch(e){}r
 function apply(o){
   var ch=[];
   function put(id,v,label){v=String(v||'').trim();if(!v)return;var old=val(id);if(N(old)===N(v))return;setV(id,v);ch.push(label)}
-  put('pname',o.name,'الاسم');put('pphone',o.phone,'الرقم');put('pplace',o.place,'المكان');put('ppaymentMethod',o.payment,'طريقة الدفع');put('ptransfer',o.transfer,'رقم التحويل');
+  if(!/\[/.test(o.name||''))put('pname',o.name,'الاسم');if(!/\[/.test(o.phone||''))put('pphone',o.phone,'الرقم');put('pplace',o.place,'المكان');put('ppaymentMethod',o.payment,'طريقة الدفع');put('ptransfer',o.transfer,'رقم التحويل');
   var nt=String(o.note||'').trim();if(nt){var cur=val('pnote');if(/^📝/.test(cur.trim()))cur='';/* ما خمّنه التحليل العادي يُستبدل بما فهمه الذكاء الاصطناعي */if(N(cur).indexOf(N(nt))<0){setV('pnote',cur?cur+' — '+nt:nt);ch.push('الملاحظات')}}
   var items=Array.isArray(o.items)?o.items:[],host=$('emdParsedProducts'),miss=[];
   if(items.length&&host){
@@ -38199,11 +38199,25 @@ function apply(o){
     (miss.length?'<br>⚠️ لم أجد في منتجاتك: '+miss.map(function(x){return '<span class="e454u">'+esc(x)+'</span>'}).join(' ')+'، اختره من القائمة.':'')+
     (un.length?'<br>كلمات غير واضحة: '+un.map(function(x){return '<span class="e454u">'+esc(x)+'</span>'}).join(' '):'')+
     '<br><small>راجع الخانات قبل الحفظ.</small><div class="e454x"><button type="button" data-e454undo="1">↩️ تراجع</button></div>'}
+var MASKNOTE='(ملاحظة: [الاسم] و[رقم] بيانات أخفاها التطبيق عمدًا، فاترك name وphone فارغين ولا تخمّنهما.)\n';
+function rx(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}
+function mask(text,name){
+  var t=String(text||'');
+  /* كل رقم من 7 خانات فأكثر (هاتف، مع 968 أو بدونه) */
+  t=t.replace(/(?:\+|00)?(?:[0-9٠-٩۰-۹][ \-]?){7,}/g,function(m){return (/ $/.test(m)?'[رقم] ':'[رقم]')});
+  name=String(name||'').trim();if(!name||name.length<2)return t;
+  var P=' '+prodNames('').map(N).join(' ')+' ';
+  if(P.indexOf(' '+N(name)+' ')>=0)return t; /* التحليل ظن اسم منتج اسمًا: لا نخفيه */
+  function sub(w){t=t.replace(new RegExp('(^|[\\s،,:.(])([ولب]?)'+rx(w)+'(?=$|[\\s،,:.)!؟?])','g'),'$1$2[الاسم]')}
+  sub(name);
+  name.split(/\s+/).forEach(function(w){if(w.length<3||/^ال/.test(w)&&w.length<5)return;var nw=N(w);if(P.indexOf(nw)>=0)return;sub(w)});
+  return t}
 function smart(btn){
   var r=$('raw'),raw=r?r.value.trim():'';if(!raw){toast('ألصق الرسالة أولًا.');return}
   var bs=[].slice.call(document.querySelectorAll('[data-e454go]'));bs.forEach(function(b){b.disabled=true;b.dataset.t=b.textContent;b.textContent='⏳ جارٍ الفهم…'});
   LAST=raw;
-  call({action:'order',text:raw,products:prodNames(raw)}).then(function(j){return runParse(raw).then(function(){apply(j.order||{})})})
+  /* V454c: اسم العميل ورقمه لا يُرسلان إلى جوجل. التحليل العادي يستخرجهما أولًا، ثم يُستبدلان في النص المرسَل */
+  runParse(raw).then(function(){return call({action:'order',text:MASKNOTE+mask(raw,val('pname')),products:prodNames(raw)})}).then(function(j){return runParse(raw).then(function(){apply(j.order||{})})})
    .catch(function(e){toast(errMsg(e))})
    .then(function(){bs.forEach(function(b){b.disabled=false;b.textContent=b.dataset.t||'🧠 قراءة ذكية'})})}
 function addBtn(){
@@ -38255,7 +38269,7 @@ document.addEventListener('click',function(e){var t=e.target;if(!t||!t.closest)r
   var rb=t.closest('[data-e454rc]');if(rb){rcGo(rb.getAttribute('data-e454rc'));return}});
 var pend=false;new MutationObserver(function(){if(pend)return;pend=true;requestAnimationFrame(function(){pend=false;addBtn();addTry();rcBtns()})}).observe(document.documentElement,{childList:true,subtree:true});
 addBtn();
-window.EMDAIV454={call:call,apply:apply,verdict:verdict,demoRc:function(id,r){AIR[id]={r:r};rcBtns()}};
+window.EMDAIV454={mask:mask,call:call,apply:apply,verdict:verdict,demoRc:function(id,r){AIR[id]={r:r};rcBtns()}};
 })();
 </script>
 
