@@ -38139,6 +38139,12 @@ window.EMD247={form:form,map:map,sync:function(){return sync(true).catch(functio
 #e454T{position:fixed;left:50%;bottom:88px;transform:translateX(-50%);z-index:99999;background:#0b1f3a;color:#fff;border:1px solid #c9a227;padding:10px 14px;border-radius:12px;font-weight:700;font-size:13.5px;max-width:92vw;box-shadow:0 8px 24px rgba(0,0,0,.25)}
 body.dark .e454card,body.dark .e454rc{background:#14233d;color:#e6edf8;border-color:#2c4670}
 body.dark .e454card b{color:#f5d27a}
+.e454help{margin-top:10px;padding:10px 12px;border-radius:12px;background:#f7f3e6;border:1px solid #c9a227;color:#0b1f3a;font-size:13.5px;line-height:1.9}
+.e454help>b{display:block;color:#0b1f3a;margin-bottom:2px}
+.e454help .e454ht{white-space:pre-line}
+.e454help small{display:block;color:#64748b;margin-top:4px;font-size:11.5px}
+.e454help button{margin-top:4px;border:1px solid #c9a227;background:#0b1f3a;color:#f5d27a;border-radius:9px;padding:5px 12px;font-weight:800;font-size:12.5px;cursor:pointer}
+body.dark .e454help{background:#1b2436;color:#e6edf8;border-color:#8a6d1a}body.dark .e454help>b{color:#f5d27a}
 </style>
 <script id="EMD-V454-ai">
 (function(){
@@ -38153,7 +38159,7 @@ function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){retur
 function dg(s){return String(s==null?'':s).replace(/[٠-٩]/g,function(d){return '٠١٢٣٤٥٦٧٨٩'.indexOf(d)}).replace(/[۰-۹]/g,function(d){return '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)})}
 function N(s){return dg(s).toLowerCase().replace(/[ً-ٰٟـ]/g,'').replace(/[أإآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/\s+/g,' ').trim()}
 var TT=null;function toast(t){var e=$('e454T');if(!e){e=document.createElement('div');e.id='e454T';e.setAttribute('role','status');document.body.appendChild(e)}e.textContent=t;e.hidden=false;clearTimeout(TT);TT=setTimeout(function(){e.hidden=true},4200)}
-var MSG={auth:'القراءة الذكية تحتاج حسابًا سحابيًّا. سجّل الدخول من الإعدادات أولًا.',nokey:'القراءة الذكية لم تُفعَّل بعد في الخادم.',limit:'انتهت القراءات الذكية لهذا اليوم، وتتجدد غدًا.',busy:'الخدمة مشغولة الآن. أعد المحاولة بعد دقيقة.',image:'تعذّر تجهيز صورة الإيصال.',net:'لا يوجد اتصال بالإنترنت.'};
+var MSG={auth:'القراءة الذكية تحتاج حسابًا سحابيًّا. سجّل الدخول من الإعدادات أولًا.',nokey:'القراءة الذكية لم تُفعَّل بعد في الخادم.',limit:'انتهت القراءات الذكية لهذا اليوم، وتتجدد غدًا.',busy:'الخدمة مشغولة الآن. أعد المحاولة بعد دقيقة.',image:'تعذّر تجهيز صورة الإيصال.',net:'لا يوجد اتصال بالإنترنت.',budget:'توقف الذكاء الاصطناعي لهذا الشهر لبلوغ الميزانية، ويبقى التحليل العادي يعمل.'};
 function errMsg(e){var k=e&&e.code||'';return MSG[k]||'تعذّرت القراءة الذكية. أعد المحاولة.'}
 function call(body){
   var c=window.EMDCloudV93&&window.EMDCloudV93.api;if(!c||typeof c.token!=='function')return Promise.reject({code:'auth'});
@@ -38282,7 +38288,48 @@ document.addEventListener('click',function(e){var t=e.target;if(!t||!t.closest)r
   var rb=t.closest('[data-e454rc]');if(rb){rcGo(rb.getAttribute('data-e454rc'));return}});
 var pend=false;new MutationObserver(function(){if(pend)return;pend=true;requestAnimationFrame(function(){pend=false;addBtn();addTry();rcBtns()})}).observe(document.documentElement,{childList:true,subtree:true});
 addBtn();
-window.EMDAIV454={mask:mask,call:call,apply:apply,verdict:verdict,demoRc:function(id,r){AIR[id]={r:r};rcBtns()}};
+
+/* ═════════ ٣) المساعد داخل «🤖 اسأل EMD» ═════════
+   تظهر الإجابة المحلية كما هي، ثم إجابة «✨ المساعد» تحتها. السؤال المكتوب يُرسل تلقائيًّا، والأسئلة الجاهزة بزر.
+   أسماء العملاء وأرقامهم تُخفى قبل الإرسال، والملخص المرسل أعداد فقط. */
+var HH=[],HB=0,HW=null,HQ='';
+function D(){return window.db||{}}
+function cloudOwn(){try{var s=window.EMDRealAIV3201&&window.EMDRealAIV3201.settings&&window.EMDRealAIV3201.settings();return !!(s&&s.enabled&&s.endpoint&&s.model)}catch(e){return false}}
+var NMRX=null,NMK='';
+function nameRx(){var d=D(),L=[].concat(d.orders||[],d.customers||[]),k=L.length+':'+((d.products||[]).length);if(NMK===k)return NMRX;
+  var P=' '+prodNames('').map(N).join(' ')+' ',S={};
+  L.forEach(function(o){var n=String(o&&o.name||'').trim();if(n.length<2||n.indexOf('[')>=0)return;S[n]=1;
+    n.split(/\s+/).forEach(function(w){if(w.length<3||/^ال/.test(w)&&w.length<5||P.indexOf(' '+N(w)+' ')>=0)return;S[w]=1})});
+  var W=Object.keys(S).sort(function(a,b){return b.length-a.length}).slice(0,4000).map(rx);
+  NMK=k;NMRX=W.length?new RegExp('(^|[\\s،,:.(«"\'\\-])([ولب]?)(?:'+W.join('|')+')(?=$|[\\s،,:.)»"\'!؟?\\-])','g'):null;return NMRX}
+function hmask(t){t=String(t||'').replace(/(?:\+|00)?(?:[0-9٠-٩۰-۹][ \-]?){7,}/g,function(m){return / $/.test(m)?'[رقم] ':'[رقم]'});
+  var r=null;try{r=nameRx()}catch(e){}if(r){t=t.replace(r,'$1$2[عميل]');t=t.replace(r,'$1$2[عميل]')}return t}
+function hctx(){var d=D(),O=d.orders||[],Pr=d.products||[],LB={new:'جديدة',waiting:'انتظار',packing:'تجهيز',ready:'جاهزة',shipped:'مشحونة',received:'مستلمة',draft:'مسودة',cancelled:'ملغاة'},st={},
+  now=new Date(),td=now.toDateString(),mo=now.getFullYear()+'-'+now.getMonth(),nT=0,nM=0,sM=0,unp=0;
+  O.forEach(function(o){if(!o)return;var s=o.status||'new';st[s]=(st[s]||0)+1;var dt=new Date(o.created||o.orderDate||0);
+    if(!isNaN(dt)){if(dt.toDateString()===td)nT++;if(dt.getFullYear()+'-'+dt.getMonth()===mo){nM++;(o.products||[]).forEach(function(p){sM+=(+p.qty||0)*(+p.unitPrice||0)})}}
+    var ps=String(o.paymentStatus||'');if(s!=='cancelled'&&s!=='draft'&&ps!=='paid'&&!/مدفوع$/.test(ps)&&ps!=='مدفوع')unp++});
+  var low=Pr.filter(function(p){var a=p&&(p.available!=null?p.available:p.stock);return a!=null&&a!==''&&+a<=2}).slice(0,15).map(function(p){return p.name});
+  var L=['عدد الطلبات: '+O.length+' ('+Object.keys(st).map(function(k){return (LB[k]||k)+' '+st[k]}).join('، ')+')','طلبات اليوم: '+nT,'طلبات هذا الشهر: '+nM+'، ومبيعاتها تقريبًا: '+Math.round(sM*1000)/1000+' ر.ع','طلبات غير مدفوعة بالكامل: '+unp,'عدد المنتجات: '+Pr.length];
+  if(low.length)L.push('منتجات قاربت النفاد: '+low.join('، '));return hmask(L.join('\n')).slice(0,2500)}
+function hBox(){var out=$('emdV92AiAnswer');if(!out)return null;var b=$('e454Help');if(!b){b=document.createElement('div');b.id='e454Help';b.className='e454help';b.setAttribute('aria-live','polite')}
+  if(out.nextSibling!==b)out.parentNode.insertBefore(b,out.nextSibling);return b}
+function hErr(e){return errMsg(e).replace('القراءات الذكية','أسئلة المساعد').replace('القراءة الذكية','المساعد الذكي')}
+function hAsk(q){var b=hBox(),out=$('emdV92AiAnswer');if(!b)return;var local=String(out&&out.textContent||'').trim();if(/^⏳/.test(local))local='';
+  var id=++HB,mq=hmask(q).slice(0,600);b.hidden=false;b.innerHTML='<b>✨ المساعد</b><div class="e454ht">⏳ يكتب الإجابة…</div>';
+  call({action:'help',q:mq,hist:HH.slice(-6),ctx:hctx(),local:hmask(local).slice(0,1500)}).then(function(j){if(id!==HB)return;var a=String(j.answer||'').trim()||'لم أجد إجابة مناسبة. جرّب صياغة أخرى، أو استخدم «🆘 مساعدة».';
+      HH.push({r:'u',t:mq.slice(0,300)},{r:'a',t:a.slice(0,600)});HH=HH.slice(-6);
+      b.innerHTML='<b>✨ المساعد</b><div class="e454ht">'+esc(a)+'</div><small>إجابة بالذكاء الاصطناعي، وقد تخطئ أحيانًا.</small>'})
+   .catch(function(e){if(id!==HB)return;b.innerHTML='<b>✨ المساعد</b><div class="e454ht">'+esc(hErr(e))+'</div>'})}
+function hOffer(q){var b=hBox();if(!b)return;HB++;HQ=q;b.hidden=false;b.innerHTML='<button type="button" data-e454help>✨ اشرح لي أكثر</button>'}
+function hWrap(){var f=window.askEMDV92FromModal;if(HW||typeof f!=='function')return;
+  HW=function(q){var input=$('emdV92AiInput'),typed=!q,text=String(q||(input?input.value:'')||'').trim(),r=f.apply(this,arguments),b=$('e454Help');
+    if(!text||cloudOwn()){if(b)b.hidden=true;HB++;return r}
+    setTimeout(function(){var out=$('emdV92AiAnswer');if(out&&/منظم الميزات/.test(out.textContent||'')){var b2=$('e454Help');if(b2)b2.hidden=true;return}if(typed)hAsk(text);else hOffer(text)},250);return r};
+  window.askEMDV92FromModal=HW}
+document.addEventListener('click',function(e){var t=e.target;if(t&&t.closest&&t.closest('[data-e454help]')){e.preventDefault();if(HQ)hAsk(HQ)}});
+if(document.readyState==='complete')setTimeout(hWrap,1200);else window.addEventListener('load',function(){setTimeout(hWrap,1200)});
+window.EMDAIV454={mask:mask,call:call,apply:apply,verdict:verdict,hmask:hmask,hctx:hctx,hAsk:hAsk,demoRc:function(id,r){AIR[id]={r:r};rcBtns()}};
 })();
 </script>
 
