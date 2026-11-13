@@ -2,6 +2,7 @@
 document.addEventListener('click',function(e){
   var b=e.target.closest('[data-go],[data-act],[data-filter]');if(!b)return;
   var card=b.closest('.card'),id=b.dataset.id||(card&&card.dataset.id),act=b.dataset.act;
+  if(!db&&!/^(demo|openFile|recopy)$/.test(act||'')){toast('اختر البيانات التي تريد التجربة عليها أولًا.');return}
   if(b.dataset.go){if(b.closest('.sheet'))closeSheet(b.closest('.sheet'));state.view=b.dataset.go;state.limit=30;state.pq='';state.cq='';render();window.scrollTo(0,0);return}
   if(b.dataset.filter){state.view='orders';state.filter=b.dataset.filter;state.limit=30;render();if(!b.classList.contains('chip'))window.scrollTo(0,0);return}
   switch(act){

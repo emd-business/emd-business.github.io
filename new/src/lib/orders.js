@@ -1,3 +1,5 @@
+/* من قام بالخطوة (كما في الحية): الموظف الحالي أو المدير */
+function by(){var w=null,n='المدير';try{w=stWho()}catch(e){}try{if(!w)n=dsMgr()}catch(e){}return w?{id:w.id,name:w.name}:{id:'owner',name:n}}
 /* ---------- 3) نموذج الطلب (متوافق مع بيانات التطبيق الحالي) ---------- */
 var ST={
   new:{l:'جديد',s:'جديدة',i:'🆕',c:'var(--s-new)'},
@@ -50,7 +52,7 @@ function setStatus(o,to,silent){
   if(to==='received')o.receivedAt=o.receivedAt||new Date().toISOString();
   o.status=to;dirty();if(to==='cancelled')promoteWaiting();
   if(!Array.isArray(o.history))o.history=[];
-  o.history.push({status:to,at:new Date().toISOString(),by:'rebuild'});
+  o.history.push({status:to,at:new Date().toISOString(),by:by()});
   o.updatedAt=new Date().toISOString();
   save();
   if(!silent)toast(ST[to].i+' '+onum(o)+' — '+ST[to].l);

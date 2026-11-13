@@ -1,5 +1,5 @@
-/* رقم النسخة الظاهر في «كل الصفحات» (الحية V233) */
-var APP_VER='V234 (تجربة)';
+/* رقم النسخة الظاهر في «المزيد»: يُرفع مع كل تثبيت، ومعه اسم ذاكرة sw.js */
+var APP_VER='V302';function appVer(){return APP_VER+(CLOUD_SANDBOX?' (تجربة)':'')}
 /* ---------- 2) أدوات عامة ---------- */
 function $(id){return document.getElementById(id)}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}

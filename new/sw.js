@@ -2,7 +2,7 @@
    لا يلمس أي طلبات خارجية (التتبع/المزامنة/الدعم) ولا صفحات أخرى مثل owner.html
    V158: الجلب من الشبكة يتجاوز ذاكرة المتصفح المؤقتة (كانت تُبقي النسخة القديمة حتى 10 دقائق بعد النشر)،
    ورقم النسخة هنا (emd-app-vNNN) هو ما يقارنه التطبيق ليعرف أن هناك تحديثًا. */
-var C='emd-app-v300';
+var C='emd-app-v302';
 /* النسخة الجديدة: ملفات تُحمَّل عند الحاجة (الأرشيف، الملصق، الإنجليزية…) تُحفظ أيضًا حتى تعمل بلا إنترنت */
 var LAZY=["/archive.js", "/company.js", "/direct.js", "/direct453.js", "/docs.js", "/icons.js", "/label.js", "/lang.js", "/lock.js", "/look.js", "/modes.js", "/money.js", "/notify.js", "/parse.js", "/pos.js", "/qrcode.js", "/settings.js", "/staff.js", "/store.js", "/support.js", "/wactl.js"];
 var SHELL=['/','/manifest.webmanifest','/icon-192.png','/icon-512.png','/icon-maskable-512.png','/apple-touch-icon.png','/logo.svg'];

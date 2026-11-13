@@ -8,6 +8,7 @@ function welcome(){
 }
 function boot(){
   if(!db){var live=lsGet(LIVE_KEY);if(load()){}else if(live&&!meta.source){try{adopt(JSON.parse(live),'live')}catch(e){}}}
+  if(!db&&!CLOUD_SANDBOX)adopt({orders:[],products:[],customers:[]},'new');  /* مستخدم جديد: يبدأ بتطبيق فارغ */
   if(!db)return welcome();
   db=fix(db);dirty();if(stockReconcile())save();syPrime();banner();
   storeRow();

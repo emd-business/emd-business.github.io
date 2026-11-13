@@ -12,7 +12,7 @@ function moreSheet(){ // مثل «كل الصفحات» في التطبيق ال
   openSheet('<div class="sh"><div><h3>كل الصفحات</h3><small>اختر الصفحة التي تريدها.</small></div></div>'+
     g([['data-act="finance"','💰','المالية']].concat(shopMode()?[]:[['data-act="track"','🔗','التتبع']]).concat([['data-go="customers"','👤','العملاء'],['data-go="products"','📦','المنتجات'],['data-go="stock"','🏭','المخزن'],['data-act="direct"','🛒','بيع مباشر'],['data-go="perf"','📊','الأداء']]))+
     '<div class="msec">أدوات</div>'+g([['data-act="alerts"','🔔','التنبيهات'],['data-act="store"','🛍️','متجري'],['data-act="settings"','⚙️','الإعدادات'],['data-act="icons"','🎛️','شكل الأزرار']])+
-    '<div class="mver">EMD Business • '+APP_VER+'</div>');
+    '<div class="mver">EMD Business • '+appVer()+'</div>');
 }
 function alertsSheet(){
   var arr=[],now=Date.now();

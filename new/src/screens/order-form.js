@@ -108,9 +108,9 @@ function newOrder(pre,st){
     var who=stWho();if(who)o.createdBy=who;
     if(st){o.orderSource=o.orderSource||'واتساب';learnImport(box,st,o)}
     o.id=nextId();var now=new Date().toISOString();o.created=now;o.orderDate=now;
-    o.status='new';o.history=[{status:'new',at:now,by:'rebuild'}];
+    o.status='new';o.history=[{status:'new',at:now,by:by()}];
     db.orders.unshift(o);dirty();
-    o.status=shortage(o).length?'waiting':'ready';o.history.push({status:o.status,at:now,by:'rebuild'});
+    o.status=shortage(o).length?'waiting':'ready';o.history.push({status:o.status,at:now,by:by()});
     upsertCustomer(o);trEnsureAll();save();
     closeSheet(d);toast('✅ تم حفظ الطلب '+onum(o));
     afterSave(o);
