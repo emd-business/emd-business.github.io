@@ -1,1 +1,1 @@
-Parser build: python3 build.py (edit S path at top to this folder; v104.html = EMD-V104-places block from live index.html; ext232 from /mnt/project-files/emd-v232/build). Tests: node run.js (189 msgs), node sized.js.
+Parser build: python3 build.py (edit S path at top to this folder; v104.html = EMD-V104-places block from live index.html; ext232 from /mnt/project-files/emd-v232/build). Tests: node run.js (189 msgs), node sized.js, node books.js (books template ×4 learning states, V235).

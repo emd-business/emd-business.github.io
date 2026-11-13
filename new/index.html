@@ -1845,7 +1845,7 @@ function openOrder(id){
 var parserP=null,lastMsg='';
 function loadParser(){
   if(window.EMDParse)return Promise.resolve(window.EMDParse);
-  if(!parserP)parserP=new Promise(function(ok,no){var sc=document.createElement('script');sc.src='parse.js?v=28233582';sc.onload=function(){ok(window.EMDParse)};sc.onerror=function(){parserP=null;no(new Error('parse.js'))};document.head.appendChild(sc)});
+  if(!parserP)parserP=new Promise(function(ok,no){var sc=document.createElement('script');sc.src='parse.js?v=e41d140a';sc.onload=function(){ok(window.EMDParse)};sc.onerror=function(){parserP=null;no(new Error('parse.js'))};document.head.appendChild(sc)});
   return parserP;
 }
 function importSheet(msg){

@@ -1,10 +1,20 @@
 import re,sys
 S='/mnt/project-files/emd-rebuild/src/parser/'
 v104=open(S+'v104.html',encoding='utf-8').read().split('\n')
-e232=open('/mnt/project-files/emd-v232/build/ext232.html',encoding='utf-8').read().split('\n')
+e232=open('/mnt/project-files/emd-v235/build/ext235.html',encoding='utf-8').read().split('\n')  # V235 = V232 + books-template/junk-alias fixes
+def _ln(pfx,frm=0):
+    for i in range(frm,len(e232)):
+        if e232[i].startswith(pfx):return i
+    raise SystemExit('marker not found: '+pfx)
 places='\n'.join(v104[5:66])   # lines 6..66 (GOV .. pre)
 assert places.startswith('var GOV') and 'function pre(raw)' in places
-core='\n'.join(e232[16:233])   # lines 17..236
+# الرموز قبل العنوان («📍 الولاية: …») لا تمنع فهم السطر
+_pl="var PLBL=/^\\s*(?:"
+assert places.count(_pl)==1,_pl
+places=places.replace(_pl,"var PLBL=/^[^\\p{L}\\p{N}]*(?:").replace("\\s*[:：\\-]\\s*/;\nfunction pre(raw)","\\s*[:：\\-]\\s*/u;\nfunction pre(raw)")
+assert '/u;\nfunction pre(raw)' in places
+_c0=_ln('function lsGet');_c1=_ln('  return {text:out.join',_c0)
+core='\n'.join(e232[_c0:_c1+1])
 assert core.startswith('function lsGet') and core.rstrip().endswith('return {text:out.join(\'\\n\'),extra:extra,info:info}}'), core[-200:]
 core=core.replace("function $(id){return document.getElementById(id)}\n","")
 core=core.replace("function prods(){try{return ((window.db&&window.db.products)||[]).map(function(p){return String(p&&p.name||'').trim()}).filter(Boolean)}catch(e){return []}}","function prods(){try{return prodKeys()}catch(e){return []}}")
@@ -16,11 +26,13 @@ function findMentions0(line){''')
 _a="if(me2&&me2[1].trim().split(/\\s+/).length<=3&&"
 assert _a in core,'me2'
 core=core.replace(_a,"if(me2&&!/\\s(?:من|في)\\s+\\S/.test(me2[1])&&me2[1].trim().split(/\\s+/).length<=3&&",1)
+_sp="t.split(SPLITK).forEach(function(x){L2.push("
+assert core.count(_sp)==1,'splitk'
+core=core.replace(_sp,"t.split(SPLITK).forEach(function(x){if(!/[\\p{L}\\p{N}]/u.test(x))return;L2.push(")  # جزء بلا حروف (رمز فقط) لا يصير اسمًا
 assert 'window.' not in core and 'document' not in core, [l for l in core.split('\n') if 'window.' in l or 'document' in l]
-tail='\n'.join(e232[282:284])  # GREETW + PLWORD
+_t0=_ln('var GREETW');tail='\n'.join(e232[_t0:_t0+2])
 assert tail.startswith('var GREETW') and 'function PLWORD' in tail
 tail=tail.replace('window.EMDPlacesV104','PL')
-learn='\n'.join(e232[268:282]) # leftovers (DOM-dependent) - replaced below; keep only for reference
 own=open(S+'own.js',encoding='utf-8').read()
 out="""/* EMD Business — تحليل رسالة الطلب (نسخة نظيفة: قواعد V232 + قائمة ولايات عُمان V104) */
 (function(){

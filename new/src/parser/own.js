@@ -19,13 +19,13 @@ var COMP_L=/^\s*(?:شركة|شركه)\s*(?:التوصيل|الشحن)\s*[:：\-]
 var PAY_L=/^\s*(?:طريقة الدفع|طريقه الدفع|الدفع)\s*[:：\-]?\s*(.+)$/;
 function payOf(s){s=N(s);if(/استلام|توصيل/.test(s))return 'عند الاستلام';if(/تحويل\s*بنكي|بنك/.test(s))return 'تحويل بنكي';if(/تحويل|حواله/.test(s))return 'تحويل';if(/كاش|نقد/.test(s))return 'نقدًا';return ''}
 function optsFor(raw){var I=index(),ws=tokNorm(raw).split(' ').map(stripAl).filter(function(t){return t.length>=2&&!STOP[t]});
-  var KMm=kmap();return I.items.filter(function(it){return ws.some(function(t){return it.w.indexOf(t)>=0})}).map(function(it){return KMm.toName[it.p]||it.p}).slice(0,6)}
+  var KMm=kmap();return I.items.filter(function(it){return ws.some(function(t){return it.v.indexOf(t)>=0})}).map(function(it){return KMm.toName[it.p]||it.p}).slice(0,6)}
 function parseMsg(raw){
-  raw=unKey(String(raw||''));var KMm=kmap();
+  cleanA();raw=unKey(String(raw||''));var KMm=kmap();
   var c;try{c=pre(raw)}catch(e){c={text:raw,extra:[],info:{mentions:[],names:[]}}}
   var t=c.text;try{t=PL.pre(t).text}catch(e){}
   var r={name:'',phone:'',place:'',pay:'',company:'',method:'',note:'',items:[],left:[],placeRaw:c.info.place||''};
-  t.split('\n').forEach(function(l){var m,d=dg(l);
+  t.split('\n').forEach(function(l){var m;l=l.replace(/^[^\p{L}\p{N}]+/u,'');var d=dg(l);
     if(!r.name&&(m=l.match(NAME_L))&&!/\d{6,}/.test(dg(m[1])))r.name=m[1].trim();
     else if(!r.phone&&(m=d.match(PHONE_L))&&(m=dg(m[1]).match(PHRX)))r.phone=m[1].replace(/\D/g,'');
     else if(!r.place&&(m=l.match(PLACE_L)))r.place=m[1].trim();
@@ -109,10 +109,10 @@ function learnFrom(st,fin){
   fin={place:fin.place,items:(fin.items||[]).map(function(x){return {p:KMm.toKey[x.p]||x.p,q:x.q,raw:x.raw,added:x.added}})};
   var added=(fin.items||[]).filter(function(x){return x.added&&P.indexOf(x.p)>=0});
   /* منتج غير محدد اختاره التاجر ← اسمه في الرسالة */
-  (fin.items||[]).forEach(function(x){if(x.raw&&x.p&&P.indexOf(x.p)>=0){var key=N(x.raw);if(key&&key.split(' ').length<=4&&!(A.alias[key]&&A.alias[key].p===x.p)){A.alias[key]={p:x.p,src:x.raw,n:1,t:Date.now()};out.push('«'+x.raw+'» = '+(KMm.toName[x.p]||x.p))}}});
+  (fin.items||[]).forEach(function(x){if(x.raw&&x.p&&P.indexOf(x.p)>=0){var key=N(x.raw);if(key&&!junkKey(key)&&key.split(' ').length<=4&&!(A.alias[key]&&A.alias[key].p===x.p)){A.alias[key]={p:x.p,src:x.raw,n:1,t:Date.now()};out.push('«'+x.raw+'» = '+(KMm.toName[x.p]||x.p))}}});
   var cands=(st.left||[]).map(function(ph){var w=ph.split(/\s+/).filter(function(t){var n=tokNorm(t).replace(/^و(?=\S{2})/,'');return n&&!numOf(t)&&!UNIT1.test(n)&&!UNITX.test(n)&&!STOP[n]});return w.join(' ').replace(/^و(?=\S{2})/,'')}).filter(function(x){var n=N(x);return n.length>=2&&n.split(' ').length<=4&&!/\d/.test(n)});
   if(added.length&&cands.length&&(added.length===cands.length||cands.length===1&&added.length===1)){
-    added.forEach(function(x,k){var src=cands[k],key=N(src);if(!key||A.alias[key]&&A.alias[key].p===x.p)return;A.alias[key]={p:x.p,src:src,n:1,t:Date.now()};out.push('«'+src+'» = '+(KMm.toName[x.p]||x.p))})}
+    added.forEach(function(x,k){var src=cands[k],key=N(src);if(!key||junkKey(key)||A.alias[key]&&A.alias[key].p===x.p)return;A.alias[key]={p:x.p,src:src,n:1,t:Date.now()};out.push('«'+src+'» = '+(KMm.toName[x.p]||x.p))})}
   (st.mentions||[]).forEach(function(m){if(!m.unit||!m.p||!m.base)return;var x=(fin.items||[]).filter(function(y){return y.p===m.p})[0];if(!x||x.q===m.q)return;var mult=x.q/m.base;
     if(mult>=2&&mult===Math.round(mult)&&L.units[m.unit]!==mult){L.units[m.unit]=mult;out.push('«'+m.unit+'» = '+mult+' حبة')}});
   var fp=String(fin.place||'').trim(),p0=st.place||'';
