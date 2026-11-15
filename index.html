@@ -16,7 +16,7 @@ window.EMDErrLog={list:function(){var c=Date.now()-3*864e5;return L().filter(fun
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V256</title>
+<title>EMD Business — Standalone V257</title>
 <!-- EMD V158: شاشة افتتاح تغطي التطبيق حتى تكتمل الواجهة الأخيرة، فلا تظهر الأشكال والأزرار القديمة أثناء التحميل -->
 <style id="EMD-V158-boot">
 html.emd-boot{background:#0f172a!important}
@@ -33285,7 +33285,7 @@ function verdict(x){
 function hintOff(){try{return !!localStorage.getItem('emd249_whohint')}catch(e){return false}}
 function details(x){var p=[];if(x.amount_read!=null)p.push('المبلغ المقروء '+omr(x.amount_read));if(x.rc_date)p.push('التاريخ '+x.rc_date+(x.rc_time?' '+x.rc_time:''));if(x.ref_last)p.push('الرقم ينتهي بـ '+x.ref_last+(x.ref_how==='manual'?' (يدوي)':x.ref_how==='guess'?' (تخمين)':''));if(x.cust_match===true)p.push('يطابق ما كتبه الزبون');if(x.who_state==='ok')p.push('الاسم المحدد ظاهر');if(x.read_ms)p.push('زمن القراءة '+(x.read_ms/1000).toFixed(1)+' ث'+(x.langs?' ('+x.langs+')':''));return p.length?p.join(' · '):'لا تفاصيل بعد.'}
 function draw(id){var e=document.querySelector('.e215r[data-rid="'+id+'"]'),x=C[id];if(!e)return;if(x===0){e.innerHTML='<span class="e215b y">🧾 لم يُرفق الزبون إيصالًا</span>';return}if(!x)return;var v=verdict(x),typed=e.querySelector('input'),val=typed?typed.value:'',open=e.querySelector('.e249i:not([hidden])');
-  e.innerHTML='<div class="e215t"><img alt="إيصال الدفع" src="'+esc(x.url)+'" data-e215z="1"><div><span class="e215b '+v[0]+'">'+esc(v[1])+'</span>'+(v[2]?'<span class="e215s">'+esc(v[2])+'</span>':'')+'<span class="e215s">هذا الفحص لا يثبت وصول المال. تأكد من حسابك البنكي قبل الاعتماد.</span>'+(x.reading?'':'<button type="button" class="e249d" data-e249d="'+id+'" aria-expanded="'+(open?'true':'false')+'">'+(open?'إخفاء التفاصيل':'التفاصيل')+'</button><div class="e249i e215s"'+(open?'':' hidden')+'>'+esc(details(x))+'</div>')+'</div></div>'+
+  e.innerHTML='<div class="e215t">'+(x.ref_last||x.read_ms||x.tried||(window.EMDAIRC&&window.EMDAIRC.has(id))?'<button type="button" class="e215p" data-e215z="1" data-src="'+esc(x.url)+'" aria-label="عرض صورة الإيصال">🧾<br>عرض<br>الإيصال</button>':'<img alt="إيصال الدفع" src="'+esc(x.url)+'" data-e215z="1">')+'<div><span class="e215b '+v[0]+'">'+esc(v[1])+'</span>'+(v[2]?'<span class="e215s">'+esc(v[2])+'</span>':'')+'<span class="e215s">هذا الفحص لا يثبت وصول المال. تأكد من حسابك البنكي قبل الاعتماد.</span>'+(x.reading?'':'<button type="button" class="e249d" data-e249d="'+id+'" aria-expanded="'+(open?'true':'false')+'">'+(open?'إخفاء التفاصيل':'التفاصيل')+'</button><div class="e249i e215s"'+(open?'':' hidden')+'>'+esc(details(x))+'</div>')+'</div></div>'+
   (rcWho()||hintOff()||x.reading?'':'<div class="e249h">💡 حدد اسم حسابك البنكي كما يظهر في الإيصال ليتأكد الفحص أن التحويل إليك. <button type="button" data-e249w="1">تحديد</button><button type="button" data-e249x="1">لاحقًا</button></div>')+
   '<div class="e215m"><input inputmode="text" placeholder="رقم الحوالة (إن لم يُقرأ)" value="'+esc(val)+'" aria-label="رقم الحوالة"><button type="button" data-e215s="'+id+'">فحص</button>'+(x.reading||x.ref_last?'':'<button type="button" data-e215o="'+id+'">🔄 قراءة</button>')+'</div>'}
 function ord(id){var o=[];try{o=window.EMDStoreV411.orders()||[]}catch(e){}if(!Array.isArray(o))o=[];for(var i=0;i<o.length;i++)if(String(o[i].id)===String(id))return o[i];return null}
@@ -33296,7 +33296,7 @@ function next(){if(busy||!Q.length)return;var id=Q.shift(),x=C[id];if(!x)return 
     return call('ref',{id:id,ref:o.ref,how:o.how,amount_ok:am.state==='ok'?true:am.state==='off'?o.amount:false,amount_state:am.state,amount_read:am.read,rc_date:dt.date,rc_time:dt.time,date_state:dt.state,who_state:wh,sig:R.info.sig,text:maskTxt(txt),langs:R.info.langs,read_ms:R.info.ms}).then(function(j){x.ref_last=j.ref_last||'';x.ref_dup=j.ref_dup||0;x.img_sim=j.img_sim||0;x.cust_match=j.cust_match;x.ref_how=o.how;x.amount_ok=am.state==='ok';x.amount_state=am.state;x.amount_read=am.read;x.need=T;x.tried=true;x.rc_date=dt.date;x.rc_time=dt.time;x.date_state=dt.state;x.who_state=wh;x.read_ms=R.info.ms;x.langs=R.info.langs})})
   .catch(function(e){PROG=null;x.dl='';x.tried=true;x.failed=true;try{console.warn('rc249',e&&e.message)}catch(_){}}).then(function(){x.reading=false;busy=false;draw(id);next()})}
 function scan(){var E=document.querySelectorAll('.e215r[data-rid]'),need=[];[].forEach.call(E,function(e){var id=e.getAttribute('data-rid');if(C[id]!==undefined)draw(id);else if(!asked[id]){asked[id]=1;need.push(+id)}});if(!need.length)return;call('list',{ids:need}).then(function(j){need.forEach(function(id){var r=(j.rows||[]).filter(function(x){return +x.id===id})[0];C[id]=r||0;if(r)r.need=total(id);draw(id);if(r&&!r.ref_last&&((function(){var m={};try{m=JSON.parse(localStorage.getItem('emd225_rc')||'{}')||{}}catch(e){}var n=m[id]||0;if(n>=2)return false;m[id]=n+1;try{localStorage.setItem('emd225_rc',JSON.stringify(m))}catch(e){}return true})()))Q.push(id)});next()}).catch(function(){need.forEach(function(id){delete asked[id]})})}
-document.addEventListener('click',function(e){var t=e.target;if(!t.closest)return;var z=t.closest('[data-e215z]');if(z){var d=document.createElement('div');d.id='e215Z';d.innerHTML='<img alt="إيصال الدفع" src="'+esc(z.src)+'">';d.onclick=function(){d.remove()};document.body.appendChild(d);return}
+document.addEventListener('click',function(e){var t=e.target;if(!t.closest)return;var z=t.closest('[data-e215z]');if(z){var d=document.createElement('div');d.id='e215Z';d.innerHTML='<img alt="إيصال الدفع" src="'+esc(z.getAttribute('data-src')||z.src)+'">';d.onclick=function(){d.remove()};document.body.appendChild(d);return}
   var dd=t.closest('[data-e249d]');if(dd){var box=dd.nextElementSibling,o=box.hasAttribute('hidden');if(o)box.removeAttribute('hidden');else box.setAttribute('hidden','');dd.textContent=o?'إخفاء التفاصيل':'التفاصيل';dd.setAttribute('aria-expanded',o?'true':'false');return}
   if(t.closest('[data-e249x]')){try{localStorage.setItem('emd249_whohint','1')}catch(x){}[].forEach.call(document.querySelectorAll('.e249h'),function(h){h.remove()});return}
   if(t.closest('[data-e249w]')){try{window.EMDQuickV173.open();setTimeout(function(){var dt=document.querySelector('#e173 details');if(dt)dt.open=true;var inp=document.querySelector('#e173 [data-o="rcWho"]');if(inp){try{inp.scrollIntoView({block:'center',behavior:'smooth'})}catch(x){}inp.focus()}},350)}catch(x){}return}
@@ -33989,6 +33989,7 @@ window.EMD247={form:form,map:map,sync:function(){return sync(true).catch(functio
 #e232Left .e454try{margin-top:6px;border:1px solid #c9a227;background:#0b1f3a;color:#f5d27a;border-radius:9px;padding:4px 10px;font-weight:800;font-size:12.5px;cursor:pointer}
 .e454rcb{border:1px solid #c9a227;background:#0b1f3a;color:#f5d27a;border-radius:9px;padding:4px 10px;font-weight:800;font-size:12.5px;cursor:pointer}
 .e454rcb[disabled]{opacity:.65}
+.e215t .e215p{width:68px;height:90px;flex:none;border-radius:8px;border:1px dashed #c9a227;background:#0b1f3a;color:#f5d27a;font:800 11.5px/1.5 inherit;cursor:zoom-in;padding:4px}
 .e454rc{margin-top:8px;padding:8px 10px;border-radius:10px;font-size:12.5px;line-height:1.8;border:1px solid #bcd0f5;background:#eef4ff;color:#0b1f3a}
 .e454rc.g{background:#ecfdf3;border-color:#86efac}.e454rc.y{background:#fffbeb;border-color:#fcd34d}.e454rc.r{background:#fef2f2;border-color:#fca5a5}
 .e454rc small{display:block;color:#475569}
@@ -34122,6 +34123,11 @@ function addTry(){var L=$('e232Left');if(!L||L.querySelector('.e454try')||L.styl
 
 /* ═════════ ٢) إيصال التحويل ═════════ */
 var AIR={};
+/* V257: نتيجة القراءة الذكية للإيصال تُحفظ في الجهاز، فلا يُعاد تحميل الإيصال ولا قراءته عند فتح الطلب مرة أخرى */
+try{var _s=JSON.parse(localStorage.getItem('emd454_air')||'{}')||{};Object.keys(_s).forEach(function(k){if(_s[k]&&_s[k].r)AIR[k]={r:_s[k].r}})}catch(e){}
+function airSave(id){try{var m=JSON.parse(localStorage.getItem('emd454_air')||'{}')||{};m[id]={r:AIR[id].r,t:Date.now()};var K=Object.keys(m);if(K.length>300)K.sort(function(a,b){return (m[a].t||0)-(m[b].t||0)}).slice(0,K.length-300).forEach(function(k){delete m[k]});localStorage.setItem('emd454_air',JSON.stringify(m))}catch(e){}}
+window.EMDAIRC={has:function(id){return !!(AIR[id]&&AIR[id].r)}};
+function rcSrc(el){return el?(el.getAttribute('data-src')||el.src||''):''}
 function omr(n){n=+n;return isFinite(n)?n.toFixed(3)+' ر.ع':'—'}
 function ord(id){var o=[];try{o=window.EMDStoreV411.orders()||[]}catch(e){}if(!Array.isArray(o))o=[];for(var i=0;i<o.length;i++)if(String(o[i].id)===String(id))return o[i];return null}
 function rcWho(){try{return (JSON.parse(localStorage.getItem('emd173_quick')||'{}')||{}).rcWho||''}catch(e){return ''}}
@@ -34144,14 +34150,14 @@ function rcDraw(box,id){var x=AIR[id],old=box.querySelector('.e454rc');if(old)ol
   if(x.busy){d.className='e454rc';d.textContent='⏳ جارٍ القراءة الذكية للإيصال…'}else if(x.err){d.className='e454rc y';d.textContent=x.err}
   else{var v=verdict(id,x.r);d.className='e454rc '+v[0];d.innerHTML='<b>'+esc(v[1])+'</b><small>'+v[2]+'</small><small>القراءة الذكية لا تثبت وصول المال. تأكد من حسابك البنكي.</small>'}
   box.appendChild(d)}
-function rcBtns(){[].forEach.call(document.querySelectorAll('.e215r[data-rid]'),function(box){var id=box.getAttribute('data-rid'),m=box.querySelector('.e215m'),img=box.querySelector('img[data-e215z]');
+function rcBtns(){[].forEach.call(document.querySelectorAll('.e215r[data-rid]'),function(box){var id=box.getAttribute('data-rid'),m=box.querySelector('.e215m'),img=box.querySelector('[data-e215z]');
   if(m&&img&&!m.querySelector('[data-e454rc]')){var b=document.createElement('button');b.type='button';b.className='e454rcb';b.setAttribute('data-e454rc',id);b.textContent=AIR[id]&&!AIR[id].err?'🧠 أعد القراءة الذكية':'🧠 قراءة ذكية';if(AIR[id]&&AIR[id].busy)b.disabled=true;m.appendChild(b)}
   if(AIR[id]&&!box.querySelector('.e454rc'))rcDraw(box,id)})}
-function rcGo(id){var box=document.querySelector('.e215r[data-rid="'+id+'"]'),img=box&&box.querySelector('img[data-e215z]');if(!img)return;
+function rcGo(id){var box=document.querySelector('.e215r[data-rid="'+id+'"]'),img=box&&box.querySelector('[data-e215z]');if(!img||!rcSrc(img))return;
   AIR[id]={busy:1};rcDraw(box,id);[].forEach.call(box.querySelectorAll('[data-e454rc]'),function(b){b.disabled=true});
-  fetch(img.src).then(function(r){if(!r.ok)throw {code:'image'};return r.blob()},function(){throw {code:'image'}}).then(shrink)
+  fetch(rcSrc(img)).then(function(r){if(!r.ok)throw {code:'image'};return r.blob()},function(){throw {code:'image'}}).then(shrink)
    .then(function(b64){return call({action:'receipt',image:b64,mime:'image/jpeg'})})
-   .then(function(j){AIR[id]={r:j.receipt||{}};var ref=String(AIR[id].r.ref||'').replace(/[^A-Za-z0-9]/g,'').toUpperCase(),bx=document.querySelector('.e215r[data-rid="'+id+'"]'),inp=bx&&bx.querySelector('.e215m input'),go=bx&&bx.querySelector('[data-e215s]');
+   .then(function(j){AIR[id]={r:j.receipt||{}};airSave(id);var ref=String(AIR[id].r.ref||'').replace(/[^A-Za-z0-9]/g,'').toUpperCase(),bx=document.querySelector('.e215r[data-rid="'+id+'"]'),inp=bx&&bx.querySelector('.e215m input'),go=bx&&bx.querySelector('[data-e215s]');
      /* رقم الحوالة الذي قرأته القراءة الذكية يُفحص تكراره بالفحص الموجود، إن لم يكن قد قُرئ */
      if(ref.length>=5&&inp&&go&&!/ينتهي بـ/.test(bx.textContent)){inp.value=ref;go.click()}})
    .catch(function(e){AIR[id]={err:errMsg(e)}})
