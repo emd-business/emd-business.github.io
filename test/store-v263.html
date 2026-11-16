@@ -8308,7 +8308,8 @@ document.addEventListener('change',function(e){if(!QL||!$('qk173'))return;if(e.t
 /* وضع «روابط فقط»: رابط المتجر العام يعرض رسالة بدل المتجر الكامل */
 var _show173=show;show=function(){if(QL&&!window.__PV&&!DEMO){q173boot();return}_show173();
   if(B.qonly&&!TKN&&!window.__PV&&!DEMO)qkMsg('⚡','الطلب عبر روابط المحل',(B.name?B.name+' ':'')+'يستقبل الطلبات عبر الروابط التي يرسلها لعملائه. تواصل معه لترسل لك رابط الطلب.',false)};
-var _show262=show;show=function(){if(QL&&QL.pend){var d=B&&B.ql&&typeof B.ql==='object'?B.ql[QL.pend]:null,o=null;
+var _show262=show;show=function(){if(QL&&!QL.pend&&!QL.bad&&QK&&QK.charAt(0)!=='@'&&B&&B.ql&&typeof B.ql==='object'){var hh=qh173(QK),kk=Object.keys(B.ql).filter(function(i){return B.ql[i]&&B.ql[i].w===hh})[0];if(kk)QL={pend:kk}}
+  if(QL&&QL.pend){var d=B&&B.ql&&typeof B.ql==='object'?B.ql[QL.pend]:null,o=null;
     if(d&&typeof d.q==='string')o=/^eyJ/.test(d.q)?q173dec(d.q):q173short(d.q);
     if(!o){QL={bad:1}}else if(d.o){QL={off:1}}else{delete o.l;if(d.l)o.l=String(d.l).slice(0,30);QL=o}}
   if(QL&&QL.off&&!window.__PV&&!DEMO){qkMsg('⏸️','هذا الرابط غير متاح حاليًا','يرجى التواصل مع المحل.',!B.qonly);return}

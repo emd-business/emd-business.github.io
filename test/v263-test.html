@@ -32803,15 +32803,16 @@ function dec(s){s=String(s||'');if(/^eyJ/.test(s)){try{var t=s.replace(/-/g,'+')
 function cntOf(o){if(!o)return '';if(o.c||o.hc){var c=o.c||'';if(!c&&o.hc)cats(products()).forEach(function(x){if(qh173(x)===o.hc)c=x});return 'القسم «'+(c||'—')+'»'}var n=(o.k||o.hk||[]).length;return n+' منتج'}
 function links(){var q=Q0(),ql=q.ql||{},A=[];
   Object.keys(ql).forEach(function(id){var d=ql[id];if(!d||typeof d.q!=='string')return;var o=dec(d.q)||{},rd=Array.isArray(o.r)&&o.r.some(function(v){return +v>0});
-    A.push({id:id,ref:'@'+id,t:+d.t||0,o:!!d.o,e:o.e||0,u:linkUrl(id),title:d.l||cntOf(o),sub:stTxt(d.t)+' · '+(rd?'طلب جاهز':'اختيار حر')+(d.l?' · '+cntOf(o):'')})});
+    A.push({id:id,ref:'@'+id,t:+d.t||0,o:!!d.o,e:o.e||0,u:oldU(d.ou)||linkUrl(id),title:d.l||cntOf(o),sub:stTxt(d.t)+' · '+(rd?'طلب جاهز':'اختيار حر')+(d.l?' · '+cntOf(o):'')})});
   A.sort(function(a,b){return b.t-a.t});
   (q.recent||[]).forEach(function(r,i){if(!r||!r.u||/[?&]q=@/.test(r.u))return;var m=String(r.u).match(/[?&]q=([^&]*)/),o=m?dec(decodeURIComponent(m[1])):null;
     A.push({id:'',ref:'#'+i,t:0,o:false,e:o&&o.e||0,u:r.u,title:r.l||(r.n+' منتج'),sub:String(r.at||'')+(r.l?' · '+r.n+' منتج':'')})});
   return A.slice(0,40)}
 function pubQl(){var ql=Q0().ql||{},ids=Object.keys(ql).filter(function(id){return ql[id]&&typeof ql[id].q==='string'}).sort(function(a,b){return (+ql[b].t||0)-(+ql[a].t||0)}),o={},n=2;
-  for(var i=0;i<ids.length&&i<60;i++){var d=ql[ids[i]],x={q:d.q,t:+d.t||0};if(d.l)x.l=String(d.l).slice(0,30);if(d.o)x.o=1;var s=JSON.stringify(x).length+ids[i].length+4;if(n+s>QLMAX)break;n+=s;o[ids[i]]=x}
+  for(var i=0;i<ids.length&&i<60;i++){var d=ql[ids[i]],x={q:d.q,t:+d.t||0};if(d.l)x.l=String(d.l).slice(0,30);if(d.o)x.o=1;if(d.w)x.w=String(d.w).slice(0,8);var s=JSON.stringify(x).length+ids[i].length+4;if(n+s>QLMAX)break;n+=s;o[ids[i]]=x}
   return ids.length?o:null}
 function qlFull(extra){var ql=Object.assign({},Q0().ql||{});if(extra)Object.assign(ql,extra);var ids=Object.keys(ql);if(ids.length<60&&JSON.stringify(ql).length<=QLMAX)return false;return true}
+function oldU(u){u=String(u||'');var k=u.indexOf('?s=');return k>-1?URL0+u.slice(k+3):''}
 function newId(ql){var c='abcdefghijkmnpqrstuvwxyz23456789',id;do{id='';for(var i=0;i<4;i++)id+=c.charAt(Math.floor(Math.random()*c.length))}while(ql[id]);return id}
 /* يجلب الروابط المنشورة (قد تكون أُنشئت من جهاز آخر) ويدمجها مع روابط هذا الجهاز */
 function pullQl(){var S=ST();if(!S||!S.pubAt||!(S.pubSlug||S.slug))return Promise.resolve(false);
@@ -32830,7 +32831,7 @@ function lightPub(){var S=ST(),c=C();if(!S||!S.pubStore||!S.pubStore.brand||!Arr
    .then(function(r){return r.json().catch(function(){return null})}).then(function(j){if(!j||!j.ok)throw new Error(j&&j.error==='brand_too_big'?'بيانات المتجر كبيرة جدًا. احذف بعض صور المعرض ثم أعد المحاولة.':'تعذّر حفظ الرابط. تحقق من الاتصال وأعد المحاولة.');
      S.pubStore.brand=brand;window.EMDStoreV411.save()})}
 function editBar(){var e=V.edit;
-  return '<div class="e262ed"><div><b>✏️ تعديل الرابط «'+esc(e.title)+'»</b><small>'+(e.id?'بعد الحفظ يبقى الرابط نفسه، ويرى العميل التعديل مباشرة.':'هذا رابط قديم لا يمكن تغييره. عند الحفظ تحصل على رابط جديد يمكن تعديله لاحقًا، ويبقى الرابط القديم يعمل كما كان.')+'</small>'+(e.miss?'<small class="w">'+e.miss+' من منتجات الرابط لم تعد موجودة في منتجاتك، فأُزيلت منه.</small>':'')+'</div><button type="button" data-a="xed">إلغاء</button></div>'+
+  return '<div class="e262ed"><div><b>✏️ تعديل الرابط «'+esc(e.title)+'»</b><small>'+(e.id?'بعد الحفظ يبقى الرابط نفسه، ويرى العميل التعديل مباشرة.':'هذا رابط أُنشئ قبل ميزة التعديل. بعد الحفظ يبقى الرابط نفسه أيضًا، ويرى العميل التعديل مباشرة.')+'</small>'+(e.miss?'<small class="w">'+e.miss+' من منتجات الرابط لم تعد موجودة في منتجاتك، فأُزيلت منه.</small>':'')+'</div><button type="button" data-a="xed">إلغاء</button></div>'+
    (e.id?'<label class="kill'+(V.po?' on':'')+'"><input type="checkbox" data-v="po"'+(V.po?' checked':'')+'><span><b>⏸️ إيقاف هذا الرابط فقط</b><br><small>من يفتحه يرى «هذا الرابط غير متاح حاليًا». أزل العلامة واحفظ لإعادة تشغيله.</small></span></label>':'')}
 function startEdit(ref){var A=links(),x=A.filter(function(a){return a.ref===ref})[0];if(!x)return;var raw,lab='';
   if(x.id){var d=(Q0().ql||{})[x.id];raw=d&&d.q;lab=d&&d.l||''}else{var m=String(x.u).match(/[?&]q=([^&]*)/),lm=String(x.u).match(/[?&]l=([^&]*)/);raw=m?decodeURIComponent(m[1]):'';lab=lm?decodeURIComponent(lm[1]).replace(/_/g,' '):''}
@@ -32841,7 +32842,7 @@ function startEdit(ref){var A=links(),x=A.filter(function(a){return a.ref===ref}
   else{var K=o.k||(o.hk||[]).map(function(h){return H[h]||''});K.forEach(function(k,i){if(!k||!L.some(function(p){return p.k===k})){miss++;return}V.sel[k]=true;if(o.r&&+o.r[i]>0)V.qty[k]=+o.r[i]});V.mode=Array.isArray(o.r)&&o.r.some(function(v){return +v>0})?'ready':'free'}
   var y=typeof o.y==='string'?o.y:'';
   V.lo={x:!!o.x,pk:!!o.p,fee:o.d!==0,cod:y?y.indexOf('c')>-1:null,bank:y?y.indexOf('b')>-1:null,exp:o.e?'keep':'0',max:+o.m||20};V.ke=+o.e||0;
-  V.po=!!x.o;V.label=lab;V.edit={id:x.id,ref:x.ref,title:x.title,miss:miss};V.step='make';V.res=null;V.err='';V.optOpen=false;paint();$('e173').querySelector('.bd').scrollTop=0}
+  V.po=!!x.o;V.label=lab;V.edit={id:x.id,ref:x.ref,title:x.title,miss:miss,ow:x.id?'':qh173(String(raw).trim()),ou:x.id?'':x.u};V.step='make';V.res=null;V.err='';V.optOpen=false;paint();$('e173').querySelector('.bd').scrollTop=0}
 function noEdit(){V.edit=null;V.lo=null;V.po=false;V.ke=0;V.sel={};V.qty={};V.label='';V.cat='';V.catLink=false}
 function footMake(){var n=selKeys().length,ok=(V.catLink&&V.cat&&V.mode==='free')||(n>0&&n<=30);
   return '<button type="button" class="go" data-a="make"'+(ok&&!V.busy?'':' disabled')+'>'+(V.busy?'⏳ '+esc(V.busy):(V.edit?'💾 حفظ التعديل':'⚡ إنشاء الرابط'))+'</button>'}
@@ -32933,13 +32934,13 @@ function make(){if(V.busy)return;var S=ST(),q=Q(),L=products(),K=selKeys(),catMo
     return {qs:qs,l:l,e:u.e}};
   var prev=null,id='';
   var put=function(){var c=core(),q0=Q0(),ql=Object.assign({},q0.ql||{});id=isUpd?V.edit.id:newId(ql);prev={ql:q0.ql,recent:q0.recent};
-    var d={q:c.qs,t:Date.now()};if(c.l)d.l=c.l.slice(0,30);if(isUpd&&V.po)d.o=1;ql[id]=d;q0.ql=ql;
+    var d={q:c.qs,t:Date.now()};if(c.l)d.l=c.l.slice(0,30);if(isUpd&&V.po)d.o=1;if(isUpd&&ql[id]){if(ql[id].w)d.w=ql[id].w;if(ql[id].ou)d.ou=ql[id].ou}if(isOld){d.w=V.edit.ow;d.ou=V.edit.ou}ql[id]=d;q0.ql=ql;
     if(isOld){var ri=+String(V.edit.ref).slice(1),R=(q0.recent||[]).slice();if(R[ri])R.splice(ri,1);q0.recent=R}
     saveQ0(q0);return c};
   var undo=function(){if(!prev)return;var q0=Q0();q0.ql=prev.ql;q0.recent=prev.recent;saveQ0(q0)};
-  var done=function(c){var cnt=catMode?need.length:K.length,url=linkUrl(id),qq=Q();
+  var done=function(c){var cnt=catMode?need.length:K.length,cur=(Q0().ql||{})[id]||{},url=oldU(cur.ou)||linkUrl(id),qq=Q();
     var sum=(V.mode==='ready'?'طلب جاهز':'اختيار حر')+' · '+(catMode?'القسم «'+V.cat+'»':cnt+' منتج')+(c.e?' · صالح حتى '+dayTxt(c.e):'');
-    V.res={url:url,sum:sum,l:c.l,upd:isUpd,old:isOld,po:isUpd&&V.po};V.step='res';V.busy=false;noEdit();paint();$('e173').querySelector('.bd').scrollTop=0};
+    V.res={url:url,sum:sum,l:c.l,upd:isUpd||isOld,old:false,po:isUpd&&V.po};V.step='res';V.busy=false;noEdit();paint();$('e173').querySelector('.bd').scrollTop=0};
   var fail=function(e){undo();V.busy=false;V.err=e&&e.message||'تعذّر حفظ الرابط. تحقق من الاتصال وأعد المحاولة.';paint()};
   if(miss.length){miss.forEach(function(k){var o=S.prod[k]||(S.prod[k]={on:false,desc:'',old:''});o.on=true});window.EMDStoreV411.save()}
   V.busy=miss.length?'جارٍ رفع '+miss.length+' منتج إلى السحابة…':isUpd?'جارٍ حفظ التعديل…':'جارٍ تجهيز الرابط…';paint();
