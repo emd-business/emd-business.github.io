@@ -27487,7 +27487,7 @@ function pvOpen(){var w=$('emd414Pv');if(w)w.remove();w=document.createElement('
   w.querySelector('iframe').srcdoc=pvHtml()}
 
 /* ===== V413: النشر الفعلي في السحابة + طلبات المتجر ===== */
-var URL0='https://raw.githack.com/emd-business/emd-business.github.io/test-v414/test/store-v267.html?s=';
+var URL0='https://emd-business.github.io/store/?s=';
 function C(){var c=window.EMDCloudV93;return c&&c.api}
 function logged(){var c=C();try{return !!(c&&c.uid())}catch(e){return false}}
 function stamp(){var d=new Date(),z=function(n){return (n<10?'0':'')+n};return d.getDate()+'/'+(d.getMonth()+1)+' · '+z(d.getHours())+':'+z(d.getMinutes())}
@@ -27650,12 +27650,12 @@ function onClick(e){var w=$('emd411Store'),t=e.target;if(t===w){close();return}
   else if(act==='share')window.open('https://wa.me/?text='+encodeURIComponent('تفضّل بزيارة متجرنا 🛍️ '+URL0+(S.pubSlug||S.slug)),'_blank');
   else if(act==='poll')poll(true);
   else if(act==='acc'||act==='rej'||act==='owa'){var oid=a.closest('[data-o]').getAttribute('data-o');if(act==='acc')accept(oid,a);else if(act==='rej')reject(oid,a);else owa(oid)}
-  else if(act==='copy'){var u='https://raw.githack.com/emd-business/emd-business.github.io/test-v414/test/store-v267.html?s='+(S.pubSlug||S.slug);try{navigator.clipboard.writeText(u).then(function(){toast('✓ تم نسخ الرابط')},function(){toast(u)})}catch(x){toast(u)}}}
+  else if(act==='copy'){var u='https://emd-business.github.io/store/?s='+(S.pubSlug||S.slug);try{navigator.clipboard.writeText(u).then(function(){toast('✓ تم نسخ الرابط')},function(){toast(u)})}catch(x){toast(u)}}}
 var repaintT;
 function onInput(e){var t=e.target;
   if(t.classList.contains('srch')){q=t.value.trim();paint();return}
   var k=t.getAttribute('data-k');if(k&&t.type!=='checkbox'){S[k]=t.type==='number'?Math.max(0,num(t.value)):(k==='slug'?slugFull(t.value.toLowerCase().replace(/\s+/g,'-')):t.value);save();
-    clearTimeout(repaintT);repaintT=setTimeout(function(){var m=$('emd411Store').querySelector('.mini');if(m)m.outerHTML=mini();if(k==='slug'){var u=$('emd411Store').querySelector('.url');if(u)u.textContent='https://raw.githack.com/emd-business/emd-business.github.io/test-v414/test/store-v267.html?s='+(S.slug||'اسم-متجرك');var c=$('emd411Store').querySelector('[data-a="copy"]');if(c)c.disabled=!slugOk(S.slug)}},120);return}
+    clearTimeout(repaintT);repaintT=setTimeout(function(){var m=$('emd411Store').querySelector('.mini');if(m)m.outerHTML=mini();if(k==='slug'){var u=$('emd411Store').querySelector('.url');if(u)u.textContent='https://emd-business.github.io/store/?s='+(S.slug||'اسم-متجرك');var c=$('emd411Store').querySelector('[data-a="copy"]');if(c)c.disabled=!slugOk(S.slug)}},120);return}
   var pd=t.getAttribute('data-pd');if(pd){var r=t.closest('.pr');pset(r.getAttribute('data-p'))[pd]=t.value;save()}}
 function onChange(e){var t=e.target,k=t.getAttribute('data-k');
   if(k&&t.type==='checkbox'){S[k]=t.checked;if(k==='paused')setTimeout(setOpen,0);if((k==='cod'||k==='bank')&&!S.cod&&!S.bank){S[k]=true;t.checked=true;toast('يجب اختيار طريقة دفع واحدة على الأقل')}save();if(k==='bank'||k==='hideName')paint();else{var m=$('emd411Store').querySelector('.mini');if(m)m.outerHTML=mini()}return}
@@ -30568,7 +30568,7 @@ function drawFlex(o,c,logo,s,k){var h=H(),DPM=8,W=Math.round(c.w*DPM),Ht=Math.ro
     x.lineWidth=Math.max(2,u*0.45);if(s.ibox!==false)x.strokeRect(L,bx,cw,y-bx+0.6*u);y+=2.6*u}
   if(e.courier){var cr=h.courier(o);t('الشحن: '+(cr||'—'),4.2*u,true,'right',R,y,cw*0.62);f(3.8*u,false);x.textAlign='left';var d=new Date(o.orderDate||o.created||Date.now());x.fillText(isNaN(d)?'':d.toLocaleDateString('ar-OM',{day:'numeric',month:'long'}),L,y+0.3*u);y+=6.4*u}
   var note=String(o.note||o.notes||'').trim();if(e.note&&note){wrap('ملاحظة: '+note,4.2*u,false,cw,2).forEach(function(l){t(l,4.2*u,false);y+=5.4*u})}
-  /* V426: رسوم الشحن */if(e.fee){var fe=num(o.deliveryFee!=null&&o.deliveryFee!==''?o.deliveryFee:(o.shippingFee||o.delivery||0)),fc=(pf.currency==='OMR'||!pf.currency)?'ر.ع':pf.currency;t('رسوم الشحن: '+(window.E266&&E266.hid(o)&&!(fe>0)?'—':window.E266&&E266.cour(o)?(fe>0?fe.toFixed(3)+' '+fc+' · ':'')+'تُدفع للمندوب':(fe>0?fe.toFixed(3)+' '+fc:'مجانًا')),4.8*u,true,e.name?'right':'center',e.name?R:W/2);y+=6.4*u}
+  /* V426: رسوم الشحن */if(e.fee){var fe=num(o.deliveryFee!=null&&o.deliveryFee!==''?o.deliveryFee:(o.shippingFee||o.delivery||0)),fc=(pf.currency==='OMR'||!pf.currency)?'ر.ع':pf.currency;t('رسوم الشحن: '+(window.E266&&E266.cour(o)?(fe>0?fe.toFixed(3)+' '+fc+' · ':'')+'تُدفع للمندوب':(fe>0?fe.toFixed(3)+' '+fc:'مجانًا')),4.8*u,true,e.name?'right':'center',e.name?R:W/2);y+=6.4*u}
   var due=h.dueOf(o),cur=(pf.currency==='OMR'||!pf.currency)?'ر.ع':pf.currency,tr=h.track(o);
   if(e.amount||(e.qr&&tr)){y+=0.8*u;var rowH=(e.amount?16:20)*u,qrS=(e.qr&&tr)?rowH:0,boxW=e.amount?(qrS?cw-qrS-3*u:cw):0,by=y;
     if(e.amount){var fill=s.amt==='fill';x.lineWidth=Math.max(3,u*0.7);if(fill)x.fillRect(R-boxW,by,boxW,rowH);else x.strokeRect(R-boxW+x.lineWidth/2,by+x.lineWidth/2,boxW-x.lineWidth,rowH-x.lineWidth);x.fillStyle=fill?'#fff':'#000';
@@ -32691,7 +32691,7 @@ setInterval(wrap,3000);
 <script id="EMD-V173-quick">
 (function(){'use strict';
 if(window.__EMD_V173__)return;window.__EMD_V173__=true;
-var URL0='https://raw.githack.com/emd-business/emd-business.github.io/test-v414/test/store-v267.html?s=',KEY='emd173_quick',PK='استلام من المحل',ZF='توصيل برسوم يحددها المحل';
+var URL0='https://emd-business.github.io/store/?s=',KEY='emd173_quick',PK='استلام من المحل',ZF='توصيل برسوم يحددها المحل';
 function $(i){return document.getElementById(i)}
 function esc(t){return String(t==null?'':t).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function num(v){v=parseFloat(String(v==null?'':v).replace(/[^\d.\-]/g,''));return isFinite(v)?v:0}
@@ -33491,7 +33491,7 @@ function desc(f){var P=f.payload||{};if(f.kind==='product'){return '<table class
     return '<tr><td>'+esc(it.name)+(p?'':' <small>(منتج جديد)</small>')+'</td><td>'+Object.keys(s).filter(function(k){return LBL[k]}).map(function(k){var o=cur(p,k);return LBL[k]+': '+(o!==''&&o!=null?'<del>'+esc(k==='stock'?o:f3(o))+'</del> ← ':'')+'<ins>'+esc(k==='stock'?s[k]:f3(s[k]))+'</ins>'}).join('<br>')+'</td></tr>'}).join('')+'</tbody></table>'}
   return ''}
 function setStatus(f,st){return req('/rest/v1/emd_support_fixes?id=eq.'+encodeURIComponent(f.id),{method:'PATCH',prefer:'return=minimal',body:{status:st,done_at:new Date().toISOString()}})}
-function show(list){if(shown||!list.length)return;shown=true;var f=list[0];
+function show(list){var SF=window.EMDStoreFixV267;if(SF)list=list.filter(function(x){return !SF.expired(x)});if(shown||!list.length)return;shown=true;var f=list[0];if(f.kind==='store'){if(SF){SF.show(f,function(){shown=false;setTimeout(check,400)},setStatus);return}shown=false;return}
   var o=document.createElement('div');o.className='e222-ov';
   var isNote=f.kind!=='product';
   o.innerHTML='<div class="e222-box" role="dialog" aria-modal="true" aria-labelledby="e222T"><h3 id="e222T">'+(isNote?'📩 رسالة من فريق الدعم':'🛠 الدعم أرسل لك تعديلًا')+'</h3>'+
@@ -34427,7 +34427,7 @@ window.EMDAIV454={mask:mask,call:call,apply:apply,verdict:verdict,hmask:hmask,hc
  function selectAll(L){st.sel={};L.forEach(function(c){st.sel[c.k]=1})}
  function selCount(){return Object.keys(st.sel).length}
  function personal(text,c){var nm=String((c&&c.name)||'').trim().split(/\s+/)[0]||FALLBACK;var t=String(text||'').split(NAME).join(nm);return t}
- function storeUrl(){try{var S=window.EMDStoreV411&&window.EMDStoreV411.state&&window.EMDStoreV411.state();var s=S&&(S.pubSlug||(S.pubAt&&S.slug));return s?'https://raw.githack.com/emd-business/emd-business.github.io/test-v414/test/store-v267.html?s='+encodeURIComponent(s):''}catch(e){return ''}}
+ function storeUrl(){try{var S=window.EMDStoreV411&&window.EMDStoreV411.state&&window.EMDStoreV411.state();var s=S&&(S.pubSlug||(S.pubAt&&S.slug));return s?'https://emd-business.github.io/store/?s='+encodeURIComponent(s):''}catch(e){return ''}}
  function finalText(){var t=st.text.replace(/\s+$/,'');var u=storeUrl();if(st.store&&u)t+='\n\n🛍️ متجرنا: '+u;if(st.stop)t+='\n\n'+STOP;return t}
  function toast(m){var t=$('e260T');if(!t)return;t.textContent=m;t.classList.add('on');clearTimeout(toast._t);toast._t=setTimeout(function(){t.classList.remove('on')},1800)}
  function copy(txt,msg){function ok(){toast(msg)}try{navigator.clipboard.writeText(txt).then(ok,fb)}catch(e){fb()}function fb(){var a=document.createElement('textarea');a.value=txt;document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(_){}a.remove();ok()}}
@@ -34625,48 +34625,161 @@ window.EMDAIV454={mask:mask,call:call,apply:apply,verdict:verdict,hmask:hmask,hc
 <script id="EMD-V266-fee">
 (function(){'use strict';
 var K='emd266_fee';
-function mode(){try{var v=localStorage.getItem(K);return v==='courier'||v==='hide'?v:''}catch(e){return ''}}
-function on(){return mode()!==''}
-function setMode(v){try{if(v==='courier'||v==='hide')localStorage.setItem(K,v);else localStorage.removeItem(K)}catch(e){}}
+function on(){try{return localStorage.getItem(K)==='courier'}catch(e){return false}}
+function setOn(v){try{if(v)localStorage.setItem(K,'courier');else localStorage.removeItem(K)}catch(e){}}
 function St(){try{return window.EMDStoreV411&&window.EMDStoreV411.state()}catch(e){return null}}
 function num(v){v=parseFloat(String(v==null?'':v).replace(/[٠-٩]/g,function(d){return '٠١٢٣٤٥٦٧٨٩'.indexOf(d)}));return isFinite(v)?v:0}
 function esc(t){return String(t==null?'':t).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 /* هل رسوم توصيل هذا الطلب تُدفع للمندوب؟ */
 function cour(o){if(!o)return false;if(String(o.feePaid||'')==='courier')return true;var n=String(o.note||o.notes||'');return n.indexOf('رسوم التوصيل تُدفع للمندوب')>-1||n.indexOf('رسوم التوصيل للمندوب')>-1}
-/* هل رسوم توصيل هذا الطلب يحددها المتجر (لم تظهر للعميل)؟ */
-function hid(o){return !!o&&String(o.note||o.notes||'').indexOf('رسوم التوصيل يحددها المتجر')>-1}
-window.E266={on:on,mode:mode,cour:cour,hid:hid};
+window.E266={on:on,cour:cour};
 
 /* أ) الإعداد في «🛍️ متجري ← التوصيل والدفع» */
-function box(){var m=mode(),S=St()||{},an=String(S.announce||'');
-  function bt(v,t,d){return '<button type="button" data-e266="'+v+'" aria-pressed="'+(m===v)+'">'+t+'<small>'+d+'</small></button>'}
-  return '<div class="e266"><b>🚚 رسوم التوصيل عند العميل</b><div class="ch">'+
-   bt('','🏪 تظهر للعميل وتُحسب في الطلب','تُضاف الرسوم إلى إجمالي الطلب. إذا كانت الرسوم 0 يرى العميل «مجاني».')+
-   bt('courier','💵 تُدفع للمندوب، وتظهر للعميل للعلم','لا تُضاف الرسوم إلى الإجمالي، ويرى العميل «التوصيل: يُدفع للمندوب عند الاستلام» مع رسوم منطقته.')+
-   bt('hide','🙈 لا تظهر للعميل، وتحددها أنت','لا يرى العميل أي مبلغ للتوصيل، بل «يحدد المتجر رسوم التوصيل عند التواصل معك». تكتب الرسوم بنفسك في الطلب.')+'</div>'+
-   (m==='courier'?'<p class="hint">الرسوم العامة ورسوم المناطق تظهر للعميل للعلم فقط («مسقط · 2.000 للمندوب»)، ولا يعمل «توصيل مجاني فوق».</p>':'')+
-   (m==='hide'?'<p class="hint">يختار العميل منطقته دون أسعار، والإجمالي للمنتجات فقط. الرسوم والمناطق أعلاه تبقى محفوظة لو رجعت لخيار آخر.</p>':'')+
-   (m&&/مجان/.test(an)?'<p class="hint w">⚠️ نص شريط الإعلان في تبويب «الواجهة» يذكر التوصيل المجاني: «'+esc(an)+'». غيّره حتى لا يتعارض مع هذا الخيار.</p>':'')+
+function box(){var c=on(),S=St()||{},an=String(S.announce||'');
+  return '<div class="e266"><b>🚚 من يستلم رسوم التوصيل؟</b><div class="ch">'+
+   '<button type="button" data-e266="" aria-pressed="'+(!c)+'">🏪 المتجر<small>تُضاف الرسوم إلى إجمالي الطلب. إذا كانت الرسوم 0 يرى العميل «مجاني».</small></button>'+
+   '<button type="button" data-e266="courier" aria-pressed="'+c+'">💵 المندوب أو مكتب التوصيل عند الاستلام<small>لا تُضاف الرسوم إلى الإجمالي، ويرى العميل «التوصيل: يُدفع للمندوب عند الاستلام» بدل «مجاني».</small></button></div>'+
+   (c?'<p class="hint">الرسوم العامة ورسوم المناطق تظهر للعميل للعلم فقط («مسقط · 2.000 للمندوب»)، ولا يعمل «توصيل مجاني فوق».</p>'+
+      (/مجان/.test(an)?'<p class="hint w">⚠️ نص شريط الإعلان في تبويب «الواجهة» يذكر التوصيل المجاني: «'+esc(an)+'». غيّره حتى لا يتعارض مع هذا الخيار.</p>':''):'')+
    (S.pubAt?'<p class="hint w">اضغط «🚀 انشر متجري» في تبويب «الرابط» ليظهر التغيير في متجرك.</p>':'')+'</div>'}
 function hookZ(){var f=window.EMD156Z;if(!f||f.__e266)return !!f;var w=function(){return box()+f.apply(this,arguments)};w.__e266=1;window.EMD156Z=w;return true}
-document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-e266]');if(!b)return;setMode(b.getAttribute('data-e266'));
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-e266]');if(!b)return;setOn(b.getAttribute('data-e266')==='courier');
   try{window.EMDStoreV411.paint()}catch(x){}},true);
 
 /* بيانات المتجر المنشورة: رسوم المناطق تُرسل صفرًا، والرسوم الحقيقية تُحفظ للعرض فقط (fc) */
-function fixBrand(e,S){e=e||{};delete e.fc;delete e.fh;if(!on())return e;var z=Array.isArray(e.zones)?e.zones:[];
-  if(mode()==='hide'){e.fh=1;e.zones=z.map(function(x){return x&&+x.f>0?{n:x.n,f:0}:x});return e}
+function fixBrand(e,S){e=e||{};delete e.fc;if(!on())return e;var z=Array.isArray(e.zones)?e.zones:[];
   e.fc={s:Math.max(0,Math.round(num(S&&S.ship)*1000)/1000),z:z.filter(function(x){return x&&+x.f>0}).map(function(x){return {n:x.n,f:+x.f}})};
   e.zones=z.map(function(x){return x&&+x.f>0?{n:x.n,f:0}:x});return e}
 window.E266.brand=fixBrand;
 
 /* ب) طلبات المتجر الواصلة: تُعلَّم «للمندوب» */
 function hookL(){var M=window.EMD247;if(!M||M.__e266)return !!M;var lo=M.local;
-  M.local=function(obj,o){try{if(mode()==='hide'&&obj&&o&&!(+o.ship>0)){if(!hid(obj))obj.note=(obj.note?obj.note+'\n':'')+'رسوم التوصيل يحددها المتجر (لم تظهر للعميل)'}else if(mode()==='courier'&&obj&&o&&!(+o.ship>0)&&String(obj.feePaid||'')!=='paid'){if(!cour(obj))obj.note=(obj.note?obj.note+'\n':'')+'رسوم التوصيل تُدفع للمندوب عند الاستلام';obj.feePaid='courier'}}catch(e){}
+  M.local=function(obj,o){try{if(on()&&obj&&o&&!(+o.ship>0)&&String(obj.feePaid||'')!=='paid'){if(!cour(obj))obj.note=(obj.note?obj.note+'\n':'')+'رسوم التوصيل تُدفع للمندوب عند الاستلام';obj.feePaid='courier'}}catch(e){}
     return lo?lo.apply(this,arguments):undefined};M.__e266=1;return true}
 
 var n=0;(function tick(){var a=hookZ(),c=hookL();if(!(a&&c)&&n++<120)setTimeout(tick,250)})();
 })();
 </script>
 <!-- ===== نهاية EMD V266 ===== -->
+
+<!-- EMD V262: إعداد المتجر من فريق الدعم (يطبّقه التاجر بضغطة «تطبيق ونشر») -->
+<style id="EMD-V262-storefix-css">
+.e262-im{display:inline-block;width:44px;height:44px;border-radius:10px;object-fit:cover;vertical-align:middle;background:#f1f5f9;border:1px solid #e5e7eb}
+.e262-cv{width:96px;height:44px}
+.e262-sk{margin:10px 0 0;padding:10px 12px;border-radius:12px;background:#fff7ed;color:#9a3412;font-size:13px;line-height:1.7}
+.e262-res{margin:10px 0 0;padding:12px;border-radius:12px;background:#ecfdf5;color:#065f46;font-size:14px;line-height:1.8;word-break:break-all}
+.e262-res.bad{background:#fef2f2;color:#991b1b}
+.e262-res a{color:inherit;font-weight:700}
+.e262-hb{display:flex;align-items:center;gap:8px;width:100%;margin-top:8px;padding:10px 12px;border:1px solid #e5e7eb;border-radius:12px;background:#fff;color:#111827;font:inherit;font-size:14px;cursor:pointer;text-align:start}
+.e262-hl{display:grid;gap:8px;margin-top:8px}
+.e262-hl div{display:flex;justify-content:space-between;gap:10px;padding:10px 12px;border:1px solid #e5e7eb;border-radius:12px;font-size:13.5px;line-height:1.6}
+.e262-hl small{display:block;color:#6b7280}
+.e262-tg{flex:none;align-self:center;padding:3px 10px;border-radius:999px;font-size:12px;background:#f1f5f9;color:#334155}
+.e262-tg.applied{background:#dcfce7;color:#166534}.e262-tg.rejected{background:#fee2e2;color:#991b1b}
+</style>
+<script id="EMD-V262-storefix">
+(function(){
+'use strict';
+if(window.__EMD_V267S__)return;window.__EMD_V267S__=true;
+var DAYS=3,URL0='https://emd-business.github.io/store/?s=';
+/* الحقول المسموح للدعم بتعديلها فقط (نفس القائمة المغلقة في الخادم). البريد وكلمة المرور والاشتراك وبيانات الحساب البنكي ليست منها. */
+var F={name:'اسم المتجر',sub:'الوصف المختصر',announce:'شريط الإعلان',desc:'نبذة عن المتجر',slug:'اسم الرابط',logo:'الشعار',cover:'صورة الغلاف',
+  skin:'الثيم',accent:'اللون الرئيسي',layout:'التصميم',font:'خط العناوين',shape:'شكل صور المنتجات',wa:'رقم واتساب',ig:'حساب إنستغرام',city:'المدينة',
+  ship:'سعر التوصيل',free:'التوصيل مجاني للطلبات فوق',cod:'الدفع عند الاستلام',bank:'التحويل البنكي',paused:'حالة المتجر'};
+var NAMES={"night": "ليل ذهبي", "ivory": "عاجي أتيليه", "marble": "الرخام الأسود", "emerald": "زمرد ملكي", "navy": "كحلي EMD", "plum": "ليلك ومخمل", "royal": "أزرق ملكي", "champ": "شمبانيا ذهبية", "oud": "عود وبخور", "rest": "مطعم", "ig": "ملف إنستغرام", "candy": "حلويات مرحة", "bout": "بوتيك مرسوم", "bake": "مخبز دافئ", "photo": "صور أولًا", "print3d": "طابعة ثلاثية الأبعاد", "cmyk": "بصمة الطباعة", "sticker": "عالم الملصقات", "moon": "قمر الليل", "calm": "هادئ", "laser": "نقش بالليزر", "stamp": "ختم الطباعة", "factory": "خط الإنتاج", "capsule": "آلة المفاجآت", "bite": "قضمة الكوكيز", "story": "قصص المنتجات", "crumble": "لحظة الكسر", "cbox": "علبة الكوكيز", "jelly": "حلوى مغلّفة", "arch": "رواق الأقواس", "awning": "المظلة الإيطالية", "tray": "صينية الضيافة", "mihmas": "دفتر المحمصة", "vitrine": "خزانة العطور", "rack": "حامل الأزياء", "wrap": "الشريط الذهبي", "luban": "دخان اللبان", "dune": "كثبان ظفار", "oven": "فوهة الفرن", "dough": "عجين الصباح", "bloom": "تفتّح الباقة", "vase": "مزهرية الزجاج", "conserv": "البيت الزجاجي", "herbar": "دفتر النبات", "copier": "ماسح المستندات", "fold": "الورقة المطوية", "ink": "قطرة الحبر", "typeset": "صفّ الحروف", "stack": "طبقات الساندويتش", "truck": "عربة الطعام", "grill": "مكبس الشواء", "deli": "ورق المطعم", "balloon": "سماء البالونات", "curtain": "ستارة الحفل", "invite": "بطاقة الدعوة", "firework": "الألعاب النارية", "oilfest": "ليالي مطرح", "dawn": "مطبخ الفجر", "mosaic": "نجمة الفسيفساء", "engrave": "نقش الجبل", "cutout": "قصاصات الورق", "plan": "مخطط البسكويت", "falaj": "فلج النخيل", "fort": "حصن التمور", "souq": "السوق المسقوف", "gearworks": "معصرة الدبس", "ripen": "موسم الرطب", "majlis": "المجلس", "iftar": "مائدة الإفطار", "crew": "طاقم المطبخ", "harbor": "ميناء الوقت", "rainy": "زجاج المطر", "combo": "وجبتك الكاملة", "fries": "لعبة البطاطس", "jukebox": "صندوق الموسيقى", "premiere": "العرض الأول", "epic": "ملحمة الصحراء", "series": "موسم المسلسل", "silent": "الفيلم الصامت", "shopfront": "واجهة المحل", "constell": "سماء النجوم", "henna": "نقش الحناء", "tiers": "طوابق الكيكة", "patisserie": "واجهة الحلواني", "wish": "شمعة الأمنية", "hive": "خلية العسل", "globe": "كرة الثلج", "lab": "مختبر الحلويات", "tale": "كتاب الحكايات", "enso": "دائرة الفرشاة", "hotel": "الفندق الوردي", "loom": "النول", "silk": "موج الحرير", "runway": "منصة العرض", "fitting": "غرفة القياس", "khareef": "ضباب الخريف", "lattice": "ظل المشربية", "vogue": "غلاف المجلة", "dunes": "كثبان الرمال", "zari": "خيط الزري", "unbox": "صندوق المفاجأة", "post": "مكتب البريد", "origami": "طيّ الورق", "airship": "المنطاد", "musicbox": "علبة الموسيقى", "memories": "حبل الذكريات", "umbrella": "شارع المظلات", "train": "قطار الهدايا", "skylantern": "فوانيس السماء", "comic": "القصة المصورة", "vending": "آلة البيع", "popcorn": "فشار السينما", "heat": "مقياس الحرارة", "grandma": "مطبخ الجدة", "scale": "ميزان السوق", "cornfield": "حقل الذرة", "foodvan": "شاحنة الطعام", "wonderworks": "المصنع العجيب", "fishboat": "قارب الصياد", "camp": "ليلة المخيم", "dukkan": "دكان الحارة", "spicesouk": "سوق البهارات", "orbit": "وجبات المدار", "backstage": "كواليس الأزياء", "rail": "سكة المغسلة", "cloak": "قسيمة الأمانات", "redcarpet": "السجادة الحمراء", "mandoos": "المندوس", "almanac": "تقويم المناسبة", "ballroom": "قاعة الثريا", "paperdoll": "دمية الورق", "fireflies": "حديقة اليراعات", "photobooth": "كشك الصور", "boutique": "بوتيك الليل", "midnight": "منتصف الليل", "wardrobe": "دولاب البيت", "ripple": "قطرة العطر", "pyramid": "هرم العطر", "roseterrace": "مدرجات الورد", "smoke": "دخان القارورة", "prism": "منشور الضوء", "apothecary": "خزانة العطار", "letter": "الرسالة المعطرة", "pearl": "غواص اللؤلؤ", "peacock": "ذيل الطاووس", "jasmine": "ياسمين الغروب", "passport": "جواز العطور", "khatt": "الخط العربي", "bauhaus": "الملصق الهندسي", "moonphase": "طور القمر", "salon": "كرسي الصالون", "lipstick": "أحمر الشفاه", "herbarium": "كراسة الأعشاب", "serum": "قطّارة السيروم", "hair": "موج الشعر", "palette": "لوحة الظلال", "foam": "حمام الرغوة", "hammam": "الحمام المغربي", "beforeafter": "قبل وبعد", "scissors": "مقص الحلاق", "skinlayers": "طبقات البشرة", "kohl": "المكحلة", "aloe": "ورق الصبار", "stones": "حجارة السبا", "ringlight": "حلقة الضوء", "sewing": "ماكينة الخياطة", "pattern": "الباترون", "buttons": "علبة الأزرار", "dressform": "المانيكان", "bolts": "لفّات القماش", "pincushion": "وسادة الدبابيس", "sizecard": "بطاقة المقاسات", "bridal": "أتيليه العروس", "crossstitch": "الغرزة المتصالبة", "tailorstreet": "شارع الخياطين", "cuttable": "طاولة القص", "paperchain": "سلسلة الصغيرات", "generations": "أجيال الأناقة", "nightlamp": "مصباح الليل", "spools": "بكرات الخيوط", "mabkhara": "مبخرة ظفار", "frankincense": "شجرة اللبان", "incenseroute": "طريق البخور", "hafah": "سوق الحافة", "ember": "الجمرة", "mortar": "هاون البخور", "majlis2": "طواف المبخرة", "blend": "خلطتي", "qamariya": "قمرية الجص", "excavate": "تنقيب سمهرم", "coil": "لفّة البخور", "oudlog": "قطعة العود", "filigree": "الفضة العمانية", "jars": "مخزن الجرار", "smartburner": "المبخرة الحديثة", "pcb": "اللوحة الأم", "scope": "راسم الإشارة", "battery": "البطارية", "teardown": "الجهاز المفكك", "crt": "التلفاز القديم", "arcade": "صالة الألعاب", "lens": "عدسة الكاميرا", "smarthome": "البيت الذكي", "washer": "الغسالة", "elevator": "مصعد الأقسام", "slowbrew": "التقطير البطيء", "giveaway": "ركن التوزيعات", "velvet": "الطباعة الذهبية", "artboard": "لوح التصميم", "moongarden": "حديقة القمر", "homecorner": "ركن القهوة المنزلي", "gazette": "جريدة الحلوى", "daybreak": "الإشراقة", "palace": "قصر الحكايات", "infusion": "النقع", "bottlerack": "رفّ الزجاجات", "foodcart": "عربة الضيافة", "chalet": "الشاليه", "scrubjar": "برطمان الطبيعة"};
+var FONTS={'':'الافتراضي',ruqaa:'رقعة',messiri:'المسيري',kufi:'كوفي',amiri:'أميري',tajawal:'تجوال',baloo:'دائري',lalezar:'عريض'};
+var SHAPES={'':'الافتراضي',arch:'مقوّس',round:'حواف دائرية',square:'مربع'};
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function X(){return window.EMDStoreV411||null}
+function St(){var x=X();try{return x&&x.state()}catch(e){return null}}
+function num(v){v=parseFloat(String(v==null?'':v).replace(/[^\d.\-]/g,''));return isFinite(v)?v:0}
+function f3(v){return num(v).toFixed(3)+' ر.ع'}
+function img(v){v=String(v||'');return /^data:image\/(png|jpe?g|webp|gif);base64,/i.test(v)||/^https:\/\//i.test(v)}
+function expired(f){return f&&f.kind==='store'&&f.created_at&&Date.now()-new Date(f.created_at).getTime()>DAYS*864e5}
+function privLocked(k){try{var d=window.EMDDesignCodesV246&&window.EMDDesignCodesV246.state();if(!d)return false;return (d.priv||[]).indexOf(k)>-1&&(d.mine||[]).indexOf(k)<0}catch(e){return false}}
+function plist(){var d=window.db||{},L=Array.isArray(d.products)?d.products:[],m={};L.forEach(function(p,i){var k=String(p.id||p.sku||p.name||('p'+i));m[k]=String(p.name||p.productName||k)});return m}
+function show_(k,v,S){
+  if(k==='logo'||k==='cover')return v?'<img class="e262-im'+(k==='cover'?' e262-cv':'')+'" alt="" src="'+esc(v)+'">':'بلا صورة';
+  if(k==='cod'||k==='bank')return v?'مفعّل':'غير مفعّل';
+  if(k==='paused')return v?'موقوف مؤقتًا':'مفتوح';
+  if(k==='ship'||k==='free')return k==='free'&&!num(v)?'بلا':f3(v);
+  if(k==='layout')return v?esc(NAMES[v]||v):'كلاسيكي';
+  if(k==='skin')return esc(NAMES[v]||v||'—');
+  if(k==='font')return esc(FONTS[v]||v);
+  if(k==='shape')return esc(SHAPES[v]||v);
+  if(k==='accent')return v?'<span style="display:inline-block;width:18px;height:18px;border-radius:50%;vertical-align:middle;background:'+esc(/^#[0-9a-f]{3,8}$/i.test(v)?v:'#ccc')+'"></span>':'حسب التصميم';
+  if(k==='slug')return '<span dir="ltr">'+esc(v||'—')+'</span>';
+  return v===''||v==null?'—':esc(String(v).slice(0,160))}
+/* تجهيز القيم: كل قيمة تُفحص هنا أيضًا، لا نعتمد على الخادم وحده */
+function clean(k,v,S,skip){
+  if(k==='ship'||k==='free'){v=Math.max(0,num(v));return {v:v}}
+  if(k==='cod'||k==='bank'||k==='paused'){v=!!v;if(k==='bank'&&v&&!String(S.bankInfo||'').trim()){skip.push('التحويل البنكي: لم يُفعَّل لأن بيانات حسابك البنكي غير مكتوبة. اكتبها بنفسك من «متجري».');return null}return {v:v}}
+  if(k==='logo'||k==='cover'){v=String(v||'');if(v&&!img(v))return null;return {v:v}}
+  if(k==='layout'){v=String(v||'');if(v&&privLocked(v)){skip.push('التصميم «'+(NAMES[v]||v)+'» خاص ويحتاج كوده، لذلك بقي تصميمك الحالي.');return null}return {v:v}}
+  if(k==='slug'){v=String(v||'').toLowerCase().trim().replace(/[\s_]+/g,'-').replace(/[^a-z0-9-]/g,'').replace(/-+/g,'-').replace(/^-|-$/g,'');
+    if(!/^[a-z0-9][a-z0-9-]{1,28}[a-z0-9]$/.test(v)){skip.push('اسم الرابط المقترح غير صالح، فبقي رابطك الحالي.');return null}return {v:v}}
+  if(k==='accent'){v=String(v||'');if(v&&!/^#[0-9a-f]{3,8}$/i.test(v))return null;return {v:v}}
+  v=String(v==null?'':v).slice(0,k==='desc'?600:120);return {v:v}}
+function rows(f){var S=St()||{},P=f.payload||{},set=P.set||{},pr=P.prod||{},pn=plist(),h='';
+  Object.keys(set).forEach(function(k){if(!F[k])return;var a=S[k],b=set[k];if(typeof b==='boolean')a=!!a;if(k==='ship'||k==='free'){a=num(a);b=num(b)}if(String(a==null?'':a)===String(b==null?'':b))return;h+='<tr><td>'+F[k]+'</td><td>'+show_(k,S[k],S)+' ← <ins>'+show_(k,set[k],S)+'</ins></td></tr>'});
+  Object.keys(pr).forEach(function(k){var o=pr[k]||{},c=(S.prod||{})[k]||{},a=[];
+    if('on' in o)a.push(o.on?'<ins>يظهر في المتجر</ins>':'<ins>يُخفى من المتجر</ins>');
+    if('desc' in o)a.push('الوصف: <ins>'+esc(String(o.desc||'—').slice(0,120))+'</ins>');
+    if('old' in o)a.push('السعر قبل الخصم: '+(c.old?'<del>'+esc(c.old)+'</del> ← ':'')+'<ins>'+(num(o.old)?esc(o.old):'بلا')+'</ins>');
+    if(a.length&&pn[k])h+='<tr><td>'+esc(pn[k])+'</td><td>'+a.join('<br>')+'</td></tr>'});
+  return h?'<table class="e222-tbl"><thead><tr><th>البند</th><th>قبل ← بعد</th></tr></thead><tbody>'+h+'</tbody></table>':''}
+function apply(f){var x=X(),S=St();if(!x||!S)return {n:0,skip:['تعذّر فتح إعدادات المتجر في هذا الجهاز.']};
+  var P=f.payload||{},set=P.set||{},pr=P.prod||{},pn=plist(),skip=[],n=0;
+  Object.keys(set).forEach(function(k){if(!F[k])return;var r=clean(k,set[k],S,skip);if(!r)return;S[k]=r.v;if(k==='skin'&&!('layout' in set))S.layout='';n++});
+  S.prod=S.prod&&typeof S.prod==='object'?S.prod:{};
+  Object.keys(pr).forEach(function(k){if(!pn[k])return;var o=pr[k]||{},c=S.prod[k]||(S.prod[k]={on:false,desc:'',old:''});
+    if('on' in o){c.on=!!o.on;n++}if('desc' in o){c.desc=String(o.desc||'').slice(0,600);n++}if('old' in o){c.old=num(o.old)>0?String(num(o.old)):'';n++}});
+  try{x.save()}catch(e){}return {n:n,skip:skip}}
+/* النشر بحساب التاجر نفسه من جهازه، ثم ننتظر النتيجة */
+function publish(){var x=X(),S=St();return new Promise(function(ok){
+  if(!x||!S)return ok({err:'تعذّر النشر.'});
+  var c=window.EMDCloudV93;var logged=false;try{logged=!!(c&&c.api&&c.api.uid())}catch(e){}
+  if(!logged)return ok({err:'حُفظت التعديلات في جهازك، لكن النشر يحتاج تسجيل الدخول. سجّل الدخول ثم افتح «متجري» واضغط «نشر».'});
+  if(!S.slug)return ok({err:'حُفظت التعديلات. لم يُحدَّد اسم رابط للمتجر بعد، فافتح «متجري ← الرابط» لاختياره ثم انشر.'});
+  var before=S.pubAt;S.pubErr='';try{x.publish()}catch(e){return ok({err:'تعذّر النشر.'})}
+  var t0=Date.now();(function wait(){var s=St();if(s.pubAt&&s.pubAt!==before&&!s.pubErr)return ok({url:URL0+(s.pubSlug||s.slug)});if(s.pubErr)return ok({err:s.pubErr});if(Date.now()-t0>120000)return ok({err:'يستغرق النشر وقتًا أطول من المعتاد. افتح «متجري» بعد قليل للتأكد.'});setTimeout(wait,600)})()})}
+function show(f,done,setStatus){
+  var o=document.createElement('div');o.className='e222-ov';
+  o.innerHTML='<div class="e222-box" role="dialog" aria-modal="true" aria-labelledby="e262T"><h3 id="e262T">🛍️ فريق الدعم جهّز لك متجرك</h3>'+
+    '<p>راجع ما تغيّر في متجرك. لن يتغيّر شيء إلا إذا ضغطت «تطبيق ونشر»، ويمكنك تعديل أي شيء بعدها من «متجري» كالمعتاد.</p>'+rows(f)+
+    '<div class="e262-out" role="status" aria-live="polite"></div>'+
+    '<div class="e222-acts"><button type="button" class="go" data-a="ok">تطبيق ونشر</button><button type="button" data-a="later">لاحقًا</button><button type="button" data-a="no">رفض</button></div></div>';
+  document.body.appendChild(o);var out=o.querySelector('.e262-out'),acts=o.querySelector('.e222-acts');
+  function close(){o.remove();done()}
+  o.addEventListener('click',function(e){var b=e.target.closest('[data-a]');if(!b)return;var a=b.getAttribute('data-a');
+    if(a==='later'||a==='close'){close();return}
+    [].forEach.call(acts.querySelectorAll('button'),function(x){x.disabled=true});
+    if(a==='no'){setStatus(f,'rejected').catch(function(){}).then(close);return}
+    var r=apply(f);b.textContent='⏳ جارٍ النشر…';
+    setStatus(f,'applied').catch(function(){}).then(publish).then(function(p){
+      out.innerHTML=(r.skip.length?'<div class="e262-sk">'+r.skip.map(esc).join('<br>')+'</div>':'')+
+        (p.url?'<div class="e262-res">✅ تم تطبيق التعديلات ونشر متجرك.<br>رابط متجرك: <a href="'+esc(p.url)+'" target="_blank" rel="noopener" dir="ltr">'+esc(p.url.replace(/^https:\/\//,''))+'</a></div>':'<div class="e262-res bad">'+esc(p.err)+'</div>');
+      acts.innerHTML='<button type="button" class="go" data-a="close">تم</button>'})})}
+/* سجل ما عدّله الدعم: داخل نافذة «المساعدة والدعم» تحت بطاقة السماح */
+function api(){var c=window.EMDCloudV93;return c&&c.api}
+function hist(){var a=api();if(!a)return Promise.reject(new Error('السحابة غير جاهزة'));var u=a.uid&&a.uid();if(!u)return Promise.reject(new Error('سجّل دخولك أولًا'));
+  return a.token().then(function(t){return fetch(a.url+'/rest/v1/emd_support_fixes?select=created_at,kind,title,status,done_at&user_id=eq.'+u+'&order=created_at.desc&limit=15',{headers:{apikey:a.key,Authorization:'Bearer '+t}})}).then(function(r){if(!r.ok)throw new Error('تعذّر الاتصال ('+r.status+')');return r.json()})}
+var ST={pending:'بانتظارك',applied:'طبّقته',rejected:'رفضته'};
+function d8(s){try{return new Date(s).toLocaleDateString('ar-OM',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}catch(e){return ''}}
+function histSheet(){var o=document.createElement('div');o.className='e222-ov';
+  o.innerHTML='<div class="e222-box" role="dialog" aria-modal="true" aria-labelledby="e262H"><h3 id="e262H">🗂 ما أرسله فريق الدعم</h3><p><small>كل تعديل أو رسالة من الدعم تُسجَّل هنا، مع ما فعلته بها.</small></p><div class="e262-hl">جارٍ التحميل…</div><div class="e222-acts"><button type="button" class="go" data-x>إغلاق</button></div></div>';
+  document.body.appendChild(o);o.addEventListener('click',function(e){if(e.target===o||e.target.closest('[data-x]'))o.remove()});
+  var L=o.querySelector('.e262-hl');
+  hist().then(function(a){a=Array.isArray(a)?a:[];L.innerHTML=a.length?a.map(function(f){var s=expired(f)&&f.status==='pending'?'انتهت صلاحيته':(ST[f.status]||f.status);
+      return '<div><span>'+esc(f.title||(f.kind==='note'?'رسالة':f.kind==='store'?'إعداد المتجر':'تعديل منتجات'))+'<small>'+esc(d8(f.created_at))+'</small></span><span class="e262-tg '+esc(f.status)+'">'+esc(s)+'</span></div>'}).join(''):'<p>لم يرسل الدعم أي شيء بعد.</p>'},
+    function(er){L.textContent=er.message})}
+function addBtn(box){var c=box.querySelector('#e222A');if(!c||c.querySelector('.e262-hb'))return;var a=api();try{if(!a||!a.uid())return}catch(e){return}
+  c.insertAdjacentHTML('beforeend','<button type="button" class="e262-hb" data-e262h>🗂 ما أرسله فريق الدعم</button>')}
+new MutationObserver(function(ms){ms.forEach(function(m){[].forEach.call(m.addedNodes,function(n){if(n.nodeType===1&&n.classList&&n.classList.contains('emd93-ov')){var box=n.firstChild;if(!box)return;
+  var mo=new MutationObserver(function(){addBtn(box)});mo.observe(box,{childList:true,subtree:true});setTimeout(function(){addBtn(box)},300)}})})}).observe(document.body,{childList:true});
+document.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('[data-e262h]')){e.preventDefault();histSheet()}},true);
+window.EMDStoreFixV267={show:show,apply:apply,expired:expired,rows:rows};
+})();
+</script>
 </body>
 </html>
