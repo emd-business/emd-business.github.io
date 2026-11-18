@@ -16,7 +16,7 @@ window.EMDErrLog={list:function(){var c=Date.now()-3*864e5;return L().filter(fun
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V266</title>
+<title>EMD Business — Standalone V269</title>
 <!-- EMD V158: شاشة افتتاح تغطي التطبيق حتى تكتمل الواجهة الأخيرة، فلا تظهر الأشكال والأزرار القديمة أثناء التحميل -->
 <style id="EMD-V158-boot">
 html.emd-boot{background:#0f172a!important}
@@ -30568,7 +30568,7 @@ function drawFlex(o,c,logo,s,k){var h=H(),DPM=8,W=Math.round(c.w*DPM),Ht=Math.ro
     x.lineWidth=Math.max(2,u*0.45);if(s.ibox!==false)x.strokeRect(L,bx,cw,y-bx+0.6*u);y+=2.6*u}
   if(e.courier){var cr=h.courier(o);t('الشحن: '+(cr||'—'),4.2*u,true,'right',R,y,cw*0.62);f(3.8*u,false);x.textAlign='left';var d=new Date(o.orderDate||o.created||Date.now());x.fillText(isNaN(d)?'':d.toLocaleDateString('ar-OM',{day:'numeric',month:'long'}),L,y+0.3*u);y+=6.4*u}
   var note=String(o.note||o.notes||'').trim();if(e.note&&note){wrap('ملاحظة: '+note,4.2*u,false,cw,2).forEach(function(l){t(l,4.2*u,false);y+=5.4*u})}
-  /* V426: رسوم الشحن */if(e.fee){var fe=num(o.deliveryFee!=null&&o.deliveryFee!==''?o.deliveryFee:(o.shippingFee||o.delivery||0)),fc=(pf.currency==='OMR'||!pf.currency)?'ر.ع':pf.currency;t('رسوم الشحن: '+(window.E266&&E266.cour(o)?(fe>0?fe.toFixed(3)+' '+fc+' · ':'')+'تُدفع للمندوب':(fe>0?fe.toFixed(3)+' '+fc:'مجانًا')),4.8*u,true,e.name?'right':'center',e.name?R:W/2);y+=6.4*u}
+  /* V426: رسوم الشحن */if(e.fee){var fe=num(o.deliveryFee!=null&&o.deliveryFee!==''?o.deliveryFee:(o.shippingFee||o.delivery||0)),fc=(pf.currency==='OMR'||!pf.currency)?'ر.ع':pf.currency;t('رسوم الشحن: '+(window.E266&&E266.hid(o)&&!(fe>0)?'—':window.E266&&E266.cour(o)?(fe>0?fe.toFixed(3)+' '+fc+' · ':'')+'تُدفع للمندوب':(fe>0?fe.toFixed(3)+' '+fc:'مجانًا')),4.8*u,true,e.name?'right':'center',e.name?R:W/2);y+=6.4*u}
   var due=h.dueOf(o),cur=(pf.currency==='OMR'||!pf.currency)?'ر.ع':pf.currency,tr=h.track(o);
   if(e.amount||(e.qr&&tr)){y+=0.8*u;var rowH=(e.amount?16:20)*u,qrS=(e.qr&&tr)?rowH:0,boxW=e.amount?(qrS?cw-qrS-3*u:cw):0,by=y;
     if(e.amount){var fill=s.amt==='fill';x.lineWidth=Math.max(3,u*0.7);if(fill)x.fillRect(R-boxW,by,boxW,rowH);else x.strokeRect(R-boxW+x.lineWidth/2,by+x.lineWidth/2,boxW-x.lineWidth,rowH-x.lineWidth);x.fillStyle=fill?'#fff':'#000';
@@ -34625,36 +34625,43 @@ window.EMDAIV454={mask:mask,call:call,apply:apply,verdict:verdict,hmask:hmask,hc
 <script id="EMD-V266-fee">
 (function(){'use strict';
 var K='emd266_fee';
-function on(){try{return localStorage.getItem(K)==='courier'}catch(e){return false}}
-function setOn(v){try{if(v)localStorage.setItem(K,'courier');else localStorage.removeItem(K)}catch(e){}}
+function mode(){try{var v=localStorage.getItem(K);return v==='courier'||v==='hide'?v:''}catch(e){return ''}}
+function on(){return mode()!==''}
+function setMode(v){try{if(v==='courier'||v==='hide')localStorage.setItem(K,v);else localStorage.removeItem(K)}catch(e){}}
 function St(){try{return window.EMDStoreV411&&window.EMDStoreV411.state()}catch(e){return null}}
 function num(v){v=parseFloat(String(v==null?'':v).replace(/[٠-٩]/g,function(d){return '٠١٢٣٤٥٦٧٨٩'.indexOf(d)}));return isFinite(v)?v:0}
 function esc(t){return String(t==null?'':t).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 /* هل رسوم توصيل هذا الطلب تُدفع للمندوب؟ */
 function cour(o){if(!o)return false;if(String(o.feePaid||'')==='courier')return true;var n=String(o.note||o.notes||'');return n.indexOf('رسوم التوصيل تُدفع للمندوب')>-1||n.indexOf('رسوم التوصيل للمندوب')>-1}
-window.E266={on:on,cour:cour};
+/* هل رسوم توصيل هذا الطلب يحددها المتجر (لم تظهر للعميل)؟ */
+function hid(o){return !!o&&String(o.note||o.notes||'').indexOf('رسوم التوصيل يحددها المتجر')>-1}
+window.E266={on:on,mode:mode,cour:cour,hid:hid};
 
 /* أ) الإعداد في «🛍️ متجري ← التوصيل والدفع» */
-function box(){var c=on(),S=St()||{},an=String(S.announce||'');
-  return '<div class="e266"><b>🚚 من يستلم رسوم التوصيل؟</b><div class="ch">'+
-   '<button type="button" data-e266="" aria-pressed="'+(!c)+'">🏪 المتجر<small>تُضاف الرسوم إلى إجمالي الطلب. إذا كانت الرسوم 0 يرى العميل «مجاني».</small></button>'+
-   '<button type="button" data-e266="courier" aria-pressed="'+c+'">💵 المندوب أو مكتب التوصيل عند الاستلام<small>لا تُضاف الرسوم إلى الإجمالي، ويرى العميل «التوصيل: يُدفع للمندوب عند الاستلام» بدل «مجاني».</small></button></div>'+
-   (c?'<p class="hint">الرسوم العامة ورسوم المناطق تظهر للعميل للعلم فقط («مسقط · 2.000 للمندوب»)، ولا يعمل «توصيل مجاني فوق».</p>'+
-      (/مجان/.test(an)?'<p class="hint w">⚠️ نص شريط الإعلان في تبويب «الواجهة» يذكر التوصيل المجاني: «'+esc(an)+'». غيّره حتى لا يتعارض مع هذا الخيار.</p>':''):'')+
+function box(){var m=mode(),S=St()||{},an=String(S.announce||'');
+  function bt(v,t,d){return '<button type="button" data-e266="'+v+'" aria-pressed="'+(m===v)+'">'+t+'<small>'+d+'</small></button>'}
+  return '<div class="e266"><b>🚚 رسوم التوصيل عند العميل</b><div class="ch">'+
+   bt('','🏪 تظهر للعميل وتُحسب في الطلب','تُضاف الرسوم إلى إجمالي الطلب. إذا كانت الرسوم 0 يرى العميل «مجاني».')+
+   bt('courier','💵 تُدفع للمندوب، وتظهر للعميل للعلم','لا تُضاف الرسوم إلى الإجمالي، ويرى العميل «التوصيل: يُدفع للمندوب عند الاستلام» مع رسوم منطقته.')+
+   bt('hide','🚫 لا تظهر للعميل، وتحددها أنت','لا يرى العميل أي مبلغ للتوصيل، بل «يحدد المتجر رسوم التوصيل عند التواصل معك». تكتب الرسوم بنفسك في الطلب.')+'</div>'+
+   (m==='courier'?'<p class="hint">الرسوم العامة ورسوم المناطق تظهر للعميل للعلم فقط («مسقط · 2.000 للمندوب»)، ولا يعمل «توصيل مجاني فوق».</p>':'')+
+   (m==='hide'?'<p class="hint">يختار العميل منطقته دون أسعار، والإجمالي للمنتجات فقط. الرسوم والمناطق أعلاه تبقى محفوظة لو رجعت لخيار آخر.</p>':'')+
+   (m&&/مجان/.test(an)?'<p class="hint w">⚠️ نص شريط الإعلان في تبويب «الواجهة» يذكر التوصيل المجاني: «'+esc(an)+'». غيّره حتى لا يتعارض مع هذا الخيار.</p>':'')+
    (S.pubAt?'<p class="hint w">اضغط «🚀 انشر متجري» في تبويب «الرابط» ليظهر التغيير في متجرك.</p>':'')+'</div>'}
 function hookZ(){var f=window.EMD156Z;if(!f||f.__e266)return !!f;var w=function(){return box()+f.apply(this,arguments)};w.__e266=1;window.EMD156Z=w;return true}
-document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-e266]');if(!b)return;setOn(b.getAttribute('data-e266')==='courier');
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-e266]');if(!b)return;setMode(b.getAttribute('data-e266'));
   try{window.EMDStoreV411.paint()}catch(x){}},true);
 
 /* بيانات المتجر المنشورة: رسوم المناطق تُرسل صفرًا، والرسوم الحقيقية تُحفظ للعرض فقط (fc) */
-function fixBrand(e,S){e=e||{};delete e.fc;if(!on())return e;var z=Array.isArray(e.zones)?e.zones:[];
+function fixBrand(e,S){e=e||{};delete e.fc;delete e.fh;if(!on())return e;var z=Array.isArray(e.zones)?e.zones:[];
+  if(mode()==='hide'){e.fh=1;e.zones=z.map(function(x){return x&&+x.f>0?{n:x.n,f:0}:x});return e}
   e.fc={s:Math.max(0,Math.round(num(S&&S.ship)*1000)/1000),z:z.filter(function(x){return x&&+x.f>0}).map(function(x){return {n:x.n,f:+x.f}})};
   e.zones=z.map(function(x){return x&&+x.f>0?{n:x.n,f:0}:x});return e}
 window.E266.brand=fixBrand;
 
 /* ب) طلبات المتجر الواصلة: تُعلَّم «للمندوب» */
 function hookL(){var M=window.EMD247;if(!M||M.__e266)return !!M;var lo=M.local;
-  M.local=function(obj,o){try{if(on()&&obj&&o&&!(+o.ship>0)&&String(obj.feePaid||'')!=='paid'){if(!cour(obj))obj.note=(obj.note?obj.note+'\n':'')+'رسوم التوصيل تُدفع للمندوب عند الاستلام';obj.feePaid='courier'}}catch(e){}
+  M.local=function(obj,o){try{if(mode()==='hide'&&obj&&o&&!(+o.ship>0)){if(!hid(obj))obj.note=(obj.note?obj.note+'\n':'')+'رسوم التوصيل يحددها المتجر (لم تظهر للعميل)'}else if(mode()==='courier'&&obj&&o&&!(+o.ship>0)&&String(obj.feePaid||'')!=='paid'){if(!cour(obj))obj.note=(obj.note?obj.note+'\n':'')+'رسوم التوصيل تُدفع للمندوب عند الاستلام';obj.feePaid='courier'}}catch(e){}
     return lo?lo.apply(this,arguments):undefined};M.__e266=1;return true}
 
 var n=0;(function tick(){var a=hookZ(),c=hookL();if(!(a&&c)&&n++<120)setTimeout(tick,250)})();

@@ -11193,23 +11193,25 @@ qrSend=function(r){var n=$('qkRn'),cref=n?String(n.value||'').replace(/[^A-Za-z0
 /* V266: إذا كان التوصيل يُدفع للمندوب أو مكتب التوصيل، لا يظهر «مجاني» في أي مكان */
 (function(){
 function cour(){return !!(B&&B.fc&&typeof B.fc==='object')}
+function hide(){return !!(B&&B.fh)}
+function any(){return cour()||hide()}
 function EN(){return LANG==='en'}
 function ctx(){return EN()?'Paid to courier':'يُدفع للمندوب'}
-function note(){return EN()?'Total excludes delivery; pay the courier on receipt.':'الإجمالي لا يشمل رسوم التوصيل، وتُدفع للمندوب عند الاستلام.'}
+function note(){if(hide())return EN()?'Total excludes delivery; the store will tell you the fee.':'الإجمالي لا يشمل رسوم التوصيل، ويحددها المتجر عند التواصل معك.';return EN()?'Total excludes delivery; pay the courier on receipt.':'الإجمالي لا يشمل رسوم التوصيل، وتُدفع للمندوب عند الاستلام.'}
 function fz(n){var z=cour()&&Array.isArray(B.fc.z)?B.fc.z:[];for(var i=0;i<z.length;i++)if(z[i]&&String(z[i].n).trim()===String(n).trim())return +z[i].f||0;return 0}
 ['ar','en'].forEach(function(L){var o=T[L];if(!o)return;var f=o.free,v=o.v176Free;
-  Object.defineProperty(o,'free',{configurable:true,get:function(){return cour()?(L==='en'?'Paid to courier':'يُدفع للمندوب عند الاستلام'):f}});
-  Object.defineProperty(o,'v176Free',{configurable:true,get:function(){return cour()?(L==='en'?'🚚 Delivery paid to the courier':'🚚 التوصيل يُدفع للمندوب عند الاستلام'):v}})});
-function fixSel(s,mny){if(!s)return;[].forEach.call(s.options,function(op){var v=op.value;if(!v||v.charAt(0)==='_')return;var f=fz(v);if(f>0)op.textContent=v+' · '+mny(f)+(EN()?' to courier':' للمندوب');else if(/· (مجاني|Free)$/.test(op.textContent))op.textContent=v+' · '+T[LANG].free})}
-function fix(){if(!cour())return;
+  Object.defineProperty(o,'free',{configurable:true,get:function(){return hide()?(L==='en'?'Set by the store':'يحدده المتجر'):cour()?(L==='en'?'Paid to courier':'يُدفع للمندوب عند الاستلام'):f}});
+  Object.defineProperty(o,'v176Free',{configurable:true,get:function(){return hide()?(L==='en'?'🚚 The store sets the delivery fee':'🚚 يحدد المتجر رسوم التوصيل عند التواصل معك'):cour()?(L==='en'?'🚚 Delivery paid to the courier':'🚚 التوصيل يُدفع للمندوب عند الاستلام'):v}})});
+function fixSel(s,mny){if(!s)return;[].forEach.call(s.options,function(op){var v=op.value;if(!v)return;if(hide()){if(op.textContent.indexOf(' · ')>-1)op.textContent=op.textContent.split(' · ')[0];return}if(v.charAt(0)==='_')return;var f=fz(v);if(f>0)op.textContent=v+' · '+mny(f)+(EN()?' to courier':' للمندوب');else if(/· (مجاني|Free)$/.test(op.textContent))op.textContent=v+' · '+T[LANG].free})}
+function fix(){if(!any())return;
   fixSel(document.getElementById('fCity'),money);fixSel(document.getElementById('qkZone'),qm);
-  [].forEach.call(document.querySelectorAll('#fCity option[value="__o"],#qkZone option[value="__o"]'),function(oz){if(oz&&+B.fc.s>0&&!/\d/.test(oz.textContent))oz.textContent=oz.textContent.replace(/·.*$/,'· '+money(B.fc.s)+(EN()?' to courier':' للمندوب'))});
+  if(cour())[].forEach.call(document.querySelectorAll('#fCity option[value="__o"],#qkZone option[value="__o"]'),function(oz){if(oz&&+B.fc.s>0&&!/\d/.test(oz.textContent))oz.textContent=oz.textContent.replace(/·.*$/,'· '+money(B.fc.s)+(EN()?' to courier':' للمندوب'))});
   var w=document.getElementById('trk');if(w){var its=w.querySelector('.its');if(its){[].forEach.call(its.querySelectorAll('div>span:last-child'),function(sp){if(sp.textContent==='مجاني'||sp.textContent==='Free')sp.textContent=T[LANG].free});
     if(!its.querySelector('.e266n')){var p=document.createElement('p');p.className='e266n';p.style.cssText='margin:8px 0 0;font-size:12.5px;opacity:.75;line-height:1.6';p.textContent=note();its.appendChild(p)}}}
-  var b=document.getElementById('qkBar'),sm=b&&b.querySelector('.qs1 small');if(sm&&sm.textContent.indexOf('التوصيل مجاني')>-1)sm.textContent=sm.textContent.replace('التوصيل مجاني','التوصيل يُدفع للمندوب')}
+  var b=document.getElementById('qkBar'),sm=b&&b.querySelector('.qs1 small');if(sm&&sm.textContent.indexOf('التوصيل مجاني')>-1)sm.textContent=sm.textContent.replace('التوصيل مجاني',hide()?'التوصيل يحدده المتجر':'التوصيل يُدفع للمندوب')}
 window.E266fix=fix;
 var _r=rpc;rpc=function(){return _r.apply(this,arguments).then(function(x){setTimeout(fix,0);setTimeout(fix,400);return x})};
-if(typeof lines==='function'){var _l=lines;lines=function(){var r=_l.apply(this,arguments);if(cour()){var e=$('free');if(e&&$('lines')&&totals().ids.length)e.textContent=note()}return r}}
+if(typeof lines==='function'){var _l=lines;lines=function(){var r=_l.apply(this,arguments);if(any()){var e=$('free');if(e&&$('lines')&&totals().ids.length)e.textContent=note()}return r}}
 if(typeof form==='function'){var _f=form;form=function(){var h=_f.apply(this,arguments);setTimeout(fix,0);return h}}
 if(typeof q173bar==='function'){var _q=q173bar;q173bar=function(){var r=_q.apply(this,arguments);fix();return r}}
 document.addEventListener('change',function(){setTimeout(fix,0)},true);
