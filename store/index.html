@@ -11220,5 +11220,18 @@ document.addEventListener('change',function(){setTimeout(fix,0)},true);
 boot();
 })();
 </script>
+<!-- EMD-V272-pdpl: إشعار الخصوصية للزبون قبل تأكيد الطلب -->
+<style>.pdn272{font-size:12px;line-height:1.7;opacity:.8;margin:8px 2px 6px;text-align:start}.pdn272 a{color:inherit;text-decoration:underline}</style>
+<script>
+(function(){
+ var P='https://emd-business.github.io/privacy.html';
+ function txt(){var en=(document.documentElement.lang||'').indexOf('en')===0;
+  return en?'By confirming, your name, phone and address are sent to this store to fulfil your order and are stored on servers outside Oman. <a href="'+P+'" target="_blank" rel="noopener">Privacy policy</a>'
+           :'بتأكيد الطلب تُرسَل بياناتك (الاسم والهاتف والعنوان) إلى هذا المتجر لتنفيذ طلبك، وتُحفظ على خوادم خارج سلطنة عُمان. <a href="'+P+'" target="_blank" rel="noopener">سياسة الخصوصية</a>'}
+ function put(anchor,id){if(!anchor||document.getElementById(id))return;var p=document.createElement('p');p.className='pdn272';p.id=id;p.innerHTML=txt();anchor.parentNode.insertBefore(p,anchor)}
+ function scan(){put(document.getElementById('err'),'pdn272a');put(document.getElementById('qkErr'),'pdn272b')}
+ new MutationObserver(scan).observe(document.documentElement,{childList:true,subtree:true});scan();
+})();
+</script>
 </body>
 </html>

@@ -16,7 +16,7 @@ window.EMDErrLog={list:function(){var c=Date.now()-3*864e5;return L().filter(fun
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V269</title>
+<title>EMD Business — Standalone V272</title>
 <!-- EMD V158: شاشة افتتاح تغطي التطبيق حتى تكتمل الواجهة الأخيرة، فلا تظهر الأشكال والأزرار القديمة أثناء التحميل -->
 <style id="EMD-V158-boot">
 html.emd-boot{background:#0f172a!important}
@@ -23939,7 +23939,7 @@ function token(){var s=session();if(!s)return Promise.reject(Object.assign(new E
   return refreshing}
 function uid(){var s=session();return s&&s.user&&s.user.id}
 var auth={
-  signUp:function(email,pw){return call('/auth/v1/signup?redirect_to='+encodeURIComponent(site()),{method:'POST',body:{email:email,password:pw}}).then(function(j){if(j&&j.access_token){saveSession(j);return {session:true}}return {session:false,user:j&&(j.user||j)}})},
+  signUp:function(email,pw){return call('/auth/v1/signup?redirect_to='+encodeURIComponent(site()),{method:'POST',body:{email:email,password:pw,data:{emd_consent:'pdpl-2026-11-19',emd_consent_at:new Date().toISOString()}}}).then(function(j){if(j&&j.access_token){saveSession(j);return {session:true}}return {session:false,user:j&&(j.user||j)}})},
   signIn:function(email,pw){return call('/auth/v1/token?grant_type=password',{method:'POST',body:{email:email,password:pw}}).then(saveSession)},
   recover:function(email){return call('/auth/v1/recover?redirect_to='+encodeURIComponent(site()),{method:'POST',body:{email:email}})},
   resend:function(email){return call('/auth/v1/resend?redirect_to='+encodeURIComponent(site()),{method:'POST',body:{type:'signup',email:email}})},
@@ -24068,7 +24068,7 @@ function render(){var b=sheet().firstChild,h='';
     h=head('☁️ حسابك في EMD Business','بحساب واحد تنحفظ بياناتك في السحابة تلقائيًا، وتفتحها من أي جهاز. لو ضاع جوالك، ما يضيع شي.')+
      '<div class="emd93-tabs"><button type="button" data-v="login" class="'+(su?'':'on')+'">تسجيل دخول</button><button type="button" data-v="signup" class="'+(su?'on':'')+'">حساب جديد</button></div>'+
      '<form class="emd93-f" novalidate><label for="emd93Email">الإيميل</label><input id="emd93Email" type="email" inputmode="email" autocomplete="email" placeholder="name@example.com" value="'+esc(formEmail)+'">'+
-     pwField('emd93Pw','كلمة السر'+(su?' (8 حروف أو أكثر)':''),su?'new-password':'current-password')+(su?pwField('emd93Pw2','أعد كتابة كلمة السر','new-password'):'')+
+     pwField('emd93Pw','كلمة السر'+(su?' (8 حروف أو أكثر)':''),su?'new-password':'current-password')+(su?pwField('emd93Pw2','أعد كتابة كلمة السر','new-password')+'<label class="emd272-ok"><input type="checkbox" id="emd272Ok"> <span>قرأتُ <a href="/privacy.html" target="_blank" rel="noopener">سياسة الخصوصية</a> وأوافق على حفظ بياناتي ومعالجتها لدى مزوّدي الخدمة خارج سلطنة عُمان كما توضّح السياسة.</span></label>':'')+
      '<button type="submit" class="emd93-go" data-k="go">'+(su?'إنشاء الحساب':'دخول')+'</button></form>'+
      (su?'':'<button type="button" class="emd93-link" data-k="forgot">نسيت كلمة السر؟</button>')+'<div class="emd93-msg" id="emd93Msg"></div>'+
      '<div class="emd93-note">🔒 بياناتك محفوظة في حسابك، وما يقدر أحد غيرك يشوفها. اسم التطبيق وكلمة سر القفل الحالية تبقى مثل ما هي.</div>'}
@@ -24106,7 +24106,7 @@ function onClick(e){
     if(view==='login'||view==='signup'||view==='forgot'){var em=val('emd93Email').toLowerCase();formEmail=em;if(!validEmail(em)){msg('err','اكتب إيميل صحيح.');return}}
     if(view==='login'){var pw=val('emd93Pw');if(!pw){msg('err','اكتب كلمة السر.');return}goBusy(true);auth.signIn(formEmail,pw).then(function(){goBusy(false);return afterLogin()}).catch(function(x){goBusy(false);msg('err',x.message)});return}
     if(view==='signup'||view==='newpw'||view==='chpw'){var p1=val('emd93Pw'),p2=val('emd93Pw2');
-      if(p1.length<8){msg('err','كلمة السر لازم تكون 8 حروف أو أكثر.');return}if(!/\d/.test(p1)||!/[^\d]/.test(p1)){msg('err','خل كلمة السر فيها حروف وأرقام.');return}if(p1!==p2){msg('err','كلمتين السر مو متطابقتين.');return}
+      if(p1.length<8){msg('err','كلمة السر لازم تكون 8 حروف أو أكثر.');return}if(!/\d/.test(p1)||!/[^\d]/.test(p1)){msg('err','خل كلمة السر فيها حروف وأرقام.');return}if(p1!==p2){msg('err','كلمتين السر مو متطابقتين.');return}if(view==='signup'){var ok272=ov&&ov.querySelector('#emd272Ok');if(ok272&&!ok272.checked){msg('err','يلزم الموافقة على سياسة الخصوصية لإنشاء الحساب.');return}try{localStorage.setItem('emd272_consent',JSON.stringify({v:'pdpl-2026-11-19',at:new Date().toISOString()}))}catch(e){}}
       goBusy(true);
       if(view==='signup'){auth.signUp(formEmail,p1).then(function(r){goBusy(false);if(r.session)return afterLogin();if(r.user&&Array.isArray(r.user.identities)&&!r.user.identities.length){msg('err',ERR.user_already_exists);return}view='sent';render()}).catch(function(x){goBusy(false);msg('err',x.message)});return}
       auth.setPassword(p1).then(function(){goBusy(false);var was=view;pendingRecovery=false;blocked=false;if(was==='newpw'){close();check();toast('✅ تم تغيير كلمة السر، وأنت مسجّل دخول')}else{msg('ok','✅ تم تغيير كلمة السر.')}}).catch(function(x){goBusy(false);msg('err',x.message)});return}
@@ -34496,7 +34496,7 @@ window.EMDAIV454={mask:mask,call:call,apply:apply,verdict:verdict,hmask:hmask,hc
   h+='<div class="muted" style="margin-top:6px">يُستبدل '+esc(NAME)+' باسم كل عميل، فتصل الرسالة شخصية لكل واحد.</div>';
   var u=storeUrl();
   if(u)h+='<label class="chk"><input type="checkbox" data-i="store"'+(st.store?' checked':'')+'> 🛍️ إرفاق رابط المتجر</label>';
-  h+='<label class="chk"><input type="checkbox" data-i="stop"'+(st.stop?' checked':'')+'> إضافة سطر: «'+STOP+'»</label></div>';
+  h+='<div class="muted" style="margin-top:8px;background:#fff7e6;border:1px solid #f3d9a4;border-radius:10px;padding:8px 10px;color:#7a5200">📜 يشترط قانون حماية البيانات العُماني موافقة العميل المسبقة على الرسائل التسويقية. أرسل العروض لمن وافق على استلامها فقط، وأبقِ سطر الإيقاف مفعّلًا.</div>';h+='<label class="chk"><input type="checkbox" data-i="stop"'+(st.stop?' checked':'')+'> إضافة سطر: «'+STOP+'»</label></div>';
   h+='<div class="card"><div class="muted">معاينة كما ستصل إلى '+esc(first&&first.name||FALLBACK)+':</div><div class="pv" id="e260Pv">'+esc(personal(finalText(),first))+'</div></div>';
   return h;
  }
@@ -34668,5 +34668,50 @@ var n=0;(function tick(){var a=hookZ(),c=hookL();if(!(a&&c)&&n++<120)setTimeout(
 })();
 </script>
 <!-- ===== نهاية EMD V266 ===== -->
+<!-- EMD-V272-pdpl: موافقة المستخدمين الحاليين على سياسة الخصوصية المحدّثة -->
+<style>
+.emd272-ok{font-weight:400!important;display:flex;gap:8px;align-items:flex-start;margin:12px 0 4px;font-size:13px;line-height:1.7;color:#334155;cursor:pointer}
+.emd272-ok input{width:18px;height:18px;margin-top:3px;flex:0 0 auto;accent-color:#1e3a5f}
+.emd272-ok a{color:#1d4ed8;text-decoration:underline}
+#emd272Bar{position:fixed;inset-inline:12px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:9000;max-width:520px;margin:0 auto;background:#0f2742;color:#fff;border:1px solid #c8a24a;border-radius:16px;padding:14px 14px 12px;box-shadow:0 10px 30px rgba(0,0,0,.25);font-size:14px;line-height:1.7;transform:translateY(20px);opacity:0;transition:.25s}
+#emd272Bar.on{transform:none;opacity:1}
+#emd272Bar b{color:#f2d27a}
+#emd272Bar .r{display:flex;gap:8px;margin-top:10px}
+#emd272Bar a,#emd272Bar button{flex:1;text-align:center;border-radius:11px;padding:10px;font:inherit;font-weight:700;cursor:pointer;text-decoration:none}
+#emd272Bar a{background:transparent;color:#f2d27a;border:1px solid #c8a24a}
+#emd272Bar button{background:#c8a24a;color:#0f2742;border:0}
+@media(prefers-color-scheme:dark){.emd272-ok{color:#cbd5e1}}
+</style>
+<script>
+(function(){
+ var CV='pdpl-2026-11-19',LK='emd272_consent';
+ function local(){try{return JSON.parse(localStorage.getItem(LK)||'null')}catch(e){return null}}
+ function setLocal(o){try{localStorage.setItem(LK,JSON.stringify(o))}catch(e){}}
+ function C(){return window.EMDCloudV93}
+ function req(method,body){var c=C();return c.api.token().then(function(t){return fetch(c.api.url+'/auth/v1/user',{method:method,headers:{apikey:c.api.key,Authorization:'Bearer '+t,'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined}).then(function(r){if(!r.ok)throw new Error(r.status);return r.json()})})}
+ function save(at){return req('PUT',{data:{emd_consent:CV,emd_consent_at:at}})}
+ function busy(){var b=document.body;return b.classList.contains('emd93-open')||document.querySelector('.emd93-ov,#e260W.show,[role=dialog][open]')}
+ function bar(){
+  if(document.getElementById('emd272Bar'))return;
+  var d=document.createElement('div');d.id='emd272Bar';d.setAttribute('role','status');
+  d.innerHTML='<div>📜 <b>حدّثنا سياسة الخصوصية</b><br>وضّحنا أين تُحفظ بياناتك خارج سلطنة عُمان، ودور الذكاء الاصطناعي، وحقوقك، وفق قانون حماية البيانات الشخصية العُماني. نحتاج موافقتك لمتابعة الحفظ السحابي.</div><div class="r"><a href="/privacy.html" target="_blank" rel="noopener">اقرأ السياسة</a><button type="button">أوافق</button></div>';
+  document.body.appendChild(d);requestAnimationFrame(function(){d.classList.add('on')});
+  d.querySelector('button').onclick=function(){var at=new Date().toISOString();setLocal({v:CV,at:at,pending:1});d.remove();
+   save(at).then(function(){setLocal({v:CV,at:at,synced:1})}).catch(function(){})};
+ }
+ function run(){
+  var c=C();if(!c||!c.session||!c.session())return;
+  var L=local();
+  req('GET').then(function(u){var m=(u&&u.user_metadata)||{};
+   if(m.emd_consent===CV){setLocal({v:CV,at:m.emd_consent_at,synced:1});return}
+   if(L&&L.v===CV){save(L.at||new Date().toISOString()).then(function(){setLocal({v:CV,at:L.at,synced:1})}).catch(function(){});return}
+   var tries=0;(function wait(){if(busy()&&tries++<20){setTimeout(wait,3000);return}bar()})();
+  }).catch(function(){});
+ }
+ function start(){setTimeout(run,9000)}
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+ window.EMDConsentV272={version:CV,show:bar,check:run};
+})();
+</script>
 </body>
 </html>
