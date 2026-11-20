@@ -11261,17 +11261,22 @@ var CSS='.emdfx{position:absolute;overflow:hidden;pointer-events:none;z-index:1;
 '@keyframes fxsw{0%{transform:translateX(-70%)}55%,100%{transform:translateX(70%)}}'+
 '@keyframes fxsm{0%{opacity:0;transform:translate(0,40%) scale(.7,.5) rotate(-6deg)}35%{opacity:.7}100%{opacity:0;transform:translate(18%,-260%) scale(1.8,1.3) rotate(10deg)}}'+
 '@keyframes fxsp{0%,100%{opacity:0;transform:scale(.3) rotate(0)}50%{opacity:1;transform:scale(1) rotate(45deg)}}'+
+'.emdfx .fv{position:absolute;inset:0;background-repeat:no-repeat;background-position:0 0;background-color:#fff}'+
+'.emdfx.on .fv{animation:fxspin 4.5s infinite}'+
+'.emdfx .fvb{position:absolute;top:6%;left:6%;background:rgba(10,20,48,.75);color:#fff;font:700 11px/1.9 system-ui,sans-serif;padding:0 8px;border-radius:12px}'+
+'@keyframes fxspin{from{background-position:0 0}to{background-position:100% 0}}'+
 '@media (prefers-reduced-motion:reduce){.emdfx .fi,.emdfx i{animation:none!important}}';
 function css(){if(document.getElementById('emdfxcss'))return;var s=document.createElement('style');s.id='emdfxcss';s.textContent=CSS;document.head.appendChild(s)}
 /* قراءة وصف الحركة من الرابط */
 function parse(u){u=String(u||'');var i=u.indexOf('#fx=');if(i<0)return null;var base=u.slice(0,i),o={base:base,fx:'',b:null,c:'',s:'w'};
   u.slice(i+1).split('~').forEach(function(p){var k=p.split('=')[0],v=decodeURIComponent(p.slice(k.length+1));if(k==='fx')o.fx=v;else if(k==='b')o.b=v.split(',').map(Number);else if(k==='c')o.c=v;else if(k==='s')o.s=v});
+  if(o.fx==='spin'){o.n=parseInt(String(u.split('~n=')[1]||''),10);return o.n>=2&&o.n<=36?o:null}
   if(!/^(cine|orbit|sweep|smoke|spark)$/.test(o.fx)||!o.b||o.b.length!==4||o.b.some(function(n){return !(n>=0&&n<=1000)}))return null;
   if(o.c&&!/^(https:|data:image\/)/.test(o.c)){if(!/^[a-z0-9-]{1,60}\.(png|jpg)$/.test(o.c))return null;o.c=base.replace(/[^\/]*$/,'')+o.c}
   return o}
 function has(fx,k){return fx==='cine'||fx===k}
 /* يبني الطبقات داخل عنصر بحجم الصورة الكاملة (مربع) */
-function build(o){var d=document.createElement('div');d.className='fi'+(o.fx==='cine'?' cam':'');var b=o.b.map(function(n){return n/10+'%'});
+function build(o){if(o.fx==='spin')return spin(o);var d=document.createElement('div');d.className='fi'+(o.fx==='cine'?' cam':'');var b=o.b.map(function(n){return n/10+'%'});
   var h='<img alt="" src="'+o.base.replace(/"/g,'%22')+'">';
   if(has(o.fx,'smoke'))h+='<div class="fs" style="--fxs:'+(o.s==='d'?'rgba(60,60,70,.32)':'rgba(255,255,255,.6)')+'"><i></i><i></i><i></i><i></i></div>';
   if(o.c){h+='<img class="fc" alt="" src="'+o.c.replace(/"/g,'%22')+'" style="left:'+b[0]+';top:'+b[1]+';width:'+b[2]+';height:'+b[3]+'">';
@@ -11279,16 +11284,19 @@ function build(o){var d=document.createElement('div');d.className='fi'+(o.fx==='
     if(lt)h+='<div class="fl '+lt+'" style="left:'+b[0]+';top:'+b[1]+';width:'+b[2]+';height:'+b[3]+';-webkit-mask-image:url(&quot;'+o.c.replace(/"/g,'%22')+'&quot;);mask-image:url(&quot;'+o.c.replace(/"/g,'%22')+'&quot;)"><i></i></div>'}
   if(has(o.fx,'spark')){h+='<div class="fp">';for(var i=0;i<7;i++){var x=o.b[0]/10+Math.random()*o.b[2]/10,y=o.b[1]/10+Math.random()*o.b[3]/10*.8;h+='<i style="left:'+x.toFixed(1)+'%;top:'+y.toFixed(1)+'%;animation-delay:-'+(Math.random()*3.2).toFixed(2)+'s"></i>'}h+='</div>'}
   d.innerHTML=h;return d}
+/* عرض 360°: الصورة شريط من لقطات متتالية، تدور تلقائيًا */
+function spin(o){var d=document.createElement('div');d.className='fi';d.style.inset='0';d.style.width='100%';d.style.height='100%';
+  d.innerHTML='<div class="fv" style="background-image:url(&quot;'+o.base.replace(/"/g,'%22')+'&quot;);background-size:'+(o.n*100)+'% 100%;animation-timing-function:steps('+o.n+',jump-none)"></div><b class="fvb">🔄 360°</b>';return d}
 var io=('IntersectionObserver' in window)?new IntersectionObserver(function(E){E.forEach(function(e){e.target.classList.toggle('on',e.isIntersecting)})},{rootMargin:'40px'}):null;
 /* يضع الطبقة فوق صورة <img> بالضبط مع مراعاة object-fit */
 function place(img,L){var p=img.offsetParent;if(!p)return;var cw=img.clientWidth,ch=img.clientHeight,nw=img.naturalWidth||1,nh=img.naturalHeight||1,fit=getComputedStyle(img).objectFit,s;
   s=fit==='contain'||fit==='scale-down'?Math.min(cw/nw,ch/nh):(fit==='fill'?0:Math.max(cw/nw,ch/nh));
   L.style.left=img.offsetLeft+'px';L.style.top=img.offsetTop+'px';L.style.width=cw+'px';L.style.height=ch+'px';
-  var fi=L.firstChild;if(!fi)return;if(!s){fi.style.left='0';fi.style.top='0';fi.style.width='100%';fi.style.height='100%';return}
+  var fi=L.firstChild;if(!fi)return;if(L._spin){fi.style.left='0';fi.style.top='0';fi.style.width='100%';fi.style.height='100%';var v=fi.firstChild,m=Math.max(cw,ch);if(v){v.style.inset='auto';v.style.width=m+'px';v.style.height=m+'px';v.style.left=(cw-m)/2+'px';v.style.top=(ch-m)/2+'px'}return}if(!s){fi.style.left='0';fi.style.top='0';fi.style.width='100%';fi.style.height='100%';return}
   fi.style.width=nw*s+'px';fi.style.height=nh*s+'px';fi.style.left=(cw-nw*s)/2+'px';fi.style.top=(ch-nh*s)/2+'px'}
 function attachImg(img){var o=parse(img.getAttribute('src'));img.setAttribute('data-fx','1');if(!o)return;css();
   function go(){var par=img.parentNode;if(!par)return;if(getComputedStyle(par).position==='static')par.style.position='relative';
-    var L=document.createElement('div');L.className='emdfx';L.appendChild(build(o));par.insertBefore(L,img.nextSibling);place(img,L);
+    var L=document.createElement('div');L.className='emdfx';L._spin=o.fx==='spin';L.appendChild(build(o));par.insertBefore(L,img.nextSibling);place(img,L);
     if(io)io.observe(L);else L.classList.add('on');
     if('ResizeObserver' in window)new ResizeObserver(function(){place(img,L)}).observe(img)}
   if(img.complete&&img.naturalWidth)go();else img.addEventListener('load',go,{once:true})}
