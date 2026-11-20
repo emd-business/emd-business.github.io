@@ -16,7 +16,7 @@ window.EMDErrLog={list:function(){var c=Date.now()-3*864e5;return L().filter(fun
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V272</title>
+<title>EMD Business — Standalone V274</title>
 <!-- EMD V158: شاشة افتتاح تغطي التطبيق حتى تكتمل الواجهة الأخيرة، فلا تظهر الأشكال والأزرار القديمة أثناء التحميل -->
 <style id="EMD-V158-boot">
 html.emd-boot{background:#0f172a!important}
@@ -165,6 +165,11 @@ header .brand small{flex-basis:100%;direction:rtl;text-align:right}
 #emd411Store .e245n{position:absolute;top:6px;inset-inline-start:6px;z-index:1;padding:2px 9px;border-radius:999px;background:linear-gradient(135deg,#e2b85a,#b8862c);color:#fff;font:700 11px/1.6 inherit;font-style:normal;box-shadow:0 4px 10px -4px rgba(120,80,10,.7)}
 #emd411Store .e245b{box-shadow:0 0 0 2px #d4a64a,0 10px 22px -16px rgba(120,80,10,.8)}
 </style>
+<script id="EMD-V274-alpha">
+/* V274: الصور المفرّغة (PNG شفاف) تبقى شفافة؛ الصور العادية تبقى JPG خفيفة كما هي */
+window.EMDAlphaV274={has:function(c){try{var w=c.width,h=c.height,g=c.getContext('2d'),st=Math.max(1,Math.floor(Math.sqrt(w*h/40000)));var d=g.getImageData(0,0,w,h).data;for(var y=0;y<h;y+=st)for(var x=0;x<w;x+=st){if(d[(y*w+x)*4+3]<250)return true}return false}catch(e){return false}},
+ png:function(im,max,lim){var m=max,out='';for(var i=0;i<6;i++){var sc=Math.min(1,m/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.max(1,Math.round(im.width*sc));c.height=Math.max(1,Math.round(im.height*sc));c.getContext('2d').drawImage(im,0,0,c.width,c.height);out=c.toDataURL('image/png');if(out.length<=lim)return out;m=Math.round(m*0.8)}return out}};
+</script>
 </head>
 <body>
 <!-- EMD Customers V3 -->
@@ -3727,6 +3732,8 @@ function openWhatsApp(order){
         const c=document.createElement('canvas');
         c.width=Math.max(1,Math.round(im.width*scale));c.height=Math.max(1,Math.round(im.height*scale));
         const cx=c.getContext('2d');cx.drawImage(im,0,0,c.width,c.height);
+        const A=window.EMDAlphaV274;if(A&&A.has(c)){cb(A.png(im,max,140000));return}
+        cx.globalCompositeOperation='destination-over';cx.fillStyle='#fff';cx.fillRect(0,0,c.width,c.height);
         cb(c.toDataURL('image/jpeg',.78));
       };
       im.src=e.target.result;
@@ -22918,7 +22925,9 @@ function compress(file,cb){
   r.onload=function(e){var im=new Image();im.onload=function(){
       var max=320,sc=Math.min(1,max/Math.max(im.width,im.height)),c=document.createElement('canvas');
       c.width=Math.max(1,Math.round(im.width*sc));c.height=Math.max(1,Math.round(im.height*sc));
-      var x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);
+      var x=c.getContext('2d');x.drawImage(im,0,0,c.width,c.height);
+      var A=window.EMDAlphaV274;if(A&&A.has(c)){cb(A.png(im,max,90000));return}
+      x.globalCompositeOperation='destination-over';x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.globalCompositeOperation='source-over';
       var q=0.72,out=c.toDataURL('image/jpeg',q);while(out.length>60000&&q>0.4){q-=0.08;out=c.toDataURL('image/jpeg',q)}
       cb(out)};
     im.onerror=function(){alert('تعذّر قراءة الصورة.')};im.src=e.target.result};
@@ -27505,11 +27514,13 @@ function errMsg(e){var c=String(e&&e.code||''),m=String(e&&e.message||'');
   return 'تعذّر الإكمال: '+m}
 function fnv(s){var h=2166136261;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return (h>>>0).toString(36)+s.length.toString(36)}
 function shrink(src,M,type){return new Promise(function(ok,no){var im=new Image();im.onload=function(){var sc=Math.min(1,M/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.max(1,Math.round(im.width*sc));c.height=Math.max(1,Math.round(im.height*sc));var g=c.getContext('2d');
-  if(type==='image/jpeg'){g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height)}g.drawImage(im,0,0,c.width,c.height);c.toBlob(function(b){b?ok(b):no(new Error('img'))},type,.85)};im.onerror=function(){no(new Error('img'))};im.src=src})}
+  g.drawImage(im,0,0,c.width,c.height);var A=window.EMDAlphaV274;
+  if(type==='image/jpeg'&&A&&A.has(c)){var tp=function(m){var s2=Math.min(1,m/Math.max(im.width,im.height)),c2=document.createElement('canvas');c2.width=Math.max(1,Math.round(im.width*s2));c2.height=Math.max(1,Math.round(im.height*s2));c2.getContext('2d').drawImage(im,0,0,c2.width,c2.height);c2.toBlob(function(b){if(b&&b.size>480000&&m>300)tp(Math.round(m*0.8));else b?ok(b):no(new Error('img'))},'image/png')};tp(M);return}
+  if(type==='image/jpeg'){g.globalCompositeOperation='destination-over';g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height)}c.toBlob(function(b){b?ok(b):no(new Error('img'))},type,.85)};im.onerror=function(){no(new Error('img'))};im.src=src})}
 /* الصور تنرفع مرة وحدة: اسم الملف من بصمة الصورة، ولو انرفعت قبل نستخدم رابطها */
 function upImg(src,M,type){src=String(src||'');if(/^https:\/\//i.test(src))return Promise.resolve(src);if(!/^data:image\//i.test(src))return Promise.resolve('');
   var h=fnv(src)+'-'+M,done=S.imgUp[h];if(done)return Promise.resolve(done);
-  return shrink(src,M,type).then(b64).then(function(d){return fn('upload',{name:h+(type==='image/png'?'.png':'.jpg'),type:type,data:d})}).then(function(j){S.imgUp[h]=j.url;return j.url}).catch(function(){return ''})}
+  return shrink(src,M,type).then(function(bl){var t=bl.type==='image/png'?'image/png':type;return b64(bl).then(function(d){return fn('upload',{name:h+(t==='image/png'?'.png':'.jpg'),type:t,data:d})})}).then(function(j){S.imgUp[h]=j.url;return j.url}).catch(function(){return ''})}
 function b64(blob){return new Promise(function(ok,no){var r=new FileReader();r.onload=function(){ok(String(r.result).split(',')[1]||'')};r.onerror=no;r.readAsDataURL(blob)})}
 function snapshot(){var L=products(),snap={};L.forEach(function(p){var o=S.prod[p.k];if(o&&o.on)snap[p.k]={name:p.name,price:p.price,stock:p.stock,cat:p.cat,desc:o.desc||'',old:o.old||'',im:(o.imgs||[]).join('|')}});S.snap=snap;S.snapAt=stamp()}
 var busy=false;
@@ -33523,7 +33534,9 @@ var MAXPX=240,TARGET=24000,MIN=26000;/* بالحروف */
 function big(p){return p&&typeof p.image==='string'&&p.image.indexOf('data:image')===0&&p.image.length>MIN}
 function shrink(url){return new Promise(function(res){var im=new Image();im.onload=function(){try{
   var sc=Math.min(1,MAXPX/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.max(1,Math.round(im.width*sc));c.height=Math.max(1,Math.round(im.height*sc));
-  var x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);
+  var x=c.getContext('2d');x.drawImage(im,0,0,c.width,c.height);var A=window.EMDAlphaV274;
+  if(A&&url.indexOf('data:image/png')===0&&A.has(c)){var pg=A.png(im,MAXPX,TARGET*3);res(pg.length<url.length?pg:null);return}
+  x.globalCompositeOperation='destination-over';x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);
   var q=0.7,out=c.toDataURL('image/jpeg',q);while(out.length>TARGET&&q>0.35){q-=0.07;out=c.toDataURL('image/jpeg',q)}
   res(out.length<url.length?out:null)}catch(e){res(null)}};im.onerror=function(){res(null)};im.src=url})}
 var running=false,snapDone=false;
