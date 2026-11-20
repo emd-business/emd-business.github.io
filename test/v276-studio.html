@@ -34924,8 +34924,8 @@ function process(i){if(!ST)return;var it=ST.items[i];if(!it){ST.busy=false;okBtn
   ST.busy=true;okBtn();var mdl=P.hq?HQ:FAST;
   X().cached(mdl).then(function(hit){
     var label=ST.items.length>1?'جارٍ تفريغ الصورة '+(i+1)+' من '+ST.items.length+'…':'جارٍ تفريغ الخلفية…';
-    if(i===ST.cur||!ST.items[ST.cur].mask)busy(hit?label:'جارٍ تجهيز الاستوديو أول مرة ('+(P.hq?'44':'4.6')+' ميجا)…',0);
-    return X().mask(it.src,mdl,function(p){if(!hit)busy('جارٍ تجهيز الاستوديو أول مرة ('+(P.hq?'44':'4.6')+' ميجا)… '+Math.round(p*100)+'٪',p);if(p>=1)busy(label,1)})})
+    if(i===ST.cur||!ST.items[ST.cur].mask)busy(hit?label:'جارٍ تجهيز الاستوديو أول مرة ('+(P.hq?'55':'16')+' ميجا تقريبًا)…',0);
+    return X().mask(it.src,mdl,function(p){if(!hit)busy('جارٍ تجهيز الاستوديو أول مرة ('+(P.hq?'55':'16')+' ميجا تقريبًا)… '+Math.round(p*100)+'٪',p);if(p>=1)busy(label,1)})})
   .then(function(m){if(!ST)return;it.mask=m;it.mhq=!!P.hq;render(it);if(i===ST.cur){show();busy(null)}paintStrip();process(i+1)},
     function(e){if(!ST)return;console.warn('studio',e);ST.busy=false;okBtn();
       busy(navigator.onLine===false?'لا يوجد اتصال بالإنترنت لتجهيز الاستوديو أول مرة. اتصل ثم أعد المحاولة.':'تعذّر تجهيز الاستوديو على هذا الجهاز. جرّب متصفح Chrome أو Safari محدّثًا.')})}
