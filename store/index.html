@@ -11233,5 +11233,82 @@ boot();
  new MutationObserver(scan).observe(document.documentElement,{childList:true,subtree:true});scan();
 })();
 </script>
+<!-- EMD V276: الحركة السينمائية لصور المنتجات -->
+<script id="EMD-V276-fx">
+/* EMD V276: الحركة السينمائية لصور المنتج (تعمل في الاستوديو وفي صفحة المتجر)
+   الصورة تحمل وصف الحركة في آخر رابطها: ...jpg#fx=cine~b=x,y,w,h~c=اسم-صورة-المنتج-المفرغة.png~s=w
+   الطبقات: الصورة الأصلية ← دخان ← المنتج المفرّغ ← ضوء متحرك بشكل المنتج ← لمعان. كلها CSS خفيفة وتتوقف خارج الشاشة. */
+(function(){
+'use strict';
+if(window.EMDFx)return;
+var CSS='.emdfx{position:absolute;overflow:hidden;pointer-events:none;z-index:1;border-radius:inherit;direction:ltr}'+
+'.emdfx .fi{position:absolute;transform-origin:50% 60%}'+
+'.emdfx .fi>img{position:absolute;inset:0;width:100%;height:100%;display:block;max-width:none}'+
+'.emdfx .fi>img.fc{position:absolute;display:block;max-width:none;right:auto;bottom:auto}'+
+'.emdfx .fl{position:absolute;-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;mix-blend-mode:soft-light;overflow:hidden}'+
+'.emdfx .fl i{position:absolute;inset:-60%;display:block}'+
+'.emdfx .fs{position:absolute;left:0;right:0;bottom:0;top:0}'+
+'.emdfx .fs i{position:absolute;bottom:2%;width:34%;height:22%;border-radius:50%;opacity:0;background:radial-gradient(ellipse at 50% 60%,var(--fxs,rgba(255,255,255,.5)) 0,rgba(255,255,255,0) 66%)}'+
+'.emdfx .fp i{position:absolute;width:3.2%;aspect-ratio:1;opacity:0;background:radial-gradient(circle,#fff 0 18%,rgba(255,255,255,0) 60%),linear-gradient(90deg,transparent 46%,#fff 50%,transparent 54%),linear-gradient(0deg,transparent 46%,#fff 50%,transparent 54%)}'+
+'.emdfx.on .fi.cam{animation:fxcam 10s ease-in-out infinite alternate}'+
+'.emdfx.on .fl.orbit i{animation:fxrot 7s linear infinite;background:radial-gradient(circle at 50% 22%,rgba(255,255,255,.95) 0,rgba(255,255,255,0) 30%),radial-gradient(circle at 50% 80%,rgba(0,0,0,.55) 0,rgba(0,0,0,0) 34%)}'+
+'.emdfx.on .fl.sweep i{animation:fxsw 4.5s ease-in-out infinite;background:linear-gradient(110deg,rgba(255,255,255,0) 40%,rgba(255,255,255,.95) 50%,rgba(255,255,255,0) 60%)}'+
+'.emdfx.on .fs i{animation:fxsm 8s ease-in-out infinite}'+
+'.emdfx.on .fs i:nth-child(2){animation-delay:-2s;left:30%}.emdfx.on .fs i:nth-child(3){animation-delay:-4s;left:58%}.emdfx.on .fs i:nth-child(4){animation-delay:-6s;left:12%}.emdfx.on .fs i:nth-child(5){animation-delay:-1s;left:70%}.emdfx.on .fs i:nth-child(6){animation-delay:-5s;left:42%}'+
+'.emdfx.on .fp i{animation:fxsp 3.2s ease-in-out infinite}'+
+'@keyframes fxcam{0%{transform:scale(1) translate(0,0)}100%{transform:scale(1.07) translate(-1.2%,-1.5%)}}'+
+'@keyframes fxrot{to{transform:rotate(360deg)}}'+
+'@keyframes fxsw{0%{transform:translateX(-70%)}55%,100%{transform:translateX(70%)}}'+
+'@keyframes fxsm{0%{opacity:0;transform:translate(0,40%) scale(.7,.5) rotate(-6deg)}35%{opacity:.7}100%{opacity:0;transform:translate(18%,-260%) scale(1.8,1.3) rotate(10deg)}}'+
+'@keyframes fxsp{0%,100%{opacity:0;transform:scale(.3) rotate(0)}50%{opacity:1;transform:scale(1) rotate(45deg)}}'+
+'.emdfx .fv{position:absolute;inset:0;background-repeat:no-repeat;background-position:0 0;background-color:#fff}'+
+'.emdfx.on .fv{animation:fxspin 4.5s infinite}'+
+'.emdfx .fvb{position:absolute;top:6%;left:6%;background:rgba(10,20,48,.75);color:#fff;font:700 11px/1.9 system-ui,sans-serif;padding:0 8px;border-radius:12px}'+
+'@keyframes fxspin{from{background-position:0 0}to{background-position:100% 0}}'+
+'@media (prefers-reduced-motion:reduce){.emdfx .fi,.emdfx i{animation:none!important}}';
+function css(){if(document.getElementById('emdfxcss'))return;var s=document.createElement('style');s.id='emdfxcss';s.textContent=CSS;document.head.appendChild(s)}
+/* قراءة وصف الحركة من الرابط */
+function parse(u){u=String(u||'');var i=u.indexOf('#fx=');if(i<0)return null;var base=u.slice(0,i),o={base:base,fx:'',b:null,c:'',s:'w'};
+  u.slice(i+1).split('~').forEach(function(p){var k=p.split('=')[0],v=decodeURIComponent(p.slice(k.length+1));if(k==='fx')o.fx=v;else if(k==='b')o.b=v.split(',').map(Number);else if(k==='c')o.c=v;else if(k==='s')o.s=v});
+  if(o.fx==='spin'){o.n=parseInt(String(u.split('~n=')[1]||''),10);return o.n>=2&&o.n<=36?o:null}
+  if(!/^(cine|orbit|sweep|smoke|spark)$/.test(o.fx)||!o.b||o.b.length!==4||o.b.some(function(n){return !(n>=0&&n<=1000)}))return null;
+  if(o.c&&!/^(https:|data:image\/)/.test(o.c)){if(!/^[a-z0-9-]{1,60}\.(png|jpg)$/.test(o.c))return null;o.c=base.replace(/[^\/]*$/,'')+o.c}
+  return o}
+function has(fx,k){return fx==='cine'||fx===k}
+/* يبني الطبقات داخل عنصر بحجم الصورة الكاملة (مربع) */
+function build(o){if(o.fx==='spin')return spin(o);var d=document.createElement('div');d.className='fi'+(o.fx==='cine'?' cam':'');var b=o.b.map(function(n){return n/10+'%'});
+  var h='<img alt="" src="'+o.base.replace(/"/g,'%22')+'">';
+  if(has(o.fx,'smoke'))h+='<div class="fs" style="--fxs:'+(o.s==='d'?'rgba(60,60,70,.32)':'rgba(255,255,255,.6)')+'"><i></i><i></i><i></i><i></i></div>';
+  if(o.c){h+='<img class="fc" alt="" src="'+o.c.replace(/"/g,'%22')+'" style="left:'+b[0]+';top:'+b[1]+';width:'+b[2]+';height:'+b[3]+'">';
+    var lt=o.fx==='sweep'?'sweep':(o.fx==='smoke'||o.fx==='spark'?'':'orbit');
+    if(lt)h+='<div class="fl '+lt+'" style="left:'+b[0]+';top:'+b[1]+';width:'+b[2]+';height:'+b[3]+';-webkit-mask-image:url(&quot;'+o.c.replace(/"/g,'%22')+'&quot;);mask-image:url(&quot;'+o.c.replace(/"/g,'%22')+'&quot;)"><i></i></div>'}
+  if(has(o.fx,'spark')){h+='<div class="fp">';for(var i=0;i<7;i++){var x=o.b[0]/10+Math.random()*o.b[2]/10,y=o.b[1]/10+Math.random()*o.b[3]/10*.8;h+='<i style="left:'+x.toFixed(1)+'%;top:'+y.toFixed(1)+'%;animation-delay:-'+(Math.random()*3.2).toFixed(2)+'s"></i>'}h+='</div>'}
+  d.innerHTML=h;return d}
+/* عرض 360°: الصورة شريط من لقطات متتالية، تدور تلقائيًا */
+function spin(o){var d=document.createElement('div');d.className='fi';d.style.inset='0';d.style.width='100%';d.style.height='100%';
+  d.innerHTML='<div class="fv" style="background-image:url(&quot;'+o.base.replace(/"/g,'%22')+'&quot;);background-size:'+(o.n*100)+'% 100%;animation-timing-function:steps('+o.n+',jump-none)"></div><b class="fvb">🔄 360°</b>';return d}
+var io=('IntersectionObserver' in window)?new IntersectionObserver(function(E){E.forEach(function(e){e.target.classList.toggle('on',e.isIntersecting)})},{rootMargin:'40px'}):null;
+/* يضع الطبقة فوق صورة <img> بالضبط مع مراعاة object-fit */
+function place(img,L){var p=img.offsetParent;if(!p)return;var cw=img.clientWidth,ch=img.clientHeight,nw=img.naturalWidth||1,nh=img.naturalHeight||1,fit=getComputedStyle(img).objectFit,s;
+  s=fit==='contain'||fit==='scale-down'?Math.min(cw/nw,ch/nh):(fit==='fill'?0:Math.max(cw/nw,ch/nh));
+  L.style.left=img.offsetLeft+'px';L.style.top=img.offsetTop+'px';L.style.width=cw+'px';L.style.height=ch+'px';
+  var fi=L.firstChild;if(!fi)return;if(L._spin){fi.style.left='0';fi.style.top='0';fi.style.width='100%';fi.style.height='100%';var v=fi.firstChild,m=Math.max(cw,ch);if(v){v.style.inset='auto';v.style.width=m+'px';v.style.height=m+'px';v.style.left=(cw-m)/2+'px';v.style.top=(ch-m)/2+'px'}return}if(!s){fi.style.left='0';fi.style.top='0';fi.style.width='100%';fi.style.height='100%';return}
+  fi.style.width=nw*s+'px';fi.style.height=nh*s+'px';fi.style.left=(cw-nw*s)/2+'px';fi.style.top=(ch-nh*s)/2+'px'}
+function attachImg(img){var o=parse(img.getAttribute('src'));img.setAttribute('data-fx','1');if(!o)return;css();
+  function go(){var par=img.parentNode;if(!par)return;if(getComputedStyle(par).position==='static')par.style.position='relative';
+    var L=document.createElement('div');L.className='emdfx';L._spin=o.fx==='spin';L.appendChild(build(o));par.insertBefore(L,img.nextSibling);place(img,L);
+    if(io)io.observe(L);else L.classList.add('on');
+    if('ResizeObserver' in window)new ResizeObserver(function(){place(img,L)}).observe(img)}
+  if(img.complete&&img.naturalWidth)go();else img.addEventListener('load',go,{once:true})}
+function scan(root){var L=(root||document).querySelectorAll('img[src*="#fx="]:not([data-fx])');for(var i=0;i<L.length;i++)attachImg(L[i])}
+var mo=null,t=0;
+function watch(){if(mo||!('MutationObserver' in window))return;mo=new MutationObserver(function(){if(t)return;t=setTimeout(function(){t=0;scan()},250)});mo.observe(document.body,{childList:true,subtree:true});scan()}
+/* للاستوديو: طبقة معاينة فوق عنصر مربع */
+function preview(host,o){css();var old=host.querySelector('.emdfx');if(old)old.remove();if(!o||!o.fx)return;var L=document.createElement('div');L.className='emdfx on';L.style.inset='0';var fi=build(o);fi.style.inset='0';L.appendChild(fi);host.appendChild(L)}
+window.EMDFx={parse:parse,scan:scan,watch:watch,preview:preview};
+})();
+
+if(document.readyState!=="loading")EMDFx.watch();else document.addEventListener("DOMContentLoaded",function(){EMDFx.watch()});
+</script>
 </body>
 </html>
