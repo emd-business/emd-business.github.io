@@ -16,7 +16,7 @@ window.EMDErrLog={list:function(){var c=Date.now()-3*864e5;return L().filter(fun
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V276</title>
+<title>EMD Business — Standalone V277</title>
 <!-- EMD V158: شاشة افتتاح تغطي التطبيق حتى تكتمل الواجهة الأخيرة، فلا تظهر الأشكال والأزرار القديمة أثناء التحميل -->
 <style id="EMD-V158-boot">
 html.emd-boot{background:#0f172a!important}
@@ -34167,7 +34167,8 @@ function prodNames(text){var P=[];try{P=((window.db&&window.db.products)||[]).ma
 function setV(id,v){var e=$(id);if(!e)return;e.value=v;e.dispatchEvent(new Event('input',{bubbles:true}));e.dispatchEvent(new Event('change',{bubbles:true}))}
 function val(id){var e=$(id);return e?String(e.value||''):''}
 function wait(ms){return new Promise(function(r){setTimeout(r,ms)})}
-var LAST=null,OBS=[];
+var LAST=null,OBS=[],WAIT=[],WCHK=0,NOTE_AI=null;
+function stockOf(name){try{var P=(window.db&&window.db.products)||[];for(var i=0;i<P.length;i++)if(P[i]&&String(P[i].name).trim()===String(name).trim()){var s=P[i].stock;return s===''||s==null||isNaN(+s)?null:+s}}catch(e){}return null}
 /* V255: الملاحظات لما كتبه العميل فقط؛ ما لا تظهر كلماته في رسالة العميل يُعدّ تعليقًا من الذكاء الاصطناعي فلا يُكتب فيها */
 function noteOk(nt){var r=' '+N(LAST||'')+' ',w=N(nt).split(/\s+/).filter(function(x){return x.length>=3});if(!w.length)return true;var h=0;w.forEach(function(x){var y=x.replace(/^و(?=.{3})/,'');if(r.indexOf(x)>=0||r.indexOf(y)>=0)h++});return h/w.length>=0.6}
 function runParse(raw){var r=$('raw');r.value=raw;try{window.parse()}catch(e){}return wait(450)}
@@ -34175,7 +34176,8 @@ function apply(o){
   var ch=[];
   function put(id,v,label){v=String(v||'').trim();if(!v)return;var old=val(id);if(N(old)===N(v))return;setV(id,v);ch.push(label)}
   if(!/\[/.test(o.name||''))put('pname',o.name,'الاسم');if(!/\[/.test(o.phone||''))put('pphone',o.phone,'الرقم');put('pplace',o.place,'المكان');put('ppaymentMethod',o.payment,'طريقة الدفع');put('ptransfer',o.transfer,'رقم التحويل');
-  var nt=String(o.note||'').trim();if(nt&&!noteOk(nt)){OBS.push(nt);nt=''}if(nt){var cur=val('pnote');if(/^📝/.test(cur.trim()))cur='';/* ما خمّنه التحليل العادي يُستبدل بما فهمه الذكاء الاصطناعي */if(N(cur).indexOf(N(nt))<0){setV('pnote',cur?cur+' — '+nt:nt);ch.push('الملاحظات')}}
+  /* V259: في القراءة الذكية خانة الملاحظات = ملاحظة العميل كما فهمها الذكاء الاصطناعي فقط، وما كتبه التحليل العادي هناك يُحذف */
+  var nt=String(o.note||'').trim();if(nt&&!noteOk(nt)){OBS.push(nt);nt=''}NOTE_AI=nt;if(N(val('pnote'))!==N(nt)){setV('pnote',nt);ch.push('الملاحظات')}
   var items=Array.isArray(o.items)?o.items:[],host=$('emdParsedProducts'),miss=[];
   if(items.length&&host){
     var rows=[].slice.call(host.querySelectorAll('.emd-parsed-product')),before=rows.map(function(r){var i=r.getAttribute('data-product-index');return val('prod'+i)+'×'+val('q'+i)}).join('|');
@@ -34183,14 +34185,24 @@ function apply(o){
     rows=[].slice.call(host.querySelectorAll('.emd-parsed-product'));
     rows.slice(items.length).forEach(function(r){try{window.removeParsedProductV45(r.getAttribute('data-product-index'))}catch(e){r.remove()}});
     items.forEach(function(it,j){var r=rows[j];if(!r)return;var i=r.getAttribute('data-product-index');
-      var amb=isAmb(it);setV('prod'+i,amb?'':(it.product||''));setV('q'+i,String(it.qty||1));
-      var lb=r.querySelector('.muted');if(lb)lb.textContent='✨ قراءة ذكية: '+(it.said||it.product)+' × '+(it.qty||1)+(amb?' — يحتمل أكثر من منتج، اختر الصحيح':'');
-      if(!it.product)miss.push(it.said)});
+      var amb=isAmb(it),said=sayOf(it),opn=said?ambOf(said).length:0;if(!it.product&&opn>=2)amb=true;
+      /* V259: إن لم يطابق الذكاء الاصطناعي منتجًا وكان في منتجاتك منتج واحد فقط يحتوي كلمات العميل، نختاره */
+      if(!it.product&&!amb&&said){var one=ambOf(said);if(one.length===1)it.product=one[0]}
+      var unreg=!it.product&&!amb&&said&&opn===0;
+      if(unreg){var sel=$('prod'+i);if(sel&&sel.tagName==='SELECT'&&![].some.call(sel.options,function(op){return op.value===said})){var op=document.createElement('option');op.value=said;op.textContent='⚠️ '+said+' (غير مسجل)';sel.appendChild(op)}WAIT.push({src:said,q:it.qty||1,unreg:1})}
+      setV('prod'+i,amb?'':(unreg?said:(it.product||'')));setV('q'+i,String(it.qty||1));
+      if(it.product&&!amb){var sp=stockOf(it.product);if(sp!=null&&sp<(+it.qty||1))WAIT.push({src:it.product,q:it.qty||1,stock:sp})}
+      var lb=r.querySelector('.muted');if(lb)lb.textContent='✨ قراءة ذكية: '+(it.said||it.product)+' × '+(it.qty||1)+(amb?' — يحتمل أكثر من منتج، اختر الصحيح':unreg?' — غير موجود في منتجاتك':'');
+      });
+    if(WAIT.length){var nb=$('pNotifyStock');if(nb&&!nb.checked){nb.checked=true;WCHK=1;nb.dispatchEvent(new Event('change',{bubbles:true}));ch.push('طلب انتظار')}}
+    /* «📝 تفاصيل» التي كتبها التحليل العادي من كلمات المنتجات ليست ملاحظة من العميل */
+    var sw=items.map(function(it){return N(sayOf(it)+' '+(it.product||''))}).join(' ');var pn=val('pnote');if(pn){var kept=pn.split('\n').filter(function(l){if(!/^\s*📝\s*تفاصيل/.test(l))return true;var w=N(l.replace(/^\s*📝\s*تفاصيل\s*[:：]?/,'')).split(' ').filter(Boolean);return !w.length?false:w.filter(function(x){return sw.indexOf(x)<0}).length>0}).join('\n').trim();if(kept!==pn.trim())setV('pnote',kept)}
     rows=[].slice.call(host.querySelectorAll('.emd-parsed-product'));
     var after=rows.map(function(r){var i=r.getAttribute('data-product-index');return val('prod'+i)+'×'+val('q'+i)}).join('|');
     if(after!==before)ch.push('المنتجات')}
   var L=$('e232Left');if(L)L.style.display='none';
-  if(nt)setTimeout(function(){var c=val('pnote');var d=c.split('\n').filter(function(l){return !/^\s*📝/.test(l)}).join('\n').trim();if(d&&d!==c.trim())setV('pnote',d)},350);
+  /* طبقات التحليل العادي قد تكتب في الملاحظات بعد لحظات، فنعيدها لما قرره الذكاء الاصطناعي */
+  [400,1200,2500].forEach(function(ms){setTimeout(function(){if(NOTE_AI!=null&&N(val('pnote'))!==N(NOTE_AI))setV('pnote',NOTE_AI)},ms)});
   var un=(o.unclear||[]).filter(Boolean).slice(0,6);
   var p=$('parsed'),c=$('e454Card');if(!p)return;
   if(!c){c=document.createElement('div');c.id='e454Card';c.className='e454card';var h=p.querySelector('h3');if(h)h.insertAdjacentElement('afterend',c);else p.insertBefore(c,p.firstChild)}
@@ -34198,9 +34210,10 @@ function apply(o){
     (miss.length?'<br>⚠️ لم أجد في منتجاتك: '+miss.map(function(x){return '<span class="e454u">'+esc(x)+'</span>'}).join(' ')+'، اختره من القائمة.':'')+
     (SER.length?'<br>🔗 اخترتُ من نفس سلسلة بقية الطلب، فغيّره إن لم يكن صحيحًا: '+SER.map(function(x){return '<span class="e454u">'+esc(x.src)+'</span> = '+esc(x.p)}).join('، '):'')+
     (AMB.length?'<br>⚠️ يحتمل أكثر من منتج، فاختره بنفسك وسيتذكّره التطبيق: '+AMB.map(function(x){return '<span class="e454u">'+esc(x.src)+'</span> (اقتراح: '+esc(x.p)+')'}).join('، '):'')+
+    (WAIT.length?'<br>🔔 حُفظ كطلب انتظار، وسينبّهك التطبيق عند توفر المنتج: '+WAIT.map(function(x){return '<span class="e454u">'+esc(x.src)+'</span>'+(x.unreg?' (غير موجود في منتجاتك، أضفه بنفس الاسم أو غيّره)':' (المتوفر '+x.stock+')')}).join('، '):'')+
     (OBS.length?'<br>💬 ملاحظة القراءة الذكية (لم تُكتب في خانة الملاحظات لأنها ليست من العميل): '+OBS.map(esc).join('، '):'')+
     (un.length?'<br>كلمات غير واضحة: '+un.map(function(x){return '<span class="e454u">'+esc(x)+'</span>'}).join(' '):'')+
-    (PEND.length?'<br>🧠 عند الحفظ سيتعلّم التطبيق: '+PEND.map(function(x){return '<span class="e454u">'+esc(x.src)+'</span> = '+esc(x.p)}).join('، '):'')+'<br><small>راجع الخانات قبل الحفظ.</small><div class="e454x"><button type="button" data-e454undo="1">↩️ تراجع</button></div>';OBS=[]}
+    (PEND.length?'<br>🧠 عند الحفظ سيتعلّم التطبيق: '+PEND.map(function(x){return '<span class="e454u">'+esc(x.src)+'</span> = '+esc(x.p)}).join('، '):'')+'<br><small>راجع الخانات قبل الحفظ.</small><div class="e454x"><button type="button" data-e454undo="1">↩️ تراجع</button></div>';OBS=[];WAIT=[]}
 var MASKNOTE='(ملاحظة: [الاسم] و[رقم] بيانات أخفاها التطبيق عمدًا، فاترك name وphone فارغين ولا تخمّنهما.)\n';
 function rx(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}
 function mask(text,name){
@@ -34242,11 +34255,11 @@ document.addEventListener('click',function(e){var b=e.target&&e.target.closest&&
 function smart(btn){
   var r=$('raw'),raw=r?r.value.trim():'';if(!raw){toast('ألصق الرسالة أولًا.');return}
   var bs=[].slice.call(document.querySelectorAll('[data-e454go]'));bs.forEach(function(b){b.disabled=true;b.dataset.t=b.textContent;b.textContent='⏳ جارٍ الفهم…'});
-  LAST=raw;
+  LAST=raw;var pz=$('parsed');if(pz)pz.style.visibility='hidden';/* V259: لا تظهر نتيجة التحليل العادي قبل القراءة الذكية */
   /* V454c: اسم العميل ورقمه لا يُرسلان إلى جوجل. التحليل العادي يستخرجهما أولًا، ثم يُستبدلان في النص المرسَل */
   runParse(raw).then(function(){RULE=rowsNow().map(function(x){return x.p});return call({action:'order',text:MASKNOTE+mask(raw,val('pname')),products:prodNames(raw)})}).then(function(j){return runParse(raw).then(function(){plan(j.order||{});apply(j.order||{})})})
    .catch(function(e){toast(errMsg(e))})
-   .then(function(){bs.forEach(function(b){b.disabled=false;b.textContent=b.dataset.t||'🧠 قراءة ذكية'})})}
+   .then(function(){var pz=$('parsed');if(pz)pz.style.visibility='';bs.forEach(function(b){b.disabled=false;b.textContent=b.dataset.t||'🧠 قراءة ذكية'})})}
 function addBtn(){
   var r=$('raw');if(!r)return;var a=r.parentNode.querySelector('.actions');if(!a||a.querySelector('[data-e454go]'))return;
   var b=document.createElement('button');b.type='button';b.className='secondary e454b';b.setAttribute('data-e454go','1');b.textContent='🧠 قراءة ذكية';b.title='يفهم الرسائل الصعبة بالذكاء الاصطناعي';
@@ -34297,7 +34310,7 @@ function rcGo(id){var box=document.querySelector('.e215r[data-rid="'+id+'"]'),im
 
 document.addEventListener('click',function(e){var t=e.target;if(!t||!t.closest)return;
   if(t.closest('[data-e454go]')){e.preventDefault();smart();return}
-  if(t.closest('[data-e454undo]')){PEND=[];AMB=[];SER=[];if(LAST!=null){runParse(LAST).then(function(){var c=$('e454Card');if(c)c.remove()})}return}
+  if(t.closest('[data-e454undo]')){PEND=[];AMB=[];SER=[];NOTE_AI=null;if(WCHK){var nb=$('pNotifyStock');if(nb)nb.checked=false;WCHK=0}if(LAST!=null){runParse(LAST).then(function(){var c=$('e454Card');if(c)c.remove()})}return}
   var rb=t.closest('[data-e454rc]');if(rb){rcGo(rb.getAttribute('data-e454rc'));return}});
 var pend=false;new MutationObserver(function(){if(pend)return;pend=true;requestAnimationFrame(function(){pend=false;addBtn();addTry();rcBtns()})}).observe(document.documentElement,{childList:true,subtree:true});
 addBtn();
