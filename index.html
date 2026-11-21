@@ -16,7 +16,7 @@ window.EMDErrLog={list:function(){var c=Date.now()-3*864e5;return L().filter(fun
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V277</title>
+<title>EMD Business — Standalone V278</title>
 <!-- EMD V158: شاشة افتتاح تغطي التطبيق حتى تكتمل الواجهة الأخيرة، فلا تظهر الأشكال والأزرار القديمة أثناء التحميل -->
 <style id="EMD-V158-boot">
 html.emd-boot{background:#0f172a!important}
@@ -27366,7 +27366,7 @@ function products(){var d=db(),L=Array.isArray(d.products)?d.products:[];return 
 function pim(p){var o=S.prod[p.k];return (o&&Array.isArray(o.imgs)&&o.imgs[0])||p.img}
 function gal(k,o){var A=Array.isArray(o.imgs)?o.imgs:[];return '<div class="e151g"><b>🖼️ صور المتجر</b><small>حتى 5 صور تظهر للزبون فقط، ولا تتغير صورة المنتج في التطبيق.</small><div class="e151r">'+
   A.map(function(u,i){return '<span class="e151t'+(i?'':' main')+'"><img alt="" src="'+esc(u)+'">'+(i?'<button type="button" class="st" data-a="gmain" data-gi="'+i+'" title="اجعلها الصورة الرئيسية" aria-label="اجعلها الصورة الرئيسية">★</button>':'<em>الرئيسية</em>')+'<button type="button" class="x" data-a="gdel" data-gi="'+i+'" aria-label="حذف الصورة">×</button>'+(window.EMDStudioV276?'<button type="button" class="sx" data-a="gstudio" data-gi="'+i+'" title="حسّنها في الاستوديو" aria-label="حسّن الصورة في الاستوديو">✨</button>':'')+'</span>'}).join('')+
-  (A.length<5?'<label class="e151a" aria-label="إضافة صور">＋<span>إضافة</span><input type="file" accept="image/*" multiple data-gal hidden></label>'+(window.EMDStudioV276?'<label class="e151a e276s" aria-label="استوديو الصور: صورة احترافية">📸<span>استوديو</span><input type="file" accept="image/*" multiple data-studio hidden></label><label class="e151a e276s" aria-label="عرض 360 درجة">🔄<span>360°</span><input type="file" accept="image/*" multiple data-spin hidden></label>':''):'')+'</div>'+
+  (A.length<5?'<label class="e151a" aria-label="إضافة صور">＋<span>إضافة</span><input type="file" accept="image/*" multiple data-gal hidden></label>'+(window.EMDStudioV276?'<label class="e151a e276s" aria-label="استوديو الصور: صورة احترافية">📸<span>استوديو</span><input type="file" accept="image/*" multiple data-studio hidden></label><button type="button" class="e151a e276s" data-a="gspin" aria-label="عرض 360 درجة">🔄<span>360°</span></button>':''):'')+'</div>'+
   (A.length?'':'<small>إن لم تُضف صورًا يظهر المنتج في المتجر بصورته في التطبيق.</small>')+'</div>'}
 function reopen(k){var r=$('emd411Store').querySelectorAll('.pr');for(var i=0;i<r.length;i++)if(r[i].getAttribute('data-p')===k)r[i].classList.add('open')}
 function st276colors(){var k=(SKINS.filter(function(x){return x[0]===S.skin})[0])||[];return [S.accent,k[2],k[4]]}
@@ -27672,6 +27672,10 @@ function onClick(e){var w=$('emd411Store'),t=e.target;if(t===w){close();return}
   if(act==='close')close();
   else if(act==='nologo'){S.logo='';save();paint()}
   else if(act==='more'){a.closest('.pr').classList.toggle('open')}
+  else if(act==='gspin'){var gk=a.closest('.pr').getAttribute('data-p');if(!logged()){toast('عرض 360° يحتاج تسجيل الدخول');return}
+    EMDStudioV276.guide({title:st276name(gk),onDone:function(r){if(!r||r.spin.length<2){toast('صوّر 4 لقطات على الأقل حول المنتج');return}
+      EMDStudioV276.open({images:r.spin,max:24,spin:true,colors:st276colors(),title:'🔄 عرض 360° · '+st276name(gk),logo:S.logo||'',store:S.name||'',onDone:function(L){st276spin(gk,L[0]);
+        if(r.extra.length)setTimeout(function(){EMDStudioV276.open({images:r.extra,max:2,colors:st276colors(),title:'صور إضافية · '+st276name(gk),name:st276name(gk),price:st276price(gk),link:st276link(),logo:S.logo||'',store:S.name||'',onDone:function(L2){st276save(gk,L2,-1)}})},900)}})}})}
   else if(act==='gstudioall'){st276all()}
   else if(act==='gstudio'){var zk=a.closest('.pr').getAttribute('data-p'),zo=pset(zk),zi=+a.getAttribute('data-gi'),zu=(zo.imgs||[])[zi];if(!zu||!window.EMDStudioV276)return;
     EMDStudioV276.open({images:[zu],max:1,colors:st276colors(),title:st276name(zk),name:st276name(zk),price:st276price(zk),link:st276link(),logo:S.logo||'',store:S.name||'',onDone:function(L){st276save(zk,L,zi,zu)}})}
@@ -35293,7 +35297,71 @@ function social(kind){var it=cur();if(!it){toast('انتظر حتى تجهز ا�
   frame(g,story?'story':'post',Wd,Hd,it,0);rec.start(250);var t0=performance.now(),D=5;busy('🎥 جارٍ تجهيز الفيديو…',0);
   (function tick(){if(!ST){try{rec.stop()}catch(e){}return}var t=(performance.now()-t0)/1000;if(t>=D){frame(g,story?'story':'post',Wd,Hd,it,D);setTimeout(function(){rec.stop()},120);return}
     frame(g,story?'story':'post',Wd,Hd,it,t);busy('🎥 جارٍ تجهيز الفيديو… '+Math.round(t/D*100)+'٪',t/D);requestAnimationFrame(tick)})()}
-window.EMDStudioV276={open:open,close:close,toFile:toFile,pref:function(){return P}};
+/* ===== دليل تصوير 360°: لقطة لقطة مع رسم يوضّح مكان الكاميرا ===== */
+var SHOTS=[{n:'الأمام',a:0},{n:'الأمام من اليمين',a:45},{n:'اليمين',a:90},{n:'الخلف من اليمين',a:135},{n:'الخلف',a:180},{n:'الخلف من اليسار',a:225},{n:'اليسار',a:270},{n:'الأمام من اليسار',a:315},
+  {n:'من الأعلى',x:'top'},{n:'من الأسفل',x:'bottom'}];
+var GCSS='#e276g{position:fixed;inset:0;z-index:2147483000;background:rgba(10,20,48,.72);display:flex;align-items:flex-end;justify-content:center;direction:rtl}'+
+'#e276g .sh{background:#fff;color:#0f172a;width:min(560px,100%);height:100%;max-height:100%;display:flex;flex-direction:column;overflow:hidden}'+
+'@media(min-width:700px){#e276g{align-items:center;padding:16px}#e276g .sh{height:auto;max-height:96vh;border-radius:22px}}'+
+'#e276g .hd{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#0a1430;color:#f3e7c4}#e276g .hd b{font-size:16px}#e276g .hd small{display:block;font-size:11.5px;color:#cbd5e1}'+
+'#e276g .hd button{border:0;background:rgba(255,255,255,.12);color:#fff;width:38px;height:38px;border-radius:12px;font-size:20px;cursor:pointer}'+
+'#e276g .bd{flex:1;overflow:auto;padding:12px 14px}#e276g svg{display:block;width:min(100%,330px);margin:0 auto}'+
+'#e276g .now{text-align:center;font-weight:800;font-size:17px;color:#0a1430;margin:6px 0 2px}#e276g .how{text-align:center;font-size:13px;color:#475569;line-height:1.7;margin:0 0 8px}'+
+'#e276g .cap{display:block;width:100%;border:0;border-radius:16px;padding:14px;font:inherit;font-weight:800;font-size:16px;background:#c9a227;color:#0a1430;cursor:pointer;min-height:52px}'+
+'#e276g .row2{display:flex;gap:8px;margin-top:8px}#e276g .row2 .gal{flex:1;text-align:center;border:1.5px solid #cbd5e1;background:#fff;border-radius:12px;padding:10px;font-weight:700;font-size:13px;cursor:pointer}#e276g .row2 button{flex:1;border:1.5px solid #cbd5e1;background:#fff;border-radius:12px;padding:10px;font:inherit;font-weight:700;font-size:13px;cursor:pointer}'+
+'#e276g .slots{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:12px 0}'+
+'#e276g .slots button{position:relative;aspect-ratio:1;border-radius:10px;border:2px dashed #cbd5e1;background:#f8fafc;padding:0;overflow:hidden;cursor:pointer;font:inherit;font-size:10px;color:#64748b;line-height:1.3}'+
+'#e276g .slots button[data-cur=true]{border:2px solid #c9a227;background:#fffaf0}#e276g .slots img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}'+
+'#e276g .slots i{position:absolute;bottom:2px;left:2px;right:2px;background:rgba(10,20,48,.75);color:#fff;border-radius:6px;font-style:normal;font-size:9.5px;padding:1px 2px}'+
+'#e276g .slots .op{border-style:dotted}'+
+'#e276g details{border:1px solid #e2e8f0;border-radius:12px;padding:0 10px;margin-top:6px}#e276g summary{cursor:pointer;padding:10px 0;font-weight:700;font-size:13.5px}'+
+'#e276g ul{margin:0 0 10px;padding-inline-start:18px;font-size:13px;line-height:1.9;color:#334155}'+
+'#e276g .ft{display:grid;grid-template-columns:1fr 2fr;gap:8px;padding:10px 14px calc(10px + env(safe-area-inset-bottom));border-top:1px solid #e2e8f0}'+
+'#e276g .ft button{border:0;border-radius:14px;padding:12px;font:inherit;font-weight:800;font-size:15px;cursor:pointer;min-height:48px}#e276g .ft .no{background:#f1f5f9}#e276g .ft .ok{background:#0a1430;color:#f3e7c4}#e276g .ft .ok:disabled{opacity:.45}';
+/* رسم من الأعلى: المنتج في الوسط والكاميرات حوله، أو رسم جانبي للقطة من الأعلى/الأسفل */
+function gSvg(i,F){var sh=SHOTS[i]||SHOTS[0],h='<svg viewBox="0 0 320 270" role="img" aria-label="مكان الكاميرا: '+sh.n+'">';
+  if(sh.x){var up=sh.x==='top';h+='<text x="160" y="18" text-anchor="middle" font-size="12" fill="#64748b">منظر من الجانب</text>'+
+    '<line x1="40" y1="200" x2="280" y2="200" stroke="#cbd5e1" stroke-width="3"/><rect x="125" y="'+(up?120:110)+'" width="70" height="'+(up?80:70)+'" rx="10" fill="#e2e8f0" stroke="#0a1430" stroke-width="2"/><text x="160" y="'+(up?165:150)+'" text-anchor="middle" font-size="13" font-weight="700" fill="#0a1430">المنتج</text>';
+    if(up)h+='<g transform="translate(160 52)"><rect x="-22" y="-14" width="44" height="28" rx="6" fill="#c9a227"/><circle r="8" fill="#0a1430"/></g><path d="M160 70 L160 112" stroke="#c9a227" stroke-width="3" stroke-dasharray="5 4" marker-end="url(#ar)"/>';
+    else h+='<rect x="125" y="180" width="70" height="20" fill="#fff" opacity=".9"/><text x="160" y="235" text-anchor="middle" font-size="12" fill="#475569">اقلب المنتج بلطف، أو صوّره مرفوعًا</text><g transform="translate(160 215)"><rect x="-22" y="-12" width="44" height="24" rx="6" fill="#c9a227"/><circle r="7" fill="#0a1430"/></g>';
+    return h+'<defs><marker id="ar" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#c9a227"/></marker></defs></svg>'}
+  h+='<text x="160" y="16" text-anchor="middle" font-size="12" fill="#64748b">منظر من الأعلى · نفس المسافة ونفس الارتفاع</text><circle cx="160" cy="145" r="92" fill="none" stroke="#e2e8f0" stroke-width="2" stroke-dasharray="6 6"/>'+
+    '<rect x="135" y="120" width="50" height="50" rx="8" fill="#e2e8f0" stroke="#0a1430" stroke-width="2"/><text x="160" y="149" text-anchor="middle" font-size="11" font-weight="700" fill="#0a1430">المنتج</text>'+
+    '<text x="160" y="196" text-anchor="middle" font-size="10" fill="#0a1430">▲ الأمام</text>';
+  for(var k=0;k<8;k++){var A=SHOTS[k].a*Math.PI/180,x=160+Math.sin(A)*92,y=145+Math.cos(A)*92,cur=k===i,done=F&&F[k];
+    h+='<g transform="translate('+x.toFixed(1)+' '+y.toFixed(1)+') rotate('+(SHOTS[k].a)+')"><rect x="-14" y="-10" width="28" height="20" rx="5" fill="'+(cur?'#c9a227':(done?'#16a34a':'#94a3b8'))+'"/><circle r="5.5" fill="#0a1430"/></g>'+
+      '<text x="'+(160+Math.sin(A)*118).toFixed(1)+'" y="'+(149+Math.cos(A)*114).toFixed(1)+'" text-anchor="middle" font-size="12" font-weight="800" fill="'+(cur?'#b45309':'#334155')+'">'+(done?'✓':toAr(k+1))+'</text>'}
+  return h+'</svg>'}
+function guide(o){o=o||{};var F=[],cur=0,G=document.createElement('div');G.id='e276g';G.setAttribute('role','dialog');G.setAttribute('aria-modal','true');
+  if(!document.getElementById('e276gcss')){var st=document.createElement('style');st.id='e276gcss';st.textContent=GCSS;document.head.appendChild(st)}
+  document.body.appendChild(G);
+  function how(i){var s=SHOTS[i];if(s.x==='top')return 'ارفع الجوال فوق المنتج ووجّهه إلى الأسفل (اختيارية)';if(s.x==='bottom')return 'صوّر قاعدة المنتج من الأسفل (اختيارية)';
+    return i===0?'قف أمام المنتج، والجوال بمستوى منتصفه، والمنتج في وسط الشاشة':'تحرّك حول المنتج ثُمن دورة إلى يمينك، بنفس المسافة والارتفاع، ولا تحرّك المنتج'}
+  function paintG(){var n=F.slice(0,8).filter(Boolean).length,s=SHOTS[cur];
+    G.innerHTML='<div class="sh"><div class="hd"><div><b>🔄 تصوير 360°</b><small>'+esc(o.title||'')+'</small></div><button type="button" data-gx aria-label="إغلاق">×</button></div><div class="bd">'+gSvg(cur,F)+
+    '<p class="now">اللقطة '+toAr(cur+1)+': '+esc(s.n)+'</p><p class="how">'+esc(how(cur))+'</p>'+
+    '<label class="cap" role="button">📷 صوّر '+esc(s.n)+'<input type="file" accept="image/*" capture="environment" data-gcap hidden></label>'+
+    '<div class="row2"><label class="gal" role="button">🖼️ من المعرض<input type="file" accept="image/*" data-gone hidden></label>'+(cur>=8?'<button type="button" data-gskip>تخطَّ</button>':'')+'</div>'+
+    '<div class="slots">'+SHOTS.map(function(x,i){return '<button type="button" data-gi="'+i+'" data-cur="'+(i===cur)+'" class="'+(x.x?'op':'')+'" aria-label="'+esc(x.n)+'">'+(F[i]?'<img alt="" src="'+F[i]._u+'">':'<span style="display:block;padding:4px">'+toAr(i+1)+'<br>'+esc(x.n)+'</span>')+(F[i]?'<i>'+esc(x.n)+'</i>':'')+'</button>'}).join('')+'</div>'+
+    '<details'+(n?'':' open')+'><summary>💡 نصائح لعرض 360° احترافي</summary><ul>'+
+    '<li>ضع المنتج على سطح ثابت وخلفية بسيطة، ولا تحرّكه طوال التصوير. أنت من يدور حوله.</li>'+
+    '<li>أو ضعه على طبق دوّار، وأدِر الطبق ثُمن دورة بين كل لقطة والجوال ثابت.</li>'+
+    '<li>حافظ على <b>نفس المسافة</b> و<b>نفس الارتفاع</b> في كل اللقطات الثماني، والمنتج في وسط الشاشة.</li>'+
+    '<li>ضوء ثابت من نافذة أو مصباح، بلا فلاش، وبلا ظل يدك على المنتج.</li>'+
+    '<li>لقطتا «من الأعلى» و«من الأسفل» اختياريتان، وتُضافان صورتين عاديتين للمنتج لأن الدوران أفقي فقط.</li></ul></details>'+
+    '<details><summary>🖼️ عندي صور جاهزة</summary><p class="how" style="text-align:start">اختر 8 لقطات أو أكثر حول المنتج بالترتيب (من الأمام ثم باتجاه اليمين).</p><label class="cap" style="background:#f1f5f9;font-size:14px" role="button">اختيار الصور بالترتيب<input type="file" accept="image/*" multiple data-gmany hidden></label></details>'+
+    '</div><div class="ft"><button type="button" class="no" data-gx>إلغاء</button><button type="button" class="ok" data-gok'+(n>=4?'':' disabled')+'>✓ ابدأ ('+toAr(n)+' من ٨)</button></div></div>'}
+  function put(i,f){if(!f)return;if(F[i]&&F[i]._u)URL.revokeObjectURL(F[i]._u);f._u=URL.createObjectURL(f);F[i]=f;var nx=-1;for(var k=0;k<SHOTS.length;k++){var j=(i+1+k)%SHOTS.length;if(!F[j]){nx=j;break}}cur=nx<0?i:nx;paintG()}
+  function end(){F.forEach(function(f){if(f&&f._u)URL.revokeObjectURL(f._u)});G.remove()}
+  G.addEventListener('click',function(e){var t=e.target,b;if(t===G||t.closest('[data-gx]')){end();return}
+    if(b=t.closest('[data-gi]')){cur=+b.getAttribute('data-gi');paintG();return}
+    if(t.closest('[data-gskip]')){var nx=SHOTS.findIndex(function(x,i){return i>cur&&!F[i]});if(nx<0)nx=SHOTS.findIndex(function(x,i){return !F[i]});cur=nx<0?cur:nx;paintG();return}
+    if(t.closest('[data-gok]')){var sp=F.slice(0,8).filter(Boolean),ex=F.slice(8).filter(Boolean);end();if(o.onDone)o.onDone({spin:sp,extra:ex})}});
+  G.addEventListener('change',function(e){var t=e.target,fs=[].slice.call(t.files||[]);if(!fs.length)return;
+    if(t.hasAttribute('data-gcap')||t.hasAttribute('data-gone')){put(cur,fs[0]);return}
+    if(t.hasAttribute('data-gmany')){fs.slice(0,8).forEach(function(f,i){f._u=URL.createObjectURL(f);F[i]=f});cur=F.slice(0,8).filter(Boolean).length>=8?8:F.findIndex(function(x){return !x});if(cur<0)cur=8;paintG()}});
+  paintG()}
+window.EMDStudioV276={open:open,guide:guide,close:close,toFile:toFile,pref:function(){return P}};
 })();
 
 </script>
