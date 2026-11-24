@@ -16,7 +16,7 @@ window.EMDErrLog={list:function(){var c=Date.now()-3*864e5;return L().filter(fun
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V285</title>
+<title>EMD Business — Standalone V286</title>
 <!-- EMD V158: شاشة افتتاح تغطي التطبيق حتى تكتمل الواجهة الأخيرة، فلا تظهر الأشكال والأزرار القديمة أثناء التحميل -->
 <style id="EMD-V158-boot">
 html.emd-boot{background:#0f172a!important}
@@ -22547,7 +22547,8 @@ function oChange(e){
 })();
 
 /* ===== الفاتورة كصورة ===== */
-function invoice(o){
+function n273(o){var its=items(o).map(function(x){var p=itemPrice(x),q=qty(x);return {name:iname(x),qty:q,price:p,net:p*q,sku:String(x.sku||x.barcode||x.code||(prod(x)&&(prod(x).sku||prod(x).barcode))||'')}});var sub=its.reduce(function(a,i){return a+i.net},0),fee=num(o.deliveryFee!=null&&o.deliveryFee!==''?o.deliveryFee:(o.shippingFee||0)),cr=String(o.feePaid||'')==='courier',note='';if(cr){var cf=fee>0?fee:num(o.emd218Fee);note='يُدفع للمندوب'+(cf>0?' ('+fmt(cf)+' '+CUR+')':'');fee=0}var T=num(o.total)>0?num(o.total):Math.max(0,sub-num(o.discount))+fee,pd=payState(o)==='paid'?T:Math.min(num(o.paidAmount),T),m=method(o),tr='';try{if(typeof window.linkFor==='function'&&/^https?:/.test(location.protocol))tr=String(window.linkFor(o)||'')}catch(e){}return {kind:'order',id:oid(o),date:odate(o)||new Date(),cust:{name:String(o.name||o.customerName||''),phone:String(o.phone||''),addr:[o.place||o.location,o.address].filter(Boolean).join(' · ')},items:its,subtotal:sub,discount:Math.max(0,sub+fee-T),ship:fee,shipNote:note,shipCo:String(o.deliveryCompany||o.company||'').trim(),total:T,paid:pd,remaining:Math.max(0,T-pd),method:m?(METHOD[m]||m):'',pays:[],ops:[],note:String(o.notes||o.note||'').replace(/\[مصدر الطلب[^\]]*\]\n?/g,'').trim(),cashier:'',status:cancelled(o)?'void':'',track:tr,raw:o}}
+function invoice(o){if(window.EMDInvV273){try{EMDInvV273.open(n273(o));return}catch(e){console.warn('V273',e)}}
   pm();var prof=store(),W=1080,its=items(o),rowH=70,H=870+its.length*rowH;
   var cv=document.createElement('canvas');cv.width=W;cv.height=H;var c=cv.getContext('2d');
   var F='Tahoma, "Segoe UI", Arial, sans-serif',R=W-70,Lx=70;
@@ -25638,6 +25639,7 @@ function cashIn(s0,e0){
 }
 
 /* ---------- طباعة الفاتورة / PDF ---------- */
+function n273(s){var its=arr(s.items).map(function(i){return {name:String(i.name),qty:num(i.qty),price:num(i.price),net:num(i.net)||num(i.qty)*num(i.price),sku:String(i.sku||i.barcode||i.code||''),ret:retQty(s,i.name)}});var sub=num(s.subtotal)||its.reduce(function(a,i){return a+i.net},0),nt=netTotal(s),ps=arr(s.payments),m=ps.length===1?ps[0].method:(ps.length?'mixed':'');function ml(k){return k==='exchange'?'رصيد مرتجع (استبدال)':String(METHODS[k]||k).replace(/^\S+\s/,'')}return {kind:'sale',id:s.id,date:new Date(s.at),cust:{name:String(s.customer&&s.customer.name||''),phone:String(s.customer&&s.customer.phone||''),addr:''},items:its,subtotal:sub,discount:num(s.discount),ship:0,shipNote:'',shipCo:'',total:nt,paid:Math.min(paidOf(s),nt),remaining:remainingOf(s),method:m==='mixed'?'دفع مقسّم':(m?ml(m):''),pays:ps.length>1||ps.some(function(p){return p.type==='collect'})?ps.map(function(p){return {l:ml(p.method)+(p.type==='collect'?' (تحصيل)':''),at:fdt(p.at),amt:num(p.amount)}}):[],ops:arr(s.ops).map(function(o){return {l:o.type==='void'?'إلغاء الفاتورة':(o.exTo?'استبدال':'مرتجع'),at:fdt(o.at),amt:num(o.value)}}),note:String(s.note||''),cashier:String(s.by&&s.by.name||''),status:statusOf(s)==='void'?'void':''}}
 function invoiceHtml(s){
   var rows=s.items.map(function(i){var rq=retQty(s,i.name);return '<tr><td>'+esc(i.name)+(rq>0?' <small>(مرتجع '+rq+')</small>':'')+'</td><td>'+i.qty+'</td><td>'+fmt(i.price)+'</td><td>'+fmt(i.net)+'</td></tr>'}).join('');
   var pays=arr(s.payments).map(function(p){return '<tr><td>'+esc(String(METHODS[p.method]||p.method).replace(/^\S+\s/,''))+(p.type==='collect'?' (تحصيل)':'')+'</td><td colspan="2">'+esc(fdt(p.at))+'</td><td>'+fmt(p.amount)+'</td></tr>'}).join('');
@@ -25651,7 +25653,7 @@ function invoiceHtml(s){
    +'<tr><td colspan="3">المدفوع</td><td>'+fmt(paidOf(s))+'</td></tr><tr><td colspan="3">المتبقي</td><td>'+fmt(remainingOf(s))+'</td></tr></table>'
    +(s.note?'<div class="c">ملاحظة: '+esc(s.note)+'</div>':'')+'<div class="f">شكرًا لتعاملكم · '+esc(storeName())+'</div></div></body></html>';
 }
-function printSale(s){
+function printSale(s){if(window.EMDInvV273){try{EMDInvV273.print(n273(s));return}catch(e){console.warn('V273',e)}}
   try{
     var old=$('emd113Frame');if(old)old.remove();
     var f=document.createElement('iframe');f.id='emd113Frame';f.style.cssText='position:fixed;right:0;bottom:0;width:0;height:0;border:0;opacity:0';
@@ -25956,7 +25958,7 @@ function invoiceCanvas(s){
   txt('شكرًا لتسوّقكم معنا 🌷',W/2,H-60,30,'bold','#111827','center');
   return cv;
 }
-function invoiceImage(id){
+function invoiceImage(id){var s273=saleById(id);if(s273&&window.EMDInvV273){try{EMDInvV273.open(n273(s273));return}catch(e){console.warn('V273',e)}}
   var s=saleById(id);if(!s)return;var cv=invoiceCanvas(s);
   cv.toBlob(function(blob){if(!blob){toast('تعذّر إنشاء الفاتورة');return}showImg(s,blob)},'image/png');
 }
@@ -35499,5 +35501,614 @@ function start(){refresh();setInterval(refresh,5000)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(start,2500)});else setTimeout(start,2500);
 })();
 </script>
+<!-- EMD V273: تصميم الفاتورة (قوالب + «من تصميمك» + صور وزخارف + سطر التوصيل) وفاتورة المتجر الإلكتروني -->
+<style id="EMD-V273-invoice-css">
+.e443-ov{position:fixed;inset:0;z-index:2147483646;background:rgba(15,23,42,.66);display:none;align-items:center;justify-content:center;padding:12px;direction:rtl;font-family:'IBM Plex Sans Arabic',Tahoma,Arial,sans-serif;box-sizing:border-box}
+.e443-ov.show{display:flex}
+.e443-ov *{box-sizing:border-box}
+.e443-box{background:#fff;color:#0f172a;border-radius:22px;width:min(540px,100%);max-height:94vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,.3)}
+.e443-hd{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;background:#172554;color:#fff;border-bottom:3px solid #f59e0b}
+.e443-hd b{font-size:17px}
+.e443-x{border:0;background:rgba(255,255,255,.14);color:#fff;width:36px;height:36px;border-radius:12px;font-size:17px;cursor:pointer}
+.e443-pv{overflow:auto;background:#e2e8f0;padding:10px;flex:1 1 auto;min-height:120px}
+.e443-pv img{display:block;width:100%;border-radius:8px;box-shadow:0 4px 18px rgba(15,23,42,.18);background:#fff}
+.e443-tp{display:flex;gap:6px;padding:10px 12px 0;overflow-x:auto}
+.e443-chip{flex:0 0 auto;border:1.5px solid #cbd5e1;background:#fff;color:#334155;border-radius:999px;padding:7px 13px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.e443-chip.on{border-color:#1e3a8a;background:#1e3a8a;color:#fff}
+.e443-act{padding:10px 12px 12px;display:flex;flex-direction:column;gap:8px}
+.e443-g{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.e443-b{border:1.5px solid #cbd5e1;background:#fff;color:#0f172a;border-radius:14px;padding:11px 8px;font:inherit;font-size:14px;font-weight:700;cursor:pointer;min-height:46px}
+.e443-b:active{transform:scale(.98)}
+.e443-b.p{background:#16a34a;border-color:#16a34a;color:#fff;font-size:15px}
+.e443-b.n{background:#172554;border-color:#172554;color:#fff}
+.e443-b.l{border:0;background:transparent;color:#1e3a8a;min-height:36px;padding:6px}
+.e443-busy{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(255,255,255,.6);font-weight:800}
+/* نافذة التصميم */
+.e443-dbox{width:min(1040px,100%);max-height:95vh}
+.e443-dwrap{display:grid;grid-template-columns:1fr 1fr;min-height:0;flex:1 1 auto;overflow:hidden}
+.e443-dwrap .e443-pv{max-height:none}
+.e443-ctl{overflow:auto;padding:14px 16px 18px}
+.e443-sec{margin-bottom:16px}
+.e443-sec>h4{margin:0 0 8px;font-size:14px;color:#172554}
+.e443-tpls{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.e443-tpl{border:2px solid #e2e8f0;background:#fff;border-radius:14px;padding:10px;text-align:right;font:inherit;cursor:pointer}
+.e443-tpl b{display:block;font-size:14px}.e443-tpl span{display:block;font-size:12px;color:#64748b;margin-top:3px;line-height:1.5}
+.e443-tpl.on{border-color:#f59e0b;background:#fffbeb}
+.e443-sw{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.e443-c{width:34px;height:34px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1.5px #cbd5e1;cursor:pointer;padding:0}
+.e443-c.on{box-shadow:0 0 0 3px #f59e0b}
+.e443-c.app{background:conic-gradient(#1e3a8a,#f59e0b,#047857,#9f1239,#1e3a8a)}
+.e443-sw input[type=color]{width:40px;height:36px;border:0;background:none;padding:0;cursor:pointer}
+.e443-seg{display:flex;gap:6px;flex-wrap:wrap}
+.e443-ctl label{display:block;font-size:12.5px;color:#475569;margin:8px 0 4px;font-weight:700}
+.e443-ctl input[type=text],.e443-ctl select,.e443-ctl textarea{width:100%;border:1.5px solid #cbd5e1;border-radius:12px;padding:9px 11px;font:inherit;font-size:14px;background:#fff;color:#0f172a}
+.e443-ctl textarea{min-height:70px;resize:vertical}
+.e443-ck{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.e443-ck label{display:flex;align-items:center;gap:7px;margin:0;border:1px solid #e2e8f0;border-radius:11px;padding:8px 10px;font-weight:600;color:#0f172a;cursor:pointer}
+.e443-ck input{width:18px;height:18px;accent-color:#1e3a8a}
+.e443-more{display:none}.e443-more.show{display:block}
+.e443-hint{font-size:12px;color:#64748b;line-height:1.6;margin-top:5px}
+.e443-stamp{display:flex;align-items:center;gap:10px}.e443-stamp img{width:64px;height:64px;object-fit:contain;border:1px dashed #cbd5e1;border-radius:10px;background:#fff}
+#e443Print{display:none}
+@media print{body.e443-printing>*:not(#e443Print){display:none!important}body.e443-printing #e443Print{display:block!important}#e443Print img{display:block;width:100%;height:auto;page-break-after:always;break-after:page}#e443Print img:last-child{page-break-after:auto;break-after:auto}}
+@media(max-width:760px){.e443-dwrap{grid-template-columns:1fr;grid-template-rows:auto auto;overflow:auto}.e443-dwrap .e443-pv{height:42vh;max-height:42vh;flex:0 0 auto}.e443-ctl{overflow:visible}.e443-ov{padding:0;align-items:flex-end}.e443-box{border-radius:20px 20px 0 0;max-height:96vh}}
+
+.e273-box{background:#fdf8ee;border:1.5px solid #f3e1b5;border-radius:16px;padding:12px}
+.e443-tpl.e273-own b{color:#9a3412}
+.e273-up{display:flex;gap:10px;align-items:center;margin:8px 0;border:1px solid #e2e8f0;border-radius:14px;padding:8px;background:#fff}
+.e273-th{width:58px;height:58px;flex:0 0 58px;border-radius:10px;background:#f1f5f9 repeating-conic-gradient(#e2e8f0 0 25%,#fff 0 50%) 50%/14px 14px;display:flex;align-items:center;justify-content:center;overflow:hidden;font-size:22px}
+.e273-th img{max-width:100%;max-height:100%;object-fit:contain}
+.e273-ut{flex:1;min-width:0}.e273-ut b{display:block;font-size:13px;margin-bottom:6px}
+.e273-ub{display:flex;gap:6px;flex-wrap:wrap}
+.e443-b.e273-sm{min-height:34px;padding:6px 12px;font-size:13px;border-radius:10px;display:inline-flex;align-items:center;cursor:pointer;margin:0}
+.e273-cols{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.e273-cols label{display:flex!important;align-items:center;justify-content:space-between;gap:6px;border:1px solid #e2e8f0;border-radius:11px;padding:6px 10px;margin:0!important;color:#0f172a!important}
+.e273-cols input[type=color]{width:38px;height:30px;border:0;background:none;padding:0;cursor:pointer}
+.e443-ctl input[type=range]{accent-color:#1e3a8a}
+</style>
+<script id="EMD-V273-invoice-core">
+/* EMD V273 · محرّك رسم الفاتورة — مشترك بين التطبيق وصفحة المتجر.
+   draw(N, c, A, E):
+   N = بيانات الفاتورة {kind,id,date,cust{name,phone,addr},items[{name,qty,price,net,sku,ret}],subtotal,discount,ship,shipNote,shipCo,total,paid,remaining,method,pays,ops,note,cashier,status,track}
+   c = إعدادات التصميم، A = الصور المحمّلة {lg,th,stamp,page,head,foot,mark}، E = بيانات المتجر {name,cur,contact,pv,pIndex,accent}
+   القوالب: classic, elegant, formal, compact, own («من تصميمك»). */
+window.EMDInvCore=window.EMDInvCore||(function(){
+'use strict';
+var FONT="'IBM Plex Sans Arabic',Tahoma,'Segoe UI',Arial,sans-serif",GOLD='#c9a227';
+var DEF={tpl:'classic',color:'',logoPos:'side',title:'فاتورة',addr:'',vat:'',cr:'',email:'',web:'',bank:'',iban:'',terms:'',footer:'شكرًا لتعاملكم معنا',qr:'none',stamp:'',lang:'ar',paper:'a4',
+  wa:'مرحبًا {العميل}، مرفقة فاتورتك رقم {رقم} من {المتجر} بإجمالي {الإجمالي}.',
+  bg:'#ffffff',ink:'#0f172a',page:'',head:'',foot:'',mark:'',markOp:22,markSize:70,top:7,bot:80,ownLogo:true,sign:'',
+  show:{phone:true,addr:true,method:true,paid:true,sku:false,thumb:false,note:true,cashier:true,price:true}};
+var T={no:['رقم الفاتورة','Invoice No.'],date:['التاريخ','Date'],cust:['العميل','Bill To'],item:['المنتج','Item'],qty:['الكمية','Qty'],price:['السعر','Price'],amt:['المجموع','Amount'],sub:['المجموع قبل الخصم','Subtotal'],sub2:['مجموع المنتجات','Items total'],disc:['الخصم','Discount'],ship:['التوصيل','Delivery'],total:['الإجمالي','Total'],paid:['المدفوع','Paid'],rem:['المتبقي','Balance Due'],full:['تم الدفع بالكامل','Paid in Full'],method:['طريقة الدفع','Payment'],vat:['الرقم الضريبي','VAT No.'],cr:['السجل التجاري','C.R. No.'],bank:['بيانات التحويل البنكي','Bank Details'],terms:['الشروط والأحكام','Terms & Conditions'],note:['ملاحظات','Notes'],stamp:['الختم','Stamp'],sign:['التوقيع','Signature'],cashier:['الكاشير','Cashier'],seller:['بيانات المنشأة','From'],vatl:['منها ضريبة القيمة المضافة','Incl. VAT'],ret:['المرتجعات','Returns'],voidS:['ملغاة','VOID'],iban:['رقم الحساب / IBAN','IBAN'],to:['الفاتورة موجّهة إلى:','Billed to:'],issued:['تاريخ إصدار الفاتورة','Issue date']};
+var TEN={'فاتورة':'Invoice','فاتورة شراء':'Purchase Invoice','فاتورة ضريبية':'Tax Invoice','فاتورة مبدئية':'Proforma Invoice','عرض سعر':'Quotation'};
+function num(x){var n=parseFloat(String(x==null?'':x).replace(/[٠-٩]/g,function(c){return '٠١٢٣٤٥٦٧٨٩'.indexOf(c)}).replace(/,/g,''));return isFinite(n)?n:0}
+function f3(x){return (Math.round(num(x)*1000)/1000).toFixed(3)}
+function hex(s,d){return /^#[0-9a-f]{6}$/i.test(String(s||''))?s:d}
+function merge(x){var o=JSON.parse(JSON.stringify(DEF));x=x||{};Object.keys(x).forEach(function(k){if(k==='show'){if(x.show&&typeof x.show==='object')Object.keys(x.show).forEach(function(j){o.show[j]=!!x.show[j]})}else if(x[k]!=null&&k in o)o[k]=x[k]});return o}
+function img(src,ms){return new Promise(function(res){if(!src)return res(null);var im=new Image(),done=false;function fin(v){if(!done){done=true;res(v)}}
+  if(/^https?:/i.test(src))im.crossOrigin='anonymous';im.onload=function(){fin(im.width?im:null)};im.onerror=function(){fin(null)};setTimeout(function(){fin(null)},ms||6000);im.src=src})}
+function fontsReady(){try{if(!document.fonts||!document.fonts.load)return Promise.resolve();return Promise.race([Promise.all([document.fonts.load('700 30px "IBM Plex Sans Arabic"'),document.fonts.load('400 30px "IBM Plex Sans Arabic"')]),new Promise(function(r){setTimeout(r,900)})]).catch(function(){})}catch(e){return Promise.resolve()}}
+/* تحميل صور التصميم كلها (مع ذاكرة صغيرة حتى لا تُعاد قراءتها مع كل تعديل) */
+var IC={};
+function cached(src){if(!src)return Promise.resolve(null);if(IC[src])return IC[src];var p=img(src);IC[src]=p;p.then(function(v){if(!v)delete IC[src]});return p}
+function assets(c,logoP,thP){return Promise.all([logoP||Promise.resolve(null),fontsReady(),thP||Promise.resolve({}),cached(c.stamp),cached(c.tpl==='own'?c.page:''),cached(c.head),cached(c.foot),cached(c.mark)]).then(function(r){
+  return {lg:r[0],th:r[2],stamp:r[3],page:r[4],head:r[5],foot:r[6],mark:r[7]}})}
+function qr(x,data,X,Y,S){try{var q=window.EMDqr418(0,'M');q.addData(data);q.make();var n=q.getModuleCount(),m=S/n;x.fillStyle='#fff';x.fillRect(X-8,Y-8,S+16,S+16);x.fillStyle='#0f172a';for(var r=0;r<n;r++)for(var k=0;k<n;k++)if(q.isDark(r,k))x.fillRect(Math.floor(X+k*m),Math.floor(Y+r*m),Math.ceil(m),Math.ceil(m))}catch(e){}}
+
+function draw(N,c,A,E){
+  var tpl=c.tpl,bi=c.lang==='bi',acc=E.accent(c),C=E.cur(),pv=E.pv?E.pv():{vat:false},lg=A.lg,th=A.th,stampImg=A.stamp;
+  var INK=hex(c.ink,'#0f172a'),BG=hex(c.bg,'#ffffff');
+  var W=tpl==='compact'?820:1240,M=tpl==='compact'?44:(tpl==='own'?96:70),R=W-M,L=M,CW=W-2*M;
+  var Hmax=Math.min(16000,3200+N.items.length*240+(N.pays.length+N.ops.length)*70+(c.terms.length/2|0));
+  var cv=document.createElement('canvas');cv.width=W;cv.height=Hmax;var x=cv.getContext('2d');
+  x.textBaseline='top';x.direction='rtl';
+  var brk=[],y=0;
+  function F(px,b){x.font=(b?'700 ':'400 ')+px+'px '+FONT}
+  function tx(s,X,Y,px,b,col,al){F(px,b);x.fillStyle=col||INK;x.textAlign=al||'right';var t0=String(s==null?'':s),lt=/^[+\d\s().\-]+$/.test(t0)&&/\d/.test(t0);if(lt)x.direction='ltr';x.fillText(t0,X,Y);if(lt)x.direction='rtl'}
+  function wrap(s,px,b,mw,max){F(px,b);var ws=String(s==null?'':s).split(/\s+/),o=[],cl='';ws.forEach(function(w){var n=cl?cl+' '+w:w;if(x.measureText(n).width>mw&&cl){o.push(cl);cl=w}else cl=n});if(cl)o.push(cl);if(!o.length)o=[''];if(max&&o.length>max){o=o.slice(0,max);o[max-1]=o[max-1].replace(/\s*\S*$/,'')+'…'}return o}
+  function box(X,Y,w,h,col){x.fillStyle=col;x.fillRect(X,Y,w,h)}
+  function rr(X,Y,w,h,r,fill,stroke,lw){x.beginPath();if(x.roundRect)x.roundRect(X,Y,w,h,r);else x.rect(X,Y,w,h);if(fill){x.fillStyle=fill;x.fill()}if(stroke){x.strokeStyle=stroke;x.lineWidth=lw||2;x.stroke()}}
+  function hl(X1,X2,Y,col,t){box(Math.min(X1,X2),Y,Math.abs(X2-X1),t||2,col)}
+  function dash(Y){x.fillStyle='#94a3b8';for(var i=L;i<R;i+=16)x.fillRect(i,Y,9,2)}
+  function lb(k){return bi?T[k][0]+' | '+T[k][1]:T[k][0]}
+  function logoAt(X,Y,s,round,plain){if(!lg)return;try{x.save();if(!plain){rr(X,Y,s,s,round==null?s*.18:round,'#fff');x.clip()}var sc=Math.min(s/lg.width,s/lg.height),iw=lg.width*sc,ih=lg.height*sc;x.drawImage(lg,X+(s-iw)/2,Y+(s-ih)/2,iw,ih);x.restore()}catch(e){x.restore()}}
+  var title=c.title||'فاتورة',titleEn=TEN[title]||'Invoice',sName=E.name();
+  var contact=E.contact||'';
+  var extra=[c.email,c.web].filter(Boolean).join('  ·  ');
+  var taxL=[c.vat?lb('vat')+': '+c.vat:'',c.cr?lb('cr')+': '+c.cr:''].filter(Boolean).join('     ');
+  var dt=N.date instanceof Date&&!isNaN(N.date)?N.date:new Date();
+  var dS=dt.toLocaleDateString('ar-OM',{year:'numeric',month:'long',day:'numeric'});
+  var custLines=[];if(N.cust.name)custLines.push([N.cust.name,1]);if(c.show.phone&&N.cust.phone)custLines.push([N.cust.phone,0]);if(c.show.addr&&N.cust.addr)custLines.push([N.cust.addr,0]);
+  if(!custLines.length)custLines.push([N.kind==='sale'?'عميل نقدي':'—',1]);
+  var ship=num(N.ship),shipOn=ship>0.0005||!!N.shipNote,shipLbl=lb('ship')+(N.shipCo?' — '+N.shipCo:''),shipVal=ship>0.0005?f3(ship)+' '+C:(N.shipNote||'');
+  var tot=N.total;
+
+  if(tpl==='own'){
+    /* ===== «من تصميمك»: شكل ناعم بلا مربعات، يُكتب فوق تصميم التاجر ===== */
+    var hasLg=c.ownLogo&&lg;
+    if(hasLg){logoAt(L,y,170,0,true)}
+    tx(bi?title+' | '+titleEn:title,R,y+(hasLg?54:6),66,1,acc);
+    var cl0=[contact,c.addr,extra,taxL].filter(Boolean);var yy=y+(hasLg?140:96);
+    cl0.forEach(function(s){tx(s,R,yy,22,0,INK);yy+=34});
+    y=Math.max(hasLg?200:110,yy+8);hl(L,R,y,INK,3);y+=52;
+    tx(lb('to'),R,y,28,1,INK);y+=46;
+    custLines.forEach(function(l){x.direction='rtl';tx(l[0],R,y,l[1]?30:27,!!l[1],INK);y+=l[1]?44:40});
+    y+=28;tx(lb('no')+': '+N.id,R,y,28,1,INK);y+=50;
+    var meta=[];if(c.show.method&&N.method)meta.push(lb('method')+': '+N.method);if(c.show.cashier&&N.cashier)meta.push(lb('cashier')+': '+N.cashier);
+    if(meta.length){tx(meta.join('     '),R,y,24,0,INK);y+=44}
+    y+=24;brk.push(y);
+    var showP=c.show.price,cN=showP?R-300:R-330,cQ=showP?L+560:L+500,cP=L+360,cT=L+130,TL=L-34,TR=R+34;
+    hl(TL,TR,y,INK,2);y+=30;
+    tx(T.item[0],cN,y,27,1,INK,'center');tx(T.qty[0],cQ,y,27,1,INK,'center');if(showP)tx(T.price[0],cP,y,27,1,INK,'center');tx(T.amt[0],cT,y,27,1,INK,'center');
+    if(bi){y+=36;F(18,0);tx(T.item[1],cN,y,18,0,INK,'center');tx(T.qty[1],cQ,y,18,0,INK,'center');if(showP)tx(T.price[1],cP,y,18,0,INK,'center');tx(T.amt[1],cT,y,18,0,INK,'center')}
+    y+=50;hl(TL,TR,y,INK,2);
+    N.items.forEach(function(i){
+      var nmW=showP?440:560,ls=wrap(i.name,27,0,nmW,3),h=Math.max(84,ls.length*38+40+(i.ret>0?30:0));if(y+h>Hmax-1800)return;
+      var ny=y+(h-ls.length*38-(i.ret>0?30:0))/2;ls.forEach(function(l){tx(l,cN,ny,27,0,INK,'center');ny+=38});
+      if(i.ret>0)tx(lb('ret')+': '+i.ret,cN,ny,20,1,'#b91c1c','center');
+      var my=y+h/2-15;tx(i.qty,cQ,my,27,0,INK,'center');if(showP)tx(i.price?f3(i.price):'—',cP,my,26,0,INK,'center');tx(i.price?f3(i.net)+' '+C:'—',cT,my,26,0,INK,'center');
+      y+=h;hl(TL,TR,y-2,INK,2);brk.push(y)});
+    y+=22;
+    if(shipOn||N.discount>0.0005){tx(f3(N.subtotal)+' '+C,cT,y,25,0,INK,'center');tx(lb('sub2'),cN,y,25,0,INK,'center');y+=58}
+    if(N.discount>0.0005){tx(lb('disc'),cN,y,25,0,INK,'center');tx('− '+f3(N.discount)+' '+C,cT,y,25,0,'#b91c1c','center');y+=58}
+    if(shipOn){wrap(N.shipCo?N.shipCo:lb('ship'),25,0,520,2).forEach(function(l,ix){tx(l,cN,y+ix*34,25,0,INK,'center')});if(N.shipCo)tx(lb('ship'),cQ,y,25,0,INK,'center');tx(shipVal,cT,y,25,0,INK,'center');y+=(N.shipCo&&N.shipCo.length>26?92:58)}
+    if(pv.vat&&tot>0){var v0=tot*pv.rate/(100+pv.rate);tx(lb('vatl')+' '+pv.rate+'%',cN,y,23,0,INK,'center');tx(f3(v0)+' '+C,cT,y,23,0,INK,'center');y+=52}
+    hl(TL,L+300,y,INK,2);y+=22;
+    tx(lb('total'),cN,y+4,30,1,INK,'center');tx(f3(tot)+' '+C,cT,y,40,1,acc,'center');y+=74;
+    if(c.show.paid){var rem0=N.remaining;
+      if(N.paid>0.0005&&rem0>0.0005){tx(lb('paid'),cN,y,24,0,INK,'center');tx(f3(N.paid)+' '+C,cT,y,24,1,'#15803d','center');y+=46}
+      if(rem0>0.0005){tx(lb('rem'),cN,y,26,1,'#92400e','center');tx(f3(rem0)+' '+C,cT,y,28,1,'#92400e','center');y+=52}
+      else if(N.status!=='void'&&tot>0){tx('✓ '+lb('full'),cT,y,22,1,'#166534','center');y+=44}}
+    if(c.show.note&&N.note){y+=10;wrap(lb('note')+': '+N.note,22,0,CW,4).forEach(function(l){tx(l,R,y,22,0,INK);y+=32})}
+    brk.push(y);
+  }else{
+  /* ===== الرأس ===== */
+  if(tpl==='classic'){
+    var center=c.logoPos==='center'&&lg,bh=center?330:250;
+    box(0,0,W,bh,acc);box(0,bh,W,8,GOLD);
+    if(center){logoAt(W/2-60,26,120);tx(sName,W/2,160,48,1,'#fff','center');if(contact)tx(contact,W/2,222,24,0,'rgba(255,255,255,.82)','center');if(c.addr||extra)tx([c.addr,extra].filter(Boolean).join('  ·  '),W/2,260,22,0,'rgba(255,255,255,.7)','center');
+      tx(bi?title+' | '+titleEn:title,R,bh+36,40,1,acc);tx(N.id,L,bh+40,30,1,'#334155','left');y=bh+100}
+    else{var nx=R;if(lg){logoAt(R-150,40,150,28);nx=R-180}
+      tx(sName,nx,52,52,1,'#fff');var yh=124;if(contact){tx(contact,nx,yh,25,0,'rgba(255,255,255,.85)');yh+=38}if(c.addr){tx(c.addr,nx,yh,22,0,'rgba(255,255,255,.75)');yh+=32}if(extra){tx(extra,nx,yh,22,0,'rgba(255,255,255,.75)')}
+      tx(title,L,52,48,1,'#fff','left');if(bi)tx(titleEn,L,110,26,0,'rgba(255,255,255,.8)','left');tx(N.id,L,bi?148:118,30,0,'#e2e8f0','left');y=bh+44}
+    if(taxL){tx(taxL,R,y,23,1,'#334155');y+=46}
+  }else if(tpl==='elegant'){
+    box(0,0,W,10,GOLD);y=50;if(lg){logoAt(W/2-65,y,130,65);y+=150}
+    tx(sName,W/2,y,50,1,acc,'center');y+=70;
+    if(contact){tx(contact,W/2,y,24,0,'#64748b','center');y+=36}if(c.addr||extra){tx([c.addr,extra].filter(Boolean).join('  ·  '),W/2,y,22,0,'#64748b','center');y+=34}
+    if(taxL){tx(taxL,W/2,y,22,1,'#475569','center');y+=34}
+    y+=14;hl(W/2-140,W/2+140,y,GOLD,3);y+=28;
+    tx(bi?title+'  ·  '+titleEn:title,W/2,y,40,1,'#8a6d12','center');y+=62;
+    tx(lb('no')+': '+N.id+'      '+lb('date')+': '+dS,W/2,y,24,0,'#334155','center');y+=60;
+  }else if(tpl==='formal'){
+    y=56;var fx=R;if(lg){logoAt(R-140,y,140,16);fx=R-165}
+    tx(sName,fx,y+4,44,1,acc);var fy=y+66;[contact,c.addr,extra].filter(Boolean).forEach(function(s){tx(s,fx,fy,22,0,'#475569');fy+=34});
+    var tbw=440,tbx=L,tby=y;box(tbx,tby,tbw,64,acc);tx(bi?title+' | '+titleEn:title,tbx+tbw/2,tby+14,32,1,'#fff','center');
+    var rows=[[lb('no'),N.id],[lb('date'),dS]];if(c.show.method&&N.method)rows.push([lb('method'),N.method]);
+    rows.forEach(function(r,i){var ry=tby+64+i*52;rr(tbx,ry,tbw,52,0,null,'#cbd5e1',2);tx(r[0],tbx+tbw-14,ry+13,21,1,'#475569');tx(r[1],tbx+14,ry+12,23,1,INK,'left')});
+    y=Math.max(fy,lg?y+150:0,tby+64+rows.length*52)+30;box(L,y,CW,4,acc);y+=30;
+  }else{/* compact */
+    y=34;if(lg){logoAt(W/2-50,y,100,22);y+=114}
+    tx(sName,W/2,y,40,1,acc,'center');y+=56;[contact,c.addr,extra,taxL].filter(Boolean).forEach(function(s){wrap(s,21,0,CW).forEach(function(l){tx(l,W/2,y,21,0,'#475569','center');y+=30})});
+    y+=10;dash(y);y+=22;tx(bi?title+' · '+titleEn:title,W/2,y,32,1,INK,'center');y+=52;
+    tx(lb('no'),R,y,22,0,'#475569');tx(N.id,L,y,22,1,INK,'left');y+=36;tx(lb('date'),R,y,22,0,'#475569');tx(dS,L,y,22,0,INK,'left');y+=36;
+    if(c.show.cashier&&N.cashier){tx(lb('cashier'),R,y,22,0,'#475569');tx(N.cashier,L,y,22,0,INK,'left');y+=36}
+    if(N.cust.name||N.cust.phone){tx(lb('cust'),R,y,22,0,'#475569');tx(custLines.map(function(l){return l[0]}).join(' · '),L,y,22,0,INK,'left');y+=36}
+    y+=4;dash(y);y+=20;
+  }
+  /* ===== العميل ===== */
+  if(tpl==='classic'){
+    tx(lb('cust'),R,y,23,0,'#64748b');tx(lb('date'),L+330,y,23,0,'#64748b','left');y+=38;
+    custLines.forEach(function(l,i){tx(l[0],R,y,l[1]?33:26,!!l[1],l[1]?INK:'#475569');if(i===0){tx(dS,L+330,y,28,0,INK,'left')}y+=l[1]?48:38});
+    if(custLines.length<2)y+=8;
+    var meta1=[];if(c.show.method&&N.method)meta1.push(lb('method')+': '+N.method);if(c.show.cashier&&N.cashier)meta1.push(lb('cashier')+': '+N.cashier);
+    if(meta1.length){tx(meta1.join('     '),R,y,22,0,'#64748b');y+=40}y+=18;
+  }else if(tpl==='elegant'){
+    var ch=40+custLines.length*42;rr(L,y,CW,ch,18,'#fffdf5',GOLD,2);tx(lb('cust'),R-24,y+20,22,1,'#8a6d12');var cy=y+20;
+    custLines.forEach(function(l){tx(l[0],R-200,cy,l[1]?28:24,!!l[1],l[1]?INK:'#475569');cy+=42});
+    var meta2=[];if(c.show.method&&N.method)meta2.push(N.method);if(c.show.cashier&&N.cashier)meta2.push(N.cashier);meta2.forEach(function(s,i){tx(s,L+24,y+20+i*42,23,0,'#475569','left')});
+    y+=ch+36;
+  }else if(tpl==='formal'){
+    var hasSeller=!!(c.vat||c.cr),bw=hasSeller?(CW-24)/2:CW,bh2=58+Math.max(custLines.length,(c.vat?1:0)+(c.cr?1:0))*40;
+    rr(R-bw,y,bw,bh2,10,'#f8fafc','#cbd5e1',2);box(R-bw,y,bw,44,'#e2e8f0');tx(lb('cust'),R-16,y+9,22,1,'#334155');
+    custLines.forEach(function(l,i){tx(l[0],R-16,y+56+i*40,l[1]?26:22,!!l[1],l[1]?INK:'#475569')});
+    if(hasSeller){rr(L,y,bw,bh2,10,'#f8fafc','#cbd5e1',2);box(L,y,bw,44,'#e2e8f0');tx(lb('seller'),L+bw-16,y+9,22,1,'#334155');var sy=y+56;if(c.vat){tx(lb('vat')+': '+c.vat,L+bw-16,sy,22,0,INK);sy+=40}if(c.cr){tx(lb('cr')+': '+c.cr,L+bw-16,sy,22,0,INK)}}
+    y+=bh2+30;
+  }
+  brk.push(y);
+  /* ===== الجدول ===== */
+  var showT=c.show.thumb&&th&&Object.keys(th).length;
+  if(tpl==='compact'){
+    N.items.forEach(function(i){var ls=wrap(i.name,25,1,CW,3);ls.forEach(function(l){tx(l,R,y,25,1);y+=34});
+      if(c.show.sku&&i.sku){tx(i.sku,R,y,19,0,'#64748b');y+=28}
+      x.direction='ltr';tx(i.qty+' × '+f3(i.price),R,y,22,0,'#475569','right');x.direction='rtl';tx(f3(i.net),L,y,23,1,INK,'left');y+=34;
+      if(i.ret>0){tx(lb('ret')+': '+i.ret,R,y,20,0,'#b91c1c');y+=30}y+=8;brk.push(y)});
+    dash(y);y+=22;
+  }else{
+    var hasNo=tpl==='formal',wNo=hasNo?70:0,wQ=140,wP=200,wT=220,wTh=showT?96:0,wN=CW-wNo-wQ-wP-wT;
+    var xNo=R,xN=R-wNo,xQ=L+wT+wP,xP=L+wT,xT=L;
+    var hh=bi?78:62;
+    if(tpl==='formal')box(L,y,CW,hh,acc);else if(tpl==='classic')rr(L,y,CW,hh,12,'#f1f5f9');
+    var hc=tpl==='formal'?'#fff':(tpl==='elegant'?'#8a6d12':'#334155');
+    var hcell=function(k,cx,al){var X=al==='center'?cx:(al==='left'?cx+14:cx-14);tx(T[k][0],X,y+(bi?10:17),23,1,hc,al);if(bi)tx(T[k][1],X,y+44,17,0,hc,al)};
+    if(hasNo)tx('#',xNo-wNo/2,y+17,23,1,hc,'center');
+    hcell('item',xN,'right');hcell('qty',xQ+wQ/2,'center');hcell('price',xP+wP/2,'center');hcell('amt',xT,'left');
+    y+=hh;if(tpl==='elegant'){hl(L,R,y,GOLD,3);y+=3}
+    N.items.forEach(function(i,ix){
+      var nmW=wN-28-(showT?wTh:0),ls=wrap(i.name,27,0,nmW,3),h=Math.max(76,ls.length*38+30+(c.show.sku&&i.sku?30:0)+(i.ret>0?30:0),showT?104:0);
+      if(y+h>Hmax-1600)return;
+      if(tpl==='formal'){if(ix%2)box(L,y,CW,h,'#f8fafc');x.strokeStyle='#cbd5e1';x.lineWidth=2;[R,xN,xQ+wQ,xP+wP,xT+wT,L].forEach(function(X){x.beginPath();x.moveTo(X,y);x.lineTo(X,y+h);x.stroke()});hl(L,R,y+h-2,'#cbd5e1',2);tx(ix+1,xNo-wNo/2,y+h/2-14,24,0,'#475569','center')}
+      var ny=y+16,nx2=xN-14;
+      if(showT){var ti=th[i.name];rr(nx2-84,y+10,84,84,12,'#f1f5f9');if(ti&&ti.width){try{x.save();rr(nx2-84,y+10,84,84,12);x.clip();var s2=Math.max(84/ti.width,84/ti.height);x.drawImage(ti,nx2-84+(84-ti.width*s2)/2,y+10+(84-ti.height*s2)/2,ti.width*s2,ti.height*s2);x.restore()}catch(e){x.restore()}}nx2-=wTh}
+      ls.forEach(function(l){tx(l,nx2,ny,27,0,INK);ny+=38});
+      if(c.show.sku&&i.sku){tx(i.sku,nx2,ny,19,0,'#64748b');ny+=30}
+      if(i.ret>0){tx(lb('ret')+': '+i.ret,nx2,ny,20,1,'#b91c1c')}
+      var my=y+h/2-15;tx(i.qty,xQ+wQ/2,my,27,0,INK,'center');tx(i.price?f3(i.price):'—',xP+wP/2,my,27,0,INK,'center');tx(i.price?f3(i.net):'—',xT+14,my,27,1,INK,'left');
+      y+=h;if(tpl!=='formal')hl(L,R,y-2,tpl==='elegant'?'#efe6c8':'#e2e8f0',2);brk.push(y)});
+    y+=30;
+  }
+  /* ===== الإجماليات ===== */
+  var tl=[];
+  if(N.discount>0.0005||shipOn)tl.push([N.discount>0.0005?lb('sub'):lb('sub2'),f3(N.subtotal)+' '+C]);
+  if(N.discount>0.0005)tl.push([lb('disc'),'− '+f3(N.discount)+' '+C,'#b91c1c']);
+  if(shipOn)tl.push([shipLbl,shipVal]);
+  if(pv.vat&&tot>0){var v=tot*pv.rate/(100+pv.rate);tl.push([lb('vatl')+' '+pv.rate+'%',f3(v)+' '+C])}
+  var payRows=[];N.pays.forEach(function(p){payRows.push([p.l+' · '+p.at,f3(p.amt)+' '+C,'#15803d'])});N.ops.forEach(function(o){payRows.push([o.l+' · '+o.at,'− '+f3(o.amt)+' '+C,'#b91c1c'])});
+  var y0=y,tw2=tpl==='compact'?CW:560,tx0=L,rx=L+tw2;
+  var trow=function(l,v2,col,big){if(tpl==='compact'){tx(l,R,y,big?28:23,!!big,'#334155');tx(v2,L,y,big?30:24,!!big,col||INK,'left');y+=big?46:38;return}
+    var ls2=wrap(l,23,0,tw2-260,2);ls2.forEach(function(s,ix){tx(s,rx-16,y+ix*30,23,0,'#475569')});tx(v2,tx0+16,y,24,0,col||INK,'left');y+=Math.max(42,ls2.length*30+12)};
+  tl.forEach(function(r){trow(r[0],r[1],r[2])});
+  if(c.show.paid&&payRows.length&&tpl!=='formal')payRows.forEach(function(r){trow(r[0],r[1],r[2])});
+  var tbh=tpl==='compact'?70:78;
+  if(tpl==='elegant'){rr(tx0,y,tw2,tbh,14,null,GOLD,3);tx(lb('total'),rx-20,y+20,28,1,'#8a6d12');tx(f3(tot)+' '+C,tx0+20,y+16,36,1,acc,'left')}
+  else{rr(tx0,y,tw2,tbh,tpl==='formal'?0:14,acc);tx(lb('total'),rx-20,y+(tbh-30)/2,28,1,'#fff');tx(f3(tot)+' '+C,tx0+20,y+(tbh-38)/2,36,1,'#fff','left')}
+  y+=tbh+14;
+  if(c.show.paid){var rem=N.remaining;
+    if(N.paid>0.0005&&rem>0.0005)trow(lb('paid'),f3(N.paid)+' '+C,'#15803d');
+    if(rem>0.0005){rr(tx0,y-4,tw2,58,12,'#fef3c7');tx(lb('rem'),rx-16,y+9,25,1,'#92400e');tx(f3(rem)+' '+C,tx0+16,y+7,28,1,'#92400e','left');y+=64}
+    else if(N.status!=='void'&&tot>0){rr(tx0,y-4,tw2,58,12,'#dcfce7');tx('✓ '+lb('full'),rx-16,y+9,25,1,'#166534');y+=64}}
+  var yT=y;
+  var qrData=E.qr?E.qr(c,N):'';
+  if(tpl==='compact'){
+    if(c.show.method&&N.method){tx(lb('method')+': '+N.method,R,y,22,0,'#475569');y+=36}
+    if(c.show.note&&N.note){wrap(lb('note')+': '+N.note,21,0,CW).forEach(function(l){tx(l,R,y,21,0,'#475569');y+=30})}
+    if(qrData){y+=8;qr(x,qrData,W/2-90,y,180);y+=196}
+  }else{
+    var ry2=y0,rw=CW-tw2-40,rX=R;
+    if(tpl==='formal'&&c.show.paid&&payRows.length){payRows.forEach(function(r){tx(r[0],rX,ry2,20,0,'#475569');tx(r[1],rX-rw,ry2,20,1,r[2],'left');ry2+=34});ry2+=10}
+    if(c.show.note&&N.note){tx(lb('note'),rX,ry2,22,1,'#334155');ry2+=36;wrap(N.note,22,0,rw,4).forEach(function(l){tx(l,rX,ry2,22,0,'#475569');ry2+=32});ry2+=12}
+    if(qrData){qr(x,qrData,rX-170,ry2,170);ry2+=186}
+    y=Math.max(yT,ry2)+20;
+  }
+  brk.push(y);
+  }
+  /* ===== التحويل البنكي والشروط (لكل القوالب) ===== */
+  if(tpl==='own'){var qd=E.qr?E.qr(c,N):'';if(qd){y+=10;qr(x,qd,L,y,170);y+=190}}
+  if((c.bank||c.iban)&&N.remaining>0.0005){var bl=[c.bank,c.iban?lb('iban')+': '+c.iban:''].filter(Boolean),bh3=56+bl.length*36;
+    rr(L,y,CW,bh3,14,tpl==='own'?'rgba(255,255,255,.55)':'#eff6ff',tpl==='own'?INK:'#bfdbfe',2);tx('🏦 '+lb('bank'),R-18,y+14,23,1,tpl==='own'?INK:'#1e3a8a');bl.forEach(function(s,i){x.direction='rtl';tx(s,R-18,y+52+i*36,22,0,INK)});y+=bh3+20;brk.push(y)}
+  if(c.terms){var tls=wrap(c.terms,20,0,CW-36,12);var th2=50+tls.length*30;rr(L,y,CW,th2,14,tpl==='own'?'rgba(255,255,255,.55)':'#f8fafc',tpl==='own'?null:'#e2e8f0',2);tx(lb('terms'),R-18,y+12,21,1,tpl==='own'?INK:'#334155');tls.forEach(function(l,i){tx(l,R-18,y+44+i*30,20,0,tpl==='own'?INK:'#475569')});y+=th2+20;brk.push(y)}
+  /* ===== الختم والتوقيع (رسمي) ===== */
+  if(tpl==='formal'){y+=10;var sw=300;
+    tx(lb('stamp'),R-sw/2,y,22,1,'#475569','center');tx(lb('sign'),L+sw/2,y,22,1,'#475569','center');
+    rr(R-sw,y+36,sw,170,12,null,'#cbd5e1',2);hl(L,L+sw,y+180,'#94a3b8',2);
+    if(stampImg&&stampImg.width){var ss=Math.min(150/stampImg.width,150/stampImg.height);x.globalAlpha=.9;x.drawImage(stampImg,R-sw/2-stampImg.width*ss/2,y+46,stampImg.width*ss,stampImg.height*ss);x.globalAlpha=1}
+    y+=230;brk.push(y)}
+  /* ===== التذييل ===== */
+  if(tpl==='own'){y+=24;tx(lb('issued')+':  '+dS,R,y+8,25,0,INK);var sg=String(c.sign||sName);tx(sg,L,y,38,1,acc,'left');y+=70;
+    if(stampImg&&stampImg.width){var s3=Math.min(150/stampImg.width,150/stampImg.height);x.globalAlpha=.9;x.drawImage(stampImg,L,y,stampImg.width*s3,stampImg.height*s3);x.globalAlpha=1;y+=stampImg.height*s3+16}
+    if(c.footer){wrap(c.footer,26,1,CW).forEach(function(l){tx(l,W/2,y,26,1,acc,'center');y+=38})}y+=20}
+  else{
+  if(c.footer){y+=10;if(tpl!=='compact')hl(W/2-120,W/2+120,y,GOLD,2);y+=24;wrap(c.footer,28,1,CW).forEach(function(l){tx(l,W/2,y,28,1,tpl==='elegant'?'#8a6d12':acc,'center');y+=40})}
+  y+=40;if(tpl==='elegant'){box(0,y-10,W,10,GOLD)}}
+  if(N.status==='void'){x.save();x.translate(W/2,Math.min(y/2,700));x.rotate(-0.3);x.globalAlpha=.22;F(150,1);x.fillStyle='#b91c1c';x.textAlign='center';x.fillText(lb('voidS'),0,-70);x.globalAlpha=1;x.restore()}
+  var ch0=Math.min(y,Hmax);
+  return compose(cv,ch0,W,c,A,BG,brk,tpl)
+}
+/* ===== تركيب الطبقات: الخلفية ← العلامة المائية ← المحتوى ← صورة أعلى/أسفل الفاتورة ===== */
+function sample(im,X,Y){try{var t=document.createElement('canvas');t.width=1;t.height=1;var g=t.getContext('2d');g.drawImage(im,X,Y,1,1,0,0,1,1);var d=g.getImageData(0,0,1,1).data;return 'rgb('+d[0]+','+d[1]+','+d[2]+')'}catch(e){return null}}
+function compose(cv,ch,W,c,A,BG,brk,tpl){
+  var out=document.createElement('canvas'),o=null,minH=Math.round(W*1.4142),shift=0,H,cTop=0;
+  var head=A.head,foot=A.foot,mark=A.mark,page=A.page;
+  if(page){
+    var ph=Math.round(W*page.height/page.width),top=Math.round(ph*Math.max(0,Math.min(60,num(c.top)))/100),bot=Math.round(ph*Math.max(40,Math.min(100,num(c.bot)))/100);
+    if(bot<=top+200)bot=Math.min(ph,top+200);
+    var need=top+ch,extra=Math.max(0,need-bot);H=ph+extra;out.width=W;out.height=H;o=out.getContext('2d');
+    var sy=page.height/ph,fill=sample(page,Math.round(page.width*0.04),Math.max(0,Math.round(bot*sy)-4))||BG;
+    o.fillStyle=BG;o.fillRect(0,0,W,H);
+    o.drawImage(page,0,0,page.width,bot*sy,0,0,W,bot);
+    if(extra>0){o.fillStyle=fill;o.fillRect(0,bot,W,extra)}
+    o.drawImage(page,0,bot*sy,page.width,page.height-bot*sy,0,bot+extra,W,ph-bot);
+    if(mark)drawMark(o,mark,W,top,Math.max(bot,need)-top,c);
+    o.drawImage(cv,0,0,W,ch,0,top,W,ch);shift=top;
+  }else{
+    var hh=head?Math.min(520,Math.round(W*head.height/head.width)):0,fh=foot?Math.min(560,Math.round(W*foot.height/foot.width)):0;
+    cTop=hh;H=hh+ch+fh;if(tpl==='formal'||tpl==='own')H=Math.max(H,minH);
+    out.width=W;out.height=H;o=out.getContext('2d');o.fillStyle=BG;o.fillRect(0,0,W,H);
+    if(mark)drawMark(o,mark,W,hh,H-hh-fh,c);
+    if(head)o.drawImage(head,0,0,W,hh);
+    o.drawImage(cv,0,0,W,ch,0,hh,W,ch);
+    if(foot)o.drawImage(foot,0,H-fh,W,fh);
+    shift=hh;
+  }
+  var b2=brk.map(function(b){return b+shift});b2.push(H);
+  return {canvas:out,brk:b2}}
+function drawMark(o,m,W,Y,AH,c){var sz=Math.max(20,Math.min(100,num(c.markSize)||70))/100,mw=W*sz,mh=mw*m.height/m.width;if(mh>AH*.9){mh=AH*.9;mw=mh*m.width/m.height}
+  o.save();o.globalAlpha=Math.max(4,Math.min(100,num(c.markOp)||22))/100;o.drawImage(m,(W-mw)/2,Y+(AH-mh)/2,mw,mh);o.restore()}
+
+/* ---------- الصفحات وPDF ---------- */
+var PAPER={a4:[595.28,841.89],a5:[419.53,595.28]};
+function pages(res,paper){var cv=res.canvas,W=cv.width,H=cv.height;
+  if(paper==='80')return [cv];
+  var ph=Math.round(W*PAPER[paper][1]/PAPER[paper][0]);
+  if(H<=ph*1.06){var one=document.createElement('canvas');one.width=W;one.height=ph;var g1=one.getContext('2d');g1.fillStyle='#fff';g1.fillRect(0,0,W,ph);var s1=Math.min(1,ph/H);g1.drawImage(cv,(W-W*s1)/2,0,W*s1,H*s1);return [one]}
+  var out=[],st=0,top=0;
+  while(st<H-4){var avail=ph-top,end=st+avail;
+    if(end<H){var best=0;res.brk.forEach(function(b){if(b>st+avail*.4&&b<=end&&b>best)best=b});if(best)end=best}else end=H;
+    var pc=document.createElement('canvas');pc.width=W;pc.height=ph;var g=pc.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,W,ph);g.drawImage(cv,0,st,W,end-st,0,top,W,end-st);
+    out.push(pc);st=end;top=60}
+  return out}
+function b64bytes(d){var s=atob(d.split(',')[1]),a=new Uint8Array(s.length);for(var i=0;i<s.length;i++)a[i]=s.charCodeAt(i);return a}
+function makePdf(pcs,paper){
+  var en=new TextEncoder(),ch=[],off=0,offs=[];
+  function put(v){var b=typeof v==='string'?en.encode(v):v;ch.push(b);off+=b.length}
+  var n=pcs.length,objN=2+n*3;
+  put('%PDF-1.4\n%âãÏÓ\n');
+  function ob(i,body){offs[i]=off;put(i+' 0 obj\n'+body+'\nendobj\n')}
+  ob(1,'<< /Type /Catalog /Pages 2 0 R >>');
+  var kids=[];for(var i=0;i<n;i++)kids.push((3+i*3)+' 0 R');
+  ob(2,'<< /Type /Pages /Kids ['+kids.join(' ')+'] /Count '+n+' >>');
+  pcs.forEach(function(pc,i){
+    var pw,ph;if(paper==='80'){pw=226.77;ph=+(pc.height*pw/pc.width).toFixed(2)}else{pw=PAPER[paper][0];ph=PAPER[paper][1]}
+    var pn=3+i*3,cn=pn+1,im=pn+2,cs='q '+pw+' 0 0 '+ph+' 0 0 cm /Im0 Do Q';
+    ob(pn,'<< /Type /Page /Parent 2 0 R /MediaBox [0 0 '+pw+' '+ph+'] /Resources << /XObject << /Im0 '+im+' 0 R >> >> /Contents '+cn+' 0 R >>');
+    ob(cn,'<< /Length '+cs.length+' >>\nstream\n'+cs+'\nendstream');
+    var jb=b64bytes(pc.toDataURL('image/jpeg',.9));offs[im]=off;
+    put(im+' 0 obj\n<< /Type /XObject /Subtype /Image /Width '+pc.width+' /Height '+pc.height+' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length '+jb.length+' >>\nstream\n');put(jb);put('\nendstream\nendobj\n')});
+  var xo=off,s='xref\n0 '+(objN+1)+'\n0000000000 65535 f \n';for(var k=1;k<=objN;k++)s+=('0000000000'+offs[k]).slice(-10)+' 00000 n \n';
+  put(s+'trailer\n<< /Size '+(objN+1)+' /Root 1 0 R >>\nstartxref\n'+xo+'\n%%EOF');
+  return new Blob(ch,{type:'application/pdf'})}
+function fname(N,ext){return 'فاتورة-'+String(N.id).replace(/[^\w؀-ۿ-]/g,'')+'.'+ext}
+function dl(blob,name){var u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(u);a.remove()},2000)}
+function shareFile(file,text){try{if(navigator.canShare&&navigator.canShare({files:[file]})){return navigator.share({files:[file],title:file.name,text:text}).then(function(){return true},function(e){return !(e&&e.name==='NotAllowedError')})}}catch(e){}return Promise.resolve(false)}
+return {DEF:DEF,T:T,merge:merge,num:num,f3:f3,img:img,assets:assets,draw:draw,pages:pages,makePdf:makePdf,fname:fname,dl:dl,shareFile:shareFile};
+})();
+
+</script>
+<script id="EMD-V273-invoice-js">
+/* EMD V273 · تصميم الفاتورة في التطبيق: نافذة الإرسال + نافذة التصميم + صور التصميم (تُحفظ في IndexedDB) + حفظ التصميم في المتجر الإلكتروني */
+(function(){
+'use strict';
+if(window.EMDInvV273)return;
+var X=window.EMDInvCore,K='emd273_inv',KC='emd273_inv_cloud';
+var TPLS=[['classic','كلاسيك EMD','شريط علوي ملوّن مع الشعار، وهو الشكل المعتاد.'],['own','من تصميمك','ارفع تصميمك (من Canva مثلًا) ويكتب التطبيق البيانات فوقه.'],['elegant','أنيق','خلفية بيضاء وخطوط ذهبية والشعار في الوسط.'],['formal','رسمي للشركات','جدول بحدود، بيانات ضريبية، ختم وتوقيع.'],['compact','مختصر','شكل خفيف يشبه الإيصال، مناسب للمحلات.']];
+var COLORS=[['','لون التطبيق'],['#1e3a8a','كحلي EMD'],['#0f172a','فحمي'],['#047857','زمردي'],['#b45309','كهرماني'],['#9f1239','عنابي'],['#6d28d9','بنفسجي'],['#5b3a7a','ليلكي'],['#be185d','وردي']];
+var TITLES=['فاتورة','فاتورة شراء','فاتورة ضريبية','فاتورة مبدئية','عرض سعر'];
+var IMGS=[['page','صفحة التصميم كاملة','own'],['head','صورة أعلى الفاتورة',''],['foot','صورة أسفل الفاتورة (زخرفة أو زهور)',''],['mark','علامة مائية في الوسط','']];
+
+function $(i){return document.getElementById(i)}
+function num(x){return X.num(x)}
+function f3(x){return X.f3(x)}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function J(k,d){try{var v=JSON.parse(localStorage.getItem(k)||'null');return v==null?d:v}catch(e){return d}}
+/* ---------- صور التصميم في IndexedDB (لا تُثقل مساحة التطبيق) ---------- */
+var IM={},dbp=null;
+function idb(){if(dbp)return dbp;dbp=new Promise(function(ok){try{var r=indexedDB.open('emd273inv',1);r.onupgradeneeded=function(){r.result.createObjectStore('img')};r.onsuccess=function(){ok(r.result)};r.onerror=function(){ok(null)}}catch(e){ok(null)}});return dbp}
+function iget(k){return idb().then(function(d){if(!d)return null;return new Promise(function(ok){try{var q=d.transaction('img').objectStore('img').get(k);q.onsuccess=function(){ok(q.result||null)};q.onerror=function(){ok(null)}}catch(e){ok(null)}})})}
+function iput(k,v){return idb().then(function(d){if(!d)return false;return new Promise(function(ok){try{var t=d.transaction('img','readwrite');t.objectStore('img').put(v,k);t.oncomplete=function(){ok(true)};t.onerror=function(){ok(false)}}catch(e){ok(false)}})})}
+function idel(k){return idb().then(function(d){if(!d)return;try{d.transaction('img','readwrite').objectStore('img').delete(k)}catch(e){}})}
+var ready=Promise.all(IMGS.map(function(m){return iget(m[0]).then(function(v){if(v)IM[m[0]]=v})}));
+function cfg(){var c=X.merge(J(K,{}));IMGS.forEach(function(m){c[m[0]]=IM[m[0]]||''});return c}
+function raw(){return J(K,{})||{}}
+function setCfg(p){var c=raw();Object.keys(p).forEach(function(k){if(k==='show'){c.show=c.show||{};Object.keys(p.show).forEach(function(j){c.show[j]=!!p.show[j]})}else c[k]=p[k]});IMGS.forEach(function(m){delete c[m[0]]});
+  try{localStorage.setItem(K,JSON.stringify(c))}catch(e){toast('تعذّر الحفظ: مساحة التخزين ممتلئة')}return cfg()}
+function prof(){try{var p=window.EMDBusinessProfileV333&&EMDBusinessProfileV333.get();if(p)return p}catch(e){}return J('emd_business_profile_v333',{})||{}}
+function sName(){return String(prof().name||'').trim()||'متجري'}
+function cur(){var c=prof().currency;return (!c||c==='OMR')?'ر.ع':c}
+function pos(){var p=J('emd420_pos',{})||{};return {vat:!!p.vat,rate:num(p.rate)||5,vatNo:String(p.vatNo||'')}}
+function db(){var d=window.db;if(d&&typeof d==='object')return d;return J('emd_business_v1',{})||{}}
+function toast(t){var el=$('e443Toast');if(!el){el=document.createElement('div');el.id='e443Toast';el.style.cssText='position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#0f172a;color:#fff;padding:10px 16px;border-radius:12px;z-index:2147483647;font:700 14px Tahoma,Arial;direction:rtl;display:none;max-width:90vw;text-align:center';document.body.appendChild(el)}el.textContent=t;el.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(function(){el.style.display='none'},2600)}
+function accent(c){if(c.color)return c.color;try{var a=window.EMDLookV89&&EMDLookV89.accentHex();if(a&&/^#[0-9a-f]{6}$/i.test(a))return a}catch(e){}return '#1e3a8a'}
+function waPhone(p){var d=String(p||'').replace(/[٠-٩]/g,function(c){return '٠١٢٣٤٥٦٧٨٩'.indexOf(c)}).replace(/\D/g,'');if(d.indexOf('00')===0)d=d.slice(2);if(d.length===8)d='968'+d;return d}
+function enc(t){return (window.EMDEncWaV129||encodeURIComponent)(t)}
+function logo(){var lk=null;try{lk=window.EMDLookV89&&EMDLookV89.logoImg()}catch(e){}if(lk&&lk.width)return Promise.resolve(lk);var s=localStorage.getItem('emd_v89_logo');return /^data:image/.test(s||'')?X.img(s):Promise.resolve(null)}
+function pIndex(){var m={};(db().products||[]).forEach(function(p){if(!p)return;var n=String(p.name||p.productName||'').trim();if(n)m[n]=p});return m}
+function thumbs(N,c){if(!c.show.thumb||c.tpl==='own')return Promise.resolve({});var pi=pIndex(),out={},ps=[];N.items.forEach(function(i){var p=pi[String(i.name).trim()],s=p&&(p.image||p.img||p.photo);if(s&&/^(data:image|https:)/.test(s)&&!out[i.name]){out[i.name]=1;ps.push(X.img(s,2500).then(function(im){out[i.name]=im}))}});return Promise.all(ps).then(function(){return out})}
+var ENV={name:sName,cur:cur,pv:pos,accent:accent,qr:function(c,N){var P=prof();if(c.qr==='wa'){var wp=waPhone(P.whatsapp||P.phone);return wp?'https://wa.me/'+wp:''}if(c.qr==='track'){if(N.track)return N.track;var wp2=waPhone(P.whatsapp||P.phone);return wp2?'https://wa.me/'+wp2:''}if(c.qr==='info')return [sName(),c.vat,N.id,f3(N.total),(N.date instanceof Date?N.date:new Date()).toISOString()].join('|');return ''}};
+Object.defineProperty(ENV,'contact',{get:function(){var P=prof();return [P.whatsapp||P.phone,P.location].filter(Boolean).join('  ·  ')}});
+
+/* ---------- عيّنة للمعاينة ---------- */
+function sample(){var its=[{name:'أكواب اليوم الوطني',qty:12,price:1.5},{name:'علبة هدايا مع بطاقة إهداء',qty:1,price:3},{name:'شمعة معطّرة',qty:2,price:2.25}];its.forEach(function(i){i.net=i.qty*i.price;i.sku='EMD-'+(1000+Math.round(i.price*10))});
+  return {kind:'order',sample:true,id:'1024',date:new Date(),cust:{name:'أحمد بن سالم',phone:'+968 99123456',addr:'مسقط · السيب'},items:its,subtotal:25.5,discount:0,ship:2.5,shipNote:'',shipCo:'شركة التوصيل السريع',total:28,paid:28,remaining:0,method:'تحويل بنكي',pays:[],ops:[],note:'',cashier:'',status:''}}
+
+/* ---------- الرسم ---------- */
+function render(N,over){return ready.then(function(){var c=cfg();if(over)Object.keys(over).forEach(function(k){c[k]=over[k]});
+  return X.assets(c,logo(),thumbs(N,c)).then(function(A){return X.draw(N,c,A,ENV)})})}
+function printPages(pcs,paper){var box=$('e443Print');if(!box){box=document.createElement('div');box.id='e443Print';document.body.appendChild(box)}
+  box.innerHTML=pcs.map(function(p){return '<img alt="" src="'+p.toDataURL('image/jpeg',.92)+'">'}).join('');
+  var st=$('e443PrintCss');if(!st){st=document.createElement('style');st.id='e443PrintCss';document.head.appendChild(st)}
+  var sz=paper==='80'?'80mm '+(Math.ceil(pcs[0].height/pcs[0].width*72)+4)+'mm':(paper==='a5'?'A5':'A4');
+  st.textContent='@media print{@page{size:'+sz+';margin:0}html,body{margin:0!important;padding:0!important;background:#fff!important}'+(paper==='80'?'#e443Print{padding:0 4mm}#e443Print img{width:72mm!important}':'')+'}';
+  document.body.classList.add('e443-printing');setTimeout(function(){try{window.print()}catch(e){toast('تعذّرت الطباعة من هذا المتصفح')}setTimeout(function(){document.body.classList.remove('e443-printing')},600)},150)}
+
+/* ---------- النصوص ---------- */
+function fill(t,N){var C=cur();return String(t||'').replace(/\{العميل\}/g,N.cust.name||'عميلنا العزيز').replace(/\{رقم\}/g,N.id).replace(/\{الإجمالي\}/g,f3(N.total)+' '+C).replace(/\{المتبقي\}/g,f3(N.remaining)+' '+C).replace(/\{المتجر\}/g,sName())}
+function summary(N){var C=cur(),c=cfg(),Ls=['🧾 '+(c.title||'فاتورة')+' '+N.id+' — '+sName(),(N.date instanceof Date?N.date:new Date()).toLocaleDateString('ar-OM'),''];
+  N.items.forEach(function(i){Ls.push('• '+i.name+' × '+i.qty+' = '+f3(i.net)+' '+C)});
+  if(N.discount>0.0005)Ls.push('الخصم: '+f3(N.discount)+' '+C);
+  if(num(N.ship)>0.0005)Ls.push('التوصيل'+(N.shipCo?' ('+N.shipCo+')':'')+': '+f3(N.ship)+' '+C);else if(N.shipNote)Ls.push('التوصيل: '+N.shipNote);
+  Ls.push('','الإجمالي: '+f3(N.total)+' '+C);if(N.paid>0.0005&&N.remaining>0.0005)Ls.push('المدفوع: '+f3(N.paid)+' '+C);if(N.remaining>0.0005)Ls.push('المتبقي: '+f3(N.remaining)+' '+C);
+  if(N.remaining>0.0005&&(c.bank||c.iban))Ls.push('','🏦 '+[c.bank,c.iban].filter(Boolean).join(' — '));
+  if(c.footer)Ls.push('',c.footer);return Ls.join('\n')}
+function copy(t){function fb(){var a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;opacity:0';document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(e){}a.remove()}
+  try{if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).catch(fb);else fb()}catch(e){fb()}toast('📋 نُسخ ملخص الفاتورة')}
+
+/* ---------- نافذة الإرسال ---------- */
+var curN=null,last=null;
+function sheet(){var ov=$('e443S');if(ov)return ov;ov=document.createElement('div');ov.id='e443S';ov.className='e443-ov';ov.setAttribute('role','dialog');ov.setAttribute('aria-modal','true');
+  ov.innerHTML='<div class="e443-box" style="position:relative"><div class="e443-hd"><b id="e443ST">🧾 الفاتورة</b><button type="button" class="e443-x" data-k="x" aria-label="إغلاق">✕</button></div>'
+   +'<div class="e443-pv"><img id="e443SImg" alt="معاينة الفاتورة"></div>'
+   +'<div class="e443-tp" id="e443STp"></div>'
+   +'<div class="e443-act"><button type="button" class="e443-b p" data-k="img" id="e443SImgBtn">📤 إرسال صورة الفاتورة (واتساب)</button>'
+   +'<div class="e443-g"><button type="button" class="e443-b" data-k="pdf">📄 ملف PDF</button><button type="button" class="e443-b" data-k="print">🖨️ طباعة</button><button type="button" class="e443-b" data-k="copy">📋 نسخ ملخص نصي</button><button type="button" class="e443-b" data-k="save">⬇️ حفظ الصورة</button></div>'
+   +'<button type="button" class="e443-b l" data-k="des">🎨 تخصيص شكل الفاتورة</button></div><div class="e443-busy" id="e443SBusy">جارٍ التجهيز…</div></div>';
+  document.body.appendChild(ov);
+  ov.addEventListener('click',function(e){if(e.target===ov){hideS();return}var b=e.target.closest('[data-k],[data-t]');if(!b)return;
+    if(b.hasAttribute('data-t')){setCfg({tpl:b.getAttribute('data-t')});refreshS();return}
+    act(b.getAttribute('data-k'))});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ov.classList.contains('show'))hideS()});
+  return ov}
+function hideS(){var ov=$('e443S');if(ov)ov.classList.remove('show')}
+function busy(on){var b=$('e443SBusy');if(b)b.style.display=on?'flex':'none'}
+function tplList(c){return TPLS.filter(function(t){return t[0]!=='own'||c.tpl==='own'||IM.page||IM.head||IM.foot||IM.mark})}
+function refreshS(){var N=curN;if(!N)return;var c=cfg();
+  $('e443STp').innerHTML=tplList(c).map(function(t){return '<button type="button" class="e443-chip'+(c.tpl===t[0]?' on':'')+'" data-t="'+t[0]+'">'+t[1]+'</button>'}).join('');
+  busy(true);last=null;return render(N).then(function(r){last=r;$('e443SImg').src=r.canvas.toDataURL('image/jpeg',.88);busy(false)}).catch(function(e){busy(false);console.warn('V273',e);toast('تعذّر إنشاء الفاتورة')})}
+function open(N){curN=N;var ov=sheet();$('e443ST').textContent='🧾 '+(cfg().title||'فاتورة')+' '+N.id;
+  var can=false;try{can=!!(navigator.canShare&&navigator.canShare({files:[new File([new Blob(['x'])],'t.png',{type:'image/png'})]}))}catch(e){}
+  $('e443SImgBtn').textContent=can?'📤 إرسال صورة الفاتورة (واتساب)':'📤 حفظ الصورة وفتح محادثة العميل';
+  ov.classList.add('show');return refreshS()}
+function act(k){var N=curN,c=cfg();if(!N)return;
+  if(k==='x'){hideS();return}
+  if(k==='des'){designer(N);return}
+  if(k==='copy'){copy(summary(N));return}
+  var go=last?Promise.resolve(last):render(N);busy(true);
+  go.then(function(r){
+    if(k==='img'||k==='save'){return new Promise(function(res){r.canvas.toBlob(res,'image/jpeg',.92)}).then(function(b){var name=X.fname(N,'jpg'),f=new File([b],name,{type:'image/jpeg'});
+      if(k==='save'){X.dl(b,name);toast('⬇️ حُفظت صورة الفاتورة');return}
+      return X.shareFile(f,fill(c.wa,N)).then(function(ok){if(!ok){X.dl(b,name);window.open('https://wa.me/'+waPhone(N.cust.phone)+'?text='+enc(fill(c.wa,N)+'\n(أرفقتُ لك صورة الفاتورة)'),'_blank')}})})}
+    if(k==='pdf'){if(c.paper==='80'&&c.tpl!=='compact')return render(N,{tpl:'compact'}).then(function(r2){return pdfOut(N,[r2.canvas],'80',c)});return pdfOut(N,X.pages(r,c.paper),c.paper,c)}
+    if(k==='print'){if(c.paper==='80'&&c.tpl!=='compact')return render(N,{tpl:'compact'}).then(function(r2){printPages([r2.canvas],'80')});printPages(X.pages(r,c.paper),c.paper)}
+  }).then(function(){busy(false)},function(e){busy(false);console.warn('V273',e);toast('تعذّرت العملية')})}
+function pdfOut(N,pcs,paper,c){var b=X.makePdf(pcs,paper),f=new File([b],X.fname(N,'pdf'),{type:'application/pdf'});return X.shareFile(f,fill(c.wa,N)).then(function(ok){if(!ok){X.dl(b,f.name);toast('⬇️ حُفظ ملف PDF')}})}
+function print(N){var c=cfg();var over=c.paper==='80'&&c.tpl!=='compact'?{tpl:'compact'}:null;return render(N,over).then(function(r){printPages(c.paper==='80'?[r.canvas]:X.pages(r,c.paper),c.paper)})}
+
+/* ---------- قراءة الصور المرفوعة وتصغيرها ---------- */
+function readImg(file,maxW,type){return new Promise(function(ok,no){var rd=new FileReader();rd.onload=function(){X.img(rd.result,8000).then(function(im){if(!im){no(new Error('img'));return}
+  var s=Math.min(1,maxW/im.width),cv=document.createElement('canvas');cv.width=Math.round(im.width*s);cv.height=Math.round(im.height*s);var g=cv.getContext('2d');
+  if(type==='image/jpeg'){g.fillStyle='#fff';g.fillRect(0,0,cv.width,cv.height)}g.drawImage(im,0,0,cv.width,cv.height);ok(cv.toDataURL(type,.86))})};rd.onerror=no;rd.readAsDataURL(file)})}
+var IMSPEC={page:[1240,'image/jpeg'],head:[1240,'image/jpeg'],foot:[1240,'image/png'],mark:[900,'image/png'],stamp:[320,'image/png']};
+
+/* ---------- نافذة التصميم ---------- */
+var dN=null,dT=null;
+function designer(N){dN=N&&!N.sample?N:sample();var ov=$('e443D');
+  if(!ov){ov=document.createElement('div');ov.id='e443D';ov.className='e443-ov';ov.setAttribute('role','dialog');ov.setAttribute('aria-modal','true');document.body.appendChild(ov);
+    ov.addEventListener('click',dClick);ov.addEventListener('input',dInput);ov.addEventListener('change',dInput)}
+  ready.then(function(){paintD();ov.classList.add('show')})}
+function cloudState(){var x=J(KC,null);return x&&typeof x==='object'?x:null}
+function clOn(){var cs=cloudState()||{};return cs.want!=null?!!cs.want:(cs.on!=null?!!cs.on:true)}
+function paintD(){var c=cfg(),ov=$('e443D'),moreOn=ov.getAttribute('data-more')==='1',sc=ov.querySelector('.e443-ctl'),st=sc?sc.scrollTop:0;
+  function inp(f,ph){return '<input type="text" data-f="'+f+'" value="'+esc(c[f])+'" placeholder="'+esc(ph||'')+'">'}
+  function ck(k,t){return '<label><input type="checkbox" data-s="'+k+'"'+(c.show[k]?' checked':'')+'>'+t+'</label>'}
+  function rng(f,t,a,b,u){return '<label>'+t+' <b data-rv="'+f+'">'+num(c[f])+(u||'%')+'</b></label><input type="range" min="'+a+'" max="'+b+'" data-f="'+f+'" value="'+num(c[f])+'" style="width:100%">'}
+  function upl(m){var has=!!c[m[0]];return '<div class="e273-up"><div class="e273-th">'+(has?'<img src="'+c[m[0]]+'" alt="">':'<span>🖼️</span>')+'</div><div class="e273-ut"><b>'+m[1]+'</b><div class="e273-ub"><label class="e443-b e273-sm">'+(has?'تغيير':'📎 رفع صورة')+'<input type="file" accept="image/*" data-img="'+m[0]+'" hidden></label>'+(has?'<button type="button" class="e443-b e273-sm" data-del="'+m[0]+'">حذف</button>':'')+'</div></div></div>'}
+  var custom=TITLES.indexOf(c.title)<0,own=c.tpl==='own',cs=cloudState();
+  ov.innerHTML='<div class="e443-box e443-dbox"><div class="e443-hd"><b>🧾 تصميم الفاتورة</b><button type="button" class="e443-x" data-d="x" aria-label="إغلاق">✕</button></div>'
+  +'<div class="e443-dwrap"><div class="e443-pv"><img id="e443DImg" alt="معاينة الفاتورة"></div><div class="e443-ctl">'
+  +'<div class="e443-sec"><h4>القالب</h4><div class="e443-tpls">'+TPLS.map(function(t){return '<button type="button" class="e443-tpl'+(c.tpl===t[0]?' on':'')+(t[0]==='own'?' e273-own':'')+'" data-tpl="'+t[0]+'"><b>'+(t[0]==='own'?'✨ ':'')+t[1]+'</b><span>'+t[2]+'</span></button>'}).join('')+'</div></div>'
+  +(own?'<div class="e443-sec e273-box"><h4>✨ تصميمك</h4><div class="e443-hint" style="margin:0 0 8px">صمّم فاتورتك في Canva أو غيره <b>بدون نصوص ولا جدول</b> (الخلفية والشعار والزخارف فقط)، ثم نزّلها صورة وارفعها هنا. سيكتب التطبيق بيانات كل طلب فوقها تلقائيًا.</div>'
+     +upl(IMGS[0])
+     +(c.page?rng('top','تبدأ الكتابة من الأعلى بعد',0,45)+rng('bot','وتتوقف الكتابة قبل الزخرفة السفلية عند',45,100):'')
+     +'<div class="e443-ck" style="margin-top:8px"><label><input type="checkbox" data-o="ownLogo"'+(c.ownLogo?' checked':'')+'>إظهار الشعار</label></div>'
+     +'<label>التوقيع أسفل الفاتورة</label>'+inp('sign',sName())+'</div>':'')
+  +'<div class="e443-sec"><h4>اللون</h4><div class="e443-sw">'+COLORS.map(function(k){return '<button type="button" class="e443-c'+(k[0]?'':' app')+(c.color===k[0]?' on':'')+'" data-col="'+k[0]+'" title="'+k[1]+'" aria-label="'+k[1]+'" style="'+(k[0]?'background:'+k[0]:'')+'"></button>'}).join('')+'<input type="color" data-f="color" value="'+(c.color||accent(c))+'" aria-label="لون آخر"></div></div>'
+  +'<div class="e443-sec"><h4>عنوان الفاتورة</h4><select data-title>'+TITLES.map(function(t){return '<option'+(c.title===t?' selected':'')+'>'+t+'</option>'}).join('')+'<option value="__c"'+(custom?' selected':'')+'>نص آخر…</option></select>'+(custom?'<input type="text" data-f="title" value="'+esc(c.title)+'" style="margin-top:6px">':'')+'</div>'
+  +'<div class="e443-sec"><h4>🎨 الخلفية والزخارف</h4>'
+     +'<div class="e273-cols"><label>لون الخلفية <input type="color" data-f="bg" value="'+esc(c.bg||'#ffffff')+'"></label><label>لون النص <input type="color" data-f="ink" value="'+esc(c.ink||'#0f172a')+'"></label></div>'
+     +(own&&c.page?'<div class="e443-hint">مع صفحة التصميم الكاملة لا حاجة غالبًا للصور التالية.</div>':'')
+     +upl(IMGS[1])+upl(IMGS[2])+upl(IMGS[3])
+     +(c.mark?rng('markOp','شفافية العلامة المائية',4,100)+rng('markSize','حجم العلامة المائية',20,100):'')
+  +'</div>'
+  +(own?'':'<div class="e443-sec"><h4>الشعار</h4><div class="e443-seg"><button type="button" class="e443-chip'+(c.logoPos!=='center'?' on':'')+'" data-lp="side">بجانب الاسم</button><button type="button" class="e443-chip'+(c.logoPos==='center'?' on':'')+'" data-lp="center">في الوسط</button></div><div class="e443-hint">يُؤخذ الشعار من «المظهر والهوية»، والاسم من «بيانات النشاط». وضع الشعار يخص القالب الكلاسيكي.</div></div>')
+  +'<div class="e443-sec e273-box"><h4>🌐 فاتورة المتجر الإلكتروني</h4><div class="e443-ck" style="grid-template-columns:1fr"><label><input type="checkbox" data-cl="on"'+(clOn()?' checked':'')+'>يستطيع عميل المتجر تنزيل فاتورته بهذا التصميم من صفحة تتبّع طلبه</label></div>'
+     +'<button type="button" class="e443-b n" data-d="cloud" style="width:100%;margin-top:8px">☁️ حفظ التصميم في المتجر</button><div class="e443-hint" id="e273Cl">'+(cs&&cs.at?'آخر حفظ في المتجر: '+esc(cs.at)+(cs.on?'':' (الفاتورة غير متاحة للعملاء)'):'لم يُحفظ في المتجر بعد. يظهر للعميل زر «🧾 فاتورتي» بعد قبول طلبه.')+'</div></div>'
+  +'<button type="button" class="e443-b" data-d="more" style="width:100%">'+(moreOn?'▲ إخفاء الخيارات الإضافية':'⚙️ إظهار خيارات أكثر')+'</button>'
+  +'<div class="e443-more'+(moreOn?' show':'')+'" style="margin-top:14px">'
+   +'<div class="e443-sec"><h4>بيانات المنشأة</h4><label>العنوان</label>'+inp('addr','مثال: مسقط، الخوير')+'<label>الرقم الضريبي</label>'+inp('vat','OM1100XXXXXX')+'<label>السجل التجاري</label>'+inp('cr','')+'<label>البريد الإلكتروني</label>'+inp('email','')+'<label>الموقع الإلكتروني</label>'+inp('web','')+'</div>'
+   +'<div class="e443-sec"><h4>ما يظهر في الفاتورة</h4><div class="e443-ck">'+ck('phone','هاتف العميل')+ck('addr','عنوان العميل')+ck('method','طريقة الدفع')+ck('paid','المدفوع والمتبقي')+(own?ck('price','عمود السعر'):ck('sku','رمز المنتج')+ck('thumb','صورة المنتج'))+ck('note','الملاحظات')+ck('cashier','اسم الكاشير')+'</div></div>'
+   +'<div class="e443-sec"><h4>التحويل البنكي</h4><label>اسم البنك وصاحب الحساب</label>'+inp('bank','بنك مسقط — مؤسسة …')+'<label>رقم الحساب / IBAN</label>'+inp('iban','')+'<div class="e443-hint">تظهر هذه البيانات في الفاتورة غير المدفوعة بالكامل فقط.</div></div>'
+   +'<div class="e443-sec"><h4>الشروط والتذييل</h4><label>الشروط والأحكام</label><textarea data-f="terms" placeholder="مثال: يُقبل الاستبدال خلال 7 أيام مع الفاتورة.">'+esc(c.terms)+'</textarea><label>عبارة الختام</label>'+inp('footer','شكرًا لتعاملكم معنا')+'</div>'
+   +'<div class="e443-sec"><h4>رمز QR</h4><select data-f="qr"><option value="none"'+(c.qr==='none'?' selected':'')+'>بدون</option><option value="wa"'+(c.qr==='wa'?' selected':'')+'>رقم واتساب المتجر</option><option value="track"'+(c.qr==='track'?' selected':'')+'>رابط تتبع الطلب (إن وُجد)</option><option value="info"'+(c.qr==='info'?' selected':'')+'>بيانات الفاتورة</option></select></div>'
+   +'<div class="e443-sec"><h4>الختم</h4><div class="e443-stamp">'+(c.stamp?'<img src="'+c.stamp+'" alt="الختم">':'')+'<label class="e443-b" style="margin:0;display:inline-flex;align-items:center;cursor:pointer">📎 '+(c.stamp?'تغيير الختم':'رفع صورة الختم')+'<input type="file" accept="image/*" data-stamp hidden></label>'+(c.stamp?'<button type="button" class="e443-b" data-d="nostamp">حذف</button>':'')+'</div><div class="e443-hint">يظهر في القالب الرسمي وقالب «من تصميمك».</div></div>'
+   +'<div class="e443-sec"><h4>اللغة ومقاس الطباعة</h4><label>لغة الفاتورة</label><select data-f="lang"><option value="ar"'+(c.lang!=='bi'?' selected':'')+'>العربية</option><option value="bi"'+(c.lang==='bi'?' selected':'')+'>العربية والإنجليزية</option></select><label>مقاس الورق للطباعة وPDF</label><select data-f="paper"><option value="a4"'+(c.paper==='a4'?' selected':'')+'>A4</option><option value="a5"'+(c.paper==='a5'?' selected':'')+'>A5</option><option value="80"'+(c.paper==='80'?' selected':'')+'>طابعة إيصالات 80 مم</option></select></div>'
+   +'<div class="e443-sec"><h4>رسالة واتساب</h4><textarea data-f="wa">'+esc(c.wa)+'</textarea><div class="e443-hint">تُستبدل تلقائيًا: {العميل} {رقم} {الإجمالي} {المتبقي} {المتجر}</div></div>'
+   +'<button type="button" class="e443-b" data-d="reset" style="width:100%">↺ استعادة الشكل الافتراضي</button>'
+  +'</div></div></div></div>';
+  sc=ov.querySelector('.e443-ctl');if(sc)sc.scrollTop=st;
+  prevD()}
+function prevD(){clearTimeout(dT);dT=setTimeout(function(){render(dN).then(function(r){var i=$('e443DImg');if(i)i.src=r.canvas.toDataURL('image/jpeg',.85)}).catch(function(e){console.warn('V273',e)})},200)}
+function dClick(e){var ov=$('e443D');if(e.target===ov){closeD();return}var b=e.target.closest('[data-d],[data-tpl],[data-col],[data-lp],[data-del]');if(!b)return;
+  if(b.hasAttribute('data-tpl')){var t=b.getAttribute('data-tpl'),p={tpl:t};
+    if(t==='own'){var r0=raw();if(r0.bg==null&&!IM.page)p.bg='#fdf2f8';if(r0.ink==null)p.ink='#3b2a4a';if(r0.title==null||r0.title==='فاتورة')p.title='فاتورة شراء';if(!r0.show||r0.show.price==null)p.show={price:false}}
+    setCfg(p);paintD();return}
+  if(b.hasAttribute('data-col')){setCfg({color:b.getAttribute('data-col')});paintD();return}
+  if(b.hasAttribute('data-lp')){setCfg({logoPos:b.getAttribute('data-lp')});paintD();return}
+  if(b.hasAttribute('data-del')){var k0=b.getAttribute('data-del');delete IM[k0];idel(k0);paintD();return}
+  var k=b.getAttribute('data-d');
+  if(k==='x'){closeD();return}
+  if(k==='cloud'){cloudSave();return}
+  if(k==='more'){ov.setAttribute('data-more',ov.getAttribute('data-more')==='1'?'0':'1');paintD();return}
+  if(k==='nostamp'){setCfg({stamp:''});paintD();return}
+  if(k==='reset'){if(window.confirm('استعادة الشكل الافتراضي للفاتورة؟ ستبقى بيانات المنشأة والبنك وصور التصميم محفوظة.')){var D0=X.DEF;setCfg({tpl:D0.tpl,color:'',logoPos:'side',title:D0.title,footer:D0.footer,qr:'none',lang:'ar',paper:'a4',wa:D0.wa,bg:D0.bg,ink:D0.ink,top:D0.top,bot:D0.bot,markOp:D0.markOp,markSize:D0.markSize,show:D0.show});paintD();toast('↺ عاد الشكل الافتراضي')}return}}
+function dInput(e){var t=e.target;
+  if(t.hasAttribute('data-img')){if(e.type!=='change')return;var f=t.files&&t.files[0],k=t.getAttribute('data-img');if(!f)return;var sp=IMSPEC[k];
+    toast('جارٍ تجهيز الصورة…');readImg(f,sp[0],sp[1]).then(function(d){IM[k]=d;return iput(k,d)}).then(function(ok){if(!ok)toast('تعذّر حفظ الصورة على هذا الجهاز');
+      if(k==='page'){var r0=raw();if(r0.top==null)setCfg({top:X.DEF.top,bot:X.DEF.bot})}paintD()},function(){toast('تعذّرت قراءة الصورة')});return}
+  if(t.hasAttribute('data-stamp')){if(e.type!=='change')return;var f2=t.files&&t.files[0];if(!f2)return;readImg(f2,320,'image/png').then(function(d){setCfg({stamp:d});paintD()},function(){toast('تعذّرت قراءة الصورة')});return}
+  if(t.hasAttribute('data-title')){if(t.value==='__c'){setCfg({title:''});paintD();var i=$('e443D').querySelector('[data-f="title"]');if(i)i.focus()}else{setCfg({title:t.value});paintD()}return}
+  if(t.hasAttribute('data-s')){var o={};o[t.getAttribute('data-s')]=t.checked;setCfg({show:o});prevD();return}
+  if(t.hasAttribute('data-o')){var o2={};o2[t.getAttribute('data-o')]=t.checked;setCfg(o2);prevD();return}
+  if(t.hasAttribute('data-cl')){if(e.type!=='change')return;var cs=cloudState()||{};cs.want=t.checked;try{localStorage.setItem(KC,JSON.stringify(cs))}catch(x){}var h=$('e273Cl');if(h)h.textContent='اضغط «☁️ حفظ التصميم في المتجر» ليصل التغيير إلى المتجر.';return}
+  var f3n=t.getAttribute('data-f');if(!f3n)return;var p={};p[f3n]=t.type==='range'?+t.value:t.value;setCfg(p);
+  if(t.type==='range'){var rv=$('e443D').querySelector('[data-rv="'+f3n+'"]');if(rv)rv.textContent=t.value+'%'}
+  if(f3n==='color'&&e.type==='change'){paintD();return}prevD()}
+function closeD(){var ov=$('e443D');if(ov)ov.classList.remove('show');if($('e443S')&&$('e443S').classList.contains('show'))refreshS()}
+
+/* ---------- المرحلة 2: حفظ التصميم في المتجر الإلكتروني ---------- */
+var FN='https://pfkstppvnebagbdckgbu.supabase.co/functions/v1/store-admin',FNKEY='sb_publishable__tfVZiyph-xyB87GzmHrkQ_9DVpPHJ0';
+function fn(action,body){var api=window.EMD247api,c=api&&api.C();if(!c)return Promise.reject(Object.assign(new Error('no cloud'),{auth:true}));body=body||{};body.action=action;
+  return c.token().then(function(tk){return fetch(FN,{method:'POST',headers:{apikey:FNKEY,'Content-Type':'application/json','x-emd-token':tk},body:JSON.stringify(body)})}).then(function(r){
+    return r.text().then(function(x){var j=null;try{j=x?JSON.parse(x):null}catch(e){}if(!r.ok||!j||!j.ok){var e=new Error((j&&j.error)||('HTTP '+r.status));e.code=(j&&j.error)||'';if(r.status===401)e.auth=true;throw e}return j})})}
+function hsh(s){var h=2166136261;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return (h>>>0).toString(36)+s.length.toString(36)}
+/* ترفع الصورة إلى مخزن المتجر (حتى 500 ك.ب)، وتُصغَّر تلقائيًا إن كانت أكبر */
+function upload(d,png){if(!d)return Promise.resolve('');if(/^https:/.test(d))return Promise.resolve(d);
+  var type=png?'image/png':'image/jpeg';
+  function fit(src,w){return X.img(src,8000).then(function(im){var s=Math.min(1,w/im.width),cv=document.createElement('canvas');cv.width=Math.round(im.width*s);cv.height=Math.round(im.height*s);var g=cv.getContext('2d');if(!png){g.fillStyle='#fff';g.fillRect(0,0,cv.width,cv.height)}g.drawImage(im,0,0,cv.width,cv.height);
+    var out=cv.toDataURL(type,.82),b=out.split(',')[1]||'';if(b.length*0.75>500000&&w>500)return fit(src,Math.round(w*0.8));return b})}
+  return fit(d,1240).then(function(b){return fn('upload',{name:'inv-'+hsh(b)+(png?'.png':'.jpg'),type:type,data:b})}).then(function(j){return j.url})}
+var CLOUD_KEYS=['tpl','color','logoPos','title','addr','vat','cr','email','web','bank','iban','terms','footer','lang','bg','ink','markOp','markSize','top','bot','ownLogo','sign'];
+var clBusy=false;
+function cloudSave(){if(clBusy)return;var api=window.EMD247api,h=$('e273Cl');
+  function msg(t){if(h)h.textContent=t;toast(t)}
+  if(!api||!api.logged()){msg('سجّل الدخول أولًا من نافذة «🛍️ متجري» ← الرابط.');return}
+  var S=api.S();if(!S||!S.pubStore||!Array.isArray(S.pubRows)||!S.pubAt){msg('انشر متجرك مرة واحدة أولًا من «🛍️ متجري»، ثم احفظ التصميم.');return}
+  var c=cfg(),on=clOn();
+  clBusy=true;msg('جارٍ رفع صور التصميم…');
+  Promise.all([upload(c.tpl==='own'?c.page:'',false),upload(c.head,false),upload(c.foot,true),upload(c.mark,true),upload(c.stamp,true)]).then(function(U){
+    var inv={on:on,v:273};CLOUD_KEYS.forEach(function(k){inv[k]=c[k]});inv.color=c.color||accent(c);inv.show={phone:false,addr:true,method:!!c.show.method,price:!!c.show.price,note:false,paid:false,sku:false,thumb:false,cashier:false};
+    if(U[0])inv.page=U[0];if(U[1])inv.head=U[1];if(U[2])inv.foot=U[2];if(U[3])inv.mark=U[3];if(U[4])inv.stamp=U[4];
+    var brand=Object.assign({},S.pubStore.brand||{},{inv:inv});
+    if(JSON.stringify(brand).length>19800)throw Object.assign(new Error('big'),{code:'brand_too_big'});
+    msg('جارٍ الحفظ في المتجر…');
+    return fn('publish',{store:{slug:S.pubSlug||S.slug,is_open:!S.paused,brand:brand,ship:S.pubStore.ship,free_over:S.pubStore.free_over},products:S.pubRows}).then(function(){
+      S.pubStore.brand=brand;try{api.save()}catch(e){}
+      var d=new Date(),z=function(n){return (n<10?'0':'')+n};var st={on:on,want:on,at:d.getDate()+'/'+(d.getMonth()+1)+' · '+z(d.getHours())+':'+z(d.getMinutes()),inv:inv};
+      try{localStorage.setItem(KC,JSON.stringify(st))}catch(e){}
+      clBusy=false;msg(on?'✓ حُفظ التصميم في المتجر. سيجد العميل زر «🧾 فاتورتي» في صفحة تتبّع طلبه بعد قبوله.':'✓ حُفظ. فاتورة المتجر غير متاحة للعملاء الآن.')})})
+  .catch(function(e){clBusy=false;msg(e&&e.auth?'سجّل الدخول مرة أخرى من نافذة الحساب، ثم أعد المحاولة.':(e&&e.code==='brand_too_big'?'بيانات المتجر كبيرة جدًا لإضافة التصميم. قلّل صور المعرض أو تواصل مع الدعم.':(/fetch|network|load failed/i.test(String(e&&e.message))?'لا يوجد اتصال بالإنترنت. تحقق منه وأعد المحاولة.':'تعذّر الحفظ في المتجر: '+(e&&(e.code||e.message)||''))))})}
+/* كل نشر جديد للمتجر يحمل معه آخر تصميم محفوظ للفاتورة (حتى لا يمسحه) */
+(function wrapExtra(){var E=window.EMD150;if(!E||typeof E.extra!=='function'){setTimeout(wrapExtra,800);return}if(E.extra.__e273)return;var f=E.extra;
+  var g=function(){var r=f.apply(this,arguments);try{var cs=cloudState();if(cs&&cs.inv&&r&&typeof r==='object')r.inv=Object.assign({},cs.inv,{on:!!cs.on})}catch(e){}return r};g.__e273=1;E.extra=g})();
+
+/* ---------- بطاقة الإعدادات ---------- */
+function inject(){var g=$('emd327SystemGrid');if(!g||$('e443Item'))return;var b=document.createElement('button');b.type='button';b.className='emd327-item';b.id='e443Item';b.setAttribute('data-emd108-skip','1');
+  b.innerHTML='<b>🧾 تصميم الفاتورة</b><span>القالب واللون وتصميمك الخاص وفاتورة المتجر.</span>';b.addEventListener('click',function(){designer(null)});g.appendChild(b)}
+setInterval(inject,1500);setTimeout(inject,400);
+
+window.EMDInvV273={version:'V273',open:open,print:print,designer:designer,render:render,config:cfg,set:setCfg,sample:sample,summary:summary,_img:IM,_put:function(k,d){IM[k]=d;return iput(k,d)}};
+window.EMDInvV443=window.EMDInvV273;
+})();
+
+</script>
+
 </body>
 </html>
