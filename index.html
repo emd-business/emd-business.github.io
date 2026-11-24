@@ -16,7 +16,7 @@ window.EMDErrLog={list:function(){var c=Date.now()-3*864e5;return L().filter(fun
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V283</title>
+<title>EMD Business — Standalone V284</title>
 <!-- EMD V158: شاشة افتتاح تغطي التطبيق حتى تكتمل الواجهة الأخيرة، فلا تظهر الأشكال والأزرار القديمة أثناء التحميل -->
 <style id="EMD-V158-boot">
 html.emd-boot{background:#0f172a!important}
@@ -20548,12 +20548,15 @@ try{(window.__EMD_V75_NO_V55_OBS__=1)||new MutationObserver(function(ms){ms.forE
   }
   async function createRemote(o){
     var r,bodyTxt=JSON.stringify(payload(o));
-    try{r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:bodyTxt})}
-    catch(e1){
-      try{r=await fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:bodyTxt})}
-      catch(e2){throw new Error('تعذر الاتصال بموقع التتبع (Failed to fetch).\nإذا كان الإنترنت يعمل: موقع Track & Confirm لا يسمح بالطلبات من هذا التطبيق (CORS)، أو أنك تفتح التطبيق داخل معاينة تمنع الاتصال. جرّبه في Chrome.')}
-    }
+    var ac=null,tm=null;try{ac=new AbortController();tm=setTimeout(function(){ac.abort()},12000)}catch(e){}
+    try{r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:bodyTxt,signal:ac?ac.signal:undefined})}
+    catch(e1){clearTimeout(tm);
+      if(e1&&e1.name==='AbortError'){var ea=new Error('الاتصال بطيء ولم يرد موقع التتبع خلال 12 ثانية.');ea.code='timeout';throw ea}
+      if(typeof navigator!=='undefined'&&navigator.onLine===false){var eo=new Error('لا يوجد اتصال بالإنترنت.');eo.code='offline';throw eo}
+      var en=new Error('تعذر الاتصال بموقع التتبع. تأكد من الإنترنت.');en.code='network';throw en}
+    clearTimeout(tm);
     var j=await r.json().catch(function(){return {}});
+    if(r.status===429||(j&&j.error==='rate_limited')){var er=new Error('موقع التتبع مشغول لحظيًا. أعد المحاولة بعد دقيقة.');er.code='rate_limited';throw er}
     /* يقبل شكل الرد القديم {order:{client_token}} والجديد {tracking_url} */
     var url=String((j&&(j.tracking_url||(j.order&&j.order.tracking_url)))||'').trim();
     var t=String((j&&((j.order&&j.order.client_token)||j.client_token))||'').trim();
@@ -20567,10 +20570,12 @@ try{(window.__EMD_V75_NO_V55_OBS__=1)||new MutationObserver(function(ms){ms.forE
     saveRemote(o,t,{sent:String(o&&o.status||''),server:typeof sv==='string'?sv:''});
     return url.indexOf(PUBLIC)===0?url:publicUrl(t);
   }
-  async function ensure(o){
+  async function ensure(o,opt){
     if(!o)return '';
     var id=idOf(o);if(!id)return '';
     if(busy[id])return busy[id];
+    /* V284: الرابط جاهز فورًا إذا الموقع عنده الطلب بنفس الحالة، بدون انتظار الإنترنت */
+    if(!(opt&&opt.force)){var ft=rawToken(o);if(ft&&/^[0-9a-f]{40}$/i.test(ft)&&o.clientTrackingSynced&&o.trackingUid&&String(o.trackingSentStatus||'')===String(o.status||'')&&!o.trackingSyncError)return publicUrl(ft)}
     busy[id]=(async function(){
       /* V69: معرّف فريد دائم لكل طلب، حتى لا يختلط طلبان بنفس الرقم من جهازين أو بعد إعادة الترقيم */
       if(!o.trackingUid){
@@ -20641,12 +20646,12 @@ try{(window.__EMD_V75_NO_V55_OBS__=1)||new MutationObserver(function(ms){ms.forE
   // Remove stale local-only tracking tokens, then sync shipped/received orders.
   async function boot(){
     migrateInvalid();
+    /* V284: نرسل فقط الطلبات المشحونة التي لم تصل حالتها الحالية للموقع، بحد 3 وبالتتابع وبعد فتح التطبيق بقليل */
     var d=read(),a=Array.isArray(d.orders)?d.orders:[];
-    var L226=a.filter(function(o){return ['shipped','received','out_for_delivery'].indexOf(String(o.status||''))>=0}).slice(-30);
-    try{var ids226={};L226.forEach(function(o){if(idOf(o)&&o.trackingUid&&rawToken(o))ids226[idOf(o)]=1});if(Object.keys(ids226).length){var d2=read(),a2=Array.isArray(d2.orders)?d2.orders:[],ch226=false;a2.forEach(function(x){if(ids226[idOf(x)]&&(x.clientToken!=null||x.client_token!=null||x.clientTrackingSynced!=null||x.trackingUrl!=null||x.tracking_url!=null)){delete x.clientToken;delete x.client_token;delete x.clientTrackingSynced;delete x.trackingUrl;delete x.tracking_url;ch226=true}});if(ch226)write(d2)}}catch(e){}
-    L226.forEach(function(o){ensure(o).catch(function(){})});
+    var todo=a.filter(function(o){var s=String(o.status||'');return ['shipped','out_for_delivery'].indexOf(s)>=0&&o.clientTrackingSynced&&rawToken(o)&&String(o.trackingSentStatus||'')!==s}).slice(-3);
+    for(var k=0;k<todo.length;k++){try{await ensure(todo[k])}catch(e){break}await new Promise(function(r){setTimeout(r,1500)})}
   }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(boot,250)});else setTimeout(boot,250);
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(boot,6000)});else setTimeout(boot,6000);
 })();
 </script>
 <script id="EMD-V60c-add-product-dialog">
@@ -20846,7 +20851,7 @@ try{(window.__EMD_V75_NO_V55_OBS__=1)||new MutationObserver(function(ms){ms.forE
     running=true;
     try{
       var d=read(),a=Array.isArray(d.orders)?d.orders:[];
-      var todo=a.filter(function(o){return linked(o)&&String(o.status||'')!==String(o.trackingSyncedStatus||'')});
+      var todo=a.filter(function(o){var s=String(o.status||'');if(!linked(o)||s===String(o.trackingSyncedStatus||''))return false;if(s===String(o.trackingSentStatus||'')&&!o.trackingSyncError){mark(idOf(o),s);return false}if(o.trackingSyncError&&Date.now()-(o.trackingSyncAt||0)<120000)return false;return true});
       for(var i=0;i<todo.length&&i<10;i++){
         var o=todo[i],st=String(o.status||'');
         try{await R.ensure(o);mark(idOf(o),st)}catch(e){console.warn('EMD status sync failed',idOf(o),e&&e.message);try{var d2=read(),x2=(d2.orders||[]).find(function(q){return idOf(q)===idOf(o)});if(x2){x2.trackingSyncError=String(e&&e.message||e).slice(0,200);x2.trackingSyncAt=Date.now();localStorage.setItem(KEY,JSON.stringify(d2));if(window.db&&Array.isArray(window.db.orders)){var y2=window.db.orders.find(function(q){return idOf(q)===idOf(o)});if(y2){y2.trackingSyncError=x2.trackingSyncError;y2.trackingSyncAt=x2.trackingSyncAt}}}}catch(_){}}
@@ -21701,7 +21706,7 @@ document.addEventListener('click',async function(e){
   e.preventDefault();e.stopPropagation();
   var id=b.getAttribute('data-v68-sync'),o=find(id),R=window.emdRemoteTrackingV58;if(!o||!R)return;
   b.disabled=true;b.textContent='⏳ جارٍ المزامنة…';
-  try{await R.ensure(o);var d=JSON.parse(localStorage.getItem('emd_business_v1')||'{}'),x=(d.orders||[]).find(function(q){return idOf(q)===id});
+  try{await R.ensure(o,{force:true});var d=JSON.parse(localStorage.getItem('emd_business_v1')||'{}'),x=(d.orders||[]).find(function(q){return idOf(q)===id});
     if(x){x.trackingSyncedStatus=x.status;delete x.trackingSyncError;localStorage.setItem('emd_business_v1',JSON.stringify(d));var y=find(id);if(y){Object.assign(y,{trackingSentStatus:x.trackingSentStatus,trackingServerStatus:x.trackingServerStatus,trackingSyncAt:x.trackingSyncAt,trackingSyncedStatus:x.status});delete y.trackingSyncError}}
   }catch(err){var y2=find(id);if(y2){y2.trackingSyncError=String(err&&err.message||err).slice(0,200);y2.trackingSyncAt=Date.now()}}
   b.disabled=false;decorate();
@@ -22745,7 +22750,7 @@ function paint(keepText){
   var ta=$('emd78Ta');if(!keepText)ta.value=compose(o,cur.k,cur.link||'…جارٍ تجهيز رابط التتبع');else ta.value=ta.value.split('…جارٍ تجهيز رابط التتبع').join(cur.link||'');
   var n=$('emd78Note'),st=window.__emdSt?window.__emdSt(o.status||'new'):(o.status||'');
   if(cur.busy){n.className='emd78-note';n.textContent='⏳ جارٍ تجهيز رابط التتبع…'}
-  else if(!cur.link){n.className='emd78-note warn';n.textContent='⚠️ تعذّر تجهيز رابط التتبع (تأكد من الإنترنت). تقدر ترسل الرسالة بدون رابط.'}
+  else if(!cur.link){n.className='emd78-note warn';n.innerHTML='⚠️ تعذّر تجهيز رابط التتبع'+(cur.err?': '+String(cur.err).replace(/[&<>"']/g,''):'.')+'<button type="button" class="emd284-retry" id="emd284Retry">🔄 أعد المحاولة</button><small class="emd284-or">أو أرسل الرسالة بدون رابط، وبنذكّرك ترسله لاحقًا.</small>'}
   else{n.className='emd78-note';n.textContent='حالة الطلب الآن: '+st+'. الرسالة والرابط يعرضان نفس الحالة للعميل.'}
   if(cur.k!==auto){n.className='emd78-note warn';n.textContent='⚠️ اخترت رسالة «'+TYPES.filter(function(t){return t.k===cur.k})[0].t+'» وحالة الطلب «'+st+'». تأكد قبل الإرسال.'}
   $('emd78Send').disabled=!!cur.busy;if(!keepText)$('emd78Keep').checked=false;
@@ -22757,10 +22762,30 @@ function sendNow(){
     try{var s=saved(),tpl=txt;if(cur.link)tpl=tpl.split(cur.link).join('{link}');tpl=tpl.split(o.name||'\u0000').join('{name}').split(idOf(o).replace(/^#+/,'')).join('{order}');var it=items(o);if(it)tpl=tpl.split(it).join('{items}');[['company',o.company||o.deliveryCompany],['place',o.place||o.location],['method',o.method]].forEach(function(r){if(r[1]&&String(r[1]).length>1)tpl=tpl.split(String(r[1])).join('{'+r[0]+'}')});s[cur.k]=Object.assign({},s[cur.k]||{},{title:TYPES.filter(function(t){return t.k===cur.k})[0].t,enabled:true,text:tpl});localStorage.setItem(TKEY,JSON.stringify(s))}catch(e){}
   }
   try{if(!Array.isArray(o.history))o.history=[];o.history.push({type:'whatsapp',detail:'رسالة واتساب: '+TYPES.filter(function(t){return t.k===cur.k})[0].t,at:new Date().toISOString()})}catch(e){}
+  try{var withLink=!!(cur.link&&txt.indexOf(cur.link)>=0),pk=(cur.k==='shipped'||cur.k==='received');if(withLink||pk)flag(o,function(z){if(withLink){delete z.trackingLinkPending;z.trackingLinkSentAt=Date.now()}else z.trackingLinkPending=z.trackingLinkPending||Date.now()})}catch(e){}
   close();
   window.location.href='https://wa.me/'+p+'?text='+(window.EMDEncWaV129||encodeURIComponent)(txt);
 }
 function latest(id){var d=(window.db&&window.db.orders)||[];var o=d.find(function(x){return idOf(x)===String(id)});if(o)return o;try{var a=JSON.parse(localStorage.getItem('emd_business_v1')||'{}').orders||[];return a.find(function(x){return idOf(x)===String(id)})||null}catch(e){return null}}
+function flag(o,fn){try{fn(o)}catch(e){}try{var a=(window.db&&window.db.orders)||[],x=a.find(function(q){return idOf(q)===idOf(o)});if(x&&x!==o)fn(x)}catch(e){}persist()}
+function persist(){try{if(typeof window.save==='function')window.save();else if(window.db)localStorage.setItem('emd_business_v1',JSON.stringify(window.db))}catch(e){}try{window.EMD284&&EMD284.refresh()}catch(e){}}
+function fetchLink(o,n){
+  var R=window.emdRemoteTrackingV58;
+  if(!R||typeof R.ensure!=='function'){cur.busy=false;paint(cur.edited);return}
+  cur.busy=true;cur.err='';if(n>0)paint(true);
+  Promise.resolve().then(function(){return R.ensure(o,n>0?{force:true}:null)}).then(function(u){
+    if(cur.o!==o)return;cur.link=u||'';cur.busy=false;
+    var ta=$('emd78Ta');
+    if(n>0&&cur.link){if(!cur.edited)paint(false);else{if(ta.value.indexOf(cur.link)<0)ta.value=ta.value.replace(/\s+$/,'')+'\n\n🔗 تابع طلبك:\n'+cur.link;paint(true)}}
+    else paint(cur.edited);
+  }).catch(function(e){
+    if(cur.o!==o)return;
+    var code=e&&e.code;
+    if(n===0&&code!=='rate_limited'&&code!=='offline'){setTimeout(function(){if(cur.o===o)fetchLink(o,1)},1500);return}
+    cur.busy=false;cur.link='';cur.err=e&&e.message?String(e.message).split('\n')[0]:'';paint(cur.edited);
+    if(cur.k==='shipped'||cur.k==='received')flag(o,function(z){z.trackingLinkPending=Date.now()});
+  });
+}
 function open(oOrId,forceType){
   var o=(oOrId&&typeof oOrId==='object')?(latest(idOf(oOrId))||oOrId):latest(oOrId);
   if(!o){alert('تعذر العثور على الطلب.');return false}
@@ -22768,10 +22793,7 @@ function open(oOrId,forceType){
   ensureUI();var fk=TYPES.some(function(t){return t.k===forceType})?forceType:typeFor(o);cur={o:o,k:fk,link:'',edited:false,busy:true};
   $('emd78Sub').textContent=(o.name||'')+' · '+idOf(o)+' · '+p;
   paint();$('emd78Ov').classList.add('show');document.body.classList.add('emd78-open');
-  var R=window.emdRemoteTrackingV58;
-  if(R&&typeof R.ensure==='function'){
-    Promise.resolve().then(function(){return R.ensure(o)}).then(function(u){if(cur.o!==o)return;cur.link=u||'';cur.busy=false;paint(cur.edited)}).catch(function(){if(cur.o!==o)return;cur.busy=false;cur.link='';paint(cur.edited)});
-  }else{cur.busy=false;paint()}
+  fetchLink(o,0);
   return true;
 }
 function install(){
@@ -22797,7 +22819,7 @@ function install2(){
   wrapSuccess();
 }
 install();install2();setTimeout(function(){install();install2()},1500);setTimeout(function(){install();install2()},4000);
-window.EMDWhatsAppV78={open:open,compose:compose,typeFor:typeFor};
+window.EMDWhatsAppV78={open:open,compose:compose,typeFor:typeFor,retry:function(){if(cur.o&&!cur.busy)fetchLink(cur.o,1)}};
 })();
 </script>
 <style id="EMD-V79-companies-css">
@@ -35406,6 +35428,53 @@ document.addEventListener('click',function(){setTimeout(mark,0)});
 function boot(n){if(!window.EMDStoreV411){if((n||0)<80)setTimeout(function(){boot((n||0)+1)},250);return}enforce();mark()}
 window.E283={row:row,blocked:blocked,enforce:enforce};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){boot(0)});else boot(0);
+})();
+</script>
+<!-- EMD V284: إعادة محاولة رابط التتبع + تذكير بالروابط غير المرسلة -->
+<style id="EMD-V284-style">
+.emd78-note .emd284-retry{display:block;width:100%;margin:8px 0 4px;padding:10px;border:0;border-radius:12px;background:#0f2747;color:#fff;font:inherit;font-weight:800;cursor:pointer}
+.emd78-note .emd284-retry:active{transform:scale(.98)}
+.emd78-note .emd284-or{display:block;opacity:.8;font-size:12px;line-height:1.6}
+#emd284Pill{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:900;display:none;align-items:center;gap:8px;max-width:calc(100vw - 32px);padding:9px 10px 9px 14px;border-radius:999px;background:#0f2747;color:#fff;box-shadow:0 8px 24px rgba(15,39,71,.28);font-weight:800;font-size:13.5px;border:1px solid #c9a24a;cursor:pointer;white-space:nowrap}
+#emd284Pill.show{display:flex}
+#emd284Pill b{color:#e8c872}
+#emd284Pill .x{border:0;background:rgba(255,255,255,.14);color:#fff;width:24px;height:24px;border-radius:50%;font:inherit;line-height:1;cursor:pointer;flex:none}
+body.emd78-open #emd284Pill{display:none}
+</style>
+<script id="EMD-V284-pending-links">
+(function(){
+'use strict';
+if(window.__EMD_V284__)return;window.__EMD_V284__=true;
+var ST=['shipped','out_for_delivery','received'];
+function idOf(o){return String(o&&(o.id!=null?o.id:(o.orderNumber!=null?o.orderNumber:(o.number||'')))||'')}
+function list(){
+  var a=(window.db&&Array.isArray(window.db.orders))?window.db.orders:[],cut=Date.now()-7*864e5;
+  return a.filter(function(o){return o&&o.trackingLinkPending&&o.trackingLinkPending>cut&&ST.indexOf(String(o.status||''))>=0});
+}
+function pill(){
+  var p=document.getElementById('emd284Pill');if(p)return p;
+  p=document.createElement('div');p.id='emd284Pill';p.setAttribute('role','button');
+  p.innerHTML='<span>🔗 <span id="emd284Txt"></span></span><button type="button" class="x" aria-label="إخفاء">✕</button>';
+  document.body.appendChild(p);
+  p.addEventListener('click',function(e){
+    var L=list();if(!L.length){refresh();return}
+    var o=L[L.length-1];
+    if(e.target.closest('.x')){delete o.trackingLinkPending;try{if(typeof window.save==='function')window.save()}catch(_){}refresh();return}
+    var W=window.EMDWhatsAppV78;if(W&&W.open)W.open(o,W.typeFor?W.typeFor(o):null);
+  });
+  return p;
+}
+function refresh(){
+  var L=list(),p=pill();
+  if(!L.length){p.classList.remove('show');return}
+  var o=L[L.length-1];
+  document.getElementById('emd284Txt').innerHTML=L.length===1?'رابط تتبع الطلب <b>'+idOf(o).replace(/[<>&]/g,'')+'</b> لم يُرسل · أرسله الآن':'<b>'+L.length+'</b> روابط تتبع لم تُرسل · أرسلها الآن';
+  p.classList.add('show');
+}
+document.addEventListener('click',function(e){if(e.target&&e.target.id==='emd284Retry'){e.preventDefault();e.stopPropagation();var W=window.EMDWhatsAppV78;if(W&&W.retry)W.retry()}},true);
+window.EMD284={refresh:refresh,list:list};
+function start(){refresh();setInterval(refresh,5000)}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(start,2500)});else setTimeout(start,2500);
 })();
 </script>
 </body>
