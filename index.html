@@ -16,7 +16,7 @@ window.EMDErrLog={list:function(){var c=Date.now()-3*864e5;return L().filter(fun
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V288</title>
+<title>EMD Business — Standalone V289</title>
 <!-- EMD V158: شاشة افتتاح تغطي التطبيق حتى تكتمل الواجهة الأخيرة، فلا تظهر الأشكال والأزرار القديمة أثناء التحميل -->
 <style id="EMD-V158-boot">
 html.emd-boot{background:#0f172a!important}
@@ -17034,6 +17034,9 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
         out.push({id:'cust_'+e.id,type:'customer',icon:e.kind==='store'?'🛍️':e.kind==='rating'?'⭐':'📬',title:title,detail:det,ref:e.kind==='store'?'store:'+String(e.id||'').replace(/^store/,''):String(e.orderId||''),priority:e.read?'normal':'high',unread:!e.read,eventId:e.id,meta:(e.read?'تمت المشاهدة · ':'🆕 جديد · ')+new Date(e.at).toLocaleString('ar-OM',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}),at:new Date(e.at)});
       });
     }catch(e){}
+    /* V289: تكلفة أعلى من سعر البيع (غالبًا خطأ في الفاصلة العشرية) */
+    try{var C9=window.EMDCost289;if(C9){var bo=C9.orders();if(bo)add(out,'cost','🚨',bo+' طلب تكلفته غلط، والربح طالع أقل من الحقيقي','اضغط إصلاح لتصحيح التكلفة من صفحة الأسعار','cost:fix','high');
+      C9.products().forEach(function(p){add(out,'cost','💸','تكلفة أعلى من سعر البيع',p.name+' — التكلفة '+p.cost+' والسعر '+p.price+' · تأكد من الفاصلة العشرية','cost:p:'+p.name,'high')})}}catch(e){}
     var seen={};out=out.filter(function(x){var k=x.type+'|'+x.ref+'|'+x.title;if(seen[k])return false;seen[k]=1;return true});
     out.sort(function(a,b){var rank={high:0,normal:1,low:2};return ((b.unread?1:0)-(a.unread?1:0))||(rank[a.priority]-rank[b.priority])||((a.type==='customer'&&b.type==='customer')?(b.at-a.at):0)||String(a.title).localeCompare(String(b.title),'ar')});
     state.items=out;return out;
@@ -17041,6 +17044,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   function filtered(){return state.items.filter(function(x){return state.filter==='all'||x.type===state.filter})}
   function openOrder(id){
     if(String(id).indexOf('store:')===0){try{window.EMDStoreV411.openOrd(String(id).slice(6))}catch(e){}return}
+    if(String(id).indexOf('cost:')===0){try{close()}catch(e){}try{if(id==='cost:fix')window.EMDCost289.fix();else window.EMDCost289.prices()}catch(e){}return}
     try{
       if(typeof window.openOrderV26==='function'){window.openOrderV26(id);return}
       if(typeof window.openOrder31==='function'){window.openOrder31(id);return}
@@ -17049,15 +17053,15 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     }catch(e){alert('تعذر فتح الطلب.')}
   }
   /* EMD-V233: عرض جديد — نفس البيانات ونفس المنطق */
-  var G33={customer:'العملاء والمتجر',problem:'تحتاج تدخلًا',late:'متأخرة أكثر من ٤٨ ساعة',ready:'جاهزة للتسليم',stock:'بانتظار توفر المنتجات',inventory:'نقص المخزون',prep:'قيد التجهيز',delivery:'تحتاج متابعة تسليم'};
-  var T33={customer:'العملاء',problem:'مشاكل',late:'متأخر',ready:'جاهز',stock:'بانتظار المنتجات',inventory:'نقص المخزون',prep:'التجهيز',delivery:'التوصيل'};
-  var O33=['customer','problem','late','ready','stock','inventory','prep','delivery'];
+  var G33={cost:'أخطاء في التكلفة',customer:'العملاء والمتجر',problem:'تحتاج تدخلًا',late:'متأخرة أكثر من ٤٨ ساعة',ready:'جاهزة للتسليم',stock:'بانتظار توفر المنتجات',inventory:'نقص المخزون',prep:'قيد التجهيز',delivery:'تحتاج متابعة تسليم'};
+  var T33={cost:'التكلفة',customer:'العملاء',problem:'مشاكل',late:'متأخر',ready:'جاهز',stock:'بانتظار المنتجات',inventory:'نقص المخزون',prep:'التجهيز',delivery:'التوصيل'};
+  var O33=['customer','problem','cost','late','ready','stock','inventory','prep','delivery'];
   var more33={},last33='';
   function ttl33(t){return String(t||'').replace(/^[^؀-ۿA-Za-z0-9#★☆]+/,'')}
   function cnt33(t){return state.items.filter(function(x){return x.type===t}).length}
   function summary(){var box=document.getElementById('emdNotifySummaryV317');if(!box)return;var a=state.items,high=a.filter(function(x){return x.priority==='high'}).length,nw=a.filter(function(x){return x.unread}).length;box.innerHTML=[['high','عاجل',high],['customer','جديد',nw],['all','الإجمالي',a.length]].map(function(x){return '<button type="button" class="emd317-card" data-filter="'+x[0]+'"><b>'+x[2]+'</b><span>'+esc(x[1])+'</span></button>'}).join('');box.querySelectorAll('[data-filter]').forEach(function(b){b.onclick=function(){state.filter=b.getAttribute('data-filter');render()}})}
   function tabs(){var box=document.getElementById('emdNotifyTabsV317');if(!box)return;var high=state.items.filter(function(x){return x.priority==='high'}).length;var defs=[['all','الكل',state.items.length],['high','عاجل',high]].concat(O33.filter(function(t){return cnt33(t)||state.filter===t}).map(function(t){return [t,T33[t],cnt33(t)]}));box.innerHTML=defs.map(function(d){return '<button type="button" class="emd317-tab '+(state.filter===d[0]?'active':'')+'" data-filter="'+d[0]+'">'+esc(d[1])+'<sup>'+d[2]+'</sup></button>'}).join('');box.querySelectorAll('[data-filter]').forEach(function(b){b.onclick=function(){state.filter=b.getAttribute('data-filter');render();try{b.scrollIntoView({inline:'center',block:'nearest'})}catch(e){}}});var on=box.querySelector('.active');if(on&&on.scrollIntoView&&state.filter!=='all'){try{on.scrollIntoView({inline:'center',block:'nearest'})}catch(e){}}}
-  function item33(x){var btn=x.ref&&x.type!=='inventory'?'<button type="button" class="emd317-open'+(String(x.ref).indexOf('store:')===0?'':' soft')+'" data-open="'+esc(x.ref)+'">'+(String(x.ref).indexOf('store:')===0?'فتح الطلب':'فتح')+'</button>':'';return '<div class="emd317-item'+(x.priority==='high'?' urg':'')+'"><div class="emd317-icon">'+x.icon+'</div><div class="emd317-body"><div class="emd317-title">'+(x.unread?'<i class="nw"></i>':'')+esc(ttl33(x.title))+'</div><div class="emd317-detail">'+esc(x.detail)+'</div><div class="emd317-meta">'+esc(x.meta||(x.priority==='high'?'يحتاج انتباهًا':'متابعة'))+'</div></div>'+btn+'</div>'}
+  function item33(x){var btn=x.ref&&x.type!=='inventory'?'<button type="button" class="emd317-open'+(String(x.ref).indexOf('store:')===0?'':' soft')+'" data-open="'+esc(x.ref)+'">'+(String(x.ref).indexOf('store:')===0?'فتح الطلب':x.ref==='cost:fix'?'إصلاح':String(x.ref).indexOf('cost:')===0?'تعديل':'فتح')+'</button>':'';return '<div class="emd317-item'+(x.priority==='high'?' urg':'')+'"><div class="emd317-icon">'+x.icon+'</div><div class="emd317-body"><div class="emd317-title">'+(x.unread?'<i class="nw"></i>':'')+esc(ttl33(x.title))+'</div><div class="emd317-detail">'+esc(x.detail)+'</div><div class="emd317-meta">'+esc(x.meta||(x.priority==='high'?'يحتاج انتباهًا':'متابعة'))+'</div></div>'+btn+'</div>'}
   function mode33(set){var m=document.getElementById('emdNotifyV317'),b=document.getElementById('emdNotifyModeV233');var v='dark';try{v=localStorage.getItem('emd233_notify_mode')||'dark'}catch(e){}if(set){v=v==='dark'?'light':'dark';try{localStorage.setItem('emd233_notify_mode',v)}catch(e){}}if(m)m.classList.toggle('light',v==='light');if(b){b.textContent=v==='light'?'🌙':'☀️';b.onclick=function(){mode33(1)}}}
   function render(){mode33();build();if(state.filter!==last33){more33={};last33=state.filter;var pn=document.querySelector('#emdNotifyV317 .emd317-panel');if(pn)pn.scrollTop=0}summary();tabs();var box=document.getElementById('emdNotifyListV317');if(!box)return;var f=state.filter,h='';
     var types=(f==='all'||f==='high')?O33:[f];
@@ -22072,6 +22076,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 .emd75-empty{text-align:center;color:#64748b;padding:30px 10px;background:#fff;border-radius:14px;border:1px dashed #d6dae0}
 .emd75-check{display:flex;gap:10px;align-items:flex-start}
 .emd75-check input{width:22px;height:22px;margin-top:2px;flex:0 0 auto}
+.emd75-pr.emd289-bad{border-color:#fca5a5!important;background:#fef2f2!important}.emd289-w{grid-column:1/-1;font-size:12px;color:#b91c1c;font-weight:600}.emd75-pr.emd289-bad input[data-k=c]{border-color:#ef4444!important;color:#b91c1c}
 .emd75-pr{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:6px;align-items:center;background:#fff;border:1px solid #e8eaee;border-radius:12px;padding:8px 10px}
 .emd75-pr input{width:100%;box-sizing:border-box;border:1px solid #dfe3e8;border-radius:9px;padding:8px;font-size:15px;text-align:center}
 .emd75-pimg{width:38px;height:38px;flex:0 0 38px;border:1px dashed #cbd5e1;border-radius:10px;background:#f8fafc;padding:0;overflow:hidden;cursor:pointer;font-size:16px}
@@ -22189,9 +22194,18 @@ function freeze(){
     });
   });
 }
+var SNAP289=null;
+function sig289(){var m={};arr(D()&&D().products).forEach(function(p){var n=String(p.name||p.productName||'').trim();if(n)m[n]=catCost(p)+'|'+catPrice(p)});return m}
+function watch289(){
+  PM=null;var now=sig289();if(!SNAP289){SNAP289=now;return}
+  var warn=[];arr(D().products).forEach(function(p){var n=String(p.name||p.productName||'').trim();if(!n||now[n]===SNAP289[n])return;var c=catCost(p),s=catPrice(p);if(c>0&&s>0&&c>s)warn.push('• '+n+': التكلفة '+fmt(c)+' والسعر '+fmt(s))});
+  SNAP289=now;
+  if(warn.length)setTimeout(function(){try{var N=window.EMDNotificationsV317;if(N&&N.badge)N.badge()}catch(e){}},350);
+}
+setTimeout(function(){try{if(!SNAP289)SNAP289=sig289()}catch(e){}},1200);
 (function wrapSave(){
   var f=window.save;if(typeof f!=='function'||f.__emd75)return;
-  var g=function(){try{freeze()}catch(e){}var r=f.apply(this,arguments);scheduleStrip();if(cur.open)scheduleRender();return r};
+  var g=function(){try{freeze()}catch(e){}var r=f.apply(this,arguments);try{watch289()}catch(e){}scheduleStrip();if(cur.open)scheduleRender();return r};
   g.__emd75=true;window.save=g;
 })();
 
@@ -22203,17 +22217,69 @@ function range(k){var now=new Date(),t0=new Date(now.getFullYear(),now.getMonth(
   else if(k==='range'){var f0=cur.from?new Date(cur.from+'T00:00:00'):t0,u0=cur.to?new Date(cur.to+'T00:00:00'):f0;if(isNaN(f0))f0=t0;if(isNaN(u0))u0=f0;if(u0<f0){var tmp=f0;f0=u0;u0=tmp}s=f0;e=new Date(u0.getTime()+864e5)}
   else{s=new Date(now.getFullYear(),now.getMonth(),1);e=new Date(now.getFullYear(),now.getMonth()+1,1)}
   return {s:s,e:e,sk:dkey(s),ek:dkey(new Date(e.getTime()-1))}}
+/* V289: تكلفة مكتوبة غلط (مثل 300 بدل 0.300) كانت تقلب الربح بالسالب. نكشفها ونصلحها بضغطة */
+function bad289(o){return items(o).filter(function(x){var c=itemCost(x),p=itemPrice(x);return c>0&&p>0&&c>p*5&&c-p>=1})}
+function setCost289(x,c){['cost','purchaseCost','costPrice'].forEach(function(k){if(k in x)delete x[k]});if(c>0)x.cost=c}
+/* fn(o,x) ترجع التكلفة الجديدة أو undefined. تعدّل الطلبات النشطة والمؤرشفة */
+function applyCost289(fn){
+  var n=0,act={};
+  arr(D().orders).forEach(function(o){act[oid(o)]=1;items(o).forEach(function(x){var c=fn(o,x);if(c!==undefined){setCost289(x,c);n++}})});
+  if(n){persist()}
+  var A=window.EMDArchiveV67;if(!A||!A.exportAll)return Promise.resolve(n);
+  return Promise.resolve(A.exportAll()).then(function(list){
+    var ch=[];(list||[]).forEach(function(r){var o=r&&r.order;if(!o||act[oid(o)])return;var k=0;items(o).forEach(function(x){var c=fn(o,x);if(c!==undefined){setCost289(x,c);k++}});if(k){n+=k;ch.push(r)}});
+    if(!ch.length)return n;
+    return Promise.resolve(A.importAll(ch,arr(D().orders))).then(function(){
+      try{if(window.EMDLifetimeV130)EMDLifetimeV130.add(ch.map(function(r){return r.order}))}catch(e){}
+      try{localStorage.setItem('emd289_costfix',String(Date.now()));persist()}catch(e){}
+      return n});
+  },function(){return n});
+}
+function fix289(){
+  var all=arr(window.EMDLifetimeV130?EMDLifetimeV130.all():D().orders),bad=0,skip={};
+  all.forEach(function(o){if(cancelled(o))return;bad289(o).forEach(function(x){var c=catCost(prod(x)),p=itemPrice(x);if(c>p*5&&c-p>=1)skip[iname(x)]=1;else bad++})});
+  var sk=Object.keys(skip);
+  if(!bad){alert(sk.length?'التكلفة في صفحة الأسعار نفسها غلط لهذي المنتجات: '+sk.join('، ')+'\nصحّحها من 🏷️ الأسعار أولًا، وبعدها اضغط إصلاح.':'ما فيه تكلفة غلط.');return}
+  if(!confirm('راح نعدّل تكلفة '+bad+' منتج في الطلبات السابقة إلى التكلفة الحالية في صفحة 🏷️ الأسعار.\nالمبيعات وأسعار البيع ما تتغير.\n\nمتابعة؟'))return;
+  applyCost289(function(o,x){if(cancelled(o))return;var c=itemCost(x),p=itemPrice(x);if(!(c>0&&p>0&&c>p*5&&c-p>=1))return;var nc=catCost(prod(x));if(nc>p*5&&nc-p>=1)return;return nc})
+  .then(function(n){toast('✅ تم إصلاح التكلفة في '+n+' منتج');render();if(sk.length)setTimeout(function(){alert('بقي منتجات تكلفتها في صفحة الأسعار غلط: '+sk.join('، ')+'\nصحّحها من 🏷️ الأسعار.')},300)});
+}
+function check289(ps){
+  var warn=[];
+  document.querySelectorAll('#emd75Body .emd75-pr').forEach(function(row){
+    var si=row.querySelector('input[data-k="s"]'),ci=row.querySelector('input[data-k="c"]');if(!si||!ci)return;var p=ps[+si.getAttribute('data-pi')];if(!p)return;
+    var s=num(si.value),c=num(ci.value);if(c>0&&s>0&&c>s)warn.push('• '+String(p.name||p.productName||'منتج')+': التكلفة '+fmt(c)+' والسعر '+fmt(s));
+  });
+  if(!warn.length)return true;
+  return confirm('⚠️ تكلفة هذي المنتجات أعلى من سعر بيعها:\n'+warn.join('\n')+'\n\nتأكد من الفاصلة العشرية (مثلًا 0.300 وليس 300).\nتحفظ كذا؟');
+}
+function after289(ps,old){
+  PM=null;var msgs=[],plan=[];
+  ps.forEach(function(p,i){var oc=old[i],nc=catCost(p);if(!(oc>0)||Math.abs(oc-nc)<0.0005)return;
+    var n=0;arr(window.EMDLifetimeV130?EMDLifetimeV130.all():D().orders).forEach(function(o){items(o).forEach(function(x){if(prod(x)===p&&Math.abs(itemCost(x)-oc)<0.0005)n++})});
+    if(n){msgs.push('• «'+String(p.name||p.productName||'منتج')+'» من '+fmt(oc)+' إلى '+(nc>0?fmt(nc):'بدون تكلفة')+' ('+n+' طلب)');plan.push({p:p,oc:oc,nc:nc})}});
+  if(!plan.length)return;
+  setTimeout(function(){
+    if(!confirm('غيّرت التكلفة:\n'+msgs.join('\n')+'\n\nالطلبات السابقة محفوظة بالتكلفة القديمة. تحدّثها بالتكلفة الجديدة؟\n(المبيعات وأسعار البيع ما تتغير)'))return;
+    applyCost289(function(o,x){for(var i=0;i<plan.length;i++){var q=plan[i];if(prod(x)===q.p&&Math.abs(itemCost(x)-q.oc)<0.0005)return q.nc}}).then(function(n){toast('✅ حدّثت التكلفة في '+n+' منتج بالطلبات السابقة');render()});
+  },250);
+}
+window.EMDCost289={
+  products:function(){PM=null;return arr(D()&&D().products).filter(function(p){var c=catCost(p),s=catPrice(p);return c>0&&s>0&&c>s}).map(function(p){return {name:String(p.name||p.productName||'منتج'),cost:fmt(catCost(p)),price:fmt(catPrice(p))}})},
+  orders:function(){var n=0;arr(window.EMDLifetimeV130?EMDLifetimeV130.all():D().orders).forEach(function(o){if(!cancelled(o)&&bad289(o).length)n++});return n},
+  fix:function(){open('sum');fix289()},prices:function(){open('price')}
+};
 function summary(k){
-  var r=range(k),sales=0,col=0,cost=0,noPrice=0,noCost=0,count=0;
+  var r=range(k),sales=0,col=0,cost=0,noPrice=0,noCost=0,count=0,bad=[];
   arr((window.EMDLifetimeV130?EMDLifetimeV130.all():D().orders)).forEach(function(o){
     if(cancelled(o))return;var t=odate(o);if(!t||t<r.s||t>=r.e)return;
-    count++;var tt=total(o);sales+=tt;col+=paid(o);
+    count++;var tt=total(o);sales+=tt;col+=paid(o);try{var b9=bad289(o);if(b9.length)bad.push({o:o,x:b9[0]})}catch(e){}
     if(tt<=0)noPrice++;var c=orderCost(o);if(tt>0&&c<=0)noCost++;cost+=c;
   });
   var ds=null;try{ds=window.EMDDirectV113?window.EMDDirectV113.summary(r.s,r.e):null}catch(e){}
   if(ds&&ds.count){count+=ds.count;sales+=ds.sales;col+=ds.col;cost+=ds.cost}
   var ex=arr(D().expenses).filter(function(x){var q=String(x.date||'').slice(0,10);return q>=r.sk&&q<=r.ek}).reduce(function(s,x){return s+num(x.amount)},0);
-  return {ds:ds,count:count,sales:sales,col:col,due:Math.max(0,sales-col),cost:cost,ex:ex,profit:sales-cost-ex,noPrice:noPrice,noCost:noCost,r:r};
+  return {ds:ds,count:count,sales:sales,col:col,due:Math.max(0,sales-col),cost:cost,ex:ex,profit:sales-cost-ex,noPrice:noPrice,noCost:noCost,r:r,bad:bad};
 }
 function dues(){
   var now=Date.now();
@@ -22271,6 +22337,7 @@ function sumHtml(){
     '<div class="emd75-card"><small>المصروفات</small><b>'+fmt(s.ex)+'</b></div></div>';
   if(s.ds&&s.ds.count)h+='<div class="emd75-note" style="background:#ecfdf5;color:#065f46">🛒 منها بيع مباشر: '+fmt(s.ds.sales)+' من '+s.ds.count+' فاتورة · محصّل '+fmt(s.ds.col)+' · متبقٍ '+fmt(s.ds.due)+' '+CUR+'<button data-a="openDirect">فتح</button></div>';
   if(s.noPrice)h+='<div class="emd75-note">⚠️ '+s.noPrice+' طلب بدون سعر، فما دخلت في المبيعات. حدّد أسعار المنتجات مرة وحدة وتنحسب تلقائيًا.<button data-a="tab" data-v="price">🏷️ الأسعار</button></div>';
+  if(s.bad&&s.bad.length){var b0=s.bad[0];h+='<div class="emd75-note" style="background:#fef2f2;color:#991b1b">🚨 '+s.bad.length+' طلب تكلفته أكبر بكثير من سعر بيعه، فالربح طالع أقل من الحقيقي. مثال: '+esc(oid(b0.o))+' «'+esc(iname(b0.x))+'»: التكلفة '+fmt(itemCost(b0.x))+' والسعر '+fmt(itemPrice(b0.x))+'. غالبًا خطأ في الفاصلة العشرية.<button data-a="fix289">🛠️ إصلاح التكلفة</button></div>'}
   if(s.noCost)h+='<div class="emd75-note">ℹ️ '+s.noCost+' طلب منتجاته بدون تكلفة شراء، فالربح يطلع أعلى من الحقيقي.<button data-a="tab" data-v="price">أضف التكلفة</button></div>';
   if(!s.count)h+='<div class="emd75-empty">ما فيه طلبات في هذي الفترة.</div>';
   var all=dues(),tot=all.reduce(function(a,x){return a+x.rem},0);
@@ -22465,7 +22532,7 @@ function priceHtml(){
   if(!ps.length)return '<div class="emd75-empty">ما فيه منتجات محفوظة بعد.</div>';
   var h='<div class="emd75-note" style="background:#f1f5f9;color:#475569">حدّد سعر البيع مرة وحدة، وكل طلب جديد ياخذ السعر تلقائيًا. التكلفة اختيارية، لكن بدونها ما نقدر نحسب الربح الحقيقي.</div>';
   h+='<div class="emd75-pr h"><div>المنتج</div><div>سعر البيع</div><div>التكلفة</div></div><div class="emd75-list" style="gap:6px">';
-  h+=ps.map(function(p,i){var s=catPrice(p),c=catCost(p);return '<div class="emd75-pr"><div style="display:flex;gap:8px;align-items:center"><button type="button" class="emd75-pimg" data-a="pimg" data-v="'+i+'" title="صورة المنتج">'+(p.image?'<img src="'+esc(p.image)+'" alt="">':'📷')+'</button><b style="font-size:14px">'+esc(p.name||p.productName||'منتج')+'</b></div><input data-pi="'+i+'" data-k="s" inputmode="decimal" value="'+(s?fmt(s):'')+'" placeholder="0.000"><input data-pi="'+i+'" data-k="c" inputmode="decimal" value="'+(c?fmt(c):'')+'" placeholder="0.000"></div>'}).join('');
+  h+=ps.map(function(p,i){var s=catPrice(p),c=catCost(p),w9=c>0&&s>0&&c>s;return '<div class="emd75-pr'+(w9?' emd289-bad':'')+'"><div style="display:flex;gap:8px;align-items:center"><button type="button" class="emd75-pimg" data-a="pimg" data-v="'+i+'" title="صورة المنتج">'+(p.image?'<img src="'+esc(p.image)+'" alt="">':'📷')+'</button><b style="font-size:14px">'+esc(p.name||p.productName||'منتج')+'</b></div><input data-pi="'+i+'" data-k="s" inputmode="decimal" value="'+(s?fmt(s):'')+'" placeholder="0.000"><input data-pi="'+i+'" data-k="c" inputmode="decimal" value="'+(c?fmt(c):'')+'" placeholder="0.000">'+(w9?'<div class="emd289-w">⚠️ التكلفة أعلى من سعر البيع. تأكد من الفاصلة العشرية.</div>':'')+'</div>'}).join('');
   h+='</div><div class="emd75-sticky"><button class="emd75-btn" data-a="savePrices">💾 حفظ الأسعار</button></div>';
   return h;
 }
@@ -22501,9 +22568,10 @@ function onAction(e){
     var d=D();if(!Array.isArray(d.expenses))d.expenses=[];d.expenses.push({id:'E'+Date.now(),name:nm||$('emd75ExCat').value,category:$('emd75ExCat').value,amount:am,date:$('emd75ExDate').value||dkey(new Date())});persist();toast('➕ تمت إضافة المصروف');render();return}
   if(a==='delExp'){if(!confirm('حذف هذا المصروف؟'))return;var d2=D();d2.expenses=arr(d2.expenses).filter(function(x){return String(x.id||'')!==v});persist();render();return}
   if(a==='pimg'){var pp=arr(D().products)[+v];if(pp&&window.EMDProductImageV81)window.EMDProductImageV81.edit(pp,function(){render()});return}
-  if(a==='savePrices'){var ps=arr(D().products);document.querySelectorAll('#emd75Body .emd75-pr input[data-pi]').forEach(function(inp){var p=ps[+inp.getAttribute('data-pi')];if(!p)return;var val=num(inp.value);
+  if(a==='fix289'){fix289();return}
+  if(a==='savePrices'){var ps=arr(D().products);if(!check289(ps))return;var old289=ps.map(function(p){return catCost(p)});document.querySelectorAll('#emd75Body .emd75-pr input[data-pi]').forEach(function(inp){var p=ps[+inp.getAttribute('data-pi')];if(!p)return;var val=num(inp.value);
       if(inp.getAttribute('data-k')==='s'){if(val>0||inp.value===''){p.salePrice=val;p.defaultPrice=val;p.unitPrice=val;p.price=val}}else{if(val>0||inp.value===''){p.costPrice=val;p.purchasePrice=val}}});
-    PM=null;persist();toast('💾 تم حفظ الأسعار');render();return}
+    PM=null;persist();toast('💾 تم حفظ الأسعار');render();after289(ps,old289);return}
   if(a==='sendCour'||a==='copyCour'){var ct=courText();if(!ct.count){toast('اختر طلب واحد على الأقل');return}
     if(a==='sendCour'){openWa(couriers()[cur.comp]||'',ct.text)}else{copy(ct.text)}return}
 }
