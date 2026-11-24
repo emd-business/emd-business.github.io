@@ -16,7 +16,7 @@ window.EMDErrLog={list:function(){var c=Date.now()-3*864e5;return L().filter(fun
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V282</title>
+<title>EMD Business — Standalone V283</title>
 <!-- EMD V158: شاشة افتتاح تغطي التطبيق حتى تكتمل الواجهة الأخيرة، فلا تظهر الأشكال والأزرار القديمة أثناء التحميل -->
 <style id="EMD-V158-boot">
 html.emd-boot{background:#0f172a!important}
@@ -27353,7 +27353,7 @@ var SKINS=[['night','ليل ذهبي','#0b0b0c','#f3ead7','#d4af37'],['ivory','�
 var ACC=[['','حسب الثيم'],['#d4af37','ذهبي'],['#b76e79','وردي'],['#0f766e','فيروزي'],['#1e3a8a','كحلي'],['#7c2d12','بني'],['#9c4566','عنابي'],['#111111','أسود']];
 var DEF={on:false,skin:'night',accent:'',logo:'',name:'',sub:'',hideName:false,announce:'توصيل مجاني للطلبات فوق 25 ر.ع',eye:'وصل حديثًا',l1:'',l2:'',desc:'',
   wa:'',ig:'',city:'',waBtn:true,ship:2,free:25,cod:true,bank:true,bankInfo:'',gift:true,slug:'',paused:false,layout:'',font:'',shape:'',cols:'',hide:[],notice:'',lead:0,cover:'',seal:{},feats:[],info:[],reviews:[],hours:{},map:'',px:{},prod:{},snap:null,snapAt:'',pubAt:'',pubSlug:'',pubErr:'',imgUp:{},seen:[]};
-function load(){var o={};try{o=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){}var r={};for(var k in DEF)r[k]=k in o?o[k]:JSON.parse(JSON.stringify(DEF[k]));return r}
+function load(){var o={};try{o=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){}var r={};for(var k in DEF)r[k]=k in o?o[k]:JSON.parse(JSON.stringify(DEF[k]));for(var k2 in o)if(!(k2 in r))r[k2]=o[k2];return r}
 var S=load();
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));var f=$('emd411Saved');if(f){f.textContent='✓ محفوظ في الجهاز';clearTimeout(save.t);save.t=setTimeout(function(){f.textContent=''},1500)}}catch(e){toast('تعذّر الحفظ لامتلاء الذاكرة. جرّب شعارًا أصغر.')}}
 
@@ -31794,7 +31794,7 @@ function tab(){var S=St(),lx=S.layout||'',h='<div class="e150">';
   h+='<div class="pvrow"><button type="button" class="emd414-pvb" data-a="pv"><span class="ic">👁️</span><span class="tx"><b>معاينة المتجر</b><small>شاهد التصميم كما يراه الزبون قبل النشر</small></span><span class="ar" aria-hidden="true">‹</span></button></div>';
   h+=catsBox();
   {
-   h+='<h4>اللون الرئيسي</h4><div class="e150-sw"><button type="button" data-e150c="accent" data-v="" aria-pressed="'+(!S.accent)+'" title="لون التصميم الأصلي" style="background:conic-gradient(#e2e8f0 0 25%,#fff 0 50%,#e2e8f0 0 75%,#fff 0)"></button>'+ACC.map(function(c){return '<button type="button" data-e150c="accent" data-v="'+c+'" aria-pressed="'+(S.accent===c)+'" style="background:'+c+'" aria-label="'+c+'"></button>'}).join('')+'</div>';
+   h+='<h4>اللون الرئيسي</h4><div class="e150-sw"><button type="button" data-e150c="accent" data-v="" aria-pressed="'+(!S.accent)+'" title="لون التصميم الأصلي" style="background:conic-gradient(#e2e8f0 0 25%,#fff 0 50%,#e2e8f0 0 75%,#fff 0)"></button>'+ACC.map(function(c){return '<button type="button" data-e150c="accent" data-v="'+c+'" aria-pressed="'+(S.accent===c)+'" style="background:'+c+'" aria-label="'+c+'"></button>'}).join('')+'</div>'+(window.E283?E283.row(S):'');
    h+='<h4>خط العناوين</h4>'+chips('font',FONTS)+'<h4>شكل صور المنتجات</h4>'+chips('shape',SHAPES)+'<h4>عدد الأعمدة</h4>'+chips('cols',COLS);
    var hide=Array.isArray(S.hide)?S.hide:[];
    h+='<h4>الأقسام الظاهرة</h4><div class="e150-ch">'+SECS.filter(function(x){return lx||x[0]==='info'||x[0]==='reviews'||x[0]==='feats'}).map(function(x){var on=hide.indexOf(x[0])<0;return '<button type="button" data-e150h="'+x[0]+'" aria-pressed="'+on+'">'+(on?'✓ ':'')+x[1]+'</button>'}).join('')+'</div>';
@@ -31806,7 +31806,7 @@ function tab(){var S=St(),lx=S.layout||'',h='<div class="e150">';
    if(lx==='champ'||lx==='royal'||!lx)h+='<details'+(lx||(S.feats||[]).length?' open':'')+'><summary>المزايا'+(lx==='champ'?' وختم السعر':'')+'</summary>'+
      (lx==='champ'?'<div class="row">'+inp('seal.top','أعلى الختم','50 مل',12)+inp('seal.big','الرقم الكبير','2',6)+inp('seal.bot','أسفل الختم','ريال فقط',14)+'</div>'+inp('l1','العنوان الكبير','أحمد المغربي',30)+inp('eye','سطر فوق العنوان','العطور المستوحاة من',40):'')+
      list('feats',[['i','رمز','','💧',4],['t','الميزة','','تركيز عالٍ',24]],3,'إضافة ميزة')+'</details>';
-   if(lx==='palace'){var ps=/^(night|pink|lavender|dawn)$/.test(S.plSky||'')?S.plSky:'night';h+='<details open><summary>لون السماء خلف القصر</summary><p class="hint">اختر الخلفية التي تناسب ألوان متجرك.</p><div class="e150-ch">'+[['night','🌙 ليلي بنفسجي'],['pink','🌸 وردي'],['lavender','💜 لافندر'],['dawn','🌅 شروق ذهبي']].map(function(o){return '<button type="button" data-e150c="plSky" data-v="'+o[0]+'" aria-pressed="'+(ps===o[0])+'">'+o[1]+'</button>'}).join('')+'</div></details>'}
+   if(lx==='palace'){var ps=/^(night|pink|lavender|dawn)$/.test(S.plSky||'')?S.plSky:'night';h+='<details open><summary>لون السماء خلف القصر</summary><p class="hint">اختر الخلفية التي تناسب ألوان متجرك.</p><div class="e150-ch">'+[['night','🌙 ليلي بنفسجي'],['pink','🌸 وردي'],['lavender','💜 لافندر'],['dawn','🌅 شروق ذهبي']].map(function(o){return '<button type="button" data-e150c="plSky" data-v="'+o[0]+'" aria-pressed="'+(ps===o[0])+'">'+o[1]+'</button>'}).join('')+'</div>'+(window.E283?E283.row(S):'')+'</details>'}
    if(lx==='daybreak')h+='<details open><summary>عدّاد العروض</summary><p class="hint">حدد موعد انتهاء عروضك ليظهر للزبون عدٌّ تنازلي. اتركه فارغًا لإخفاء العداد.</p>'+inp('offerEnd','تنتهي العروض في','',16,'datetime-local')+'</details>';
    if(lx==='rest')h+='<details open><summary>أوقات العمل والموقع</summary><div class="row">'+inp('hours.from','يفتح الساعة','11:00',5)+inp('hours.to','يغلق الساعة','23:30',5)+'</div>'+inp('map','رابط الموقع على الخريطة','https://maps.app.goo.gl/…',300)+'</details>';
    h+='<details'+((S.info||[]).length?' open':'')+'><summary>معلومات المتجر (الأسئلة الشائعة، الشحن…)</summary>'+list('info',[['t','العنوان','','الشحن والطلب',30],['b','النص','area']],5,'إضافة معلومة')+'</details>';
@@ -31855,7 +31855,7 @@ document.addEventListener('click',function(e){var w=document.getElementById('emd
   if(b=e.target.closest('[data-e150k]')){S.layout='';S.skin=b.getAttribute('data-e150k');sv();rer();return}
   if(b=e.target.closest('[data-e154]')){var q=b.getAttribute('data-e154').split(':'),C=cats(),i=+q[0],j=i+(+q[1]);if(j<0||j>=C.length)return;var t=C[i];C[i]=C[j];C[j]=t;S.cato=C;window.__e154o=1;sv();rer();return}
   if(b=e.target.closest('[data-e171m]')){var mk=b.getAttribute('data-e171m'),mo=S.mods&&typeof S.mods==='object'?S.mods:{};mo[mk]=mo[mk]?0:1;S.mods=mo;sv();rer();return}
-  if(b=e.target.closest('[data-e150c]')){S[b.getAttribute('data-e150c')]=b.getAttribute('data-v');sv();rer();return}
+  if(b=e.target.closest('[data-e150c]')){if(window.E283&&E283.blocked(S,b.getAttribute('data-e150c')))return;S[b.getAttribute('data-e150c')]=b.getAttribute('data-v');sv();rer();return}
   if(b=e.target.closest('[data-e150h]')){var k=b.getAttribute('data-e150h'),h=Array.isArray(S.hide)?S.hide.slice():[],i=h.indexOf(k);if(i<0)h.push(k);else h.splice(i,1);S.hide=h;sv();rer();return}
   if(b=e.target.closest('[data-e150add]')){var a=b.getAttribute('data-e150add');if(!Array.isArray(S[a]))S[a]=[];S[a].push({});sv();rer();return}
   if(b=e.target.closest('[data-e150del]')){var p=b.getAttribute('data-e150del').split('.');S[p[0]].splice(+p[1],1);sv();rer();return}
@@ -35365,6 +35365,48 @@ function guide(o){o=o||{};var F=[],cur=0,G=document.createElement('div');G.id='e
 window.EMDStudioV276={open:open,guide:guide,close:close,toFile:toFile,pref:function(){return P}};
 })();
 
+</script>
+<style id="EMD-V283-lock-css">
+#emd411Store .e283{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:10px 0 4px;padding:10px 12px;border:1.5px dashed #cbd5e1;border-radius:12px;background:#f8fafc;font-size:13px;color:#334155}
+#emd411Store .e283 button{border:0;border-radius:10px;min-height:40px;padding:8px 14px;font:800 13.5px/1.3 inherit;cursor:pointer;background:#0a1430;color:#f3d78b}
+#emd411Store .e283 small{flex-basis:100%;color:#64748b;line-height:1.6}
+#emd411Store .e283.on{border-style:solid;border-color:#d4af37;background:#fffaf0}
+#emd411Store .e283.on b{flex:1}
+#emd411Store .e283.on button{background:#fff;color:#0a1430;border:1.5px solid #0a1430}
+#emd411Store.e283-dim [data-e150c="accent"],#emd411Store.e283-dim [data-e150c="plSky"]{opacity:.4!important}
+#emd411Store.e283-dim [data-e150c="accent"][aria-pressed="true"],#emd411Store.e283-dim [data-e150c="plSky"][aria-pressed="true"]{opacity:1!important}
+#e283T{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);z-index:2147483646;max-width:88vw;background:#0f172a;color:#fff;border-radius:12px;padding:10px 16px;font:700 14px/1.5 Tahoma,Arial,sans-serif;direction:rtl;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.3)}
+</style>
+<script id="EMD-V283-lock">
+(function(){'use strict';if(window.E283)return;
+/* V283: «📌 تثبيت اللون»: يبقى لون المتجر ولون السماء كما اختارهما التاجر، ولا يتغيران إلا يدويًا بعد إلغاء التثبيت */
+function St(){try{return window.EMDStoreV411&&window.EMDStoreV411.state()}catch(e){return null}}
+function sv(){try{window.EMDStoreV411.save()}catch(e){}}
+function rer(){try{window.EMDStoreV411.paint()}catch(e){}}
+function esc(t){return String(t==null?'':t).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function lk(S){var l=S&&S.colorLock;return l&&typeof l==='object'?l:null}
+function toast(m){var t=document.getElementById('e283T');if(!t){t=document.createElement('div');t.id='e283T';t.setAttribute('role','status');document.body.appendChild(t)}t.textContent=m;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(function(){t.hidden=true},2600)}
+/* يعيد اللون المثبّت إن تغيّر بأي طريقة غير يدوية */
+function enforce(){var S=St(),l=lk(S);if(!l)return false;var ch=false;
+  if((S.accent||'')!==(l.accent||'')){S.accent=l.accent||'';ch=true}
+  if(l.plSky&&S.plSky!==l.plSky){S.plSky=l.plSky;ch=true}
+  if(ch)sv();return ch}
+function row(S){var l=lk(S);setTimeout(mark,0);
+  if(l)return '<div class="e283 on"><b>📌 اللون مثبّت للمتجر'+(l.accent?' <span style="display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:-2px;background:'+esc(l.accent)+'"></span>':'')+'</b><button type="button" data-e283="off">إلغاء التثبيت</button><small>لا يتغير اللون في المتجر مع أي تعديل آخر. لتغييره اضغط «إلغاء التثبيت» ثم اختر لونًا جديدًا.</small></div>';
+  return '<div class="e283"><button type="button" data-e283="on">📌 تثبيت اللون</button><small>يعتمد اللون المختار للمتجر، ولا يتغير إلا إذا غيّرته أنت يدويًا.</small></div>'}
+function blocked(S,k){if(!lk(S)||(k!=='accent'&&k!=='plSky'))return false;toast('📌 اللون مثبّت. اضغط «إلغاء التثبيت» أولًا لتغييره.');return true}
+document.addEventListener('click',function(e){var w=document.getElementById('emd411Store');if(!w||!w.contains(e.target))return;
+  enforce();
+  var b=e.target.closest('[data-e283]');if(!b)return;e.preventDefault();e.stopPropagation();var S=St();if(!S)return;
+  if(b.getAttribute('data-e283')==='on'){S.colorLock={accent:S.accent||'',plSky:S.plSky||'',at:new Date().toISOString()};sv();rer();toast('📌 تم تثبيت اللون. انشر المتجر ليظهر للزبائن.')}
+  else{delete S.colorLock;sv();rer();toast('تم إلغاء التثبيت. يمكنك اختيار لون جديد.')}},true);
+/* علامة تخفيف الألوان غير المختارة أثناء التثبيت */
+function mark(){var w=document.getElementById('emd411Store');if(w)w.classList.toggle('e283-dim',!!lk(St()))}
+document.addEventListener('click',function(){setTimeout(mark,0)});
+function boot(n){if(!window.EMDStoreV411){if((n||0)<80)setTimeout(function(){boot((n||0)+1)},250);return}enforce();mark()}
+window.E283={row:row,blocked:blocked,enforce:enforce};
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){boot(0)});else boot(0);
+})();
 </script>
 </body>
 </html>
