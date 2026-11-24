@@ -16,7 +16,7 @@ window.EMDErrLog={list:function(){var c=Date.now()-3*864e5;return L().filter(fun
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V284</title>
+<title>EMD Business — Standalone V285</title>
 <!-- EMD V158: شاشة افتتاح تغطي التطبيق حتى تكتمل الواجهة الأخيرة، فلا تظهر الأشكال والأزرار القديمة أثناء التحميل -->
 <style id="EMD-V158-boot">
 html.emd-boot{background:#0f172a!important}
@@ -24011,11 +24011,11 @@ function applyRemote(data,label,pushAfter){
   var keys=data&&data.keys;if(!keys||!keys[MAIN]){alert('النسخة في السحابة ناقصة، ما طبقتها.');return Promise.resolve(false)}
   var pre=Promise.resolve();try{if(window.EMDProtectV66&&window.EMDProtectV66.snapshot)pre=Promise.resolve(window.EMDProtectV66.snapshot()).catch(function(){})}catch(e){}
   return pre.then(function(){
-    try{var nd=JSON.parse(keys[MAIN]);if(nd&&typeof nd==='object'){window.db=nd;try{db=nd}catch(e){}}}catch(e){}
+    var g285=0;try{var nd=JSON.parse(keys[MAIN]);if(nd&&typeof nd==='object'){if(!pushAfter&&window.EMDMergeV126&&EMDMergeV126.guard){try{g285=EMDMergeV126.guard(nd,window.db);if(g285){keys=Object.assign({},keys);keys[MAIN]=JSON.stringify(nd)}}catch(e){}}window.db=nd;try{db=nd}catch(e){}}}catch(e){}
     var cur=collectKeys();Object.keys(cur).forEach(function(k){if(!(k in keys))lsSet(k,null)});
     Object.keys(keys).forEach(function(k){if(k==='emd_business_ai_settings_v3201'&&lsGet(k)){try{var a=JSON.parse(keys[k]),b=JSON.parse(lsGet(k));if(b&&b.apiKey&&a){a.apiKey=b.apiKey;keys[k]=JSON.stringify(a)}}catch(e){}}lsSet(k,keys[k])});
     var ap=Promise.resolve();try{if(Array.isArray(data.archive)&&data.archive.length&&window.EMDArchiveV67&&window.EMDArchiveV67.importAll)ap=Promise.resolve(window.EMDArchiveV67.importAll(data.archive)).catch(function(){})}catch(e){}
-    return ap.then(function(){var nk=collectKeys();setMeta({lastHash:pushAfter?'restored':hashKeys(nk),lastData:pushAfter?'restored':dataHash(keys),conflict:null});lsSet('emd_v93_toast',label||'☁️ جبت بياناتك من السحابة');setTimeout(function(){location.reload()},200);return true})})
+    return ap.then(function(){var nk=collectKeys();setMeta({lastHash:(pushAfter||g285)?'restored':hashKeys(nk),lastData:pushAfter?'restored':dataHash(keys),conflict:null});lsSet('emd_v93_toast',label||'☁️ جبت بياناتك من السحابة');setTimeout(function(){location.reload()},200);return true})})
 }
 function pull(label){if(!uid())return Promise.resolve(false);setState('saving');
   return token().then(function(t){return call('/rest/v1/emd_vaults?select=data,updated_at&user_id=eq.'+uid(),{token:t})}).then(function(a){var r=a&&a[0];if(!r){setState('ok');return false}setMeta({lastRemote:r.updated_at});return applyRemote(r.data,label)})
@@ -24059,7 +24059,7 @@ function softApply(){return token().then(function(t){return call('/rest/v1/emd_v
   var pre=Promise.resolve();try{if(window.EMDProtectV66&&window.EMDProtectV66.snapshot)pre=Promise.resolve(window.EMDProtectV66.snapshot()).catch(function(){})}catch(e){}
   return pre.then(function(){
     Object.keys(keys).forEach(function(k){if(k==='emd_business_ai_settings_v3201'||k===MAIN)return;lsSet(k,keys[k])});
-    window.db=JSON.parse(keys[MAIN]);try{if(typeof window.save==='function')window.save()}catch(e){}
+    var nd285=JSON.parse(keys[MAIN]);try{if(window.EMDMergeV126&&EMDMergeV126.guard)EMDMergeV126.guard(nd285,window.db)}catch(e){}window.db=nd285;try{if(typeof window.save==='function')window.save()}catch(e){}
     ['render','renderCustomers','renderProducts','renderStock'].forEach(function(f){try{if(typeof window[f]==='function')window[f]()}catch(e){}});
     var nk=collectKeys();setMeta({lastRemote:row.updated_at,lastHash:hashKeys(nk),lastData:dataHash(nk),conflict:null});return true})})}
 function typing(){var a=document.activeElement;return !!(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName))||!!document.querySelector('.emd93-ov')}
@@ -26672,7 +26672,29 @@ window.EMDiOSV125={show:show,ios:ios,inApp:inApp,safari:safari};
 (function(){'use strict';
 if(window.__EMD_V126__)return;window.__EMD_V126__=true;
 /* V126: مزامنة على مستوى الطلب الواحد. لكل طلب طابع تعديل _u يسافر معه؛ عند اختلاف جهازين ندمج الطلبات بدل أن تطغى نسخة على أخرى. */
-var MAIN='emd_business_v1',RANK={'new':1,'waiting':2,'ready':3,'packing':4,'shipped':5,'received':6};
+var MAIN='emd_business_v1',RANK={'new':1,'waiting':2,'ready':3,'packing':4,'shipped':5,'out_for_delivery':5.5,'received':6};
+/* V285: طلب «تم الشحن» أو «تم الاستلام» لا يرجع لحالة أقدم عند المزامنة بين جهازين، إلا إذا رُجّع يدويًا بعد الشحن */
+function rk(o){return RANK[String(o&&o.status||'new')]||0}
+function tm(v){var t=Date.parse(v||'');return isFinite(t)?t:0}
+function advAt(o){return Math.max(tm(o.shippedAt),tm(o.receivedAt),tm(o.customerConfirmedAt),tm(o.handedToCourierAt))}
+function setAt(o,st){var m=0;[o.history,o.events].forEach(function(L){(Array.isArray(L)?L:[]).forEach(function(e){if(e&&e.status===st)m=Math.max(m,tm(e.at))})});return m}
+function unionList(a,b){var out=[],seen={};(Array.isArray(a)?a:[]).concat(Array.isArray(b)?b:[]).forEach(function(e){var k=JSON.stringify(e);if(!seen[k]){seen[k]=1;out.push(e)}});out.sort(function(x,y){return tm(x&&x.at)-tm(y&&y.at)});return out}
+function keepShip(w,other){
+  if(!w||!other||w===other)return w;
+  var a=rk(w),b=rk(other);
+  if(String(w.status)==='cancelled'||b<5||b<=a||a<1)return w;
+  if(setAt(w,String(w.status||''))>advAt(other))return w;          /* رُجّع يدويًا بعد الشحن: نحترمه */
+  var x=JSON.parse(JSON.stringify(other));
+  x.history=unionList(other.history,w.history);if(Array.isArray(other.events)||Array.isArray(w.events))x.events=unionList(other.events,w.events);
+  x._u=Math.max(+w._u||0,+other._u||0);x._keep285=Date.now();
+  return x;
+}
+function guard(remote,local){
+  var n=0;if(!remote||!local||!Array.isArray(remote.orders)||!Array.isArray(local.orders))return 0;
+  var map={};local.orders.forEach(function(o){var i=idOf(o);if(i)map[i]=o});
+  remote.orders.forEach(function(ro,i){var lo=map[idOf(ro)];if(!lo)return;var x=keepShip(ro,lo);if(x!==ro){remote.orders[i]=x;n++}});
+  return n;
+}
 function idOf(o){return String(o&&(o.id!=null?o.id:o.orderNumber!=null?o.orderNumber:o.number!=null?o.number:'')||'')}
 function hs(s){var h=2166136261;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
 function sig(o){var c={};for(var k in o)if(k!=='_u'&&k!=='recoveredAt')c[k]=o[k];return hs(JSON.stringify(c))}
@@ -26707,7 +26729,7 @@ function mergeDb(local,remote,archived){
   (Array.isArray(r.orders)?r.orders:[]).forEach(function(ro){
     var id=idOf(ro);if(!id||archived[id])return;
     if(map[id]===undefined){out.orders.push(JSON.parse(JSON.stringify(ro)));map[id]=out.orders.length-1;st.added++}
-    else{var lo=out.orders[map[id]],w=pickOrder(lo,ro);if(w!==lo){out.orders[map[id]]=JSON.parse(JSON.stringify(ro));st.updated++}}
+    else{var lo=out.orders[map[id]],w0=pickOrder(lo,ro),w=keepShip(w0,w0===lo?ro:lo);if(w!==lo){out.orders[map[id]]=JSON.parse(JSON.stringify(w));st.updated++}}
   });
   function union(key,idf){var l=out[key];if(!Array.isArray(l))l=out[key]=[];var seen={};l.forEach(function(x){seen[idf(x)]=1});
     (Array.isArray(r[key])?r[key]:[]).forEach(function(x){var k=idf(x);if(k&&!seen[k]){l.push(JSON.parse(JSON.stringify(x)));seen[k]=1}})}
@@ -26716,7 +26738,7 @@ function mergeDb(local,remote,archived){
   Object.keys(r).forEach(function(k){if(!(k in out))out[k]=r[k]});
   return {db:out,stats:st};
 }
-window.EMDMergeV126={merge:mergeDb,stamp:stamp,idOf:idOf};
+window.EMDMergeV126={merge:mergeDb,stamp:stamp,idOf:idOf,guard:guard,keepShip:keepShip};
 wrap();setInterval(wrap,2000);setTimeout(function(){try{stamp()}catch(e){}},800);
 })();
 </script>
