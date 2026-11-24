@@ -22072,6 +22072,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 .emd75-empty{text-align:center;color:#64748b;padding:30px 10px;background:#fff;border-radius:14px;border:1px dashed #d6dae0}
 .emd75-check{display:flex;gap:10px;align-items:flex-start}
 .emd75-check input{width:22px;height:22px;margin-top:2px;flex:0 0 auto}
+.emd75-pr.emd289-bad{border-color:#fca5a5!important;background:#fef2f2!important}.emd289-w{grid-column:1/-1;font-size:12px;color:#b91c1c;font-weight:600}.emd75-pr.emd289-bad input[data-k=c]{border-color:#ef4444!important;color:#b91c1c}
 .emd75-pr{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:6px;align-items:center;background:#fff;border:1px solid #e8eaee;border-radius:12px;padding:8px 10px}
 .emd75-pr input{width:100%;box-sizing:border-box;border:1px solid #dfe3e8;border-radius:9px;padding:8px;font-size:15px;text-align:center}
 .emd75-pimg{width:38px;height:38px;flex:0 0 38px;border:1px dashed #cbd5e1;border-radius:10px;background:#f8fafc;padding:0;overflow:hidden;cursor:pointer;font-size:16px}
@@ -22189,9 +22190,18 @@ function freeze(){
     });
   });
 }
+var SNAP289=null;
+function sig289(){var m={};arr(D()&&D().products).forEach(function(p){var n=String(p.name||p.productName||'').trim();if(n)m[n]=catCost(p)+'|'+catPrice(p)});return m}
+function watch289(){
+  PM=null;var now=sig289();if(!SNAP289){SNAP289=now;return}
+  var warn=[];arr(D().products).forEach(function(p){var n=String(p.name||p.productName||'').trim();if(!n||now[n]===SNAP289[n])return;var c=catCost(p),s=catPrice(p);if(c>0&&s>0&&c>s)warn.push('• '+n+': التكلفة '+fmt(c)+' والسعر '+fmt(s))});
+  SNAP289=now;
+  if(warn.length)setTimeout(function(){alert('⚠️ تكلفة هذا المنتج أعلى من سعر بيعه:\n'+warn.join('\n')+'\n\nتأكد من الفاصلة العشرية (مثلًا 0.300 وليس 300). تقدر تعدّلها من 💰 المالية ← 🏷️ الأسعار.')},350);
+}
+setTimeout(function(){try{if(!SNAP289)SNAP289=sig289()}catch(e){}},1200);
 (function wrapSave(){
   var f=window.save;if(typeof f!=='function'||f.__emd75)return;
-  var g=function(){try{freeze()}catch(e){}var r=f.apply(this,arguments);scheduleStrip();if(cur.open)scheduleRender();return r};
+  var g=function(){try{freeze()}catch(e){}var r=f.apply(this,arguments);try{watch289()}catch(e){}scheduleStrip();if(cur.open)scheduleRender();return r};
   g.__emd75=true;window.save=g;
 })();
 
@@ -22513,7 +22523,7 @@ function priceHtml(){
   if(!ps.length)return '<div class="emd75-empty">ما فيه منتجات محفوظة بعد.</div>';
   var h='<div class="emd75-note" style="background:#f1f5f9;color:#475569">حدّد سعر البيع مرة وحدة، وكل طلب جديد ياخذ السعر تلقائيًا. التكلفة اختيارية، لكن بدونها ما نقدر نحسب الربح الحقيقي.</div>';
   h+='<div class="emd75-pr h"><div>المنتج</div><div>سعر البيع</div><div>التكلفة</div></div><div class="emd75-list" style="gap:6px">';
-  h+=ps.map(function(p,i){var s=catPrice(p),c=catCost(p);return '<div class="emd75-pr"><div style="display:flex;gap:8px;align-items:center"><button type="button" class="emd75-pimg" data-a="pimg" data-v="'+i+'" title="صورة المنتج">'+(p.image?'<img src="'+esc(p.image)+'" alt="">':'📷')+'</button><b style="font-size:14px">'+esc(p.name||p.productName||'منتج')+'</b></div><input data-pi="'+i+'" data-k="s" inputmode="decimal" value="'+(s?fmt(s):'')+'" placeholder="0.000"><input data-pi="'+i+'" data-k="c" inputmode="decimal" value="'+(c?fmt(c):'')+'" placeholder="0.000"></div>'}).join('');
+  h+=ps.map(function(p,i){var s=catPrice(p),c=catCost(p),w9=c>0&&s>0&&c>s;return '<div class="emd75-pr'+(w9?' emd289-bad':'')+'"><div style="display:flex;gap:8px;align-items:center"><button type="button" class="emd75-pimg" data-a="pimg" data-v="'+i+'" title="صورة المنتج">'+(p.image?'<img src="'+esc(p.image)+'" alt="">':'📷')+'</button><b style="font-size:14px">'+esc(p.name||p.productName||'منتج')+'</b></div><input data-pi="'+i+'" data-k="s" inputmode="decimal" value="'+(s?fmt(s):'')+'" placeholder="0.000"><input data-pi="'+i+'" data-k="c" inputmode="decimal" value="'+(c?fmt(c):'')+'" placeholder="0.000">'+(w9?'<div class="emd289-w">⚠️ التكلفة أعلى من سعر البيع. تأكد من الفاصلة العشرية.</div>':'')+'</div>'}).join('');
   h+='</div><div class="emd75-sticky"><button class="emd75-btn" data-a="savePrices">💾 حفظ الأسعار</button></div>';
   return h;
 }
