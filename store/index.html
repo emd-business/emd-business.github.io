@@ -7549,7 +7549,7 @@ window.EMDInvCore=window.EMDInvCore||(function(){
 var FONT="'IBM Plex Sans Arabic',Tahoma,'Segoe UI',Arial,sans-serif",GOLD='#c9a227';
 var DEF={tpl:'classic',color:'',logoPos:'side',title:'فاتورة',addr:'',vat:'',cr:'',email:'',web:'',bank:'',iban:'',terms:'',footer:'شكرًا لتعاملكم معنا',qr:'none',stamp:'',lang:'ar',paper:'a4',
   wa:'مرحبًا {العميل}، مرفقة فاتورتك رقم {رقم} من {المتجر} بإجمالي {الإجمالي}.',
-  bg:'#ffffff',ink:'#0f172a',page:'',head:'',foot:'',mark:'',markOp:22,markSize:70,top:7,bot:80,ownLogo:true,sign:'',
+  bg:'#ffffff',ink:'#0f172a',page:'',head:'',foot:'',mark:'',markOp:22,markSize:70,top:7,bot:80,mx:0,ownLogo:true,sign:'',
   show:{phone:true,addr:true,method:true,paid:true,sku:false,thumb:false,note:true,cashier:true,price:true}};
 var T={no:['رقم الفاتورة','Invoice No.'],date:['التاريخ','Date'],cust:['العميل','Bill To'],item:['المنتج','Item'],qty:['الكمية','Qty'],price:['السعر','Price'],amt:['المجموع','Amount'],sub:['المجموع قبل الخصم','Subtotal'],sub2:['مجموع المنتجات','Items total'],disc:['الخصم','Discount'],ship:['التوصيل','Delivery'],total:['الإجمالي','Total'],paid:['المدفوع','Paid'],rem:['المتبقي','Balance Due'],full:['تم الدفع بالكامل','Paid in Full'],method:['طريقة الدفع','Payment'],vat:['الرقم الضريبي','VAT No.'],cr:['السجل التجاري','C.R. No.'],bank:['بيانات التحويل البنكي','Bank Details'],terms:['الشروط والأحكام','Terms & Conditions'],note:['ملاحظات','Notes'],stamp:['الختم','Stamp'],sign:['التوقيع','Signature'],cashier:['الكاشير','Cashier'],seller:['بيانات المنشأة','From'],vatl:['منها ضريبة القيمة المضافة','Incl. VAT'],ret:['المرتجعات','Returns'],voidS:['ملغاة','VOID'],iban:['رقم الحساب / IBAN','IBAN'],to:['الفاتورة موجّهة إلى:','Billed to:'],issued:['تاريخ إصدار الفاتورة','Issue date']};
 var TEN={'فاتورة':'Invoice','فاتورة شراء':'Purchase Invoice','فاتورة ضريبية':'Tax Invoice','فاتورة مبدئية':'Proforma Invoice','عرض سعر':'Quotation'};
@@ -7570,7 +7570,7 @@ function qr(x,data,X,Y,S){try{var q=window.EMDqr418(0,'M');q.addData(data);q.mak
 function draw(N,c,A,E){
   var tpl=c.tpl,bi=c.lang==='bi',acc=E.accent(c),C=E.cur(),pv=E.pv?E.pv():{vat:false},lg=A.lg,th=A.th,stampImg=A.stamp;
   var INK=hex(c.ink,'#0f172a'),BG=hex(c.bg,'#ffffff');
-  var W=tpl==='compact'?820:1240,M=tpl==='compact'?44:(tpl==='own'?96:70),R=W-M,L=M,CW=W-2*M;
+  var W=tpl==='compact'?820:1240,M=tpl==='compact'?44:(tpl==='own'?(num(c.mx)>0?Math.round(W*Math.max(40,Math.min(200,num(c.mx)))/1000):96):70),R=W-M,L=M,CW=W-2*M;
   var Hmax=Math.min(16000,3200+N.items.length*240+(N.pays.length+N.ops.length)*70+(c.terms.length/2|0));
   var cv=document.createElement('canvas');cv.width=W;cv.height=Hmax;var x=cv.getContext('2d');
   x.textBaseline='top';x.direction='rtl';

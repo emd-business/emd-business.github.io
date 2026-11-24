@@ -16,7 +16,7 @@ window.EMDErrLog={list:function(){var c=Date.now()-3*864e5;return L().filter(fun
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V286</title>
+<title>EMD Business — Standalone V287</title>
 <!-- EMD V158: شاشة افتتاح تغطي التطبيق حتى تكتمل الواجهة الأخيرة، فلا تظهر الأشكال والأزرار القديمة أثناء التحميل -->
 <style id="EMD-V158-boot">
 html.emd-boot{background:#0f172a!important}
@@ -31162,6 +31162,7 @@ var I={
  profile:{s:{a:'businessProfile'},t:'🏢 بيانات النشاط',d:'الاسم والتواصل والموقع والعملة. تظهر في الفاتورة والملصق.'},
  prefix:{s:{id:'emd129Item'},t:'🔤 حروف رقم الطلب',d:'الحروف التي تظهر قبل رقم كل طلب.',live:1},
  wizard:{s:{id:'emd92HubBtn'},t:'🚀 معالج الإعداد السريع',d:'المتجر والمنتجات وشركات الشحن خطوة بخطوة.'},
+ invd:{fn:function(){try{window.EMDSettingsV327.close()}catch(e){}if(window.EMDInvV273)EMDInvV273.designer(null)},t:'🧾 تصميم الفاتورة',d:'القالب واللون وتصميمك الخاص من Canva وفاتورة المتجر.'},
  quick:{s:{t:'🏷️ الملصق السريع'},t:'🏷️ الملصق السريع',d:'تصميم الملصق الذي يُطبع بزر «🏷️ ملصق» ومقاسه.'},
  invp:{s:{id:'emd117Item'},live:1},
  wa:{s:{a:'whatsapp'},t:'💬 رسالة واتساب',d:'قالب الرسالة التي تُرسل للعميل ومتغيراتها.'},
@@ -31196,9 +31197,9 @@ var G={
  secg:{t:'🔐 الحماية والصلاحيات',d:'قفل التطبيق، والأدوار وسجل العمليات، ورمز الاسترجاع.',k:['lock','sec','rec']},
  data:{t:'💾 النسخ والاستعادة',d:'النسخة الاحتياطية، وحالة التخزين، واسترجاع الطلبات المفقودة.',k:['bk','bk2','lost']},
  aig:{t:'🤖 الذكاء الاصطناعي',d:'الإعدادات والسياسة والمعلومات والسجل.',k:['ai','aip','aik','aia']}};
-var S=[['🏢 النشاط',['profile','prefix','wizard']],['🧾 الفاتورة والملصق',['quick','invp']],['💬 الرسائل والطلبات',['wa','tpl','ign','dup']],['🎨 الشكل والتخصيص',['look','@layout','lang']],['👥 الموظفون والحماية',['staff','@secg']],['💾 البيانات',['@data']],['🆘 المساعدة',['help','pwa']]];
+var S=[['🏢 النشاط',['profile','prefix','wizard']],['🧾 الفاتورة والملصق',['invd','quick','invp']],['💬 الرسائل والطلبات',['wa','tpl','ign','dup']],['🎨 الشكل والتخصيص',['look','@layout','lang']],['👥 الموظفون والحماية',['staff','@secg']],['💾 البيانات',['@data']],['🆘 المساعدة',['help','pwa']]];
 var ADV=['@aig','feat','core'];
-var DROP=[{a:'pinnedOrders'},{a:'bulkOrders'},{a:'selectedOrdersExport'},{a:'aiReview'},{a:'aiTransparency'},{a:'aiSettings'},{id:'emd327SettingsClose'}];
+var DROP=[{id:'e443Item'},{a:'pinnedOrders'},{a:'bulkOrders'},{a:'selectedOrdersExport'},{a:'aiReview'},{a:'aiTransparency'},{a:'aiSettings'},{id:'emd327SettingsClose'}];
 
 function posSettings(){closeHub();var D=window.EMDDirectV113;if(!D||!D.open){toast('افتح «🛒 البيع المباشر» ← «الوردية» لضبط الإيصال والضريبة.');return}D.open('shift');
   setTimeout(function(){var d=document.querySelector('details.e420-set');if(d){d.open=true;try{d.scrollIntoView({block:'start',behavior:'smooth'})}catch(e){}}else toast('إعدادات الإيصال والضريبة في «البيع المباشر» ← «الوردية».')},450)}
@@ -35565,7 +35566,17 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 .e273-cols label{display:flex!important;align-items:center;justify-content:space-between;gap:6px;border:1px solid #e2e8f0;border-radius:11px;padding:6px 10px;margin:0!important;color:#0f172a!important}
 .e273-cols input[type=color]{width:38px;height:30px;border:0;background:none;padding:0;cursor:pointer}
 .e443-ctl input[type=range]{accent-color:#1e3a8a}
+/* V287: ارفع فاتورتك + سحب خطي الكتابة */
+.e287-ai{background:linear-gradient(135deg,#fff7e6,#fffbeb);border:1px solid #f3d27a;border-radius:14px;padding:12px!important;display:flex;flex-direction:column;gap:6px}
+.e287-ai>b{font-size:15px;color:#0f172a}.e287-ai>span{font-size:13px;color:#475569;line-height:1.7}
+.e287-btn{display:flex;align-items:center;justify-content:center;cursor:pointer;margin-top:4px}
+.e287-st{font-size:13px;line-height:1.7;color:#1e3a8a;background:#eff6ff;border-radius:10px;padding:8px 10px}.e287-st.bad{color:#991b1b;background:#fef2f2}.e287-st.ok{color:#166534;background:#f0fdf4}
+.e287-pw{position:relative}.e287-bar{display:none;position:absolute;left:0;right:0;height:0;border-top:3px dashed #d97706;touch-action:none;cursor:ns-resize;z-index:2}
+.e287-pw.drag .e287-bar{display:block}.e287-bar::before{content:"";position:absolute;left:0;right:0;top:-16px;height:30px}
+.e287-bar span{position:absolute;left:8px;top:-15px;background:#d97706;color:#fff;font:700 12px/26px system-ui,sans-serif;padding:0 10px;border-radius:13px;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.e287-bar[data-bar=bot]{border-top-color:#2563eb}.e287-bar[data-bar=bot] span{background:#2563eb;top:-13px}.e287-bar.on span{transform:scale(1.08)}
 </style>
+
 <script id="EMD-V273-invoice-core">
 /* EMD V273 · محرّك رسم الفاتورة — مشترك بين التطبيق وصفحة المتجر.
    draw(N, c, A, E):
@@ -35577,7 +35588,7 @@ window.EMDInvCore=window.EMDInvCore||(function(){
 var FONT="'IBM Plex Sans Arabic',Tahoma,'Segoe UI',Arial,sans-serif",GOLD='#c9a227';
 var DEF={tpl:'classic',color:'',logoPos:'side',title:'فاتورة',addr:'',vat:'',cr:'',email:'',web:'',bank:'',iban:'',terms:'',footer:'شكرًا لتعاملكم معنا',qr:'none',stamp:'',lang:'ar',paper:'a4',
   wa:'مرحبًا {العميل}، مرفقة فاتورتك رقم {رقم} من {المتجر} بإجمالي {الإجمالي}.',
-  bg:'#ffffff',ink:'#0f172a',page:'',head:'',foot:'',mark:'',markOp:22,markSize:70,top:7,bot:80,ownLogo:true,sign:'',
+  bg:'#ffffff',ink:'#0f172a',page:'',head:'',foot:'',mark:'',markOp:22,markSize:70,top:7,bot:80,mx:0,ownLogo:true,sign:'',
   show:{phone:true,addr:true,method:true,paid:true,sku:false,thumb:false,note:true,cashier:true,price:true}};
 var T={no:['رقم الفاتورة','Invoice No.'],date:['التاريخ','Date'],cust:['العميل','Bill To'],item:['المنتج','Item'],qty:['الكمية','Qty'],price:['السعر','Price'],amt:['المجموع','Amount'],sub:['المجموع قبل الخصم','Subtotal'],sub2:['مجموع المنتجات','Items total'],disc:['الخصم','Discount'],ship:['التوصيل','Delivery'],total:['الإجمالي','Total'],paid:['المدفوع','Paid'],rem:['المتبقي','Balance Due'],full:['تم الدفع بالكامل','Paid in Full'],method:['طريقة الدفع','Payment'],vat:['الرقم الضريبي','VAT No.'],cr:['السجل التجاري','C.R. No.'],bank:['بيانات التحويل البنكي','Bank Details'],terms:['الشروط والأحكام','Terms & Conditions'],note:['ملاحظات','Notes'],stamp:['الختم','Stamp'],sign:['التوقيع','Signature'],cashier:['الكاشير','Cashier'],seller:['بيانات المنشأة','From'],vatl:['منها ضريبة القيمة المضافة','Incl. VAT'],ret:['المرتجعات','Returns'],voidS:['ملغاة','VOID'],iban:['رقم الحساب / IBAN','IBAN'],to:['الفاتورة موجّهة إلى:','Billed to:'],issued:['تاريخ إصدار الفاتورة','Issue date']};
 var TEN={'فاتورة':'Invoice','فاتورة شراء':'Purchase Invoice','فاتورة ضريبية':'Tax Invoice','فاتورة مبدئية':'Proforma Invoice','عرض سعر':'Quotation'};
@@ -35598,7 +35609,7 @@ function qr(x,data,X,Y,S){try{var q=window.EMDqr418(0,'M');q.addData(data);q.mak
 function draw(N,c,A,E){
   var tpl=c.tpl,bi=c.lang==='bi',acc=E.accent(c),C=E.cur(),pv=E.pv?E.pv():{vat:false},lg=A.lg,th=A.th,stampImg=A.stamp;
   var INK=hex(c.ink,'#0f172a'),BG=hex(c.bg,'#ffffff');
-  var W=tpl==='compact'?820:1240,M=tpl==='compact'?44:(tpl==='own'?96:70),R=W-M,L=M,CW=W-2*M;
+  var W=tpl==='compact'?820:1240,M=tpl==='compact'?44:(tpl==='own'?(num(c.mx)>0?Math.round(W*Math.max(40,Math.min(200,num(c.mx)))/1000):96):70),R=W-M,L=M,CW=W-2*M;
   var Hmax=Math.min(16000,3200+N.items.length*240+(N.pays.length+N.ops.length)*70+(c.terms.length/2|0));
   var cv=document.createElement('canvas');cv.width=W;cv.height=Hmax;var x=cv.getContext('2d');
   x.textBaseline='top';x.direction='rtl';
@@ -36003,8 +36014,8 @@ function paintD(){var c=cfg(),ov=$('e443D'),moreOn=ov.getAttribute('data-more')=
   function upl(m){var has=!!c[m[0]];return '<div class="e273-up"><div class="e273-th">'+(has?'<img src="'+c[m[0]]+'" alt="">':'<span>🖼️</span>')+'</div><div class="e273-ut"><b>'+m[1]+'</b><div class="e273-ub"><label class="e443-b e273-sm">'+(has?'تغيير':'📎 رفع صورة')+'<input type="file" accept="image/*" data-img="'+m[0]+'" hidden></label>'+(has?'<button type="button" class="e443-b e273-sm" data-del="'+m[0]+'">حذف</button>':'')+'</div></div></div>'}
   var custom=TITLES.indexOf(c.title)<0,own=c.tpl==='own',cs=cloudState();
   ov.innerHTML='<div class="e443-box e443-dbox"><div class="e443-hd"><b>🧾 تصميم الفاتورة</b><button type="button" class="e443-x" data-d="x" aria-label="إغلاق">✕</button></div>'
-  +'<div class="e443-dwrap"><div class="e443-pv"><img id="e443DImg" alt="معاينة الفاتورة"></div><div class="e443-ctl">'
-  +'<div class="e443-sec"><h4>القالب</h4><div class="e443-tpls">'+TPLS.map(function(t){return '<button type="button" class="e443-tpl'+(c.tpl===t[0]?' on':'')+(t[0]==='own'?' e273-own':'')+'" data-tpl="'+t[0]+'"><b>'+(t[0]==='own'?'✨ ':'')+t[1]+'</b><span>'+t[2]+'</span></button>'}).join('')+'</div></div>'
+  +'<div class="e443-dwrap"><div class="e443-pv"><div class="e287-pw" id="e287Pw"><img id="e443DImg" alt="معاينة الفاتورة"><div class="e287-bar" data-bar="top"><span>⬇ تبدأ الكتابة هنا</span></div><div class="e287-bar" data-bar="bot"><span>⬆ تنتهي الكتابة هنا</span></div></div></div><div class="e443-ctl">'
+  +'<div class="e443-sec"><h4>القالب</h4><div class="e443-tpls">'+TPLS.map(function(t){return '<button type="button" class="e443-tpl'+(c.tpl===t[0]?' on':'')+(t[0]==='own'?' e273-own':'')+'" data-tpl="'+t[0]+'"><b>'+(t[0]==='own'?'✨ ':'')+t[1]+'</b><span>'+t[2]+'</span></button>'}).join('')+'</div></div>'+aiCard()
   +(own?'<div class="e443-sec e273-box"><h4>✨ تصميمك</h4><div class="e443-hint" style="margin:0 0 8px">صمّم فاتورتك في Canva أو غيره <b>بدون نصوص ولا جدول</b> (الخلفية والشعار والزخارف فقط)، ثم نزّلها صورة وارفعها هنا. سيكتب التطبيق بيانات كل طلب فوقها تلقائيًا.</div>'
      +upl(IMGS[0])
      +(c.page?rng('top','تبدأ الكتابة من الأعلى بعد',0,45)+rng('bot','وتتوقف الكتابة قبل الزخرفة السفلية عند',45,100):'')
@@ -36034,8 +36045,8 @@ function paintD(){var c=cfg(),ov=$('e443D'),moreOn=ov.getAttribute('data-more')=
    +'<button type="button" class="e443-b" data-d="reset" style="width:100%">↺ استعادة الشكل الافتراضي</button>'
   +'</div></div></div></div>';
   sc=ov.querySelector('.e443-ctl');if(sc)sc.scrollTop=st;
-  prevD()}
-function prevD(){clearTimeout(dT);dT=setTimeout(function(){render(dN).then(function(r){var i=$('e443DImg');if(i)i.src=r.canvas.toDataURL('image/jpeg',.85)}).catch(function(e){console.warn('V273',e)})},200)}
+  dragInit();prevD()}
+function prevD(){clearTimeout(dT);dT=setTimeout(function(){render(dN).then(function(r){var i=$('e443DImg');if(i){i.onload=bars;i.src=r.canvas.toDataURL('image/jpeg',.85)}}).catch(function(e){console.warn('V273',e)})},200)}
 function dClick(e){var ov=$('e443D');if(e.target===ov){closeD();return}var b=e.target.closest('[data-d],[data-tpl],[data-col],[data-lp],[data-del]');if(!b)return;
   if(b.hasAttribute('data-tpl')){var t=b.getAttribute('data-tpl'),p={tpl:t};
     if(t==='own'){var r0=raw();if(r0.bg==null&&!IM.page)p.bg='#fdf2f8';if(r0.ink==null)p.ink='#3b2a4a';if(r0.title==null||r0.title==='فاتورة')p.title='فاتورة شراء';if(!r0.show||r0.show.price==null)p.show={price:false}}
@@ -36048,8 +36059,9 @@ function dClick(e){var ov=$('e443D');if(e.target===ov){closeD();return}var b=e.t
   if(k==='cloud'){cloudSave();return}
   if(k==='more'){ov.setAttribute('data-more',ov.getAttribute('data-more')==='1'?'0':'1');paintD();return}
   if(k==='nostamp'){setCfg({stamp:''});paintD();return}
-  if(k==='reset'){if(window.confirm('استعادة الشكل الافتراضي للفاتورة؟ ستبقى بيانات المنشأة والبنك وصور التصميم محفوظة.')){var D0=X.DEF;setCfg({tpl:D0.tpl,color:'',logoPos:'side',title:D0.title,footer:D0.footer,qr:'none',lang:'ar',paper:'a4',wa:D0.wa,bg:D0.bg,ink:D0.ink,top:D0.top,bot:D0.bot,markOp:D0.markOp,markSize:D0.markSize,show:D0.show});paintD();toast('↺ عاد الشكل الافتراضي')}return}}
+  if(k==='reset'){if(window.confirm('استعادة الشكل الافتراضي للفاتورة؟ ستبقى بيانات المنشأة والبنك وصور التصميم محفوظة.')){var D0=X.DEF;setCfg({tpl:D0.tpl,color:'',logoPos:'side',title:D0.title,footer:D0.footer,qr:'none',lang:'ar',paper:'a4',wa:D0.wa,bg:D0.bg,ink:D0.ink,top:D0.top,bot:D0.bot,mx:0,markOp:D0.markOp,markSize:D0.markSize,show:D0.show});paintD();toast('↺ عاد الشكل الافتراضي')}return}}
 function dInput(e){var t=e.target;
+  if(t.hasAttribute('data-ai287')){if(e.type!=='change')return;var fa=t.files&&t.files[0];t.value='';aiUpload(fa);return}
   if(t.hasAttribute('data-img')){if(e.type!=='change')return;var f=t.files&&t.files[0],k=t.getAttribute('data-img');if(!f)return;var sp=IMSPEC[k];
     toast('جارٍ تجهيز الصورة…');readImg(f,sp[0],sp[1]).then(function(d){IM[k]=d;return iput(k,d)}).then(function(ok){if(!ok)toast('تعذّر حفظ الصورة على هذا الجهاز');
       if(k==='page'){var r0=raw();if(r0.top==null)setCfg({top:X.DEF.top,bot:X.DEF.bot})}paintD()},function(){toast('تعذّرت قراءة الصورة')});return}
@@ -36075,7 +36087,7 @@ function upload(d,png){if(!d)return Promise.resolve('');if(/^https:/.test(d))ret
   function fit(src,w){return X.img(src,8000).then(function(im){var s=Math.min(1,w/im.width),cv=document.createElement('canvas');cv.width=Math.round(im.width*s);cv.height=Math.round(im.height*s);var g=cv.getContext('2d');if(!png){g.fillStyle='#fff';g.fillRect(0,0,cv.width,cv.height)}g.drawImage(im,0,0,cv.width,cv.height);
     var out=cv.toDataURL(type,.82),b=out.split(',')[1]||'';if(b.length*0.75>500000&&w>500)return fit(src,Math.round(w*0.8));return b})}
   return fit(d,1240).then(function(b){return fn('upload',{name:'inv-'+hsh(b)+(png?'.png':'.jpg'),type:type,data:b})}).then(function(j){return j.url})}
-var CLOUD_KEYS=['tpl','color','logoPos','title','addr','vat','cr','email','web','bank','iban','terms','footer','lang','bg','ink','markOp','markSize','top','bot','ownLogo','sign'];
+var CLOUD_KEYS=['tpl','color','logoPos','title','addr','vat','cr','email','web','bank','iban','terms','footer','lang','bg','ink','markOp','markSize','top','bot','ownLogo','sign','mx'];
 var clBusy=false;
 function cloudSave(){if(clBusy)return;var api=window.EMD247api,h=$('e273Cl');
   function msg(t){if(h)h.textContent=t;toast(t)}
@@ -36103,6 +36115,89 @@ function cloudSave(){if(clBusy)return;var api=window.EMD247api,h=$('e273Cl');
 function inject(){var g=$('emd327SystemGrid');if(!g||$('e443Item'))return;var b=document.createElement('button');b.type='button';b.className='emd327-item';b.id='e443Item';b.setAttribute('data-emd108-skip','1');
   b.innerHTML='<b>🧾 تصميم الفاتورة</b><span>القالب واللون وتصميمك الخاص وفاتورة المتجر.</span>';b.addEventListener('click',function(){designer(null)});g.appendChild(b)}
 setInterval(inject,1500);setTimeout(inject,400);
+
+/* ---------- V287: «📷 ارفع فاتورتك» — الذكاء الاصطناعي يحوّل فاتورة جاهزة إلى قالب ---------- */
+var AIFN='https://pfkstppvnebagbdckgbu.supabase.co/functions/v1/emd-ai-inv',AIK='sb_publishable__tfVZiyph-xyB87GzmHrkQ_9DVpPHJ0',aiBusy=false;
+var AIMSG={auth:'هذه الميزة تحتاج حسابًا سحابيًّا. سجّل الدخول من «☁️ الحساب» أولًا.',session:'انتهت جلسة الدخول. سجّل الدخول مرة أخرى من «☁️ الحساب».',limit:'انتهت محاولات قراءة الفواتير لهذا اليوم، وتتجدد غدًا.',busy:'الخدمة مشغولة الآن. أعد المحاولة بعد دقيقة.',budget:'الذكاء الاصطناعي متوقف مؤقتًا هذا الشهر.',nokey:'الخدمة غير مفعّلة بعد.',net:'تعذّر الوصول إلى الخادم. تحقّق من الإنترنت وأعد المحاولة.',image:'تعذّر تجهيز الصورة. جرّب صورة أخرى (JPG أو PNG).',notinv:'لم يتعرّف الذكاء الاصطناعي على فاتورة في هذه الصورة. ارفع صورة واضحة للفاتورة.'};
+function aiCall(b64){var c=window.EMDCloudV93&&window.EMDCloudV93.api;if(!c||typeof c.token!=='function')return Promise.reject({code:'auth'});
+  if(navigator.onLine===false)return Promise.reject({code:'net'});
+  return Promise.resolve().then(function(){return c.token()}).then(function(t){if(!t)throw {code:'auth'};return t},function(e){throw {code:e&&e.auth?'auth':'session'}})
+   .then(function(t){return fetch(AIFN,{method:'POST',headers:{apikey:AIK,'Content-Type':'application/json','x-emd-token':t},body:JSON.stringify({image:b64,mime:'image/jpeg'})}).catch(function(){throw {code:'net'}})})
+   .then(function(r){return r.json().catch(function(){return {}}).then(function(j){if(!r.ok||!j.ok)throw {code:j.error||'ai'};return j.inv})})}
+function fileImg(f){return new Promise(function(ok,no){var rd=new FileReader();rd.onload=function(){X.img(rd.result,15000).then(function(im){im?ok(im):no({code:'image'})})};rd.onerror=function(){no({code:'image'})};rd.readAsDataURL(f)})}
+function jpeg64(im,max){var s=Math.min(1,max/Math.max(im.width,im.height)),cv=document.createElement('canvas');cv.width=Math.round(im.width*s);cv.height=Math.round(im.height*s);var g=cv.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,cv.width,cv.height);g.drawImage(im,0,0,cv.width,cv.height);return cv.toDataURL('image/jpeg',.85).split(',')[1]}
+/* مسح النصوص: يقدّر الخلفية تحت كل مربع من حوافه، ثم يستبدل فقط بكسلات الكتابة (المختلفة بوضوح عن الخلفية) فتبقى الزخارف والعلامة المائية تحتها */
+function rgb(h){h=String(h||'#ffffff').replace('#','');return [parseInt(h.slice(0,2),16)||255,parseInt(h.slice(2,4),16)||255,parseInt(h.slice(4,6),16)||255]}
+function med(a){a.sort(function(x,y){return x-y});return a[a.length>>1]}
+function eraseBox(g,W,H,x0,y0,x1,y1,whole,thr){var B=4;x0=Math.max(B,Math.floor(x0));y0=Math.max(B,Math.floor(y0));x1=Math.min(W-B-1,Math.ceil(x1));y1=Math.min(H-B-1,Math.ceil(y1));if(x1<=x0||y1<=y0)return;
+  var X0=x0-B,Y0=y0-B,w=x1-x0+1+2*B,h=y1-y0+1+2*B,d=g.getImageData(X0,Y0,w,h),p=d.data,bw=x1-x0+1,bh=y1-y0+1,top=[],bot=[],lef=[],rig=[],i,j,k,ch;
+  function px(x,y,c){return p[(y*w+x)*4+c]}
+  for(i=0;i<bw;i++){top.push([0,1,2].map(function(c){var a=[];for(k=0;k<B;k++)a.push(px(B+i,k,c));return med(a)}));bot.push([0,1,2].map(function(c){var a=[];for(k=0;k<B;k++)a.push(px(B+i,h-1-k,c));return med(a)}))}
+  for(j=0;j<bh;j++){lef.push([0,1,2].map(function(c){var a=[];for(k=0;k<B;k++)a.push(px(k,B+j,c));return med(a)}));rig.push([0,1,2].map(function(c){var a=[];for(k=0;k<B;k++)a.push(px(w-1-k,B+j,c));return med(a)}))}
+  var F=new Float32Array(bw*bh*3),M=new Uint8Array(bw*bh);
+  for(j=0;j<bh;j++)for(i=0;i<bw;i++){var ty=(j+1)/(bh+1),tx=(i+1)/(bw+1),dv=Math.min(j+1,bh-j),dh=Math.min(i+1,bw-i),wv=1/dv,wh=1/dh,o=(j*bw+i)*3,diff=0;
+    for(ch=0;ch<3;ch++){var v=(1-ty)*top[i][ch]+ty*bot[i][ch],hz=(1-tx)*lef[j][ch]+tx*rig[j][ch],f=(v*wv+hz*wh)/(wv+wh);F[o+ch]=f;diff+=Math.abs(px(B+i,B+j,ch)-f)}
+    if(whole||diff>(thr||54))M[j*bw+i]=1}
+  var R=2,M2=new Uint8Array(bw*bh);for(j=0;j<bh;j++)for(i=0;i<bw;i++)if(M[j*bw+i])for(var dy=-R;dy<=R;dy++)for(var dx=-R;dx<=R;dx++){var a=i+dx,b=j+dy;if(a>=0&&b>=0&&a<bw&&b<bh)M2[b*bw+a]=1}
+  for(j=0;j<bh;j++)for(i=0;i<bw;i++)if(M2[j*bw+i]){var q=((B+j)*w+B+i)*4,o2=(j*bw+i)*3;p[q]=F[o2];p[q+1]=F[o2+1];p[q+2]=F[o2+2]}
+  g.putImageData(d,X0,Y0)}
+function merge(rs){var ch=true;while(ch){ch=false;for(var a=0;a<rs.length&&!ch;a++)for(var b=a+1;b<rs.length;b++){var A=rs[a],Bq=rs[b];if(A.w===Bq.w&&A[0]<=Bq[2]&&Bq[0]<=A[2]&&A[1]<=Bq[3]&&Bq[1]<=A[3]){rs[a]=[Math.min(A[0],Bq[0]),Math.min(A[1],Bq[1]),Math.max(A[2],Bq[2]),Math.max(A[3],Bq[3])];rs[a].w=A.w;rs.splice(b,1);ch=true;break}}}return rs}
+/* خطوط فاصلة لم يذكرها الذكاء الاصطناعي: صفوف داكنة طويلة متصلة داخل منطقة البيانات */
+function hLines(g,W,H,box,bg){var x0=Math.round(box[0]),x1=Math.round(box[2]),y0=Math.max(0,Math.round(box[1])),y1=Math.min(H-1,Math.round(box[3]));if(x1-x0<50||y1<=y0)return [];
+  var d=g.getImageData(x0,y0,x1-x0,y1-y0+1).data,w=x1-x0,L0=.3*bg[0]+.59*bg[1]+.11*bg[2],rows=[],out=[];
+  for(var y=0;y<=y1-y0;y++){var run=0,best=0,bs=0,be=0,st=0;for(var x=0;x<w;x++){var q=(y*w+x)*4,l=.3*d[q]+.59*d[q+1]+.11*d[q+2];if(L0-l>70){if(!run)st=x;run++;if(run>best){best=run;bs=st;be=x}}else run=0}
+    if(best>w*.3)rows.push([y+y0,bs+x0,be+x0])}
+  for(var i=0;i<rows.length;i++){var r=rows[i],s=r[0],e=r[0],a=r[1],b=r[2];while(i+1<rows.length&&rows[i+1][0]-e<=1){i++;e=rows[i][0];a=Math.min(a,rows[i][1]);b=Math.max(b,rows[i][2])}if(e-s<=8)out.push([a-3,s-3,b+3,e+3])}
+  return out}
+/* مستطيلات ملوّنة صلبة (شريط علوي، مربع الإجمالي، خلفية رأس الجدول): الشريط العلوي/السفلي يبقى زخرفة وتبدأ الكتابة بعده، والمربعات داخل البيانات تُزال لأنها لن تطابق أماكن البيانات الجديدة */
+function panels(g,W,H,bg){var S=4,w=Math.floor(W/S),h=Math.floor(H/S),c=document.createElement('canvas');c.width=w;c.height=h;var x=c.getContext('2d',{willReadFrequently:true});x.drawImage(g.canvas,0,0,w,h);var d=x.getImageData(0,0,w,h).data;
+  function df(i){return Math.abs(d[i]-bg[0])+Math.abs(d[i+1]-bg[1])+Math.abs(d[i+2]-bg[2])}
+  var runs=[];for(var y=0;y<h;y++){var best=null,st=-1;for(var xx=0;xx<=w;xx++){var on=xx<w&&df((y*w+xx)*4)>26;if(on&&st<0)st=xx;if((!on||xx===w)&&st>=0){if(!best||xx-st>best[1]-best[0])best=[st,xx];st=-1}}if(best&&best[1]-best[0]>=w*.25){var mc=[0,0,0],nn=0;for(var x3=best[0];x3<best[1];x3++){var i3=(y*w+x3)*4;mc[0]+=d[i3];mc[1]+=d[i3+1];mc[2]+=d[i3+2];nn++}best.c=mc.map(function(v){return v/nn})}runs.push(best&&best[1]-best[0]>=w*.25?best:null)}
+  var rs=[];for(var y2=0;y2<h;y2++){var r=runs[y2];if(!r)continue;var a=r[0],b=r[1],y0=y2;while(y2+1<h&&runs[y2+1]&&Math.abs(runs[y2+1][0]-a)<=4&&Math.abs(runs[y2+1][1]-b)<=4&&Math.abs(runs[y2+1].c[0]-runs[y2].c[0])+Math.abs(runs[y2+1].c[1]-runs[y2].c[1])+Math.abs(runs[y2+1].c[2]-runs[y2].c[2])<40)y2++;if(y2-y0+1>=6)rs.push([a,y0,b,y2+1])}
+  var out={fill:[],head:0,foot:H};
+  rs.forEach(function(r){var n=0,s=[0,0,0],q=[0,0,0];for(var yy=r[1]+1;yy<r[3]-1;yy++)for(var xx=r[0]+2;xx<r[2]-2;xx+=2){var i=(yy*w+xx)*4;for(var k=0;k<3;k++){s[k]+=d[i+k];q[k]+=d[i+k]*d[i+k]}n++}
+    var R0=[r[0]*S,r[1]*S,r[2]*S,r[3]*S];if(R0[1]<=H*.03&&R0[3]<H*.4){out.head=Math.max(out.head,R0[3]);return}if(R0[3]>=H*.97&&R0[1]>H*.6){out.foot=Math.min(out.foot,R0[1]);return}
+    if(!n)return;var sd=Math.max.apply(null,[0,1,2].map(function(k){var m=s[k]/n;return Math.sqrt(Math.max(0,q[k]/n-m*m))}));if(sd>16)return;
+    var R=[r[0]*S,r[1]*S,r[2]*S,r[3]*S];
+    if(R[1]<=H*.03&&R[3]<H*.4)out.head=Math.max(out.head,R[3]);else if(R[3]>=H*.97&&R[1]>H*.6)out.foot=Math.min(out.foot,R[1]);else out.fill.push(R)});
+  return out}
+function aiBuild(im,inv){var pg=inv.page,PX=im.width*pg[1]/1000,PY=im.height*pg[0]/1000,PW=im.width*(pg[3]-pg[1])/1000,PH=im.height*(pg[2]-pg[0])/1000;
+  if(pg[0]>0||pg[2]<1000){var iy=PH*.006;PY+=iy;PH-=2*iy}if(pg[1]>0||pg[3]<1000){var ix=PW*.006;PX+=ix;PW-=2*ix}
+  var W=1240,s=W/PW,H=Math.round(PH*s),cv=document.createElement('canvas');cv.width=W;cv.height=H;var g=cv.getContext('2d',{willReadFrequently:true});g.drawImage(im,PX,PY,PW,PH,0,0,W,H);
+  function tr(b){return [(im.width*b[1]/1000-PX)*s,(im.height*b[0]/1000-PY)*s,(im.width*b[3]/1000-PX)*s,(im.height*b[2]/1000-PY)*s]}
+  var pad=Math.max(4,W*.006),rs=[];
+  inv.texts.forEach(function(t){var r=tr(t.box);r=[r[0]-pad,r[1]-pad,r[2]+pad,r[3]+pad];r.w=t.kind==='line'?1:0;rs.push(r)});
+  var cb=inv.content?tr(inv.content):[W*.05,H*.1,W*.95,H*.85],bg=rgb(inv.bg);
+  rs=merge(rs);rs.forEach(function(r){eraseBox(g,W,H,r[0],r[1],r[2],r[3],!!r.w)});rs.forEach(function(r){if(!r.w)eraseBox(g,W,H,r[0],r[1],r[2],r[3],false,30)});
+  hLines(g,W,H,[cb[0]-20,cb[1]-30,cb[2]+20,cb[3]+30],bg).forEach(function(r){eraseBox(g,W,H,r[0],r[1],r[2],r[3],true)});
+  var pn=panels(g,W,H,bg);g.fillStyle=inv.bg;pn.fill.forEach(function(r){if(r[1]>=cb[1]-H*.02&&r[3]<=cb[3]+H*.03)g.fillRect(r[0]-10,r[1]-8,r[2]-r[0]+20,r[3]-r[1]+16)});
+  /* أماكن الكتابة والهامش الجانبي من منطقة البيانات وخطوط الجدول */
+  var ls=inv.texts.filter(function(t){return t.kind==='line'}).map(function(t){return tr(t.box)}),xs=ls.length?[Math.min.apply(null,ls.map(function(r){return r[0]})),Math.max.apply(null,ls.map(function(r){return r[2]}))]:[cb[0],cb[2]];
+  var mx=Math.round(Math.max(40,Math.min(200,Math.min(xs[0],W-xs[1])/W*1000+28)));
+  var t0=Math.max(cb[1],pn.head?pn.head+H*.02:0);if(inv.logo_in_design&&inv.logo){var lb=tr(inv.logo);if(lb[3]>cb[1]&&lb[1]<cb[1]+H*.2&&lb[3]<H*.45)t0=Math.max(t0,lb[3]+H*.01)}
+  var top=Math.round(Math.max(0,Math.min(60,t0/H*100-1))),bot=Math.round(Math.max(45,Math.min(100,Math.min(cb[3]/H*100+2,pn.foot<H?pn.foot/H*100-1:100))));
+  return {url:cv.toDataURL('image/jpeg',.9),top:top,bot:bot,mx:mx}}
+function aiUpload(f){if(aiBusy||!f)return;aiBusy=true;var st=$('e287St');function say(t,bad){st=$('e287St')||st;if(st){st.hidden=false;st.textContent=t;st.className='e287-st'+(bad?' bad':'')}}
+  say('⏳ يقرأ الذكاء الاصطناعي فاتورتك… (قد يستغرق نصف دقيقة)');var im0;
+  fileImg(f).then(function(im){im0=im;return aiCall(jpeg64(im,1600))}).then(function(inv){if(!inv||!inv.is_invoice)throw {code:'notinv'};
+    say('🧽 يمسح النصوص القديمة ويجهّز القالب…');return new Promise(function(ok){setTimeout(function(){ok(aiBuild(im0,inv))},30)}).then(function(r){
+      IM.page=r.url;return iput('page',r.url).then(function(){var p={tpl:'own',top:r.top,bot:r.bot,mx:r.mx,bg:inv.bg,ink:inv.ink,color:inv.accent,ownLogo:!inv.logo_in_design};
+        if(inv.title)p.title=inv.title;if(inv.sign)p.sign=inv.sign;if(inv.thanks)p.footer=inv.thanks;setCfg(p);aiBusy=false;paintD();
+        setTimeout(function(){var s2=$('e287St');if(s2){s2.textContent='✅ جاهزة. راجع المعاينة: اسحب الخطين في المعاينة لضبط بداية الكتابة ونهايتها، وغيّر أي شيء من الخيارات تحت.';s2.className='e287-st ok'}},60)})})})
+   .catch(function(e){aiBusy=false;say('⚠️ '+(AIMSG[e&&e.code]||'تعذّرت قراءة الفاتورة. أعد المحاولة.'),true)})}
+function aiCard(){return '<div class="e443-sec e287-ai"><b>📷 عندك فاتورة جاهزة؟</b><span>ارفع صورة فاتورتك (من Canva أو صورة أو لقطة شاشة)، والذكاء الاصطناعي يمسح بياناتها القديمة ويحوّلها لقالب تُكتب فيه بيانات كل طلب.</span>'
+  +'<label class="e443-b p e287-btn">📷 ارفع فاتورتك<input type="file" accept="image/*" data-ai287 hidden></label><div id="e287St" class="e287-st"'+(aiBusy?'':' hidden')+'></div></div>'}
+/* سحب خطي بداية الكتابة ونهايتها على المعاينة */
+var pgDim=null,pgSrc='';
+function pageDim(){var s=IM.page||'';if(!s)return Promise.resolve(null);if(s===pgSrc&&pgDim)return Promise.resolve(pgDim);return X.img(s,5000).then(function(im){pgSrc=s;pgDim=im?{w:im.width,h:im.height}:null;return pgDim})}
+function bars(){var wr=$('e287Pw'),im=$('e443DImg');if(!wr||!im)return;var c=cfg(),on=c.tpl==='own'&&!!c.page;wr.classList.toggle('drag',on);if(!on||!im.naturalHeight)return;
+  pageDim().then(function(d){if(!d)return;var ph=1240*d.h/d.w,H=im.naturalHeight;['top','bot'].forEach(function(k){var b=wr.querySelector('[data-bar="'+k+'"]');if(b)b.style.top=(num(c[k])*ph/100/H*100)+'%'});wr._ph=ph})}
+function dragInit(){var wr=$('e287Pw');if(!wr||wr._di)return;wr._di=1;var cur=null;
+  wr.addEventListener('pointerdown',function(e){var b=e.target.closest('[data-bar]');if(!b)return;e.preventDefault();cur=b;try{b.setPointerCapture(e.pointerId)}catch(_){}b.classList.add('on')});
+  wr.addEventListener('pointermove',function(e){if(!cur)return;var im=$('e443DImg'),r=im.getBoundingClientRect(),y=Math.max(0,Math.min(r.height,e.clientY-r.top));cur.style.top=(y/r.height*100)+'%'});
+  function up(){if(!cur)return;var im=$('e443DImg'),k=cur.getAttribute('data-bar'),pc=parseFloat(cur.style.top)/100*im.naturalHeight/(wr._ph||1)*100,o={};cur.classList.remove('on');cur=null;
+    o[k]=Math.round(k==='top'?Math.max(0,Math.min(60,pc)):Math.max(40,Math.min(100,pc)));setCfg(o);paintD()}
+  wr.addEventListener('pointerup',up);wr.addEventListener('pointercancel',up)}
 
 window.EMDInvV273={version:'V273',open:open,print:print,designer:designer,render:render,config:cfg,set:setCfg,sample:sample,summary:summary,_img:IM,_put:function(k,d){IM[k]=d;return iput(k,d)}};
 window.EMDInvV443=window.EMDInvV273;
