@@ -16,7 +16,7 @@ window.EMDErrLog={list:function(){var c=Date.now()-3*864e5;return L().filter(fun
 <meta name="apple-mobile-web-app-title" content="EMD Business"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-<title>EMD Business — Standalone V289</title>
+<title>EMD Business — Standalone V290</title>
 <!-- EMD V158: شاشة افتتاح تغطي التطبيق حتى تكتمل الواجهة الأخيرة، فلا تظهر الأشكال والأزرار القديمة أثناء التحميل -->
 <style id="EMD-V158-boot">
 html.emd-boot{background:#0f172a!important}
@@ -22211,7 +22211,8 @@ setTimeout(function(){try{if(!SNAP289)SNAP289=sig289()}catch(e){}},1200);
 
 /* ===== الحسابات ===== */
 function range(k){var now=new Date(),t0=new Date(now.getFullYear(),now.getMonth(),now.getDate()),s,e;
-  if(k==='today'){s=t0;e=new Date(t0.getTime()+864e5)}
+  if(k==='all'){s=new Date(2000,0,1);e=new Date(now.getFullYear()+5,0,1)}
+  else if(k==='today'){s=t0;e=new Date(t0.getTime()+864e5)}
   else if(k==='week'){s=new Date(t0.getTime()-6*864e5);e=new Date(t0.getTime()+864e5)}
   else if(k==='lastmonth'){s=new Date(now.getFullYear(),now.getMonth()-1,1);e=new Date(now.getFullYear(),now.getMonth(),1)}
   else if(k==='range'){var f0=cur.from?new Date(cur.from+'T00:00:00'):t0,u0=cur.to?new Date(cur.to+'T00:00:00'):f0;if(isNaN(f0))f0=t0;if(isNaN(u0))u0=f0;if(u0<f0){var tmp=f0;f0=u0;u0=tmp}s=f0;e=new Date(u0.getTime()+864e5)}
@@ -22326,7 +22327,7 @@ function render(){
   var st=b.scrollTop;b.innerHTML=h;b.scrollTop=st;
 }
 
-function periodChips(){var P=[['today','اليوم'],['week','آخر 7 أيام'],['month','هذا الشهر'],['lastmonth','الشهر الماضي'],['range','📅 من تاريخ إلى تاريخ']];return '<div class="emd75-chips">'+P.map(function(p){return '<button class="emd75-chip'+(cur.period===p[0]?' on':'')+'" data-a="period" data-v="'+p[0]+'">'+p[1]+'</button>'}).join('')+'</div>'+(cur.period==='range'?'<div class="emd112-bar" style="margin-top:0"><label class="emd112-card"><span>من تاريخ</span><input type="date" id="emd115From" value="'+esc(cur.from||'')+'" style="width:100%;border:0;font:inherit;font-size:16px;font-weight:800;background:transparent"></label><label class="emd112-card"><span>إلى تاريخ</span><input type="date" id="emd115To" value="'+esc(cur.to||'')+'" style="width:100%;border:0;font:inherit;font-size:16px;font-weight:800;background:transparent"></label></div>':'')}
+function periodChips(){var P=[['today','اليوم'],['week','آخر 7 أيام'],['month','هذا الشهر'],['lastmonth','الشهر الماضي'],['all','♾️ الكل'],['range','📅 من تاريخ إلى تاريخ']];return '<div class="emd75-chips">'+P.map(function(p){return '<button class="emd75-chip'+(cur.period===p[0]?' on':'')+'" data-a="period" data-v="'+p[0]+'">'+p[1]+'</button>'}).join('')+'</div>'+(cur.period==='range'?'<div class="emd112-bar" style="margin-top:0"><label class="emd112-card"><span>من تاريخ</span><input type="date" id="emd115From" value="'+esc(cur.from||'')+'" style="width:100%;border:0;font:inherit;font-size:16px;font-weight:800;background:transparent"></label><label class="emd112-card"><span>إلى تاريخ</span><input type="date" id="emd115To" value="'+esc(cur.to||'')+'" style="width:100%;border:0;font:inherit;font-size:16px;font-weight:800;background:transparent"></label></div>':'')}
 function sumHtml(){
   var s=summary(cur.period),h=periodChips();
   h+='<div class="emd75-big"><small>صافي الربح التقديري</small><b class="'+(s.profit<0?'neg':'')+'">'+fmt(s.profit)+' '+CUR+'</b>'+
@@ -22415,7 +22416,7 @@ function expHtml(){
   return h;
 }
 /* ---------- كشف الفواتير ---------- */
-var PL={today:'اليوم',week:'آخر 7 أيام',month:'هذا الشهر',lastmonth:'الشهر الماضي'};
+var PL={today:'اليوم',week:'آخر 7 أيام',month:'هذا الشهر',lastmonth:'الشهر الماضي',all:'كل الفترات'};
 function plabel(){if(cur.period==='range')return 'من '+(cur.from||'')+' إلى '+(cur.to||cur.from||'');return PL[cur.period]||cur.period}
 var MLBL={cash:'💵 نقدًا',transfer:'🏦 تحويل بنكي',cod:'📦 عند الاستلام',card:'💳 بطاقة',other:'🔁 وسيلة أخرى','':'❔ غير محدد'};
 function ftime(t){var h=t.getHours(),m=t.getMinutes();return (h%12||12)+':'+pad(m)+' '+(h>=12?'م':'ص')}
