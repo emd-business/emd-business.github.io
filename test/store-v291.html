@@ -6996,12 +6996,12 @@ html.n8-rv .yk-c.in{animation:ykCi .7s cubic-bezier(.2,.8,.2,1) var(--d,0ms) bac
 .wn-sn.wn-f i{filter:blur(.4px);animation-duration:calc(var(--t) * .8)}
 @keyframes wnFall{0%{transform:translate(0,0)}50%{transform:translate(var(--w),55vh)}100%{transform:translate(calc(var(--w) * -.5),110vh)}}
 .pl-s-winter .pl-h,.pl-s-winter{min-height:0}
-.wn-cs path[fill="#3d2566"]{fill:#3e5f8f}
-.wn-cs stop:first-child{stop-color:#cfdcf0}.wn-cs stop:last-child{stop-color:#7d93bf}
-.wn-cs rect[fill="#5e3b8f"]{fill:#8ea3c9}
-.wn-cs path[fill="#2a1846"]{fill:#1d2f4f}
-.wn-cs .pl-w{fill:#22375c}
-.wn-cs .pl-w.on{fill:#ffcf6e;filter:drop-shadow(0 0 5px #ffb648)}
+.wn-cs:not(.wn-p) path[fill="#3d2566"]{fill:#3e5f8f}
+.wn-cs:not(.wn-p) stop:first-child{stop-color:#cfdcf0}.wn-cs:not(.wn-p) stop:last-child{stop-color:#7d93bf}
+.wn-cs:not(.wn-p) rect[fill="#5e3b8f"]{fill:#8ea3c9}
+.wn-cs:not(.wn-p) path[fill="#2a1846"]{fill:#1d2f4f}
+.wn-cs:not(.wn-p) .pl-w{fill:#22375c}
+.wn-cs:not(.wn-p) .pl-w.on{fill:#ffcf6e;filter:drop-shadow(0 0 5px #ffb648)}
 .wn-cap{fill:#fff}
 .wn-gr{fill:#f2f7fd}
 .wn-ice{fill:#e6f3ff;opacity:.95;transform-box:fill-box;transform-origin:50% 0;animation:wnIc 4s ease-in-out calc(var(--i) * .35s) infinite}
@@ -7013,7 +7013,7 @@ html.n8-rv .yk-c.in{animation:ykCi .7s cubic-bezier(.2,.8,.2,1) var(--d,0ms) bac
 html[data-lx="palace"][data-wn] .pl-sh{display:none}
 html[data-lx="palace"][data-wn] .pl-sts{background:rgba(255,255,255,.9)}
 html[data-lx="palace"][data-wn] .pl-c{overflow:visible}
-html[data-lx="palace"][data-wn]{--bg:color-mix(in srgb,#e8f0f9 92%,var(--accent))}
+html[data-lx="palace"][data-wn="b"]{--bg:color-mix(in srgb,#e8f0f9 92%,var(--accent))}
 html[data-lx="palace"][data-wn] .pl-c::before{content:"";position:absolute;z-index:2;top:-7px;left:4px;right:4px;height:20px;border-radius:10px 10px 0 0;background:linear-gradient(#fff,#f6faff) top/100% 11px no-repeat,radial-gradient(5px 8px at 50% 0,#fff 96%,transparent) 6px 9px/26px 11px repeat-x,radial-gradient(3px 5px at 50% 0,#fff 96%,transparent) 19px 9px/26px 8px repeat-x;filter:drop-shadow(0 2px 2px rgba(60,100,160,.35));pointer-events:none}
 html[data-lx="palace"][data-wn] .pl-end::before{content:"❄️ "}
 @media(prefers-reduced-motion:reduce){.wn-sn,.wn-au i,.wn-ice{animation:none!important}.wn-sn{display:none}}
@@ -7021,6 +7021,16 @@ html[data-lx="palace"][data-wn] .pl-end::before{content:"❄️ "}
 #wnPg{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
 #wnPg i{opacity:calc(var(--o) * .55)}
 @media(prefers-reduced-motion:reduce){#wnPg{display:none}}
+
+/* شتاء بألوان القصر الأصلية (بنفسجي) */
+.pl-s-winterp{background:linear-gradient(180deg,#1a0c30 0%,#33195a 32%,#6d48a3 60%,#d7c4ea 84%,var(--bg,#f8f3fb) 100%)}
+.pl-s-winterp .pl-sky{background:radial-gradient(55% 38% at 50% 72%,rgba(255,214,150,.22),transparent 70%)}
+.pl-s-winterp .wn-au i{background:linear-gradient(90deg,transparent,rgba(240,160,220,.5) 30%,rgba(190,150,255,.5) 55%,rgba(255,215,150,.35) 75%,transparent)}
+.pl-s-winterp .wn-au i:nth-child(2){background:linear-gradient(90deg,transparent,rgba(170,130,255,.45) 35%,rgba(245,170,215,.45) 65%,transparent)}
+.pl-s-winterp .wn-mn{background:radial-gradient(circle at 38% 36%,#fffaf0,#f3e6ff 60%,#d8c4ef);box-shadow:0 0 22px 6px rgba(240,220,255,.45)}
+.pl-s-winterp .wn-gr{fill:#faf6fd}
+.wn-p .wn-tr path[fill="#2f5b6e"]{fill:#4b2c7a}
+.wn-p .wn-ice{fill:#f3ebff}
 </style></head>
 <body>
 
@@ -11569,7 +11579,8 @@ if(DEMO&&typeof D!=='undefined'){(function(){
 /* ===== V291: «شتاء القصر» — ثيم شتوي متحرك لتصميم «قصر الحكايات» (plSky=winter) ===== */
 if(T.en)Object.assign(T.en,{plWin0:'Every item you add lights two windows and warms your palace',plWinN:'%s of 10 windows glowing in the snow',plWinF:'Your palace is warm and glowing. Thank you!'});
 Object.assign(T.ar,{plWin0:'كل منتج تضيفه يضيء نافذتين ويدفّئ قصرك',plWinN:'أضأت %s من 10 نوافذ في ليلة الثلج',plWinF:'قصرك دافئ ومضيء بالكامل، شكرًا لاختيارك'});
-function wnOn(){return B.layout==='palace'&&B.plSky==='winter'}
+function wnOn(){return B.layout==='palace'&&(B.plSky==='winter'||B.plSky==='winterp')}
+function wnP(){return B.plSky==='winterp'}
 function wnSnow(n,c){var h='';for(var i=0;i<n;i++){var s=(i%5===0?6:i%3===0?4:3);h+='<i style="--x:'+((i*37+11)%100)+'%;--s:'+s+'px;--t:'+(7+(i*13)%9)+'s;--d:-'+((i*1.7)%14).toFixed(1)+'s;--w:'+(((i*29)%40)-20)+'px;--o:'+(s>4?.95:.75)+'"></i>'}return '<div class="wn-sn '+c+'" aria-hidden="true">'+h+'</div>'}
 function wnCaps(){var C=[[58,76,84],[120,56,142],[236,56,258],[290,76,316],[162,42,200]],h='';
   C.forEach(function(c){var a=c[0],b=c[1],x=c[2],w=x-a,ty=b-46,d=19,hw=w*d/46,y=ty+d;
@@ -11583,9 +11594,9 @@ function wnCaps(){var C=[[58,76,84],[120,56,142],[236,56,258],[290,76,316],[162,
 function wnPg(){var g=document.getElementById('wnPg');if(!wnOn()){if(g)g.hidden=true;return}if(!g){var d=document.createElement('div');d.innerHTML=wnSnow(14,'');g=d.firstChild;g.id='wnPg';document.body.appendChild(g)}g.hidden=false}
 (function(){var _lr=lxRender;lxRender=function(){var o=_lr.apply(this,arguments);if(B.layout!=='palace'){document.documentElement.removeAttribute('data-wn');wnPg()}return o}})();
 function wnAur(){return '<div class="wn-au" aria-hidden="true"><i></i><i></i><i></i></div><span class="wn-mn" aria-hidden="true"></span>'}
-(function(){var _R=R.palace;R.palace=function(G){var h=_R.apply(this,arguments);document.documentElement.toggleAttribute('data-wn',wnOn());wnPg();if(!wnOn())return h;
-    var l=plLit();h=h.replace(/pl-s-[a-z]+/,'pl-s-winter').replace('<div class="pl-sky" data-plsky="1" aria-hidden="true"></div>','<div class="pl-sky" data-plsky="1" aria-hidden="true"></div>'+wnAur()+wnSnow(26,'wn-b'))
-     .replace('<svg class="pl-cs"','<svg class="pl-cs wn-cs"').replace(/(<svg class="pl-cs wn-cs"[\s\S]*?)(<\/svg>)/,function(m,a,z){return a.replace(/(<\/defs>)/,'$1').replace('<path d="M0 160Q200 118 400 160z" fill="#cfb3e0" opacity=".7"/>','')+wnCaps()+z})
+(function(){var _R=R.palace;R.palace=function(G){var h=_R.apply(this,arguments);if(wnOn())document.documentElement.setAttribute('data-wn',wnP()?'p':'b');else document.documentElement.removeAttribute('data-wn');wnPg();if(!wnOn())return h;
+    var l=plLit();h=h.replace(/pl-s-[a-z]+/,wnP()?'pl-s-winterp':'pl-s-winter').replace('<div class="pl-sky" data-plsky="1" aria-hidden="true"></div>','<div class="pl-sky" data-plsky="1" aria-hidden="true"></div>'+wnAur()+wnSnow(26,'wn-b'))
+     .replace('<svg class="pl-cs"','<svg class="pl-cs wn-cs'+(wnP()?' wn-p':'')+'"').replace(/(<svg class="pl-cs wn-cs[^"]*"[\s\S]*?)(<\/svg>)/,function(m,a,z){return a.replace(/(<\/defs>)/,'$1').replace('<path d="M0 160Q200 118 400 160z" fill="#cfb3e0" opacity=".7"/>','')+wnCaps()+z})
      .replace(/(<p class="pl-sts" id="plSt" role="status">)✨ <span>[^<]*<\/span>/,'$1❄️ <span>'+esc(wnT(l))+'</span>')
      .replace('</header>',wnSnow(16,'wn-f')+'</header>');
     return h};
