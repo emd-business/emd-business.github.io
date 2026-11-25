@@ -7031,6 +7031,16 @@ html[data-lx="palace"][data-wn] .pl-end::before{content:"❄️ "}
 .pl-s-winterp .wn-gr{fill:#faf6fd}
 .wn-p .wn-tr path[fill="#2f5b6e"]{fill:#4b2c7a}
 .wn-p .wn-ice{fill:#f3ebff}
+
+/* شتاء وردي */
+.pl-s-winterk{background:linear-gradient(180deg,#2a0c24 0%,#5e1d4c 30%,#a8487f 58%,#f3c4d8 84%,var(--bg,#fbf3f7) 100%)}
+.pl-s-winterk .pl-sky{background:radial-gradient(55% 38% at 50% 72%,rgba(255,220,170,.24),transparent 70%)}
+.pl-s-winterk .wn-au i{background:linear-gradient(90deg,transparent,rgba(255,170,205,.55) 30%,rgba(255,220,170,.4) 55%,rgba(220,160,255,.4) 75%,transparent)}
+.pl-s-winterk .wn-au i:nth-child(2){background:linear-gradient(90deg,transparent,rgba(255,190,215,.5) 35%,rgba(255,235,190,.4) 65%,transparent)}
+.pl-s-winterk .wn-mn{background:radial-gradient(circle at 38% 36%,#fffaf6,#ffe6ef 60%,#f3c6d8);box-shadow:0 0 22px 6px rgba(255,220,235,.5)}
+.pl-s-winterk .wn-gr{fill:#fff7fa}
+.pl-s-winterk .wn-tr path[fill="#2f5b6e"]{fill:#7a2a5a}
+.pl-s-winterk .pl-st i{background:#fff0f6}
 </style></head>
 <body>
 
@@ -11579,8 +11589,9 @@ if(DEMO&&typeof D!=='undefined'){(function(){
 /* ===== V291: «شتاء القصر» — ثيم شتوي متحرك لتصميم «قصر الحكايات» (plSky=winter) ===== */
 if(T.en)Object.assign(T.en,{plWin0:'Every item you add lights two windows and warms your palace',plWinN:'%s of 10 windows glowing in the snow',plWinF:'Your palace is warm and glowing. Thank you!'});
 Object.assign(T.ar,{plWin0:'كل منتج تضيفه يضيء نافذتين ويدفّئ قصرك',plWinN:'أضأت %s من 10 نوافذ في ليلة الثلج',plWinF:'قصرك دافئ ومضيء بالكامل، شكرًا لاختيارك'});
-function wnOn(){return B.layout==='palace'&&(B.plSky==='winter'||B.plSky==='winterp')}
-function wnP(){return B.plSky==='winterp'}
+function wnOn(){return B.layout==='palace'&&/^winter[pk]?$/.test(B.plSky||'')}
+function wnP(){return B.plSky==='winterp'||B.plSky==='winterk'}
+function wnK(){return B.plSky==='winterk'}
 function wnSnow(n,c){var h='';for(var i=0;i<n;i++){var s=(i%5===0?6:i%3===0?4:3);h+='<i style="--x:'+((i*37+11)%100)+'%;--s:'+s+'px;--t:'+(7+(i*13)%9)+'s;--d:-'+((i*1.7)%14).toFixed(1)+'s;--w:'+(((i*29)%40)-20)+'px;--o:'+(s>4?.95:.75)+'"></i>'}return '<div class="wn-sn '+c+'" aria-hidden="true">'+h+'</div>'}
 function wnCaps(){var C=[[58,76,84],[120,56,142],[236,56,258],[290,76,316],[162,42,200]],h='';
   C.forEach(function(c){var a=c[0],b=c[1],x=c[2],w=x-a,ty=b-46,d=19,hw=w*d/46,y=ty+d;
@@ -11594,8 +11605,8 @@ function wnCaps(){var C=[[58,76,84],[120,56,142],[236,56,258],[290,76,316],[162,
 function wnPg(){var g=document.getElementById('wnPg');if(!wnOn()){if(g)g.hidden=true;return}if(!g){var d=document.createElement('div');d.innerHTML=wnSnow(14,'');g=d.firstChild;g.id='wnPg';document.body.appendChild(g)}g.hidden=false}
 (function(){var _lr=lxRender;lxRender=function(){var o=_lr.apply(this,arguments);if(B.layout!=='palace'){document.documentElement.removeAttribute('data-wn');wnPg()}return o}})();
 function wnAur(){return '<div class="wn-au" aria-hidden="true"><i></i><i></i><i></i></div><span class="wn-mn" aria-hidden="true"></span>'}
-(function(){var _R=R.palace;R.palace=function(G){var h=_R.apply(this,arguments);if(wnOn())document.documentElement.setAttribute('data-wn',wnP()?'p':'b');else document.documentElement.removeAttribute('data-wn');wnPg();if(!wnOn())return h;
-    var l=plLit();h=h.replace(/pl-s-[a-z]+/,wnP()?'pl-s-winterp':'pl-s-winter').replace('<div class="pl-sky" data-plsky="1" aria-hidden="true"></div>','<div class="pl-sky" data-plsky="1" aria-hidden="true"></div>'+wnAur()+wnSnow(26,'wn-b'))
+(function(){var _R=R.palace;R.palace=function(G){var h=_R.apply(this,arguments);if(wnOn())document.documentElement.setAttribute('data-wn',wnK()?'k':wnP()?'p':'b');else document.documentElement.removeAttribute('data-wn');wnPg();if(!wnOn())return h;
+    var l=plLit();h=h.replace(/pl-s-[a-z]+/,wnK()?'pl-s-winterk':wnP()?'pl-s-winterp':'pl-s-winter').replace('<div class="pl-sky" data-plsky="1" aria-hidden="true"></div>','<div class="pl-sky" data-plsky="1" aria-hidden="true"></div>'+wnAur()+wnSnow(26,'wn-b'))
      .replace('<svg class="pl-cs"','<svg class="pl-cs wn-cs'+(wnP()?' wn-p':'')+'"').replace(/(<svg class="pl-cs wn-cs[^"]*"[\s\S]*?)(<\/svg>)/,function(m,a,z){return a.replace(/(<\/defs>)/,'$1').replace('<path d="M0 160Q200 118 400 160z" fill="#cfb3e0" opacity=".7"/>','')+wnCaps()+z})
      .replace(/(<p class="pl-sts" id="plSt" role="status">)✨ <span>[^<]*<\/span>/,'$1❄️ <span>'+esc(wnT(l))+'</span>')
      .replace('</header>',wnSnow(16,'wn-f')+'</header>');
