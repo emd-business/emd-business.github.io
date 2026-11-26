@@ -7041,7 +7041,9 @@ html[data-lx="palace"][data-wn] .pl-end::before{content:"❄️ "}
 .pl-s-winterk .wn-gr{fill:#fff7fa}
 .pl-s-winterk .wn-tr path[fill="#2f5b6e"]{fill:#7a2a5a}
 .pl-s-winterk .pl-st i{background:#fff0f6}
-</style></head>
+</style><style id="v292ts">.ts292{position:fixed;left:0;bottom:0;z-index:2147483647}.ts292 p{display:none}
+.ts292.on{inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:16px;background:rgba(10,8,20,.55)}
+.ts292.on p{display:block;margin:0;max-width:320px;background:#fff;color:#222;border-radius:14px;padding:12px 16px;text-align:center;font-weight:700;font-size:15px;line-height:1.7;box-shadow:0 8px 30px rgba(0,0,0,.25)}</style></head>
 <body>
 
 <div class="state" id="state"><div class="box"><div class="spin" aria-hidden="true"></div><p id="stateMsg">جاري فتح المتجر…</p></div></div>
@@ -11844,7 +11846,7 @@ function fz(n){var z=cour()&&Array.isArray(B.fc.z)?B.fc.z:[];for(var i=0;i<z.len
 ['ar','en'].forEach(function(L){var o=T[L];if(!o)return;var f=o.free,v=o.v176Free;
   Object.defineProperty(o,'free',{configurable:true,get:function(){return hide()?(L==='en'?'Set by the store':'يحدده المتجر'):cour()?(L==='en'?'Paid to courier':'يُدفع للمندوب عند الاستلام'):f}});
   Object.defineProperty(o,'v176Free',{configurable:true,get:function(){return hide()?(L==='en'?'🚚 The store sets the delivery fee':'🚚 يحدد المتجر رسوم التوصيل عند التواصل معك'):cour()?(L==='en'?'🚚 Delivery paid to the courier':'🚚 التوصيل يُدفع للمندوب عند الاستلام'):v}})});
-function fixSel(s,mny){if(!s)return;[].forEach.call(s.options,function(op){var v=op.value;if(!v)return;if(hide()){if(op.textContent.indexOf(' · ')>-1)op.textContent=op.textContent.split(' · ')[0];return}if(v.charAt(0)==='_')return;var f=fz(v);if(f>0)op.textContent=v+' · '+mny(f)+(EN()?' to courier':' للمندوب');else if(/· (مجاني|Free)$/.test(op.textContent))op.textContent=v+' · '+T[LANG].free})}
+function fixSel(s,mny){if(!s||!s.options)return;[].forEach.call(s.options,function(op){var v=op.value;if(!v)return;if(hide()){if(op.textContent.indexOf(' · ')>-1)op.textContent=op.textContent.split(' · ')[0];return}if(v.charAt(0)==='_')return;var f=fz(v);if(f>0)op.textContent=v+' · '+mny(f)+(EN()?' to courier':' للمندوب');else if(/· (مجاني|Free)$/.test(op.textContent))op.textContent=v+' · '+T[LANG].free})}
 function fix(){if(!any())return;
   fixSel(document.getElementById('fCity'),money);fixSel(document.getElementById('qkZone'),qm);
   if(cour())[].forEach.call(document.querySelectorAll('#fCity option[value="__o"],#qkZone option[value="__o"]'),function(oz){if(oz&&+B.fc.s>0&&!/\d/.test(oz.textContent))oz.textContent=oz.textContent.replace(/·.*$/,'· '+money(B.fc.s)+(EN()?' to courier':' للمندوب'))});
@@ -11857,6 +11859,66 @@ if(typeof lines==='function'){var _l=lines;lines=function(){var r=_l.apply(this,
 if(typeof form==='function'){var _f=form;form=function(){var h=_f.apply(this,arguments);setTimeout(fix,0);return h}}
 if(typeof q173bar==='function'){var _q=q173bar;q173bar=function(){var r=_q.apply(this,arguments);fix();return r}}
 document.addEventListener('change',function(){setTimeout(fix,0)},true);
+})();
+
+/* ===== V292: إرسال الطلب لا يعلق أبدًا =====
+   1) تحميل فحص Cloudflare له مهلة (12 ثانية) ويُعاد تحميله في المحاولة التالية بدل أن يبقى معلقًا.
+   2) إذا طلب Cloudflare من الزبون الضغط على مربع التحقق يظهر المربع في وسط الشاشة مع شرح، ويُمهل دقيقتين.
+   3) بعد التحقق، إن لم يرد الخادم خلال 30 ثانية تظهر رسالة خطأ ويعود الزر.
+   4) عند تعذّر الإرسال يظهر زر «أرسل الطلب عبر واتساب» برسالة جاهزة فيها الطلب كاملًا، فلا يضيع الطلب.
+   5) يُسجَّل سبب التعذّر (بلا أي بيانات شخصية) في سجل الخادم لنعرف السبب الحقيقي. */
+(function(){
+var TSK='0x4AAAAAAF5QiHlOhXRIw2Ih',S={p:null,id:null,w:null,el:null,tokAt:0};
+function ua(){var u=navigator.userAgent||'';return /Instagram/.test(u)?'ig':/FBAN|FBAV/.test(u)?'fb':/Snapchat/.test(u)?'sc':/TikTok|musical_ly|BytedanceWebview/.test(u)?'tt':/WhatsApp/.test(u)?'wa':/iPhone|iPad/.test(u)?'ios':/Android/.test(u)?'and':'o'}
+function diag(c){try{fetch(API+'/functions/v1/store-order?diag='+encodeURIComponent(c)+'&s='+encodeURIComponent(SLUG||'')+'&ua='+ua(),{method:'GET',mode:'no-cors',keepalive:true}).catch(function(){})}catch(e){}}
+ts229load=function(){if(window.turnstile&&window.turnstile.render)return Promise.resolve(window.turnstile);if(S.p)return S.p;
+  S.p=new Promise(function(ok,no){var fin=false,sc=document.createElement('script'),iv,tm;
+    function end(f,v){if(fin)return;fin=true;clearTimeout(tm);clearInterval(iv);if(f===no){S.p=null;try{sc.parentNode&&sc.parentNode.removeChild(sc)}catch(e){}diag(v);no(new Error('bot_check'))}else ok(v)}
+    tm=setTimeout(function(){end(no,'ts_load_timeout')},12000);
+    iv=setInterval(function(){if(window.turnstile&&window.turnstile.render)end(ok,window.turnstile)},150);
+    sc.src='https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';sc.async=true;sc.onerror=function(){end(no,'ts_load_error')};document.head.appendChild(sc)});
+  return S.p};
+function box(on){if(S.el)S.el.className=on?'ts292 on':'ts292'}
+ts229=function(){return ts229load().then(function(T){return new Promise(function(ok,no){var done=false,tm;
+  function arm(ms,code){clearTimeout(tm);tm=setTimeout(function(){fin(no,code)},ms)}
+  function fin(f,v){if(done)return;done=true;clearTimeout(tm);box(false);S.w=null;if(f===no){diag(v);no(new Error('bot_check'))}else{S.tokAt=Date.now();ok(v)}}
+  S.w={ok:function(tk){fin(ok,tk)},no:function(c){fin(no,'ts_err_'+String(c||'').replace(/[^0-9a-z]/gi,'').slice(0,12))},ask:function(){box(true);arm(120000,'ts_interactive_timeout')}};
+  arm(20000,'ts_timeout');
+  try{
+    if(S.id===null){var el=document.createElement('div');el.className='ts292';el.setAttribute('role','dialog');
+      el.innerHTML='<p>'+esc(LANG==='en'?'To make sure the order comes from a real person, tap the box below.':'للتأكد من أن الطلب من شخص حقيقي، اضغط على المربع أدناه.')+'</p><div id="ts292w"></div>';
+      document.body.appendChild(el);S.el=el;
+      S.id=T.render('#ts292w',{sitekey:TSK,execution:'execute',appearance:'interaction-only',language:LANG==='en'?'en':'ar',
+        callback:function(tk){S.w&&S.w.ok(tk)},'error-callback':function(c){S.w&&S.w.no(c);return true},'expired-callback':function(){},
+        'timeout-callback':function(){S.w&&S.w.no('itimeout')},'unsupported-callback':function(){S.w&&S.w.no('unsupported')},
+        'before-interactive-callback':function(){S.w&&S.w.ask()}})}
+    else T.reset(S.id);
+    T.execute(S.id)}catch(e){fin(no,'ts_throw')}})})};
+
+/* رسالة واتساب جاهزة بالطلب كاملًا عند تعذّر الإرسال */
+function waText(b){var c=b.p_customer||{},L=[],files=false,en=LANG==='en';
+  (b.p_items||[]).forEach(function(it){var p=item(it.key),nm=p?p.name:it.key;L.push('• '+nm+' × '+(+it.qty||1));
+    var e=(PZ&&PZ[it.key])||[];e.forEach(function(x){var a=[];if(x.t)a.push('«'+x.t+'»');if(x.n)a.push(x.n);if(x.f&&x.f.length){files=true;a.push(en?'(file attached)':'(مع صورة/ملف)')}if(a.length)L.push('   ✍️ '+a.join(' · ')+(x.q>1?' ×'+x.q:''))})});
+  var o=($("coForm")&&totals)?totals():null,pay=b.p_payment==='bank'?t('bank'):t('cod');
+  return (en?'Hello, I would like to order from your store (the store page could not send it):':'السلام عليكم، أودّ الطلب من متجركم (تعذّر إرساله من صفحة المتجر):')+'\n'+L.join('\n')+
+    (o&&o.tot?'\n'+(en?'Total: ':'المجموع: ')+money(o.tot):'')+
+    '\n\n'+(en?'Name: ':'الاسم: ')+(c.name||'')+'\n'+(en?'Phone: ':'الجوال: ')+(c.phone||'')+'\n'+(en?'Area: ':'الولاية: ')+(c.city||'')+'\n'+(en?'Address: ':'العنوان: ')+(c.address||'')+
+    (c.note?'\n'+(en?'Note: ':'ملاحظة: ')+c.note:'')+'\n'+(en?'Payment: ':'الدفع: ')+pay+
+    (files?'\n\n'+(en?'I will send the customization image here.':'سأرسل صورة التخصيص في هذه المحادثة.'):'')}
+function waFallback(b){var wa=waNum(B&&B.wa);if(!wa)return;var er=$('err')||$('qkErr');if(!er||!er.parentNode)return;
+  var old=document.getElementById('wa292');if(old)old.remove();
+  var a=document.createElement('a');a.id='wa292';a.className='go wa';a.target='_blank';a.rel='noopener';a.style.cssText='display:flex;justify-content:center;margin:8px 0 10px;text-decoration:none';
+  a.href='https://wa.me/'+wa+'?text='+encodeURIComponent(waText(b));a.textContent=LANG==='en'?'Send the order via WhatsApp':'أرسل الطلب عبر واتساب';
+  er.parentNode.insertBefore(a,er.nextSibling);
+  setTimeout(function(){if(er.textContent&&!/واتساب|WhatsApp/.test(er.textContent))er.textContent+=(LANG==='en'?' Or send your order via WhatsApp:':' أو أرسل طلبك مباشرة عبر واتساب:')},0)}
+
+/* مهلة الخادم بعد التحقق + زر واتساب عند التعذّر */
+var _ro292=rpcOrder;
+rpcOrder=function(b){S.tokAt=0;var w=document.getElementById('wa292');if(w)w.remove();
+  return new Promise(function(ok,no){var fin=false,iv=setInterval(function(){if(S.tokAt&&Date.now()-S.tokAt>30000){diag('net_timeout');end(no,new Error('net'))}},1000);
+    function end(f,v){if(fin)return;fin=true;clearInterval(iv);f(v)}
+    _ro292(b).then(function(r){end(ok,r)},function(e){end(no,e)})})
+  .catch(function(e){var m=String(e&&e.message||'');if(/bot_check|net|server|Failed|fetch|Load|abort/i.test(m)){if(!/bot_check|net_timeout/.test(m))diag('send_'+m.replace(/[^a-z_]/gi,'').slice(0,20));if(!DEMO&&!window.__PV)waFallback(b)}throw e})};
 })();
 
 boot();
