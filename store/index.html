@@ -11861,7 +11861,7 @@ if(typeof q173bar==='function'){var _q=q173bar;q173bar=function(){var r=_q.apply
 document.addEventListener('change',function(){setTimeout(fix,0)},true);
 })();
 
-/* ===== V292: إرسال الطلب لا يعلق أبدًا =====
+/* ===== V292/V293: إرسال الطلب لا يعلق أبدًا =====
    1) تحميل فحص Cloudflare له مهلة (12 ثانية) ويُعاد تحميله في المحاولة التالية بدل أن يبقى معلقًا.
    2) إذا طلب Cloudflare من الزبون الضغط على مربع التحقق يظهر المربع في وسط الشاشة مع شرح، ويُمهل دقيقتين.
    3) بعد التحقق، إن لم يرد الخادم خلال 30 ثانية تظهر رسالة خطأ ويعود الزر.
@@ -11874,12 +11874,14 @@ function diag(c){try{fetch(API+'/functions/v1/store-order?diag='+encodeURICompon
 ts229load=function(){if(window.turnstile&&window.turnstile.render)return Promise.resolve(window.turnstile);if(S.p)return S.p;
   S.p=new Promise(function(ok,no){var fin=false,sc=document.createElement('script'),iv,tm;
     function end(f,v){if(fin)return;fin=true;clearTimeout(tm);clearInterval(iv);if(f===no){S.p=null;try{sc.parentNode&&sc.parentNode.removeChild(sc)}catch(e){}diag(v);no(new Error('bot_check'))}else ok(v)}
-    tm=setTimeout(function(){end(no,'ts_load_timeout')},12000);
+    tm=setTimeout(function(){end(no,'ts_load_timeout')},8000);
     iv=setInterval(function(){if(window.turnstile&&window.turnstile.render)end(ok,window.turnstile)},150);
     sc.src='https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';sc.async=true;sc.onerror=function(){end(no,'ts_load_error')};document.head.appendChild(sc)});
   return S.p};
 function box(on){if(S.el)S.el.className=on?'ts292 on':'ts292'}
-ts229=function(){return ts229load().then(function(T){return new Promise(function(ok,no){var done=false,tm;
+/* V293: إذا لم يستطع الجهاز تحميل فحص Cloudflare نرسل الطلب بعلامة «nots» ويقبله الخادم بحدود أشد */
+ts229=function(){return ts229load().then(ts293,function(){S.tokAt=Date.now();return 'nots:load:'+ua()})};
+function ts293(T){return new Promise(function(ok,no){var done=false,tm;
   function arm(ms,code){clearTimeout(tm);tm=setTimeout(function(){fin(no,code)},ms)}
   function fin(f,v){if(done)return;done=true;clearTimeout(tm);box(false);S.w=null;if(f===no){diag(v);no(new Error('bot_check'))}else{S.tokAt=Date.now();ok(v)}}
   S.w={ok:function(tk){fin(ok,tk)},no:function(c){fin(no,'ts_err_'+String(c||'').replace(/[^0-9a-z]/gi,'').slice(0,12))},ask:function(){box(true);arm(120000,'ts_interactive_timeout')}};
@@ -11890,10 +11892,10 @@ ts229=function(){return ts229load().then(function(T){return new Promise(function
       document.body.appendChild(el);S.el=el;
       S.id=T.render('#ts292w',{sitekey:TSK,execution:'execute',appearance:'interaction-only',language:LANG==='en'?'en':'ar',
         callback:function(tk){S.w&&S.w.ok(tk)},'error-callback':function(c){S.w&&S.w.no(c);return true},'expired-callback':function(){},
-        'timeout-callback':function(){S.w&&S.w.no('itimeout')},'unsupported-callback':function(){S.w&&S.w.no('unsupported')},
+        'timeout-callback':function(){S.w&&S.w.no('itimeout')},'unsupported-callback':function(){S.w&&S.w.ok('nots:unsup:'+ua())},
         'before-interactive-callback':function(){S.w&&S.w.ask()}})}
     else T.reset(S.id);
-    T.execute(S.id)}catch(e){fin(no,'ts_throw')}})})};
+    T.execute(S.id)}catch(e){fin(no,'ts_throw')}})}
 
 /* رسالة واتساب جاهزة بالطلب كاملًا عند تعذّر الإرسال */
 function waText(b){var c=b.p_customer||{},L=[],files=false,en=LANG==='en';
