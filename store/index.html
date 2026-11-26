@@ -11861,7 +11861,7 @@ if(typeof q173bar==='function'){var _q=q173bar;q173bar=function(){var r=_q.apply
 document.addEventListener('change',function(){setTimeout(fix,0)},true);
 })();
 
-/* ===== V292/V293: إرسال الطلب لا يعلق أبدًا =====
+/* ===== V292/V293/V294: إرسال الطلب لا يعلق أبدًا =====
    1) تحميل فحص Cloudflare له مهلة (12 ثانية) ويُعاد تحميله في المحاولة التالية بدل أن يبقى معلقًا.
    2) إذا طلب Cloudflare من الزبون الضغط على مربع التحقق يظهر المربع في وسط الشاشة مع شرح، ويُمهل دقيقتين.
    3) بعد التحقق، إن لم يرد الخادم خلال 30 ثانية تظهر رسالة خطأ ويعود الزر.
@@ -11880,11 +11880,23 @@ ts229load=function(){if(window.turnstile&&window.turnstile.render)return Promise
   return S.p};
 function box(on){if(S.el)S.el.className=on?'ts292 on':'ts292'}
 /* V293: إذا لم يستطع الجهاز تحميل فحص Cloudflare نرسل الطلب بعلامة «nots» ويقبله الخادم بحدود أشد */
-ts229=function(){return ts229load().then(ts293,function(){S.tokAt=Date.now();return 'nots:load:'+ua()})};
+/* V294: الآيفون أسهل: لا انتظار طويل ولا مربع تحقق.
+   - الفحص يبدأ التحميل فور اكتمال فتح المتجر.
+   - على الآيفون: إن لم يجهز الفحص خلال 3 ثوانٍ من الضغط يُرسل الطلب فورًا (بحدود الخادم الأشد).
+   - الجهاز الذي فشل فيه الفحص مرة يُرسل طلبه فورًا في المرات التالية (لمدة 7 أيام).
+   - على الآيفون لا يظهر مربع «اضغط للتحقق»؛ يُرسل الطلب مباشرة بحدود الخادم الأشد. */
+var IOS=/iPhone|iPad|iPod/.test(navigator.userAgent||'')||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1),BADK='emdTsBad';
+function bad(){try{var v=+localStorage.getItem(BADK)||0;return v&&Date.now()-v<7*864e5}catch(e){return false}}
+function markBad(){try{localStorage.setItem(BADK,String(Date.now()))}catch(e){}}
+function nots(c){S.tokAt=Date.now();return 'nots:'+c+':'+ua()}
+ts229=function(){if(bad())return Promise.resolve(nots('bad'));
+  return new Promise(function(ok,no){var done=false,tm=setTimeout(function(){if(done)return;done=true;diag('ts_slow_'+(IOS?'ios':'x'));ok(nots('slow'))},IOS?3000:8000);
+    ts229load().then(function(T){if(done)return;done=true;clearTimeout(tm);ts293(T).then(ok,no)},function(){markBad();if(done)return;done=true;clearTimeout(tm);ok(nots('load'))})})};
+function pre(){if(!bad())setTimeout(function(){ts229load().catch(function(){})},300)}if(document.readyState==='complete')pre();else window.addEventListener('load',pre);
 function ts293(T){return new Promise(function(ok,no){var done=false,tm;
   function arm(ms,code){clearTimeout(tm);tm=setTimeout(function(){fin(no,code)},ms)}
   function fin(f,v){if(done)return;done=true;clearTimeout(tm);box(false);S.w=null;if(f===no){diag(v);no(new Error('bot_check'))}else{S.tokAt=Date.now();ok(v)}}
-  S.w={ok:function(tk){fin(ok,tk)},no:function(c){fin(no,'ts_err_'+String(c||'').replace(/[^0-9a-z]/gi,'').slice(0,12))},ask:function(){box(true);arm(120000,'ts_interactive_timeout')}};
+  S.w={ok:function(tk){fin(ok,tk)},no:function(c){fin(no,'ts_err_'+String(c||'').replace(/[^0-9a-z]/gi,'').slice(0,12))},ask:function(){if(IOS){diag('ts_ask_ios');fin(ok,nots('ask'));return}box(true);arm(120000,'ts_interactive_timeout')}};
   arm(20000,'ts_timeout');
   try{
     if(S.id===null){var el=document.createElement('div');el.className='ts292';el.setAttribute('role','dialog');
